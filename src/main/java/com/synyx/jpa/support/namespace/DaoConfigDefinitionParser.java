@@ -10,6 +10,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.synyx.jpa.support.GenericDaoFactoryBean;
+
 
 /**
  * Parser to create bean definitions for dao-config namespace. Registers bean
@@ -22,6 +24,9 @@ import org.w3c.dom.NodeList;
  * @author Oliver Gierke
  */
 public class DaoConfigDefinitionParser implements BeanDefinitionParser {
+
+    private static final String DEFAULT_DAO_POSTFIX = "Dao";
+
 
     /*
      * (non-Javadoc)
@@ -36,26 +41,40 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         String daoClassPostfix = element.getAttribute("dao-class-postfix");
         String daoNamePostfix = element.getAttribute("dao-name-postfix");
 
+        // Set default postfix if none configured
+        daoClassPostfix = (null == daoClassPostfix) ? DEFAULT_DAO_POSTFIX
+                : daoClassPostfix;
+
         NodeList childNodes = element.getChildNodes();
 
         // Add dao declarations
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+
                 Element childElement = (Element) childNode;
+
+                String name = childElement.getAttribute("name");
+                String entityClassName = name.substring(0, 1).toUpperCase()
+                        + name.substring(1);
+
+                String fullQualifiedEntityClassName = entityPackageName + "."
+                        + entityClassName;
+
+                String fullQualifiedDaoClassName = daoPackageName + "."
+                        + entityClassName + daoClassPostfix;
+
                 BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
-                        .rootBeanDefinition(NamespaceGenericDaoFactoryBean.class);
-                beanDefinitionBuilder.addPropertyValue("daoPackageName",
-                        daoPackageName);
-                beanDefinitionBuilder.addPropertyValue("entityPackageName",
-                        entityPackageName);
-                beanDefinitionBuilder.addPropertyValue("daoClassPostfix",
-                        daoClassPostfix);
-                beanDefinitionBuilder.addPropertyValue("name", childElement
-                        .getAttribute("name"));
+                        .rootBeanDefinition(GenericDaoFactoryBean.class);
+                beanDefinitionBuilder.addPropertyValue("daoInterface",
+                        fullQualifiedDaoClassName);
+                beanDefinitionBuilder.addPropertyValue("entityClass",
+                        fullQualifiedEntityClassName);
+
                 parserContext.getRegistry().registerBeanDefinition(
-                        childElement.getAttribute("name") + daoNamePostfix,
+                        name + daoNamePostfix,
                         beanDefinitionBuilder.getBeanDefinition());
+
             }
         }
 
