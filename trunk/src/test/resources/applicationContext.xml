@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- Database setup -->
+	<import resource="infrastructure.xml" />
+
+	<!-- Configure a DAO for Person class -->
+	<bean id="personDao"
+		class="com.synyx.jpa.support.GenericDaoFactoryBean">
+		<property name="entityClass"
+			value="com.synyx.jpa.support.test.domain.Person" />
+		<property name="daoInterface"
+			value="com.synyx.jpa.support.test.dao.PersonDao" />
+	</bean>
+
+	<!-- Necessary to get the entity manager injected into the factory bean -->
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!-- Adds transaparent exception translation to the DAOs -->
+	<bean
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<!-- Adds dependency checks for setters annotated with @Required -->
+	<bean
+		class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+
+</beans>
