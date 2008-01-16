@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.spring-buch.de/schema/dao"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	targetNamespace="http://www.synyx.de/schema/dao"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:element name="dao-config">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="dao" minOccurs="1"
+					maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="name" type="xsd:string"
+							use="required" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+
+			<xsd:attribute name="dao-package-name" type="xsd:string" use="required" />
+			<xsd:attribute name="entity-package-name" type="xsd:string" use="required" />
+			<xsd:attribute name="dao-class-postfix" type="xsd:string"
+				default="Dao" />
+			<xsd:attribute name="dao-name-postfix" type="xsd:string"
+				default="Dao" />
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>
