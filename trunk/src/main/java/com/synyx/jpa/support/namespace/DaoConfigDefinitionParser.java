@@ -2,6 +2,7 @@ package com.synyx.jpa.support.namespace;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -27,6 +28,9 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
     private static final String DEFAULT_DAO_POSTFIX = "Dao";
 
+    private static final Class<?> PAB_POST_PROCESSOR = PersistenceAnnotationBeanPostProcessor.class;
+    private static final Class<?> PET_POST_PROCESSOR = PersistenceExceptionTranslationPostProcessor.class;
+
 
     /*
      * (non-Javadoc)
@@ -46,6 +50,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 : daoClassPostfix;
 
         NodeList childNodes = element.getChildNodes();
+
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
 
         // Add dao declarations
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -71,28 +77,33 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 beanDefinitionBuilder.addPropertyValue("entityClass",
                         fullQualifiedEntityClassName);
 
-                parserContext.getRegistry().registerBeanDefinition(
-                        name + daoNamePostfix,
+                registry.registerBeanDefinition(name + daoNamePostfix,
                         beanDefinitionBuilder.getBeanDefinition());
 
             }
         }
 
         // Create PersistenceAnnotationPostProcessor definition
-        BeanDefinition definition = BeanDefinitionBuilder.rootBeanDefinition(
-                PersistenceAnnotationBeanPostProcessor.class)
-                .getBeanDefinition();
+        if (!registry.containsBeanDefinition(PAB_POST_PROCESSOR.getName())) {
 
-        parserContext.getRegistry().registerBeanDefinition(
-                definition.getBeanClassName(), definition);
+            BeanDefinition definition = BeanDefinitionBuilder
+                    .rootBeanDefinition(PAB_POST_PROCESSOR).getBeanDefinition();
+
+            registry.registerBeanDefinition(definition.getBeanClassName(),
+                    definition);
+        }
 
         // Create PersistenceExceptionTranslationPostProcessor definition
-        definition = BeanDefinitionBuilder.rootBeanDefinition(
-                PersistenceExceptionTranslationPostProcessor.class)
-                .getBeanDefinition();
+        if (!registry.containsBeanDefinition(PET_POST_PROCESSOR.getName())) {
 
-        parserContext.getRegistry().registerBeanDefinition(
-                definition.getBeanClassName(), definition);
+            BeanDefinition definition = BeanDefinitionBuilder
+                    .rootBeanDefinition(
+                            PersistenceExceptionTranslationPostProcessor.class)
+                    .getBeanDefinition();
+
+            registry.registerBeanDefinition(definition.getBeanClassName(),
+                    definition);
+        }
 
         return null;
     }
