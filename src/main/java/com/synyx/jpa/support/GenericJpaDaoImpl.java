@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Required;
@@ -39,11 +42,21 @@ public class GenericJpaDaoImpl<T, PK extends Serializable> implements
 
 
     /**
+     * @return the entityManager
+     */
+    public EntityManager getEntityManager() {
+
+        return entityManager;
+    }
+
+
+    /**
      * Setter to inject <code>EntityManager</code>.
      * 
      * @param entityManager the entityManager to set
      */
     @Required
+    @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
 
         this.entityManager = entityManager;
@@ -122,6 +135,24 @@ public class GenericJpaDaoImpl<T, PK extends Serializable> implements
         final Query namedQuery = prepareQuery(methodName, queryArgs);
 
         return namedQuery.getResultList();
+    }
+
+
+    /**
+     * Executes a named query for a single result.
+     * 
+     * @param methodName
+     * @param queryArgs
+     * @return
+     * @throws EntityNotFoundException if no entity was found
+     * @throws NonUniqueResultException if more than one entity was found
+     */
+    @SuppressWarnings("unchecked")
+    protected T executeObjectFinder(String methodName, Object... queryArgs) {
+
+        final Query namedQuery = prepareQuery(methodName, queryArgs);
+
+        return (T) namedQuery.getSingleResult();
     }
 
 
