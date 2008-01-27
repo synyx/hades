@@ -8,7 +8,7 @@
 	<xsd:element name="dao-config">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="dao" minOccurs="1"
+				<xsd:element name="dao" minOccurs="0"
 					maxOccurs="unbounded">
 					<xsd:complexType>
 						<xsd:attribute name="name" type="xsd:string"
