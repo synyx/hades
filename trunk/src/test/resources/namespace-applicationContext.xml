@@ -24,8 +24,8 @@
 	
 	-->
 	<dao:dao-config 
-		entity-package-name="com.synyx.jpa.support.test.domain" 
-		dao-package-name="com.synyx.jpa.support.test.dao" >
+		entity-package-name="org.synyx.jpa.support.test.domain" 
+		dao-package-name="org.synyx.jpa.support.test.dao" >
 		
 		<dao:dao name="person" />
 	</dao:dao-config>
