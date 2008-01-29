@@ -10,9 +10,9 @@
 	<bean id="personDao"
 		class="org.synyx.jpa.support.GenericDaoFactoryBean">
 		<property name="entityClass"
-			value="com.synyx.jpa.support.test.domain.Person" />
+			value="org.synyx.jpa.support.test.domain.Person" />
 		<property name="daoInterface"
-			value="com.synyx.jpa.support.test.dao.PersonDao" />
+			value="org.synyx.jpa.support.test.dao.PersonDao" />
 	</bean>
 
 	<!-- Necessary to get the entity manager injected into the factory bean -->
