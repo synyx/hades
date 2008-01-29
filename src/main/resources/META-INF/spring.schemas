@@ -1,1 +1,1 @@
-http\://www.synyx.de/schema/dao/dao-config.xsd=com/synyx/jpa/support/namespace/dao-config.xsd
+http\://www.synyx.de/schema/dao/dao-config.xsd=org/synyx/jpa/support/namespace/dao-config.xsd
