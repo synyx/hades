@@ -1,4 +1,4 @@
-package com.synyx.jpa.support.namespace;
+package org.synyx.jpa.support.namespace;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -7,11 +7,11 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
+import org.synyx.jpa.support.GenericDaoFactoryBean;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.synyx.jpa.support.GenericDaoFactoryBean;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.synyx.jpa.support.namespace;
+package org.synyx.jpa.support.namespace;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 

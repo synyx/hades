@@ -1,4 +1,4 @@
-package com.synyx.jpa.support.test.domain;
+package org.synyx.jpa.support.test.domain;
 
 import java.io.Serializable;
 

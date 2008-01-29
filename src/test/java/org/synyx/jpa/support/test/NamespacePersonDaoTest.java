@@ -1,4 +1,4 @@
-package com.synyx.jpa.support.test;
+package org.synyx.jpa.support.test;
 
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
