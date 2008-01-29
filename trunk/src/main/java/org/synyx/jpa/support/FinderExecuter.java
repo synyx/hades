@@ -1,4 +1,4 @@
-package com.synyx.jpa.support;
+package org.synyx.jpa.support;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.synyx.jpa.support.test;
+package org.synyx.jpa.support.test;
 
 /**
  * Integration test class for <code>PersonDao</code> using standard Spring

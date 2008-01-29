@@ -8,7 +8,7 @@
 
 	<!-- Configure a DAO for Person class -->
 	<bean id="personDao"
-		class="com.synyx.jpa.support.GenericDaoFactoryBean">
+		class="org.synyx.jpa.support.GenericDaoFactoryBean">
 		<property name="entityClass"
 			value="com.synyx.jpa.support.test.domain.Person" />
 		<property name="daoInterface"

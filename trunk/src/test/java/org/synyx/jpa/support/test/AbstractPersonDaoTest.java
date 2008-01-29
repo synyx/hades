@@ -1,12 +1,12 @@
-package com.synyx.jpa.support.test;
+package org.synyx.jpa.support.test;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.test.jpa.AbstractJpaTests;
+import org.synyx.jpa.support.test.dao.PersonDao;
+import org.synyx.jpa.support.test.domain.Person;
 
-import com.synyx.jpa.support.test.dao.PersonDao;
-import com.synyx.jpa.support.test.domain.Person;
 
 
 /**

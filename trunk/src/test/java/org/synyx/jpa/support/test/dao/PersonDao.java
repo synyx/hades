@@ -1,9 +1,10 @@
-package com.synyx.jpa.support.test.dao;
+package org.synyx.jpa.support.test.dao;
 
 import java.util.List;
 
-import com.synyx.jpa.support.GenericDao;
-import com.synyx.jpa.support.test.domain.Person;
+import org.synyx.jpa.support.GenericDao;
+import org.synyx.jpa.support.test.domain.Person;
+
 
 
 /**
