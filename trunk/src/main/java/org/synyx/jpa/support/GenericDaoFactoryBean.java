@@ -19,14 +19,14 @@ import org.springframework.beans.factory.annotation.Required;
  * "find" is called.
  * <p>
  * E.g. if you define a method <code>findByName</code> on an interface
- * extending <code>GenericDao&lt;Person, Integer&gt;</code> the advice will
- * try to call a named query named <code>Person.findByName</code>.
+ * extending <code>GenericDao&lt;User, Integer&gt;</code> the advice will try
+ * to call a named query named <code>User.findByName</code>.
  * 
  * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public class GenericDaoFactoryBean<T, PK extends Serializable> implements
-        FactoryBean {
+public class GenericDaoFactoryBean<T extends Entity<PK>, PK extends Serializable>
+        implements FactoryBean {
 
     private Class<GenericDao<T, PK>> daoInterface;
     private Class<T> entityClass;
