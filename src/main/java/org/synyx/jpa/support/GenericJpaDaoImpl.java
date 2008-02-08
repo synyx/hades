@@ -22,8 +22,8 @@ import org.springframework.stereotype.Repository;
  * @author Oliver Gierke
  */
 @Repository
-public class GenericJpaDaoImpl<T, PK extends Serializable> implements
-        GenericDao<T, PK> {
+public class GenericJpaDaoImpl<T extends Entity<PK>, PK extends Serializable>
+        implements GenericDao<T, PK> {
 
     private EntityManager entityManager;
     private Class<T> type;
@@ -44,7 +44,7 @@ public class GenericJpaDaoImpl<T, PK extends Serializable> implements
     /**
      * @return the entityManager
      */
-    public EntityManager getEntityManager() {
+    protected EntityManager getEntityManager() {
 
         return entityManager;
     }
@@ -55,7 +55,6 @@ public class GenericJpaDaoImpl<T, PK extends Serializable> implements
      * 
      * @param entityManager the entityManager to set
      */
-    @Required
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
 
@@ -77,20 +76,13 @@ public class GenericJpaDaoImpl<T, PK extends Serializable> implements
     /*
      * (non-Javadoc)
      * 
-     * @see com.synyx.jpa.support.GenericDao#merge(java.lang.Object)
-     */
-    public void merge(T transientEntity) {
-
-        entityManager.merge(transientEntity);
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see com.synyx.jpa.support.GenericDao#readByPrimaryKey(java.io.Serializable)
      */
     public T readByPrimaryKey(PK primaryKey) {
+
+        if (null == primaryKey) {
+            throw new IllegalArgumentException("primaryKey must not be null!");
+        }
 
         return entityManager.find(type, primaryKey);
     }
@@ -116,10 +108,38 @@ public class GenericJpaDaoImpl<T, PK extends Serializable> implements
      */
     public T save(T entity) {
 
-        entityManager.persist(entity);
-        entityManager.flush();
+        if (null == entity.getId()) {
+            entityManager.persist(entity);
+        } else {
+            entityManager.merge(entity);
+        }
 
         return entity;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.jpa.support.GenericDao#saveAndFlush(org.synyx.jpa.support.Entity)
+     */
+    public T saveAndFlush(T entity) {
+
+        T result = save(entity);
+        flush();
+
+        return result;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.jpa.support.GenericDao#flush()
+     */
+    public void flush() {
+
+        entityManager.flush();
     }
 
 
