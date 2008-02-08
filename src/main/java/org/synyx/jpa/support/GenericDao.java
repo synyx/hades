@@ -10,8 +10,8 @@ import java.util.List;
  * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public interface GenericDao<T, PK extends Serializable> extends
-        FinderExecuter<T> {
+public interface GenericDao<T extends Entity<PK>, PK extends Serializable>
+        extends FinderExecuter<T> {
 
     /**
      * Saves a given entity. Use the returned instance for further operations as
@@ -24,10 +24,20 @@ public interface GenericDao<T, PK extends Serializable> extends
 
 
     /**
+     * Saves an entity and flushes changes instantly to the database.
+     * 
+     * @param entity
+     * @return
+     */
+    public abstract T saveAndFlush(T entity);
+
+
+    /**
      * Retrives an entity by it's primary key.
      * 
      * @param primaryKey
      * @return
+     * @throws IllegalArgumentException if primaryKey is null
      */
     public abstract T readByPrimaryKey(PK primaryKey);
 
@@ -41,17 +51,15 @@ public interface GenericDao<T, PK extends Serializable> extends
 
 
     /**
-     * Merges a transient entity instance with the current session.
-     * 
-     * @param transientEntity
-     */
-    public abstract void merge(T transientEntity);
-
-
-    /**
      * Deletes a given entity.
      * 
      * @param entity
      */
     public abstract void delete(T entity);
+
+
+    /**
+     * Flushes all pending changes to the database.
+     */
+    public abstract void flush();
 }
