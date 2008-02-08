@@ -10,15 +10,11 @@
 			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
 		</property>
 		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.TopLinkJpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="showSql" value="true" />
+				<property name="generateDdl" value="true" />
+				<property name="database" value="MYSQL" />
 			</bean>
-		</property>
-		<property name="jpaPropertyMap">
-			<map>
-				<entry key="toplink.ddl-generation" value="drop-and-create-tables" />
-				<entry key="toplink.logging.level" value="FINE" /> 
-			</map>
 		</property>
 	</bean>
 	

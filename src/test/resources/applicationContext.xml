@@ -6,13 +6,21 @@
 	<!-- Database setup -->
 	<import resource="infrastructure.xml" />
 
-	<!-- Configure a DAO for Person class -->
-	<bean id="personDao"
+	<!-- Configure a DAO for User class -->
+	<bean id="userDao"
 		class="org.synyx.jpa.support.GenericDaoFactoryBean">
 		<property name="entityClass"
-			value="org.synyx.jpa.support.test.domain.Person" />
+			value="org.synyx.jpa.support.test.domain.User" />
 		<property name="daoInterface"
-			value="org.synyx.jpa.support.test.dao.PersonDao" />
+			value="org.synyx.jpa.support.test.dao.UserDao" />
+	</bean>
+	
+	<bean id="roleDao"
+		class="org.synyx.jpa.support.GenericDaoFactoryBean">
+		<property name="entityClass"
+			value="org.synyx.jpa.support.test.domain.Role" />
+		<property name="daoInterface"
+			value="org.synyx.jpa.support.test.dao.RoleDao" />
 	</bean>
 
 	<!-- Necessary to get the entity manager injected into the factory bean -->

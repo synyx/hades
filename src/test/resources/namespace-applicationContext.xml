@@ -27,7 +27,8 @@
 		entity-package-name="org.synyx.jpa.support.test.domain" 
 		dao-package-name="org.synyx.jpa.support.test.dao" >
 		
-		<dao:dao name="person" />
+		<dao:dao name="user" />
+		<dao:dao name="role" />
 	</dao:dao-config>
 	
 </beans>
