@@ -10,7 +10,7 @@ import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcesso
  * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public class NamespacePersonDaoTest extends AbstractPersonDaoTest {
+public class NamespaceUserDaoTest extends AbstractUserDaoTest {
 
     /*
      * (non-Javadoc)

@@ -7,7 +7,7 @@ package org.synyx.jpa.support.test;
  * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public class PersonDaoTest extends AbstractPersonDaoTest {
+public class UserDaoTest extends AbstractUserDaoTest {
 
     /*
      * (non-Javadoc)

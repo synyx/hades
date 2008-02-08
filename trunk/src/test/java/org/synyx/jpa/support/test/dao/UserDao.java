@@ -3,8 +3,7 @@ package org.synyx.jpa.support.test.dao;
 import java.util.List;
 
 import org.synyx.jpa.support.GenericDao;
-import org.synyx.jpa.support.test.domain.Person;
-
+import org.synyx.jpa.support.test.domain.User;
 
 
 /**
@@ -13,13 +12,13 @@ import org.synyx.jpa.support.test.domain.Person;
  * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public interface PersonDao extends GenericDao<Person, Integer> {
+public interface UserDao extends GenericDao<User, Integer> {
 
     /**
-     * Retrieve persons by name.
+     * Retrieve users by their email address.
      * 
-     * @param name
+     * @param emailAddress
      * @return
      */
-    public List<Person> findByName(String name);
+    public List<User> findByEmailAddress(String emailAddress);
 }
