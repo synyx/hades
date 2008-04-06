@@ -9,7 +9,7 @@
 	<description>Generic JPA DAO implementation</description>
 
 	<properties>
-		<springVersion>2.5.1</springVersion>
+		<springVersion>2.5.2</springVersion>
 	</properties>
 
 	<dependencies>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
+			<version>1.0.2</version>
 		</dependency>
 
 		<dependency>
