@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx</groupId>
-	<artifactId>spring-jpa-dao</artifactId>
+	<artifactId>hades</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Spring JPA DAO</name>
-	<description>Generic JPA DAO implementation</description>
+	<name>Hades</name>
+	<description>Domain class and DAO development framework</description>
 
 	<organization>
 		<name>Synyx GmbH &amp; Co. KG</name>

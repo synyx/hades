@@ -7,12 +7,12 @@
 		
 	<aop:aspectj-autoproxy />
 	
-	<bean class="org.synyx.domain.support.AuditionAdvice">
+	<bean class="org.synyx.hades.domain.support.AuditionAdvice">
 		<property name="currentUserAware" ref="currentUserAware" />
 	</bean>
 	
 	<bean id="currentUserAware" class="org.easymock.EasyMock" factory-method="createNiceMock">
-		<constructor-arg value="org.synyx.domain.support.CurrentUserAware" />
+		<constructor-arg value="org.synyx.hades.domain.support.CurrentUserAware" />
 	</bean>
 
 </beans>
