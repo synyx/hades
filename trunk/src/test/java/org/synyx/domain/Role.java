@@ -1,4 +1,4 @@
-package org.synyx.jpa.support.test.domain;
+package org.synyx.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +10,7 @@ import javax.persistence.Id;
  * @author Oliver Gierke
  */
 @Entity
-public class Role implements org.synyx.jpa.support.Entity<Integer> {
+public class Role implements org.synyx.domain.Identifyable<Integer> {
 
     private static final String PREFIX = "ROLE_";
 
@@ -59,5 +59,16 @@ public class Role implements org.synyx.jpa.support.Entity<Integer> {
     public String toString() {
 
         return PREFIX + name;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.jpa.support.Entity#isNew()
+     */
+    public boolean isNew() {
+
+        return id != null;
     }
 }

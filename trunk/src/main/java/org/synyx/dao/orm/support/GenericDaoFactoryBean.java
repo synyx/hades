@@ -1,4 +1,4 @@
-package org.synyx.jpa.support;
+package org.synyx.dao.orm.support;
 
 import java.io.Serializable;
 
@@ -10,6 +10,11 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Required;
+import org.synyx.dao.FinderExecuter;
+import org.synyx.dao.GenericDao;
+import org.synyx.dao.orm.AbstractJpaFinder;
+import org.synyx.dao.orm.GenericJpaDao;
+import org.synyx.domain.Identifyable;
 
 
 /**
@@ -25,11 +30,14 @@ import org.springframework.beans.factory.annotation.Required;
  * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public class GenericDaoFactoryBean<T extends Entity<PK>, PK extends Serializable>
+@SuppressWarnings("unchecked")
+public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends Identifyable<PK>, PK extends Serializable>
         implements FactoryBean {
 
     private Class<GenericDao<T, PK>> daoInterface;
-    private Class<T> entityClass;
+
+    private Class<T> domainClass;
+    private Class<D> daoClass = (Class<D>) GenericJpaDao.class;
 
     private EntityManager entityManager;
 
@@ -47,14 +55,27 @@ public class GenericDaoFactoryBean<T extends Entity<PK>, PK extends Serializable
 
 
     /**
-     * Setter to inject the entity class to manage.
+     * Setter to inject the somain class to manage.
      * 
-     * @param entityClass the entityClass to set
+     * @param domainClass the domainClass to set
      */
     @Required
-    public void setEntityClass(Class<T> entityClass) {
+    public void setDomainClass(Class<T> domainClass) {
 
-        this.entityClass = entityClass;
+        this.domainClass = domainClass;
+    }
+
+
+    /**
+     * @param daoClass the daoClass to set
+     */
+    public void setDaoClass(Class<D> daoClass) {
+
+        if (null == daoClass) {
+            throw new IllegalArgumentException("DaoClass must not be null!");
+        }
+
+        this.daoClass = daoClass;
     }
 
 
@@ -78,8 +99,8 @@ public class GenericDaoFactoryBean<T extends Entity<PK>, PK extends Serializable
     public Object getObject() throws Exception {
 
         // Instantiate generic dao
-        GenericJpaDaoImpl<T, PK> genericJpaDao = new GenericJpaDaoImpl<T, PK>();
-        genericJpaDao.setType(entityClass);
+        AbstractJpaFinder<T, PK> genericJpaDao = daoClass.newInstance();
+        genericJpaDao.setDomainClass(domainClass);
         genericJpaDao.setEntityManager(entityManager);
 
         // Create proxy

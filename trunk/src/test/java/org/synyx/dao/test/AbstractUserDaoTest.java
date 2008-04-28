@@ -1,13 +1,14 @@
-package org.synyx.jpa.support.test;
+package org.synyx.dao.test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.jpa.AbstractJpaTests;
-import org.synyx.jpa.support.test.dao.UserDao;
-import org.synyx.jpa.support.test.domain.Role;
-import org.synyx.jpa.support.test.domain.User;
+import org.synyx.dao.UserDao;
+import org.synyx.domain.Role;
+import org.synyx.domain.User;
 
 
 /**
@@ -141,14 +142,14 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
         // Persist
         flushTestUsers();
 
-        // Fetches first user from database
+        // Fetches first user from .. bdatabase
         User firstReferenceUser = userDao.readByPrimaryKey(firstUser.getId());
         assertEquals(firstUser, firstReferenceUser);
 
         // Fetch colleagues and assert link
-        List<User> colleagues = firstReferenceUser.getColleagues();
+        Set<User> colleagues = firstReferenceUser.getColleagues();
         assertEquals(1, colleagues.size());
-        assertEquals(secondUser, colleagues.get(0));
+        assertTrue(colleagues.contains(secondUser));
     }
 
 
@@ -178,7 +179,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
         userDao.save(firstUser);
 
         User reference = userDao.readByPrimaryKey(firstUser.getId());
-        List<User> colleagues = reference.getColleagues();
+        Set<User> colleagues = reference.getColleagues();
 
         assertNotNull(colleagues);
         assertEquals(2, colleagues.size());
@@ -200,6 +201,24 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     }
 
 
+    /**
+     * Tests, that the generic dao implements count correctly.
+     */
+    public void testCountsCorrectly() {
+
+        Long count = userDao.count();
+
+        User user = new User();
+        user.setEmailAddress("gierke@synyx.de");
+        userDao.save(user);
+
+        assertTrue(userDao.count().equals(count + 1));
+    }
+
+
+    /**
+     * Flushes test users to the database.
+     */
     private void flushTestUsers() {
 
         userDao.save(firstUser);

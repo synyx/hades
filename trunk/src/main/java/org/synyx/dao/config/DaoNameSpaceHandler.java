@@ -1,13 +1,13 @@
-package org.synyx.jpa.support.namespace;
+package org.synyx.dao.config;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 
 /**
- * Simple namespace handler for <code>dao-config</code> namespace.
+ * Simple namespace handler for {@literal dao-config} namespace.
  * 
  * @author Eberhard Wolff
- * @author Oliver Gierke
+ * @author Oliver Gierke - gierke@synyx.de
  */
 public class DaoNameSpaceHandler extends NamespaceHandlerSupport {
 

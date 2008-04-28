@@ -1,1 +1,1 @@
-http\://www.synyx.de/schema/dao=org.synyx.jpa.support.namespace.DaoNameSpaceHandler
+http\://www.synyx.de/schema/dao=org.synyx.dao.config.DaoNameSpaceHandler

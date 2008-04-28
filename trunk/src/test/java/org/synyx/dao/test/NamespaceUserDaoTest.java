@@ -1,4 +1,4 @@
-package org.synyx.jpa.support.test;
+package org.synyx.dao.test;
 
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
@@ -20,6 +20,7 @@ public class NamespaceUserDaoTest extends AbstractUserDaoTest {
     @Override
     protected String[] getConfigLocations() {
 
+        setAutowireMode(AUTOWIRE_BY_NAME);
         return new String[] { "namespace-applicationContext.xml" };
     }
 
