@@ -6,29 +6,37 @@
 	http://www.synyx.de/schema/dao http://www.synyx.de/schema/dao/dao-config.xsd">
 
 	<import resource="infrastructure.xml" />
-	
+
 	<!-- 
-	
-	Simplified DAO configuration:
-	
-	1. Looks for DAO interfaces in ${dao-config.dao-package-name} named ${dao.name}Dao
-	2. Uses entity classes from ${dao-config.entity-package-name}
-	3. Registers daos under ${dao.name}Dao in the applicationContext
-	4. Add postfix attributes to dao-config element as needed
-	
-	You can register DAOs as needed by simply adding "dao" elements named after domain classes
-	and provide an DAO interface named as described above. 
-	
-	! Note, that PersistenceAnnotationBeanPostProcessor and PersistenceExceptionTranslationPostProcessor !
-	! do not have to be explicitly registered as they are included by namespace parser                   !
-	
-	-->
-	<dao:dao-config 
-		entity-package-name="org.synyx.jpa.support.test.domain" 
-		dao-package-name="org.synyx.jpa.support.test.dao" >
 		
+		Simplified DAO configuration:
+		
+		1. Looks for DAO interfaces in ${dao-config.dao-package-name} named ${dao.name}Dao
+		2. Uses entity classes from ${dao-config.entity-package-name}
+		3. Registers daos under ${dao.name}Dao in the applicationContext
+		4. Add postfix attributes to dao-config element as needed
+		
+		You can register DAOs as needed by simply adding "dao" elements named after domain classes
+		and provide an DAO interface named as described above. 
+		
+		! Note, that PersistenceAnnotationBeanPostProcessor and PersistenceExceptionTranslationPostProcessor !
+		! do not have to be explicitly registered as they are included by namespace parser                   !
+		
+	-->
+	<dao:dao-config
+		entity-package-name="org.synyx.domain"
+		dao-package-name="org.synyx.dao">
+
 		<dao:dao name="user" />
 		<dao:dao name="role" />
 	</dao:dao-config>
-	
+
+	<dao:dao-config
+		entity-package-name="org.synyx.domain"
+		dao-package-name="org.synyx.dao"
+		dao-name-postfix="ExtendedDao"
+		dao-base-class="org.synyx.dao.orm.GenericHibernateJpaDao">
+		<dao:dao name="user"/>
+	</dao:dao-config>
+
 </beans>

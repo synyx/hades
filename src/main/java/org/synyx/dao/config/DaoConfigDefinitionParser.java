@@ -1,4 +1,4 @@
-package org.synyx.jpa.support.namespace;
+package org.synyx.dao.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -7,22 +7,21 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
-import org.synyx.jpa.support.GenericDaoFactoryBean;
+import org.synyx.dao.orm.support.GenericDaoFactoryBean;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-
 /**
  * Parser to create bean definitions for dao-config namespace. Registers bean
  * definitions for DAOs as well as
- * <code>PersistenceExceptionTranslationPostProcessor</code> and
- * <code>PersistenceExceptionTranslationPostProcessor</code> to transparently
- * inject entity manager factory instance and apply exception translation.
+ * {@code PersistenceExceptionTranslationPostProcessor} and
+ * {@code PersistenceExceptionTranslationPostProcessor} to transparently inject
+ * entity manager factory instance and apply exception translation.
  * 
  * @author Eberhard Wolff
- * @author Oliver Gierke
+ * @author Oliver Gierke - gierke@synyx.de
  */
 public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
@@ -44,6 +43,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         String entityPackageName = element.getAttribute("entity-package-name");
         String daoClassPostfix = element.getAttribute("dao-class-postfix");
         String daoNamePostfix = element.getAttribute("dao-name-postfix");
+        String daoBaseClassName = element.getAttribute("dao-base-class");
 
         // Set default postfix if none configured
         daoClassPostfix = (null == daoClassPostfix) ? DEFAULT_DAO_POSTFIX
@@ -74,8 +74,13 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                         .rootBeanDefinition(GenericDaoFactoryBean.class);
                 beanDefinitionBuilder.addPropertyValue("daoInterface",
                         fullQualifiedDaoClassName);
-                beanDefinitionBuilder.addPropertyValue("entityClass",
+                beanDefinitionBuilder.addPropertyValue("domainClass",
                         fullQualifiedEntityClassName);
+
+                if ("" != daoBaseClassName) {
+                    beanDefinitionBuilder.addPropertyValue("daoClass",
+                            daoBaseClassName);
+                }
 
                 registry.registerBeanDefinition(name + daoNamePostfix,
                         beanDefinitionBuilder.getBeanDefinition());

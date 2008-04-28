@@ -1,4 +1,4 @@
-package org.synyx.jpa.support;
+package org.synyx.dao;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * Normally clients do not need to work with this interface.
  * 
  * @author Eberhard Wolff
- * @author Oliver Gierke
+ * @author Oliver Gierke - gierke@synyx.de
  */
 public interface FinderExecuter<T> {
 
@@ -17,7 +17,7 @@ public interface FinderExecuter<T> {
      * 
      * @param methodName
      * @param queryArgs
-     * @return
+     * @return a list of objects meeting the finder's criterias
      */
-    public List<T> executeFinder(String methodName, final Object... queryArgs);
+    public List<T> executeFinder(String methodName, Object... queryArgs);
 }

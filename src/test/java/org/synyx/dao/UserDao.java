@@ -1,9 +1,9 @@
-package org.synyx.jpa.support.test.dao;
+package org.synyx.dao;
 
 import java.util.List;
 
-import org.synyx.jpa.support.GenericDao;
-import org.synyx.jpa.support.test.domain.User;
+import org.synyx.dao.GenericDao;
+import org.synyx.domain.User;
 
 
 /**

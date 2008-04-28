@@ -1,14 +1,11 @@
-package org.synyx.jpa.support.test.domain;
+package org.synyx.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 
@@ -19,13 +16,10 @@ import javax.persistence.ManyToMany;
  * @author Oliver Gierke
  */
 @Entity
-public class User implements org.synyx.jpa.support.Entity<Integer> {
+public class User extends AbstractEntity<Integer> {
 
     private static final long serialVersionUID = 8653688953355455933L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
     private String firstname;
     private String lastname;
 
@@ -33,23 +27,26 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
     private String emailAddress;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private List<User> colleagues;
+    private Set<User> colleagues;
 
     @ManyToMany
-    private List<Role> roles;
+    private Set<Role> roles;
 
 
     /**
-     * 
+     * Creates a new empty instance of {@code User}.
      */
     public User() {
 
-        this.roles = new ArrayList<Role>();
-        this.colleagues = new ArrayList<User>();
+        this.roles = new HashSet<Role>();
+        this.colleagues = new HashSet<User>();
     }
 
 
     /**
+     * Creates a new instance of {@code User} with preinitialized values for
+     * firstname, lastname and email address.
+     * 
      * @param firstname
      * @param lastname
      * @param emailAddress
@@ -64,24 +61,8 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
-     * @return the id
-     */
-    public Integer getId() {
-
-        return id;
-    }
-
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Integer id) {
-
-        this.id = id;
-    }
-
-
-    /**
+     * Returns the firstname.
+     * 
      * @return the firstname
      */
     public String getFirstname() {
@@ -91,6 +72,8 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
+     * Sets the firstname.
+     * 
      * @param firstname the firstname to set
      */
     public void setFirstname(String firstname) {
@@ -100,6 +83,8 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
+     * Returns the lastname.
+     * 
      * @return the lastname
      */
     public String getLastname() {
@@ -109,6 +94,8 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
+     * Sets the lastname.
+     * 
      * @param lastname the lastname to set
      */
     public void setLastname(String lastname) {
@@ -118,6 +105,8 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
+     * Returns the email address.
+     * 
      * @return the emailAddress
      */
     public String getEmailAddress() {
@@ -127,6 +116,8 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
+     * Sets the email address.
+     * 
      * @param emailAddress the emailAddress to set
      */
     public void setEmailAddress(String emailAddress) {
@@ -136,16 +127,18 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
+     * Returns the user's roles.
+     * 
      * @return the role
      */
-    public List<Role> getRole() {
+    public Set<Role> getRole() {
 
         return roles;
     }
 
 
     /**
-     * 
+     * Gives the user a role. Adding a role the user already owns is a no-op.
      */
     public void addRole(Role role) {
 
@@ -153,6 +146,11 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
     }
 
 
+    /**
+     * Revokes a role from a user.
+     * 
+     * @param role
+     */
     public void removeRole(Role role) {
 
         roles.remove(role);
@@ -160,21 +158,39 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
 
 
     /**
+     * Returns the colleagues of the user.
+     * 
      * @return the colleagues
      */
-    public List<User> getColleagues() {
+    public Set<User> getColleagues() {
 
         return colleagues;
     }
 
 
+    /**
+     * Adds a new colleague to the user. Adding the user himself as colleague is
+     * a no-op.
+     * 
+     * @param collegue
+     */
     public void addColleague(User collegue) {
+
+        // Prevent from adding the user himself as colleague.
+        if (this.equals(collegue)) {
+            return;
+        }
 
         colleagues.add(collegue);
         collegue.getColleagues().add(this);
     }
 
 
+    /**
+     * Removes a colleague from the list of colleagues.
+     * 
+     * @param colleague
+     */
     public void removeColleague(User colleague) {
 
         colleagues.remove(colleague);
@@ -195,6 +211,10 @@ public class User implements org.synyx.jpa.support.Entity<Integer> {
         }
 
         User that = (User) obj;
+
+        if (null == this.getId() || null == that.getId()) {
+            return false;
+        }
 
         return this.getId().equals(that.getId());
     }

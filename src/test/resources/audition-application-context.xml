@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:dao="http://www.synyx.de/schema/dao"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.synyx.de/schema/dao http://www.synyx.de/schema/dao/dao-config.xsd">
+		
+	<import resource="infrastructure.xml" />
+		
+	<dao:dao-config entity-package-name="org.synyx.domain" 
+		dao-package-name="org.synyx.dao">
+		<dao:dao name="auditableUser"/>
+	</dao:dao-config>
+
+</beans>
