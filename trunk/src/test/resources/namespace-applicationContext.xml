@@ -24,18 +24,18 @@
 		
 	-->
 	<dao:dao-config
-		entity-package-name="org.synyx.domain"
-		dao-package-name="org.synyx.dao">
+		entity-package-name="org.synyx.hades.domain"
+		dao-package-name="org.synyx.hades.dao">
 
 		<dao:dao name="user" />
 		<dao:dao name="role" />
 	</dao:dao-config>
 
 	<dao:dao-config
-		entity-package-name="org.synyx.domain"
-		dao-package-name="org.synyx.dao"
+		entity-package-name="org.synyx.hades.domain"
+		dao-package-name="org.synyx.hades.dao"
 		dao-name-postfix="ExtendedDao"
-		dao-base-class="org.synyx.dao.orm.GenericHibernateJpaDao">
+		dao-base-class="org.synyx.hades.dao.orm.GenericHibernateJpaDao">
 		<dao:dao name="user"/>
 	</dao:dao-config>
 

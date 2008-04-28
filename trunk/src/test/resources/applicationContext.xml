@@ -8,19 +8,19 @@
 
 	<!-- Configure a DAO for User class -->
 	<bean id="userDao"
-		class="org.synyx.dao.orm.support.GenericDaoFactoryBean">
+		class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean">
 		<property name="domainClass"
-			value="org.synyx.domain.User" />
+			value="org.synyx.hades.domain.User" />
 		<property name="daoInterface"
-			value="org.synyx.dao.UserDao" />
+			value="org.synyx.hades.dao.UserDao" />
 	</bean>
 	
 	<bean id="roleDao"
-		class="org.synyx.dao.orm.support.GenericDaoFactoryBean">
+		class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean">
 		<property name="domainClass"
-			value="org.synyx.domain.Role" />
+			value="org.synyx.hades.domain.Role" />
 		<property name="daoInterface"
-			value="org.synyx.dao.RoleDao" />
+			value="org.synyx.hades.dao.RoleDao" />
 	</bean>
 
 	<!-- Necessary to get the entity manager injected into the factory bean -->
