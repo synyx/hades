@@ -13,7 +13,7 @@ import javax.persistence.ManyToMany;
  * Domain class representing a person.
  * 
  * @author Eberhard Wolff
- * @author Oliver Gierke
+ * @author Oliver Gierke - gierke@synyx.de
  */
 @Entity
 public class User extends AbstractEntity<Integer> {
