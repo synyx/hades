@@ -2,7 +2,7 @@ package org.synyx.hades.domain.support;
 
 import java.io.Serializable;
 
-import org.synyx.hades.domain.Identifyable;
+import org.synyx.hades.domain.Entity;
 
 
 /**
@@ -10,7 +10,7 @@ import org.synyx.hades.domain.Identifyable;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public interface CurrentUserAware<T extends Identifyable<PK>, PK extends Serializable> {
+public interface CurrentUserAware<T extends Entity<PK>, PK extends Serializable> {
 
     /**
      * Returns the current user of the application.
