@@ -14,7 +14,7 @@ import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.AbstractJpaFinder;
 import org.synyx.hades.dao.orm.GenericJpaDao;
-import org.synyx.hades.domain.Identifyable;
+import org.synyx.hades.domain.Entity;
 
 
 /**
@@ -31,7 +31,7 @@ import org.synyx.hades.domain.Identifyable;
  * @author Oliver Gierke
  */
 @SuppressWarnings("unchecked")
-public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends Identifyable<PK>, PK extends Serializable>
+public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends Entity<PK>, PK extends Serializable>
         implements FactoryBean {
 
     private Class<GenericDao<T, PK>> daoInterface;

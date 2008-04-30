@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Required;
 import org.synyx.hades.domain.Auditable;
-import org.synyx.hades.domain.Identifyable;
+import org.synyx.hades.domain.Entity;
 
 
 /**
@@ -18,7 +18,7 @@ import org.synyx.hades.domain.Identifyable;
  * @author Oliver Gierke
  */
 @Aspect
-public class AuditionAdvice<T extends Identifyable<PK>, PK extends Serializable> {
+public class AuditionAdvice<T extends Entity<PK>, PK extends Serializable> {
 
     private static final Log log = LogFactory.getLog(AuditionAdvice.class);
 
@@ -44,10 +44,10 @@ public class AuditionAdvice<T extends Identifyable<PK>, PK extends Serializable>
      * @param entity
      */
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(entity)")
-    public void touch(Auditable<Identifyable<PK>, PK> entity) {
+    public void touch(Auditable<Entity<PK>, PK> entity) {
 
         // Retrieve values to set
-        Identifyable<PK> user = currentUserAware.getCurrentUser();
+        Entity<PK> user = currentUserAware.getCurrentUser();
         Date currentDate = new Date();
 
         // Set modification

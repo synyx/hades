@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
  * @version $Id$
  */
 @MappedSuperclass
-public abstract class AbstractAuditableEntity<U extends Identifyable<PK>, PK extends Serializable>
+public abstract class AbstractAuditableEntity<U extends Entity<PK>, PK extends Serializable>
         extends AbstractEntity<PK> implements Auditable<U, PK> {
 
     @OneToOne

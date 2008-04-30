@@ -11,7 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Required;
 import org.synyx.hades.dao.FinderExecuter;
-import org.synyx.hades.domain.Identifyable;
+import org.synyx.hades.domain.Entity;
 
 
 /**
@@ -20,7 +20,7 @@ import org.synyx.hades.domain.Identifyable;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public abstract class AbstractJpaFinder<T extends Identifyable<PK>, PK extends Serializable>
+public abstract class AbstractJpaFinder<T extends Entity<PK>, PK extends Serializable>
         implements FinderExecuter<T> {
 
     private EntityManager entityManager;

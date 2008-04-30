@@ -7,7 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.domain.Identifyable;
+import org.synyx.hades.domain.Entity;
 import org.synyx.hades.domain.Pageable;
 
 
@@ -20,7 +20,7 @@ import org.synyx.hades.domain.Pageable;
  * @author Eberhard Wolff
  */
 @Repository
-public class GenericJpaDao<T extends Identifyable<PK>, PK extends Serializable>
+public class GenericJpaDao<T extends Entity<PK>, PK extends Serializable>
         extends AbstractJpaFinder<T, PK> implements GenericDao<T, PK> {
 
     /*

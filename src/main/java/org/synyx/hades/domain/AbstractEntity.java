@@ -15,8 +15,9 @@ import javax.persistence.MappedSuperclass;
  * @author Oliver Gierke - gierke@synyx.de
  */
 @MappedSuperclass
+@SuppressWarnings("serial")
 public class AbstractEntity<PK extends Serializable> implements
-        Identifyable<PK> {
+        Entity<PK> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
