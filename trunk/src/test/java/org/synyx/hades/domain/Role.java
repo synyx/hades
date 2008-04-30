@@ -10,7 +10,9 @@ import javax.persistence.Id;
  * @author Oliver Gierke
  */
 @Entity
-public class Role implements org.synyx.hades.domain.Identifyable<Integer> {
+public class Role implements org.synyx.hades.domain.Entity<Integer> {
+
+    private static final long serialVersionUID = -8832631113344035104L;
 
     private static final String PREFIX = "ROLE_";
 
