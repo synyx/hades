@@ -170,6 +170,91 @@
 				</executions>
 			</plugin>
 			
+			<plugin>
+				<groupId>com.agilejava.docbkx</groupId>
+				<artifactId>docbkx-maven-plugin</artifactId>
+				<version>2.0.8</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.docbook</groupId>
+						<artifactId>docbook-xml</artifactId>
+						<version>4.4</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<sourceDirectory>
+						${basedir}/src/doc
+					</sourceDirectory>
+					<targetDirectory>
+						${basedir}/target/doc
+					</targetDirectory>
+					
+					<foCustomization>
+						src/doc/layout/fo-pdf.xsl
+					</foCustomization>
+
+					<fonts>
+						<font>
+							<name>StellaLining</name>
+							<style>normal</style>
+							<weight>normal</weight>
+							<embedFile>
+								${basedir}/src/doc/layout/fonts/SteLiR__.ttf
+							</embedFile>
+							<metricsFile>
+								${basedir}/src/doc/layout/fonts/SteLiR__.xml
+							</metricsFile>
+						</font>
+						<font>
+							<name>StellaLining</name>
+							<style>italic</style>
+							<weight>normal</weight>
+							<embedFile>
+								${basedir}/src/doc/layout/fonts/SteLiI__.ttf
+							</embedFile>
+							<metricsFile>
+								${basedir}/src/doc/layout/fonts/SteLiI__.xml
+							</metricsFile>
+						</font>
+						<font>
+							<name>StellaLining</name>
+							<style>normal</style>
+							<weight>bold</weight>
+							<embedFile>
+								${basedir}/src/doc/layout/fonts/SteLiB__.ttf
+							</embedFile>
+							<metricsFile>
+								${basedir}/src/doc/layout/fonts/SteLiB__.xml
+							</metricsFile>
+						</font>
+						<font>
+							<name>StellaLining</name>
+							<style>italic</style>
+							<weight>bold</weight>
+							<embedFile>
+								${basedir}/src/doc/layout/fonts/SteLiBI_.ttf
+							</embedFile>
+							<metricsFile>
+								${basedir}/src/doc/layout/fonts/SteLiBI_.xml
+							</metricsFile>
+						</font>
+					</fonts>
+					
+					<preProcess>
+						<copy todir="${basedir}/target/doc/images">
+							<!-- Copy layout images -->
+							<fileset dir="${basedir}/src/doc/layout/images" />
+							<!-- Copy content images -->
+							<fileset dir="${basedir}/src/doc/images">
+								<exclude name="**/*.txt" />
+							</fileset>
+						</copy>
+					</preProcess>					
+
+				</configuration>
+			</plugin>
+			
 		</plugins>
 	</build>
 	

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+	"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+	-->
+<book>
+  <bookinfo>
+    <title>Hades</title>
+
+    <subtitle>Domain class and DAO development framework</subtitle>
+
+    <authorgroup>
+      <author>
+        <firstname>Oliver</firstname>
+
+        <surname>Gierke</surname>
+
+        <affiliation>
+          <jobtitle>Software architect</jobtitle>
+
+          <orgname>Synyx GmbH &amp; Co. KG</orgname>
+        </affiliation>
+
+        <email>gierke@synyx.de</email>
+
+        <address>Karlstraße 68, 76137 Karsruhe, Germany</address>
+      </author>
+    </authorgroup>
+
+    <releaseinfo>$Id$</releaseinfo>
+
+    <pubdate>publication date</pubdate>
+
+    <copyright>
+      <year>2008</year>
+
+      <holder>Synyx GmbH &amp; Co. KG</holder>
+    </copyright>
+
+    <revhistory>
+      <revision>
+        <date>29.04.2008</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Initial draft</revremark>
+      </revision>
+    </revhistory>
+  </bookinfo>
+
+  <chapter>
+    <title>Sample application</title>
+
+    <section>
+      <title>Introduction</title>
+
+      <para>In order to introduce you to working with Hades we will develop a
+      small sample application managing customers. As Hades is focussing on
+      development of domain classes and persistence it will not be a full
+      fledged application but rather concentrate on that particular part of an
+      application built around the demo app.</para>
+
+      <para>We will start by assuming that only want to have basic Hades
+      support stepping forward using more sophisticated features of it.</para>
+
+      <section>
+        <title>JPA</title>
+
+        <para>Hades is considered a DAO framework to work with JPA. Although
+        the DAO abstraction could be to simple JDBC access, too, we focus on
+        JPA in this release. This concludes in support for all major JPA
+        persistence provders like Hibernate, OpenJPA and Toplink.</para>
+
+        <note>
+          <para>Although Toplink Essentials is the JPA reference
+          implementation it does not implement all features specified and
+          furthermore shows some bugs regarding cascading persistence. Thus we
+          advice to choose some other library instead, e.g. Hibernate.</para>
+        </note>
+      </section>
+
+      <section>
+        <title>Configuration</title>
+
+        <para>To get started with Hades you need to setup your application in
+        the standard Spring manner. The following examples leverage XML
+        configuration style of the container but you could easily use other
+        approaches as well. We will separate configuration into two files.
+        infrastructure.xml contains a the basic infrastructure setup descibed
+        in the next chapter. This one will be used over the various
+        sophistication levels of Hades. Beyond that we will create certain
+        further config files that </para>
+      </section>
+    </section>
+
+    <section>
+      <title>Infrastructure </title>
+
+      <simplesect>
+        <title>DataSource</title>
+
+        <para>As you might already know, Spring's data base access support is
+        mainly centered around working with a
+        <interfacename>DataSource</interfacename> implementation. Although you
+        should rely on more sophisticated
+        <interfacename>DataSource</interfacename> implementations like Commons
+        DBCP, Spring comes with <classname>DriverManagerDataSource</classname>
+        out of the box that should be satisfying for testing purposes.</para>
+
+        <note>
+          <para>Environment specific configuration that highly varies between
+          deployments should not be hardcoded into a Spring configuration
+          file. Preferably, use a
+          <classname>PropertyPlaceholderConfigurer</classname><footnote>
+              <para>For more information see <ulink
+              url="http://static.springframework.org/spring/docs/2.5.x/reference/beans.html#beans-factory-placeholderconfigurer">Spring's
+              reference documentation</ulink> on that topic</para>
+            </footnote> to externalize those kinds of settings into an
+          external properties file that can easily customized by application
+          administrators.</para>
+        </note>
+
+        <para>So we setup an instance of it in typical Spring Dependency
+        Injection manner.</para>
+
+        <programlistingco>
+          <areaspec>
+            <area coords="2" id="data-source.driver-class-name" />
+
+            <area coords="3" id="data-source.url" />
+
+            <area coords="4" id="data-source.username" />
+
+            <area coords="5" id="data-source.password" />
+          </areaspec>
+
+          <programlisting language="xml">&lt;bean id="dataSource" 
+  class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+  &lt;property name="driverClassName" value="com.mysql.jdbc.Driver"/&gt;
+  &lt;property name="url" value="jdbc:mysql://localhost:3306/hades" /&gt;
+  &lt;property name="username" value="username" /&gt;
+  &lt;property name="password" value="password" /&gt;
+&lt;/bean&gt;</programlisting>
+
+          <calloutlist>
+            <callout arearefs="data-source.driver-class-name">
+              <para>Configure your database vendor's specific driver
+              class</para>
+            </callout>
+
+            <callout arearefs="data-source.url">
+              <para>Point the data source to your database's location</para>
+            </callout>
+
+            <callout arearefs="data-source.username data-source.password">
+              <para>Authentication credentials</para>
+            </callout>
+          </calloutlist>
+        </programlistingco>
+      </simplesect>
+
+      <simplesect>
+        <title>EntityManager(Factory)</title>
+
+        <para></para>
+
+        <programlistingco>
+          <areaspec>
+            <area coords="3" id="entity-manager-factory.data-source" />
+
+            <area coords="4" id="entity-manager-factory.jpa-vendor-adapter" />
+          </areaspec>
+
+          <programlisting language="xml">&lt;bean id="entityManagerFactory"
+  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"&gt;
+  &lt;property name="dataSource" ref="dataSource" /&gt;
+  &lt;property name="jpaVendorAdapter"&gt;
+    &lt;bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"&gt;
+      &lt;property name="showSql" value="true" /&gt;
+      &lt;property name="generateDdl" value="true" /&gt;
+      &lt;property name="database" value="MYSQL" /&gt;
+    &lt;/bean&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+
+          <calloutlist>
+            <callout arearefs="entity-manager-factory.data-source">
+              <para>Reference the DataSource declared before</para>
+            </callout>
+
+            <callout arearefs="entity-manager-factory.jpa-vendor-adapter">
+              <para>Apply a vendor specific adapter to add further
+              configuration. In this case we use Hibernate and tell it to use
+              MySQL dialect for accessing the database, generate the required
+              database tables as needed and log SQL queries fired to the
+              database</para>
+            </callout>
+          </calloutlist>
+        </programlistingco>
+      </simplesect>
+
+      <simplesect>
+        <title>Transaction management</title>
+
+        <para>Spring leverages consistent transaction abstraction through its
+        <interfacename>PlatformTransactionManager</interfacename> interface
+        and provides a <classname>JpaTransactionManager</classname>
+        implementation out of the box.</para>
+
+        <programlisting>&lt;bean id="transactionManager"
+  class="org.springframework.orm.jpa.JpaTransactionManager"&gt;
+  &lt;property name="entityManagerFactory" ref="entityManagerFactory" /&gt;
+&lt;/bean&gt;</programlisting>
+      </simplesect>
+    </section>
+
+    <section>
+      <title>Basic entities and DAOs</title>
+
+      <para>Working with Hades will offer support working with domain classes
+      and DAOs for the domain classes. The Data Access Objects pattern is a
+      well known and widely adopted pattern to implement persistent objects.
+      Nevertheless implementing DAOs for domain classes ist often cumbersome
+      and results in boilerplate code.</para>
+
+      <para>Generic approaches to DAO implementation can head two different
+      roads. One approach is to implement exactly one DAO instance that can
+      handle all domain classes. This mostly concludes in passing the domain
+      classes type into every method call and thus makes the interface rather
+      technical and clutters it with unnatural parameters.</para>
+
+      <section>
+        <title>Entities</title>
+
+        <para>First we have to look at the actual subjects to be persisted -
+        domain classes or entities. We will use both terms interchangeably
+        during the documentation as both are considered to have the same
+        semantical meaning: abstracting business entities that are held
+        persistent to some extend. Not all domain classes have to be peristed
+        as entities but we will assume a business class to be persisted in our
+        case.</para>
+
+        <programlisting language="java">public interface Entity&lt;PK extends Serializable&gt; {
+
+  public PK getId();
+
+  public boolean isNew();
+
+}</programlisting>
+
+        <para>Entities have to be identifyable to be retrieved from the
+        database. Thus your entities will have to provide an id or primary
+        key. The id can be of any serializable type, beginning with rather
+        simple types like Integer or Long up to complex multi column dedicated
+        key classes.</para>
+
+        <para>The <code>isNew()</code> method is used by the DAO framework to
+        distinguish a lot of operations and thus abstracting e.g. an
+        <code>INSERT</code> from an <code>UPDATE</code>.</para>
+
+        <para>Implementing Entity will allow your domain class to be persisted
+        by the default Hades generic DAO implementation and leaves any
+        opportunity to implement certain class hierarchies to you. This
+        freedom results in a few standard JPA configuration tasks you have to
+        do manually. Hades provides more sophisticated base classes your
+        entities can extend. This will couple your domain class code more
+        tightly to Hades but frees you from implementing boilerplate JPA
+        code.</para>
+
+        <para>So let's apply this to our domain model:</para>
+
+        <programlisting language="java">@Entity
+public class Customer implements Entity&lt;Long&gt; {
+
+  @Id
+  @GeneratedValue
+  private Long id;
+
+  private String name;
+
+  public Long getId() {
+    this.id;
+  }
+
+  // further Getters and Setters omittted
+
+  public boolean isNew() {
+    return null == getId();
+  }
+}</programlisting>
+
+        <para>To persist customers you need to declare an interface:</para>
+
+        <programlisting language="java">public interface CustomerDao extends GenericDao&lt;Customer, Long&gt; {
+
+}</programlisting>
+      </section>
+
+      <section>
+        <title>DAOs</title>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Configuration</title>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Easing configuration - Spring namespaces</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+  </chapter>
+</book>
