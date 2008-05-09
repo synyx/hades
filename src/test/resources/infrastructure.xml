@@ -10,7 +10,7 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="showSql" value="true" />
 				<property name="generateDdl" value="true" />
-				<property name="database" value="MYSQL" />
+				<property name="database" value="HSQL" />
 			</bean>
 		</property>
 	</bean>
@@ -20,10 +20,10 @@
 	</bean>
 
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://localhost:3306/test" />
-		<property name="username" value="root" />
-		<property name="password" value="Seedless" />
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+		<property name="url" value="jdbc:hsqldb:mem:hades" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
 	</bean>
 
 </beans>
