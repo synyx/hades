@@ -1,16 +1,19 @@
 package org.synyx.hades.domain;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 
 /**
- * @author Oliver Gierke
+ * Example implementation of the very basic {@code Entity} interface. The id
+ * type is matching the typisation of the interface. {@code Entity#isNew()} is
+ * implemented regarding the id as flag.
+ * 
+ * @author Oliver Gierke - gierke@synyx.de
  */
-@Entity
-public class Role implements org.synyx.hades.domain.Entity<Integer> {
+@javax.persistence.Entity
+public class Role implements Persistable<Integer> {
 
     private static final long serialVersionUID = -8832631113344035104L;
 
@@ -24,15 +27,16 @@ public class Role implements org.synyx.hades.domain.Entity<Integer> {
 
 
     /**
-     * 
+     * Creates a new instance of {@code Role}.
      */
     public Role() {
 
-        // TODO Auto-generated constructor stub
     }
 
 
     /**
+     * Creates a new preconfigured {@code Role}.
+     * 
      * @param name
      */
     public Role(String name) {

@@ -16,8 +16,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 @SuppressWarnings("serial")
-public class AbstractEntity<PK extends Serializable> implements
-        Entity<PK> {
+public class AbstractPersistable<PK extends Serializable> implements Persistable<PK> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,8 +11,8 @@ import java.util.Date;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public interface Auditable<U extends Entity<PK>, PK extends Serializable>
-        extends Entity<PK> {
+public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
+        extends Persistable<PK> {
 
     /**
      * Returns the user who created this entity.

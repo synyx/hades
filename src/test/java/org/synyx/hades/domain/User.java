@@ -10,13 +10,14 @@ import javax.persistence.ManyToMany;
 
 
 /**
- * Domain class representing a person.
+ * Domain class representing a person emphasizing the use of
+ * {@code AbstractEntity}. No declaration of an id is required. The id is typed
+ * by the parameterizable superclass.
  * 
- * @author Eberhard Wolff
  * @author Oliver Gierke - gierke@synyx.de
  */
 @Entity
-public class User extends AbstractEntity<Integer> {
+public class User extends AbstractPersistable<Integer> {
 
     private static final long serialVersionUID = 8653688953355455933L;
 

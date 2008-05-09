@@ -14,11 +14,12 @@ import javax.persistence.TemporalType;
  * persistent fields
  * 
  * @author Oliver Gierke
- * @version $Id$
+ * @version $Id: AbstractAuditableEntity.java 574 2008-04-30 19:15:48Z
+ *          gierke_cvs $
  */
 @MappedSuperclass
-public abstract class AbstractAuditableEntity<U extends Entity<PK>, PK extends Serializable>
-        extends AbstractEntity<PK> implements Auditable<U, PK> {
+public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Serializable>
+        extends AbstractPersistable<PK> implements Auditable<U, PK> {
 
     @OneToOne
     private U createdBy;
