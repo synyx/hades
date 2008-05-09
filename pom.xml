@@ -7,7 +7,9 @@
 	<artifactId>hades</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Hades</name>
-	<description>Domain class and DAO development framework</description>
+	<description>
+		Domain class and DAO development framework
+	</description>
 
 	<organization>
 		<name>Synyx GmbH &amp; Co. KG</name>
@@ -30,7 +32,7 @@
 	</developers>
 
 	<properties>
-		<springVersion>2.5.3</springVersion>
+		<springVersion>2.5.4</springVersion>
 	</properties>
 
 	<dependencies>
@@ -57,7 +59,7 @@
 			<artifactId>spring-aop</artifactId>
 			<version>${springVersion}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
@@ -92,20 +94,11 @@
 		</dependency>
 
 		<!-- Concrete persistence providers -->
-		
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.3.1.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<!-- Needs to be added explicitly as the version the entitymanager 
-		     refers to contains a serious bug -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.2.5.GA</version>
+			<version>3.3.2.GA</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -115,14 +108,14 @@
 			<version>1.3.4</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.synyx</groupId>
 			<artifactId>synyx-test-utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymockclassextension</artifactId>
@@ -141,7 +134,7 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -154,7 +147,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Package JavaDocs -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -169,7 +162,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
@@ -189,7 +182,7 @@
 					<targetDirectory>
 						${basedir}/target/doc
 					</targetDirectory>
-					
+
 					<foCustomization>
 						src/doc/layout/fo-pdf.xsl
 					</foCustomization>
@@ -240,79 +233,95 @@
 							</metricsFile>
 						</font>
 					</fonts>
-					
+
 					<preProcess>
 						<copy todir="${basedir}/target/doc/images">
 							<!-- Copy layout images -->
-							<fileset dir="${basedir}/src/doc/layout/images" />
+							<fileset
+								dir="${basedir}/src/doc/layout/images" />
 							<!-- Copy content images -->
 							<fileset dir="${basedir}/src/doc/images">
 								<exclude name="**/*.txt" />
 							</fileset>
 						</copy>
-					</preProcess>					
+					</preProcess>
 
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
-	
+
 	<reporting>
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
 			</plugin>
-			
+
 		</plugins>
 	</reporting>
-	
+
 	<repositories>
-	
+
 		<repository>
 			<id>maven-repository.dev.java.net</id>
 			<name>Java Dev Net Repository</name>
 			<url>http://download.java.net/maven/2</url>
 		</repository>
-	
+
+		<!-- 
+		Necessary as Hibernate 3.3.2 EntityManager is not 
+		available in the official Maven repository yet
+		-->
+		<repository>
+			<id>jboss</id>
+			<url>http://repository.jboss.com/maven2</url>
+		</repository>
+
 	</repositories>
-	
+
 	<scm>
 		<developerConnection>
 			scm:svn:https://svn.synyx.de/svn/synyx/spring-jpa-dao
 		</developerConnection>
 		<tag>trunk</tag>
 	</scm>
-	
+
 	<issueManagement>
 		<system>Trac</system>
 		<url>http://trac.synyx.de/spring-jpa-dao/</url>
 	</issueManagement>
-	
+
 	<distributionManagement>
-		
+
 		<site>
 			<id>trac.synyx.de</id>
-			<url>scp://trac.synyx.de:24/home/trac/instances/spring-jpa-dao/htdocs/mvn</url>
+			<url>
+				scp://trac.synyx.de:24/home/trac/instances/spring-jpa-dao/htdocs/mvn
+			</url>
 		</site>
-		
+
 		<repository>
 			<id>maven2.synyx.repository</id>
-			<url>scp://maven2.synyx.de:24/home/mvn/public_html/repository</url>
+			<url>
+				scp://maven2.synyx.de:24/home/mvn/public_html/repository
+			</url>
 		</repository>
-	
+
 		<snapshotRepository>
 			<id>maven2.synyx.repository</id>
-			<url>scp://maven2.synyx.de:24/home/mvn/public_html/repository</url>
+			<url>
+				scp://maven2.synyx.de:24/home/mvn/public_html/repository
+			</url>
 		</snapshotRepository>
-		
+
 	</distributionManagement>
-	
+
 </project>
