@@ -3,7 +3,7 @@ package org.synyx.hades.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import org.synyx.hades.domain.Entity;
+import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Pageable;
 
 
@@ -14,7 +14,7 @@ import org.synyx.hades.domain.Pageable;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public interface ExtendedGenericDao<T extends Entity<PK>, PK extends Serializable>
+public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serializable>
         extends GenericDao<T, PK> {
 
     /**

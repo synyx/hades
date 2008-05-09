@@ -8,7 +8,7 @@ import org.hibernate.criterion.Example;
 import org.hibernate.ejb.EntityManagerImpl;
 import org.springframework.beans.factory.InitializingBean;
 import org.synyx.hades.dao.ExtendedGenericDao;
-import org.synyx.hades.domain.Entity;
+import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Pageable;
 
 
@@ -17,7 +17,7 @@ import org.synyx.hades.domain.Pageable;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class GenericHibernateJpaDao<T extends Entity<PK>, PK extends Serializable>
+public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serializable>
         extends GenericJpaDao<T, PK> implements ExtendedGenericDao<T, PK>,
         InitializingBean {
 

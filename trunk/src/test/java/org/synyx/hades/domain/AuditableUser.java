@@ -2,17 +2,18 @@ package org.synyx.hades.domain;
 
 import javax.persistence.Entity;
 
-import org.synyx.hades.domain.AbstractAuditableEntity;
-
 
 /**
  * Sample auditable user to demonstrate working with
- * {@code AbstractAuditableEntity}.
+ * {@code AbstractAuditableEntity}. No declaration of an ID is necessary.
+ * Furthermore alle auditioning information has to be declared explicitly.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
 @Entity
-public class AuditableUser extends AbstractAuditableEntity<AuditableUser, Long> {
+public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
+
+    private static final long serialVersionUID = 7409344446795693011L;
 
     private String firstname;
 

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * 
  * @author Oliver Gierke
  */
-public interface Entity<PK extends Serializable> extends Serializable {
+public interface Persistable<PK extends Serializable> extends Serializable {
 
     /**
      * Returns the id of the entity.
