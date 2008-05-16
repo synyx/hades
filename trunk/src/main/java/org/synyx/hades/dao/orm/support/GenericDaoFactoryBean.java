@@ -99,7 +99,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     public Object getObject() throws Exception {
 
         // Instantiate generic dao
-        AbstractJpaFinder<T, PK> genericJpaDao = daoClass.newInstance();
+        D genericJpaDao = daoClass.newInstance();
         genericJpaDao.setDomainClass(domainClass);
         genericJpaDao.setEntityManager(entityManager);
 
