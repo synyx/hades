@@ -1,7 +1,6 @@
 package org.synyx.hades.dao;
 
-import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.domain.AuditableUser;
+import org.synyx.hades.domain.auditable.AuditableUser;
 
 
 /**

@@ -3,7 +3,7 @@ package org.synyx.hades.dao.test;
 import org.easymock.classextension.EasyMock;
 import org.springframework.test.jpa.AbstractJpaTests;
 import org.synyx.hades.dao.AuditableUserDao;
-import org.synyx.hades.domain.AuditableUser;
+import org.synyx.hades.domain.auditable.AuditableUser;
 import org.synyx.hades.domain.support.CurrentUserAware;
 
 import com.synyx.utils.test.easymock.EasyMockUtils;

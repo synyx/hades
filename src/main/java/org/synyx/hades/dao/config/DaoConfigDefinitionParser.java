@@ -1,13 +1,27 @@
 package org.synyx.hades.dao.config;
 
+import java.io.IOException;
+import java.util.Set;
+
+import javax.persistence.Entity;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.core.type.filter.AssignableTypeFilter;
+import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.orm.support.GenericDaoFactoryBean;
+import org.synyx.hades.domain.Persistable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -20,12 +34,10 @@ import org.w3c.dom.NodeList;
  * {@code PersistenceExceptionTranslationPostProcessor} to transparently inject
  * entity manager factory instance and apply exception translation.
  * 
- * @author Eberhard Wolff
  * @author Oliver Gierke - gierke@synyx.de
+ * @author Eberhard Wolff
  */
 public class DaoConfigDefinitionParser implements BeanDefinitionParser {
-
-    private static final String DEFAULT_DAO_POSTFIX = "Dao";
 
     private static final Class<?> PAB_POST_PROCESSOR = PersistenceAnnotationBeanPostProcessor.class;
     private static final Class<?> PET_POST_PROCESSOR = PersistenceExceptionTranslationPostProcessor.class;
@@ -39,19 +51,59 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      */
     public BeanDefinition parse(Element element, ParserContext parserContext) {
 
-        String daoPackageName = element.getAttribute("dao-package-name");
-        String entityPackageName = element.getAttribute("entity-package-name");
-        String daoClassPostfix = element.getAttribute("dao-class-postfix");
-        String daoNamePostfix = element.getAttribute("dao-name-postfix");
-        String daoBaseClassName = element.getAttribute("dao-base-class");
-
-        // Set default postfix if none configured
-        daoClassPostfix = (null == daoClassPostfix) ? DEFAULT_DAO_POSTFIX
-                : daoClassPostfix;
-
-        NodeList childNodes = element.getChildNodes();
-
+        XmlDaoConfigContext configContext = new XmlDaoConfigContext(element);
         BeanDefinitionRegistry registry = parserContext.getRegistry();
+
+        if (configContext.configureManually()) {
+            doManualConfiguration(configContext, registry);
+        } else {
+            doAutoConfiguration(configContext, registry);
+        }
+
+        registerPostProcessors(registry);
+
+        return null;
+    }
+
+
+    /**
+     * Executes DAO auto configuration by scanning the provided entity package
+     * for classes implementing {@link Persistable}.
+     * 
+     * @param configContext
+     * @param registry
+     */
+    private void doAutoConfiguration(DaoConfigContext configContext,
+            BeanDefinitionRegistry registry) {
+
+        // Create scanner and apply filter
+        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(
+                false);
+        provider.addIncludeFilter(new PersistableTypeFilter());
+
+        Set<BeanDefinition> beanDefinitions = provider
+                .findCandidateComponents(configContext.getEntityPackageName());
+
+        for (BeanDefinition definition : beanDefinitions) {
+
+            String clazz = ClassUtils.getShortName(definition
+                    .getBeanClassName());
+
+            registerGenericDaoFactoryBean(registry, clazz, configContext);
+        }
+    }
+
+
+    /**
+     * Proceeds manual configuration by traversing child elements.
+     * 
+     * @param context
+     * @param registry
+     */
+    private void doManualConfiguration(XmlDaoConfigContext context,
+            BeanDefinitionRegistry registry) {
+
+        NodeList childNodes = context.getChildNodes();
 
         // Add dao declarations
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -61,32 +113,57 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 Element childElement = (Element) childNode;
 
                 String name = childElement.getAttribute("name");
-                String entityClassName = name.substring(0, 1).toUpperCase()
-                        + name.substring(1);
 
-                String fullQualifiedEntityClassName = entityPackageName + "."
-                        + entityClassName;
-
-                String fullQualifiedDaoClassName = daoPackageName + "."
-                        + entityClassName + daoClassPostfix;
-
-                BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
-                        .rootBeanDefinition(GenericDaoFactoryBean.class);
-                beanDefinitionBuilder.addPropertyValue("daoInterface",
-                        fullQualifiedDaoClassName);
-                beanDefinitionBuilder.addPropertyValue("domainClass",
-                        fullQualifiedEntityClassName);
-
-                if ("" != daoBaseClassName) {
-                    beanDefinitionBuilder.addPropertyValue("daoClass",
-                            daoBaseClassName);
-                }
-
-                registry.registerBeanDefinition(name + daoNamePostfix,
-                        beanDefinitionBuilder.getBeanDefinition());
-
+                registerGenericDaoFactoryBean(registry, name, context);
             }
         }
+    }
+
+
+    /**
+     * Registers a {@link GenericDaoFactoryBean} for a bean with the given name
+     * and the provided configuration context. It is mainly used to construct
+     * bean name, entity class name and DAO interface name.
+     * 
+     * @param registry
+     * @param name
+     * @param context
+     */
+    private void registerGenericDaoFactoryBean(BeanDefinitionRegistry registry,
+            String name, DaoConfigContext context) {
+
+        String entityClassName = name.substring(0, 1).toUpperCase()
+                + name.substring(1);
+
+        String domainClass = context.getEntityPackageName() + "."
+                + entityClassName;
+
+        String daoInterface = context.getDaoPackageName() + "."
+                + entityClassName + context.getDaoClassPostfix();
+
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
+                .rootBeanDefinition(GenericDaoFactoryBean.class);
+        beanDefinitionBuilder.addPropertyValue("daoInterface", daoInterface);
+        beanDefinitionBuilder.addPropertyValue("domainClass", domainClass);
+
+        if (StringUtils.hasText(context.getDaoBaseClassName())) {
+            beanDefinitionBuilder.addPropertyValue("daoClass", context
+                    .getDaoBaseClassName());
+        }
+
+        registry.registerBeanDefinition(name.toLowerCase()
+                + context.getDaoNamePostfix(), beanDefinitionBuilder
+                .getBeanDefinition());
+    }
+
+
+    /**
+     * Registers necessary (Bean)PostProcessor instances if they have not
+     * already been registered.
+     * 
+     * @param registry
+     */
+    private void registerPostProcessors(BeanDefinitionRegistry registry) {
 
         // Create PersistenceAnnotationPostProcessor definition
         if (!registry.containsBeanDefinition(PAB_POST_PROCESSOR.getName())) {
@@ -109,7 +186,36 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             registry.registerBeanDefinition(definition.getBeanClassName(),
                     definition);
         }
+    }
 
-        return null;
+    /**
+     * {@link TypeFilter} that detects classes that implement
+     * {@link Persistable} and are annotated with {@link Entity}.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    static class PersistableTypeFilter implements TypeFilter {
+
+        private AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(
+                Entity.class);
+        private AssignableTypeFilter assignableTypeFilter = new AssignableTypeFilter(
+                Persistable.class);
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.springframework.core.type.filter.TypeFilter#match(org.springframework.core.type.classreading.MetadataReader,
+         *      org.springframework.core.type.classreading.MetadataReaderFactory)
+         */
+        public boolean match(MetadataReader metadataReader,
+                MetadataReaderFactory metadataReaderFactory) throws IOException {
+
+            // Matches on correct type AND annotation
+            return assignableTypeFilter.match(metadataReader,
+                    metadataReaderFactory)
+                    && annotationTypeFilter.match(metadataReader,
+                            metadataReaderFactory);
+        }
     }
 }

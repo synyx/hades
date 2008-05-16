@@ -3,6 +3,6 @@
 	<persistence-unit name="jpa-dao">
 		<class>org.synyx.hades.domain.User</class>
 		<class>org.synyx.hades.domain.Role</class>
-		<class>org.synyx.hades.domain.AuditableUser</class>
+		<class>org.synyx.hades.domain.auditable.AuditableUser</class>
 	</persistence-unit>
 </persistence>
