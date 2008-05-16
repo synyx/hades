@@ -1,11 +1,12 @@
 package org.synyx.hades.dao;
 
-import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Role;
 
 
 /**
- * @author Oliver Gierke
+ * Typing interface for {@link Role}.
+ * 
+ * @author Oliver Gierke - gierke@synyx.de
  */
 public interface RoleDao extends GenericDao<Role, Integer> {
 
