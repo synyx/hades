@@ -55,7 +55,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
 
     /**
-     * Setter to inject the somain class to manage.
+     * Setter to inject the domain class to manage.
      * 
      * @param domainClass the domainClass to set
      */
