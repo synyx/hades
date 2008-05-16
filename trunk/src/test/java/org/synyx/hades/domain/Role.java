@@ -6,13 +6,13 @@ import javax.persistence.Id;
 
 
 /**
- * Example implementation of the very basic {@code Entity} interface. The id
- * type is matching the typisation of the interface. {@code Entity#isNew()} is
- * implemented regarding the id as flag.
+ * Example implementation of the very basic {@link Persistable} interface. The
+ * id type is matching the typisation of the interface.
+ * {@link Persitsable#isNew()} is implemented regarding the id as flag.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-@javax.persistence.Entity
+@Entity
 public class Role implements Persistable<Integer> {
 
     private static final long serialVersionUID = -8832631113344035104L;
@@ -75,6 +75,6 @@ public class Role implements Persistable<Integer> {
      */
     public boolean isNew() {
 
-        return id != null;
+        return id == null;
     }
 }
