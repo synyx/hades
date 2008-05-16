@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beansProjectDescription>
 	<version>1</version>
-	<pluginVersion><![CDATA[2.0.4.v200803111444]]></pluginVersion>
+	<pluginVersion><![CDATA[2.0.5.v200805010412]]></pluginVersion>
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
@@ -12,6 +12,7 @@
 		<config>src/test/resources/applicationContext.xml</config>
 		<config>src/test/resources/audition-application-context.xml</config>
 		<config>src/test/resources/audition-advice-context.xml</config>
+		<config>src/test/resources/namespace-autoconfig-context.xml</config>
 	</configs>
 	<configSets>
 		<configSet>
