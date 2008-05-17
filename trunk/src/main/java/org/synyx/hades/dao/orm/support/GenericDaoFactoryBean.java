@@ -8,8 +8,12 @@ import javax.persistence.PersistenceContext;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.Assert;
+import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.AbstractJpaFinder;
@@ -32,12 +36,14 @@ import org.synyx.hades.domain.Persistable;
  */
 @SuppressWarnings("unchecked")
 public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends Persistable<PK>, PK extends Serializable>
-        implements FactoryBean {
+        implements FactoryBean, InitializingBean {
+
+    public static final Class<?> DEFAULT_DAO_IMPLEMENTATION = GenericJpaDao.class;
 
     private Class<GenericDao<T, PK>> daoInterface;
 
     private Class<T> domainClass;
-    private Class<D> daoClass = (Class<D>) GenericJpaDao.class;
+    private Class<D> daoClass = (Class<D>) DEFAULT_DAO_IMPLEMENTATION;
 
     private EntityManager entityManager;
 
@@ -49,6 +55,10 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      */
     @Required
     public void setDaoInterface(Class<GenericDao<T, PK>> daoInterface) {
+
+        Assert.notNull(daoInterface);
+        Assert.isAssignable(GenericDao.class, daoInterface,
+                "DAO interface has to implement at least GenericDao!");
 
         this.daoInterface = daoInterface;
     }
@@ -62,18 +72,26 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     @Required
     public void setDomainClass(Class<T> domainClass) {
 
+        Assert.notNull(domainClass);
+        Assert.isAssignable(Persistable.class, domainClass,
+                "Domain class has to implement at least Persistable!");
+
         this.domainClass = domainClass;
     }
 
 
     /**
+     * Setter to inject a custom DAO base class. If this setter is not called
+     * the factory will use {@link GenericJpaDao} as implementation base class
+     * as default.
+     * 
      * @param daoClass the daoClass to set
      */
     public void setDaoClass(Class<D> daoClass) {
 
-        if (null == daoClass) {
-            throw new IllegalArgumentException("DaoClass must not be null!");
-        }
+        Assert.notNull(daoClass);
+        Assert.isAssignable(GenericDao.class, daoClass,
+                "DAO base class has to implement at least GenericDao!");
 
         this.daoClass = daoClass;
     }
@@ -156,5 +174,37 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     public boolean isSingleton() {
 
         return true;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    public void afterPropertiesSet() throws Exception {
+
+        Assert.notNull(daoInterface);
+        Assert.notNull(domainClass);
+
+        if (isExtendedDaoInterface()
+                && !ExtendedGenericDao.class.isAssignableFrom(daoClass)) {
+            throw new BeanCreationException(
+                    "If you want to create ExtendedGenericDao instances you "
+                            + "have to provide an implementation base class that "
+                            + "implements this interface!");
+        }
+    }
+
+
+    /**
+     * Returns if the DAO bean to be created shall implement
+     * {@link ExtendedGenericDao}.
+     * 
+     * @return
+     */
+    private boolean isExtendedDaoInterface() {
+
+        return ExtendedGenericDao.class.isAssignableFrom(daoInterface);
     }
 }

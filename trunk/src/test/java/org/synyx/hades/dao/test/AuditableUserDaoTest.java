@@ -5,7 +5,7 @@ package org.synyx.hades.dao.test;
 
 import org.springframework.test.jpa.AbstractJpaTests;
 import org.synyx.hades.dao.AuditableUserDao;
-import org.synyx.hades.domain.auditable.AuditableUser;
+import org.synyx.hades.domain.AuditableUser;
 
 
 /**

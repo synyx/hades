@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -33,11 +35,18 @@ import org.w3c.dom.NodeList;
  * {@code PersistenceExceptionTranslationPostProcessor} and
  * {@code PersistenceExceptionTranslationPostProcessor} to transparently inject
  * entity manager factory instance and apply exception translation.
+ * <p>
+ * The definition parser allows two ways of configuration. Either it looks up
+ * the manually defined DAO instances or scans the defined domain package for
+ * candidates for DAOs.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
  */
 public class DaoConfigDefinitionParser implements BeanDefinitionParser {
+
+    private static final Log log = LogFactory
+            .getLog(DaoConfigDefinitionParser.class);
 
     private static final Class<?> PAB_POST_PROCESSOR = PersistenceAnnotationBeanPostProcessor.class;
     private static final Class<?> PET_POST_PROCESSOR = PersistenceExceptionTranslationPostProcessor.class;
@@ -76,6 +85,10 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private void doAutoConfiguration(DaoConfigContext configContext,
             BeanDefinitionRegistry registry) {
 
+        if (log.isDebugEnabled()) {
+            log.debug("Triggering auto DAO detection");
+        }
+
         // Create scanner and apply filter
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(
                 false);
@@ -86,10 +99,12 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
         for (BeanDefinition definition : beanDefinitions) {
 
-            String clazz = ClassUtils.getShortName(definition
-                    .getBeanClassName());
+            // Retrieve bean name by altering first letter of the bean class
+            // name to lowercase
+            String beanName = StringUtils.uncapitalize(ClassUtils
+                    .getShortName(definition.getBeanClassName()));
 
-            registerGenericDaoFactoryBean(registry, clazz, configContext);
+            registerGenericDaoFactoryBean(registry, beanName, configContext);
         }
     }
 
@@ -103,6 +118,10 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private void doManualConfiguration(XmlDaoConfigContext context,
             BeanDefinitionRegistry registry) {
 
+        if (log.isDebugEnabled()) {
+            log.debug("Triggering manual DAO detection");
+        }
+
         NodeList childNodes = context.getChildNodes();
 
         // Add dao declarations
@@ -111,7 +130,6 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             if (childNode.getNodeType() == Node.ELEMENT_NODE) {
 
                 Element childElement = (Element) childNode;
-
                 String name = childElement.getAttribute("name");
 
                 registerGenericDaoFactoryBean(registry, name, context);
@@ -151,9 +169,21 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                     .getDaoBaseClassName());
         }
 
-        registry.registerBeanDefinition(name.toLowerCase()
-                + context.getDaoNamePostfix(), beanDefinitionBuilder
-                .getBeanDefinition());
+        if (log.isDebugEnabled()) {
+            log
+                    .debug("Registering Hades DAO: "
+                            + name
+                            + " - DAO interface: "
+                            + daoInterface
+                            + " - Implementation base class: "
+                            + (StringUtils.hasText(context
+                                    .getDaoBaseClassName()) ? context
+                                    .getDaoBaseClassName()
+                                    : GenericDaoFactoryBean.DEFAULT_DAO_IMPLEMENTATION));
+        }
+
+        registry.registerBeanDefinition(name + context.getDaoNamePostfix(),
+                beanDefinitionBuilder.getBeanDefinition());
     }
 
 

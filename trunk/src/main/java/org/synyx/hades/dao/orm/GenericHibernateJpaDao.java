@@ -7,9 +7,10 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.ejb.EntityManagerImpl;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.Persistable;
 
 
 /**
@@ -90,13 +91,10 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      */
     public void afterPropertiesSet() throws Exception {
 
-        // Assure we really have an hibernate EntityManager
-        if (!(getEntityManager() instanceof EntityManagerImpl)) {
-            throw new IllegalStateException(
-                    getClass().getSimpleName()
-                            + " can only be used with Hibernate EntityManager implementation! Please check configuration or use "
-                            + GenericJpaDao.class.getSimpleName()
-                            + " instead!");
-        }
+        Assert.isInstanceOf(EntityManagerImpl.class, getEntityManager(),
+                getClass().getSimpleName()
+                        + " can only be used with Hibernate EntityManager "
+                        + "implementation! Please check configuration or use "
+                        + GenericJpaDao.class.getSimpleName() + " instead!");
     }
 }

@@ -1,7 +1,5 @@
 package org.synyx.hades.dao.config;
 
-
-
 /**
  * Interface defining access to the DAO configuration.
  * 
