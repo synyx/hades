@@ -46,6 +46,6 @@ public class PersistableTypeFilterUnitTest extends TestCase {
         Set<BeanDefinition> beanDefinitions = provider
                 .findCandidateComponents("org.synyx.hades.domain");
 
-        assertEquals(2, beanDefinitions.size());
+        assertEquals(3, beanDefinitions.size());
     }
 }

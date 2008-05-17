@@ -1,11 +1,14 @@
 package org.synyx.hades.dao.config;
 
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
+import org.synyx.hades.dao.AuditableUserDao;
 import org.synyx.hades.dao.RoleDao;
 import org.synyx.hades.dao.UserDao;
 
 
 /**
+ * Integration test to test DAO auto configuration.
+ * 
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class DaoAutoConfigIntegrationTest extends
@@ -13,6 +16,7 @@ public class DaoAutoConfigIntegrationTest extends
 
     protected UserDao userDao;
     protected RoleDao roleDao;
+    protected AuditableUserDao auditableUserDao;
 
 
     /*
@@ -28,9 +32,13 @@ public class DaoAutoConfigIntegrationTest extends
     }
 
 
+    /**
+     * Asserts that context creation detects 3 DAO beans.
+     */
     public void testContextCreation() {
 
         assertNotNull(userDao);
         assertNotNull(roleDao);
+        assertNotNull(auditableUserDao);
     }
 }

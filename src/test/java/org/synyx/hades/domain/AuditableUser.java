@@ -2,6 +2,8 @@ package org.synyx.hades.domain;
 
 import javax.persistence.Entity;
 
+import org.synyx.hades.domain.AbstractAuditable;
+
 
 /**
  * Sample auditable user to demonstrate working with
