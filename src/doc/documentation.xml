@@ -27,9 +27,9 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>$Id$</releaseinfo>
+    <releaseinfo>V0.0.1-RC2</releaseinfo>
 
-    <pubdate>publication date</pubdate>
+    <pubdate>23.05.2008</pubdate>
 
     <copyright>
       <year>2008</year>
@@ -49,18 +49,80 @@
 
         <revremark>Initial draft</revremark>
       </revision>
+
+      <revision>
+        <date>13.05.2008</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>RC1</revremark>
+      </revision>
+
+      <revision>
+        <date>13.05.2008</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>RC2 - Added auto configuration, annotation configuration
+        for namespaces and finder methods for single instances</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
   <preface>
-    <title>Assumtions</title>
+    <title>Preface</title>
 
-    <para>As Hades makes heavy use of Spring and JPA we assume you have
-    certain knowledge of how to work with theses frameworks and
-    specifications. Hades is implemented using some container hooks of Spring,
-    AOP features. Nevetheless you do not have to have deep insight in conainer
-    internals to use Hades although it would let you understnad things more
-    deeply.</para>
+    <section>
+      <title>Assumtions</title>
+
+      <para>As Hades makes heavy use of Spring and JPA we assume you have
+      certain knowledge of how to work with theses frameworks and
+      specifications. Hades is implemented using some container hooks of
+      Spring, AOP features. Nevetheless you do not have to have deep insight
+      in conainer internals to use Hades although it would let you understnad
+      things more deeply.</para>
+    </section>
+
+    <section>
+      <title>Technologies</title>
+
+      <simplesect>
+        <title>JPA</title>
+
+        <para>The Java Persistence API was invented in conjunction with EJB3
+        and serves as standard for persisting objects in JavaSE and JavaEE
+        environments. It abstracts differences of various available OR Mappers
+        like Hibernate and Toplink and guarantees interoperability as far as
+        possible. Although the version 1.0 has its shortcomings, JPA can be
+        considered a future technology.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Spring</title>
+
+        <para>Spring is the defacto standard application framework for Java
+        applications. Its consistent programming model, easy configuration and
+        wide support for all kinds of third party libraries makes it the first
+        class citizen of application frameworks.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Spring &amp; JPA</title>
+
+        <para>Spring offers a lot of support for various technologies in data
+        access area. It's main benefit regarding JPA is the ease and power of
+        configuration along with proper exception translation into Spring's
+        DataAccessException hierarchy</para>
+      </simplesect>
+    </section>
   </preface>
 
   <chapter>
@@ -103,7 +165,7 @@
       below.</para>
 
       <example>
-        <title>Entity interface</title>
+        <title>Persistable interface</title>
 
         <programlisting language="java">public interface Persistable&lt;PK extends Serializable&gt; {
 
@@ -135,8 +197,8 @@
       can extend. This will couple your domain class code more tightly to
       Hades but frees you from implementing boilerplate JPA code.</para>
 
-      <para>Let's take a look at the GenericDao interface that provides CRUD
-      operations for entities.</para>
+      <para>Let's take a look at the <interfacename>GenericDao</interfacename>
+      interface that provides CRUD operations for entities.</para>
 
       <example id="example.generic-dao">
         <title>GenericDao Interface</title>
@@ -281,21 +343,21 @@
         <programlisting language="java">public interface Auditable&lt;U extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
         extends Persistable&lt;PK&gt; {
 
-    public abstract U getCreatedBy();
+    U getCreatedBy();
 
-    public abstract void setCreatedBy(U createdBy);
+    void setCreatedBy(U createdBy);
 
-    public abstract Date getCreatedDate();
+    Date getCreatedDate();
 
-    public abstract void setCreated(Date creationDate);
+    void setCreated(Date creationDate);
 
-    public abstract U getLastModifiedBy();
+    U getLastModifiedBy();
 
-    public abstract void setLastModifiedBy(U lastModifiedBy);
+    void setLastModifiedBy(U lastModifiedBy);
 
-    public abstract Date getLastModifiedDate();
+    Date getLastModifiedDate();
 
-    public abstract void setLastModified(Date lastModifiedDate);
+    void setLastModified(Date lastModifiedDate);
 }</programlisting>
       </example>
 
@@ -319,24 +381,24 @@
         <para>The <classname>AuditionAdvice</classname> is used to
         transparently set audition information during the work with the DAO.
         The advice gets access to the user changing or creating the entity
-        through the <interfacename>CurrentUserAware</interfacename>
+        through the <interfacename>AuditorAware</interfacename>
         interface.</para>
 
         <example>
           <title>CurrentUserAware interface</title>
 
-          <programlisting language="java">public interface CurrentUserAware&lt;T extends Persistable&lt;PK&gt;, 
+          <programlisting language="java">public interface AuditorAware&lt;T extends Persistable&lt;PK&gt;, 
   PK extends Serializable&gt; {
 
-    public abstract T getCurrentUser();
+    T getCurrentAuditor();
 }</programlisting>
         </example>
 
         <para>Usually you will have some kind of authentication component in
         your application that tracks the user currently working with the
         system. This component should be
-        <interfacename>CurrentUserAware</interfacename> and thus allow
-        seemless tracking of the auditioner.</para>
+        <interfacename>AuditorAware</interfacename> and thus allow seemless
+        tracking of the auditioner.</para>
 
         <para>To activate transparent creation of auditioning information the
         configuration has to look something like this:</para>
@@ -366,10 +428,10 @@
   &lt;aop:aspectj-autoproxy /&gt;
 
   &lt;bean class="org.synyx.hades.domain.support.AuditionAdvice"&gt;
-    &lt;property name="currentUserAware" ref="currentUserAware" /&gt;
+    &lt;property name="auditorAware" ref="auditorAware" /&gt;
   &lt;/bean&gt;
 
-  &lt;bean id="currentUserAware" class="foo.bar.AuthenticationService" /&gt;
+  &lt;bean id="auditorAware" class="foo.bar.AuthenticationService" /&gt;
 
 &lt;/beans&gt;</programlisting>
 
@@ -380,12 +442,12 @@
 
               <callout arearefs="audition-advice.audition-advice">
                 <para>Declare the advice as spring bean and add a reference to
-                the <interfacename>CurrentUserAware</interfacename>.</para>
+                the <interfacename>AuditiorAware</interfacename>.</para>
               </callout>
 
               <callout arearefs="audition-advice.current-user-aware">
                 <para>Declare a spring bean that implements
-                <interfacename>CurrentUserAware</interfacename>.</para>
+                <interfacename>AuditorAware</interfacename>.</para>
               </callout>
             </calloutlist>
           </programlistingco>
@@ -853,6 +915,51 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       base class for the DAO proxy created. For more details see <link
       linkend="vendor-specific-features">section on vendor specific
       features</link>.</para>
+
+      <simplesect>
+        <title>Auto configuration</title>
+
+        <para>You can simplify configuration even more by adding no
+        &lt;dao:dao /&gt; elements to &lt;dao:config /&gt; at all.</para>
+
+        <example>
+          <title>Automatic DAO configuration</title>
+
+          <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:dao="http://www.synyx.de/schema/dao"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.synyx.de/schema/dao 
+    http://www.synyx.de/schema/dao/dao-config.xsd"&gt;
+
+  &lt;import resource="infrastructure.xml" /&gt;
+
+  &lt;dao:dao-config
+    entity-package-name="org.synyx.hades.domain"
+    dao-package-name="org.synyx.hades.dao" /&gt;
+
+&lt;/beans&gt;</programlisting>
+        </example>
+
+        <para>This will trigger auto detection mechanism of DAOs that looks
+        for entity classes implementing
+        <interfacename>Persistable</interfacename> in the package you defined
+        in <code>entity-package-name</code>. For each candidate found it will
+        set up an DAO instances supposing you've placed the DAO interfaces in
+        the configured package and named them as described above.</para>
+
+        <note>
+          <para>You have to be careful to decide for the correct DAO base
+          implementation class. If one of your DAO interfaces extends
+          <interfacename>ExtendedGenericDao</interfacename> (see chapter on
+          using provider specific features for details) you have to define a
+          matching implementation. The default implementation will cause the
+          entire auto configuration to fail as it can not act as base class
+          for <interfacename>ExtendedGenericDao</interfacename>.</para>
+        </note>
+      </simplesect>
     </section>
 
     <section>
@@ -860,38 +967,89 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
       <para>Next to standard CRUD functionality
       <classname>GenericJpaDao</classname> allows sophisticated execution of
-      NamedQueries by declaring methods in the DAO interface. Let's add a
-      named query to lookup users by their email address. Therefore we add the
-      named query to the <filename>orm.xml</filename> JPA configuration file
-      located in <filename>META-INF</filename> folder of your
-      classpath:</para>
+      NamedQueries by declaring methods in the DAO interface. NamedQueries can
+      be defined in either XML or JPA annotations to the domain class. Let's
+      see how configuration of a query to lookup users by their email address
+      can be realized.<note>
+          <para>The examples use simple <code>&lt;named-query /&gt;</code>
+          element and <code>@NamedQuery</code> annotation. The queries for
+          these configuration elements have to be defined in JPA query
+          language. Of course you can use <code>&lt;named-native-query
+          /&gt;</code> or <code>@NamedNativeQuery</code>, too. These elements
+          allow you to define the query in native SQL by losing the database
+          platform independence.</para>
+        </note></para>
 
-      <example>
-        <title>Named query to lookup users by lastname</title>
+      <simplesect>
+        <title>XML named query definition</title>
 
-        <programlisting language="xml">&lt;named-query name="User.findByEmailAddress"&gt;
-  &lt;query&gt;SELECT u FROM User u WHERE u.emailAddress = ?1&lt;/query&gt;
+        <para>To use XML configuration simply add the necessary
+        <code>&lt;named-query /&gt;</code> element to the
+        <filename>orm.xml</filename> JPA configuration file located in
+        <filename>META-INF</filename> folder of your classpath. Automatic
+        invocation of named queries is enabled by using some defined naming
+        convention. For more details see below.</para>
+
+        <example>
+          <title>XML named query configuration</title>
+
+          <programlisting language="xml">&lt;named-query name="User.findByLastname"&gt;
+  &lt;query&gt;SELECT u FROM User u WHERE u.lastname = ?1&lt;/query&gt;
 &lt;/named-query&gt;</programlisting>
-      </example>
+        </example>
 
-      <para>As you can see the query has a special name, the
-      <classname>GenericJpaDao</classname> uses to resolve it at runtime. To
-      allow execution of this named query all you need to do is to specify the
-      <interfacename>UserDao</interfacename> as follows:</para>
+        <para>As you can see the query has a special name, the
+        <classname>GenericJpaDao</classname> uses to resolve it at
+        runtime.</para>
+      </simplesect>
 
-      <example>
-        <title>Finder method declaration in UserDao</title>
+      <simplesect>
+        <title>Annotation configuration</title>
 
-        <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
+        <para>Annotation configuration has the advantage not to need another
+        config file to be edited, probably lowering maintenance cost. You pay
+        for that benefit by the need to recompile your domain class for every
+        new query declaration.</para>
 
-  public List&lt;User&gt; findByEmailAddress(String emailAddress);
+        <example>
+          <title>Annotation based named query configuration</title>
+
+          <programlisting language="java">@Entity
+@NamedQuery(name = "User.findByEmailAddress", 
+  query = "SELECT u FROM User u WHERE u.emailAddress = ?1")
+public class User implements Persistable&lt;Long&gt; {
+
 }</programlisting>
-      </example>
+        </example>
+      </simplesect>
 
-      <para>Declaring this method <classname>GenericJpaDao</classname> will
-      try to resolve a call to this method to a named query startig with the
-      simple name of the configured domain class followed by the method name
-      separated by a dot.</para>
+      <simplesect>
+        <title>Declaring interfaces</title>
+
+        <para>To allow execution of this named query all you need to do is to
+        specify the <interfacename>UserDao</interfacename> as follows:</para>
+
+        <example>
+          <title>Finder method declaration in UserDao</title>
+
+          <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
+
+  public List&lt;User&gt; findByLastname(String lastname);
+
+  public User findByEmailAddress(String emailAddress);
+}</programlisting>
+        </example>
+
+        <para>Declaring this method <classname>GenericJpaDao</classname> will
+        try to resolve a call to this method to a named query startig with the
+        simple name of the configured domain class followed by the method name
+        separated by a dot. Note, that the GenericJpaDao implementation
+        distinguishes between finder methods for a single object or lists of
+        object. It will try to retrieve a single result if you provide a
+        return value assignable from the configured domain class. Otherwise i
+        will try to call a named query to return a list. Be sure your named
+        query for a single instance truely returns only one instance.</para>
+      </simplesect>
     </section>
 
     <section>
@@ -921,15 +1079,14 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
       </example>
 
       <para>Suppose you have the following three configuration files
-      infrastructure.xml (for infrastructure setup), audition-context.xml (to
-      setup the audition advice) and dao-context.xml (for the actual DAOs) the
-      work of the audition advice can be demonstrated by the following
-      testcase: </para>
+      <filename>infrastructure.xml</filename> (for infrastructure setup),
+      <filename>audition-context.xml</filename> (to setup the audition advice)
+      and <filename>dao-context.xml</filename> (for the actual DAOs) the work
+      of the audition advice can be demonstrated by the following
+      testcase:</para>
 
       <example>
-        <title>Test case applying AuditionAdvice</title>
-
-        <para></para>
+        <title>Testcase for audition advice</title>
 
         <programlistingco>
           <areaspec>
@@ -942,6 +1099,10 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
             <area coords="8" id="audition-advice-test.setter-injection" />
 
             <area coords="17" id="audition-advice-test.config-location" />
+
+            <area coords="23" id="audition-advice-test.setup" />
+
+            <area coords="40" id="audition-advice-test.test-method" />
           </areaspec>
 
           <programlisting language="java">public class AuditionAdviceTest extends AbstractJpaTests {
@@ -964,7 +1125,7 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
     return new String[] { "infrastructure.xml", "audition-context.xml",
       "dao-context.xml"};
   }
-
+  
   @Override
   public void onSetUpInTransaction() {
 
@@ -973,16 +1134,15 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
     user.setPassword("password");
     user.setEmailAddress("foo@bar.com");
 
-    CurrentUserAware currentUserAware = EasyMock.createNiceMock(
-      CurrentUserAware.class);
-    EasyMock.expect(currentUserAware.getCurrentUser()).andReturn(
+    AuditorAware auditorAware = EasyMock.createNiceMock(
+      AuditorAware.class);
+    EasyMock.expect(auditorAware.getCurrentUser()).andReturn(
       user).anyTimes();
 
-    advice.setCurrentUserAware();
+    advice.setAuditorAware();
 
-    EasyMock.replay(currentUserAware);
+    EasyMock.replay(auditorAware);
   }
-
 
   public void testApplicationOfAuditionAdvice() {
 
@@ -994,7 +1154,7 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
     assertEquals(user, user.getLastModifiedBy());
     assertNotNull(user.getLastModifiedDate());
   }
-} </programlisting>
+}</programlisting>
 
           <calloutlist>
             <callout arearefs="audition-advice-test.superclass">
@@ -1013,12 +1173,26 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
             </callout>
 
             <callout arearefs="audition-advice-test.setter-injection">
-              <para>Setters to get Spring beans injected. </para>
+              <para>Setters to get Spring beans injected.</para>
             </callout>
 
             <callout arearefs="audition-advice-test.config-location">
               <para>Returns the configuration files, Spring shall load to
               setup the application context.</para>
+            </callout>
+
+            <callout arearefs="audition-advice-test.setup">
+              <para>Create a dummy <classname>User</classname> instance and a
+              mock <interfacename>CurrentUserAware</interfacename>, that
+              always returns the dummy user. Apply this mock to the
+              advice.</para>
+            </callout>
+
+            <callout arearefs="audition-advice-test.test-method">
+              <para>The actual test simply saves the dummy
+              <classname>User</classname> instance and verifys the advice got
+              applied. Note that advice application is completely transparent
+              to the client.</para>
             </callout>
           </calloutlist>
         </programlistingco>
@@ -1056,8 +1230,9 @@ public class User extends AbstractPersistable&lt;Long&gt; {
       </example>
 
       <para>Note that almost technical artefacts are gone. All methods of
-      persistable are implemented by AbstractPersistable as well as
-      declaration of the id.</para>
+      persistable are implemented by
+      <classname>AbstractPersistable</classname> as well as declaration of the
+      id.</para>
 
       <para>If you are using auditable entities
       <classname>AbstractAuditable</classname> is your base class of choice.
@@ -1067,9 +1242,7 @@ public class User extends AbstractPersistable&lt;Long&gt; {
       <example>
         <title>AuditableUser based on AbstractAuditable</title>
 
-        <para></para>
-
-        <programlisting>@Entity
+        <programlisting language="java">@Entity
 public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 
   public static final long = 123L;
