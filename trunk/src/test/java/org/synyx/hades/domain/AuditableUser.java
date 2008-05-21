@@ -1,8 +1,7 @@
 package org.synyx.hades.domain;
 
 import javax.persistence.Entity;
-
-import org.synyx.hades.domain.AbstractAuditable;
+import javax.persistence.NamedQuery;
 
 
 /**
@@ -13,6 +12,7 @@ import org.synyx.hades.domain.AbstractAuditable;
  * @author Oliver Gierke - gierke@synyx.de
  */
 @Entity
+@NamedQuery(name = "AuditableUser.findByFirstname", query = "SELECT u FROM AuditableUser u WHERE u.firstname = ?1")
 public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
 
     private static final long serialVersionUID = 7409344446795693011L;
@@ -36,7 +36,7 @@ public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
      * 
      * @param firstname the firstname to set
      */
-    public void setFirstname(String firstname) {
+    public void setFirstname(final String firstname) {
 
         this.firstname = firstname;
     }

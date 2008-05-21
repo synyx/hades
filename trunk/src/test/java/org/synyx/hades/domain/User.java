@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 
 
 /**
@@ -17,6 +18,7 @@ import javax.persistence.ManyToMany;
  * @author Oliver Gierke - gierke@synyx.de
  */
 @Entity
+@NamedQuery(name = "User.findByEmailAddress", query = "SELECT u FROM User u WHERE u.emailAddress = ?1")
 public class User extends AbstractPersistable<Integer> {
 
     private static final long serialVersionUID = 8653688953355455933L;
@@ -52,7 +54,8 @@ public class User extends AbstractPersistable<Integer> {
      * @param lastname
      * @param emailAddress
      */
-    public User(String firstname, String lastname, String emailAddress) {
+    public User(final String firstname, final String lastname,
+            final String emailAddress) {
 
         this();
         this.firstname = firstname;
@@ -77,7 +80,7 @@ public class User extends AbstractPersistable<Integer> {
      * 
      * @param firstname the firstname to set
      */
-    public void setFirstname(String firstname) {
+    public void setFirstname(final String firstname) {
 
         this.firstname = firstname;
     }

@@ -8,6 +8,6 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public interface ExtendedUserDao extends ExtendedGenericDao<User, Integer> {
+public interface UserExtendedDao extends ExtendedGenericDao<User, Integer> {
 
 }

@@ -58,7 +58,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * @see org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.w3c.dom.Element,
      *      org.springframework.beans.factory.xml.ParserContext)
      */
-    public BeanDefinition parse(Element element, ParserContext parserContext) {
+    public BeanDefinition parse(final Element element,
+            final ParserContext parserContext) {
 
         XmlDaoConfigContext configContext = new XmlDaoConfigContext(element);
         BeanDefinitionRegistry registry = parserContext.getRegistry();
@@ -77,13 +78,13 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
     /**
      * Executes DAO auto configuration by scanning the provided entity package
-     * for classes implementing {@link Persistable}.
+     * for classes implementing {@code Persistable}.
      * 
      * @param configContext
      * @param registry
      */
-    private void doAutoConfiguration(DaoConfigContext configContext,
-            BeanDefinitionRegistry registry) {
+    private void doAutoConfiguration(final DaoConfigContext configContext,
+            final BeanDefinitionRegistry registry) {
 
         if (log.isDebugEnabled()) {
             log.debug("Triggering auto DAO detection");
@@ -115,8 +116,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * @param context
      * @param registry
      */
-    private void doManualConfiguration(XmlDaoConfigContext context,
-            BeanDefinitionRegistry registry) {
+    private void doManualConfiguration(final XmlDaoConfigContext context,
+            final BeanDefinitionRegistry registry) {
 
         if (log.isDebugEnabled()) {
             log.debug("Triggering manual DAO detection");
@@ -139,7 +140,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
 
     /**
-     * Registers a {@link GenericDaoFactoryBean} for a bean with the given name
+     * Registers a {@code GenericDaoFactoryBean} for a bean with the given name
      * and the provided configuration context. It is mainly used to construct
      * bean name, entity class name and DAO interface name.
      * 
@@ -147,11 +148,11 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * @param name
      * @param context
      */
-    private void registerGenericDaoFactoryBean(BeanDefinitionRegistry registry,
-            String name, DaoConfigContext context) {
+    private void registerGenericDaoFactoryBean(
+            final BeanDefinitionRegistry registry, final String name,
+            final DaoConfigContext context) {
 
-        String entityClassName = name.substring(0, 1).toUpperCase()
-                + name.substring(1);
+        String entityClassName = StringUtils.capitalize(name);
 
         String domainClass = context.getEntityPackageName() + "."
                 + entityClassName;
@@ -173,6 +174,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             log
                     .debug("Registering Hades DAO: "
                             + name
+                            + context.getDaoNamePostfix()
                             + " - DAO interface: "
                             + daoInterface
                             + " - Implementation base class: "
@@ -193,7 +195,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * 
      * @param registry
      */
-    private void registerPostProcessors(BeanDefinitionRegistry registry) {
+    private void registerPostProcessors(final BeanDefinitionRegistry registry) {
 
         // Create PersistenceAnnotationPostProcessor definition
         if (!registry.containsBeanDefinition(PAB_POST_PROCESSOR.getName())) {
@@ -219,8 +221,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     }
 
     /**
-     * {@link TypeFilter} that detects classes that implement
-     * {@link Persistable} and are annotated with {@link Entity}.
+     * {@code TypeFilter} implementation that detects classes that implement
+     * {@code Persistable} and are annotated with {@link Entity}.
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
@@ -238,8 +240,9 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
          * @see org.springframework.core.type.filter.TypeFilter#match(org.springframework.core.type.classreading.MetadataReader,
          *      org.springframework.core.type.classreading.MetadataReaderFactory)
          */
-        public boolean match(MetadataReader metadataReader,
-                MetadataReaderFactory metadataReaderFactory) throws IOException {
+        public boolean match(final MetadataReader metadataReader,
+                final MetadataReaderFactory metadataReaderFactory)
+                throws IOException {
 
             // Matches on correct type AND annotation
             return assignableTypeFilter.match(metadataReader,

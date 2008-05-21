@@ -4,10 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceException;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.orm.jpa.JpaCallback;
+import org.springframework.orm.jpa.JpaTemplate;
+import org.springframework.util.Assert;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.domain.Persistable;
 
@@ -17,41 +23,45 @@ import org.synyx.hades.domain.Persistable;
  * that are backed by JPA named queries.
  * 
  * @author Oliver Gierke - gierke@synyx.de
+ * @param <T> the type of entity to be handled
+ * @param <PK> the type of the entity's identifier
  */
 public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Serializable>
-        implements FinderExecuter<T> {
+        implements InitializingBean, FinderExecuter<T> {
 
-    private EntityManager entityManager;
+    private JpaTemplate jpaTemplate;
     private Class<T> domainClass;
 
 
     /**
-     * Returns the {@code EntityManager}.
+     * Setter to inject {@code EntityManagerFactory}.
      * 
-     * @return the entityManager
+     * @param entityManagerFactory
      */
-    protected EntityManager getEntityManager() {
+    @Required
+    @PersistenceUnit
+    public void setEntityManagerFactory(
+            final EntityManagerFactory entityManagerFactory) {
 
-        return entityManager;
+        this.jpaTemplate = new JpaTemplate(entityManagerFactory);
     }
 
 
     /**
-     * Setter to inject an {@code EntityManager}.
+     * Returns the {@code JpaTemplate}.
      * 
-     * @param entityManager the entityManager to set
+     * @return the {@code JpaTemplate}
      */
-    @PersistenceContext
-    public void setEntityManager(EntityManager entityManager) {
+    protected JpaTemplate getJpaTemplate() {
 
-        this.entityManager = entityManager;
+        return this.jpaTemplate;
     }
 
 
     /**
      * Returns the domain class to handle.
      * 
-     * @return the type
+     * @return the domain class
      */
     protected Class<T> getDomainClass() {
 
@@ -65,7 +75,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * @param domainClass the domain class to set
      */
     @Required
-    public void setDomainClass(Class<T> domainClass) {
+    public void setDomainClass(final Class<T> domainClass) {
 
         this.domainClass = domainClass;
     }
@@ -78,11 +88,24 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      *      java.lang.Object[])
      */
     @SuppressWarnings("unchecked")
-    public List<T> executeFinder(String methodName, Object... queryArgs) {
+    public List<T> executeFinder(final String methodName,
+            final Object... queryArgs) {
 
-        Query namedQuery = prepareQuery(methodName, queryArgs);
+        return getJpaTemplate().executeFind(new JpaCallback() {
 
-        return namedQuery.getResultList();
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             */
+            public List<T> doInJpa(final EntityManager em)
+                    throws PersistenceException {
+
+                Query namedQuery = prepareQuery(em, methodName, queryArgs);
+
+                return namedQuery.getResultList();
+            }
+        });
     }
 
 
@@ -96,11 +119,24 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * @throws NonUniqueResultException if more than one entity was found
      */
     @SuppressWarnings("unchecked")
-    protected T executeObjectFinder(String methodName, Object... queryArgs) {
+    public T executeObjectFinder(final String methodName,
+            final Object... queryArgs) {
 
-        Query namedQuery = prepareQuery(methodName, queryArgs);
+        return (T) getJpaTemplate().execute(new JpaCallback() {
 
-        return (T) namedQuery.getSingleResult();
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             */
+            public T doInJpa(final EntityManager em)
+                    throws PersistenceException {
+
+                Query namedQuery = prepareQuery(em, methodName, queryArgs);
+
+                return (T) namedQuery.getSingleResult();
+            }
+        });
     }
 
 
@@ -113,19 +149,31 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * @param queryArgs
      * @return
      */
-    private Query prepareQuery(String methodName, Object... queryArgs) {
+    private Query prepareQuery(final EntityManager em, final String methodName,
+            final Object... queryArgs) {
 
-        String queryName = domainClass.getSimpleName() + "." + methodName;
-        Query namedQuery = entityManager.createNamedQuery(queryName);
+        final String queryName = domainClass.getSimpleName() + "." + methodName;
+        final Query namedQuery = em.createNamedQuery(queryName);
 
         if (queryArgs != null) {
 
             for (int i = 0; i < queryArgs.length; i++) {
-
                 namedQuery.setParameter(i + 1, queryArgs[i]);
             }
         }
 
         return namedQuery;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    public void afterPropertiesSet() throws Exception {
+
+        Assert.notNull(jpaTemplate, "JpaTemplate must not be null! Either "
+                + "set an EntityManagerFactory or a JpaTemplate yourself!");
     }
 }

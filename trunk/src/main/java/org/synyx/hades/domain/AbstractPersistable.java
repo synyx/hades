@@ -13,13 +13,15 @@ import javax.persistence.MappedSuperclass;
  * offers a flag determining the "new" state of the entity.
  * 
  * @author Oliver Gierke - gierke@synyx.de
+ * @param <PK> the tpe of the entity
  */
 @MappedSuperclass
 @SuppressWarnings("serial")
-public class AbstractPersistable<PK extends Serializable> implements Persistable<PK> {
+public class AbstractPersistable<PK extends Serializable> implements
+        Persistable<PK> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private PK id;
 
 
@@ -39,7 +41,7 @@ public class AbstractPersistable<PK extends Serializable> implements Persistable
      * 
      * @param id the id to set
      */
-    public void setId(PK id) {
+    public void setId(final PK id) {
 
         this.id = id;
     }
@@ -53,5 +55,18 @@ public class AbstractPersistable<PK extends Serializable> implements Persistable
     public boolean isNew() {
 
         return null == getId();
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "Entity of type " + this.getClass().getName() + " with id: "
+                + getId();
     }
 }

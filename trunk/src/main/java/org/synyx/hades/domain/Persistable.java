@@ -6,7 +6,8 @@ import java.io.Serializable;
 /**
  * Simple interface for entities.
  * 
- * @author Oliver Gierke
+ * @author Oliver Gierke - gierke@synyx.de
+ * @param <PK> the type of the identifier
  */
 public interface Persistable<PK extends Serializable> extends Serializable {
 
@@ -15,7 +16,7 @@ public interface Persistable<PK extends Serializable> extends Serializable {
      * 
      * @return the id
      */
-    public PK getId();
+    PK getId();
 
 
     /**
@@ -23,5 +24,5 @@ public interface Persistable<PK extends Serializable> extends Serializable {
      * 
      * @return if the object is new
      */
-    public boolean isNew();
+    boolean isNew();
 }

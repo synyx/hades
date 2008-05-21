@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.synyx.hades.domain.Persistable;
-import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.page.Page;
+import org.synyx.hades.domain.page.Pageable;
 
 
 /**
@@ -26,7 +27,7 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * @param examples
      * @return all objects meeting the criterias expressed by the given examples
      */
-    public abstract List<T> readByExample(T... examples);
+    List<T> readByExample(final T... examples);
 
 
     /**
@@ -38,5 +39,5 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * @param examples
      * @return the page of objects meeting the example's criterias
      */
-    public abstract List<T> readByExample(Pageable pageable, T... examples);
+    Page<T> readByExample(final Pageable pageable, final T... examples);
 }

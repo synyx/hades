@@ -13,9 +13,9 @@ import javax.persistence.TemporalType;
  * Abstract base class for auditable entities. Stores the audition values in
  * persistent fields
  * 
- * @author Oliver Gierke
- * @version $Id: AbstractAuditableEntity.java 574 2008-04-30 19:15:48Z
- *          gierke_cvs $
+ * @author Oliver Gierke - gierke@synyx.de
+ * @param <U> the auditing type. Typically some kind of user.
+ * @param <PK> the type of the auditing type's idenifier
  */
 @MappedSuperclass
 public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Serializable>
@@ -50,7 +50,7 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * 
      * @see org.synyx.hades.hades.domain.Auditable#setCreatedBy(org.synyx.hades.hades.domain.Identifyable)
      */
-    public void setCreatedBy(U createdBy) {
+    public void setCreatedBy(final U createdBy) {
 
         this.createdBy = createdBy;
     }
@@ -72,7 +72,7 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * 
      * @see org.synyx.hades.hades.domain.Auditable#setCreated(java.util.Date)
      */
-    public void setCreated(Date createdDate) {
+    public void setCreated(final Date createdDate) {
 
         this.createdDate = createdDate;
     }
@@ -94,7 +94,7 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * 
      * @see org.synyx.hades.hades.domain.Auditable#setLastModifiedBy(org.synyx.hades.hades.domain.Identifyable)
      */
-    public void setLastModifiedBy(U lastModifiedBy) {
+    public void setLastModifiedBy(final U lastModifiedBy) {
 
         this.lastModifiedBy = lastModifiedBy;
     }
@@ -116,21 +116,8 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * 
      * @see org.synyx.hades.hades.domain.Auditable#setLastModified(java.util.Date)
      */
-    public void setLastModified(Date lastModifiedDate) {
+    public void setLastModified(final Date lastModifiedDate) {
 
         this.lastModifiedDate = lastModifiedDate;
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        return "Entity of type " + this.getClass().getName() + " with id: "
-                + getId();
     }
 }

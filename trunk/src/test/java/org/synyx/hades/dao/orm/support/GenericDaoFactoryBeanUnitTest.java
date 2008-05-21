@@ -2,18 +2,20 @@ package org.synyx.hades.dao.orm.support;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.springframework.beans.factory.BeanCreationException;
-import org.synyx.hades.dao.ExtendedUserDao;
-import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
-import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.dao.UserExtendedDao;
 import org.synyx.hades.domain.User;
 
 
 /**
- * Unit test for {@link GenericDaoFactoryBean}.
+ * Unit test for {@code GenericDaoFactoryBean}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -21,6 +23,9 @@ import org.synyx.hades.domain.User;
 public class GenericDaoFactoryBeanUnitTest extends TestCase {
 
     private GenericDaoFactoryBean factory;
+
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
 
     /*
@@ -31,16 +36,26 @@ public class GenericDaoFactoryBeanUnitTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
 
+        entityManagerFactory = EasyMock
+                .createNiceMock(EntityManagerFactory.class);
+        entityManager = EasyMock.createNiceMock(EntityManager.class);
+
+        EasyMock.expect(entityManagerFactory.createEntityManager()).andReturn(
+                entityManager);
+
+        EasyMock.replay(entityManagerFactory, entityManager);
+
         // Setup standard factory configuration
         factory = new GenericDaoFactoryBean();
         factory.setDomainClass(User.class);
         factory.setDaoInterface(UserDao.class);
+        factory.setEntityManagerFactory(entityManagerFactory);
     }
 
 
     /**
      * Assert that the instance created for the standard configuration is a
-     * valid {@link UserDao}.
+     * valid {@code UserDao}.
      * 
      * @throws Exception
      */
@@ -56,8 +71,8 @@ public class GenericDaoFactoryBeanUnitTest extends TestCase {
 
     /**
      * Assert that the factory rejects calls to
-     * {@link GenericDaoFactoryBean#setDaoInterface(Class)} with {@code null} or
-     * any other parameter instance not implementing {@link GenericDao}.
+     * {@code GenericDaoFactoryBean#setDaoInterface(Class)} with {@code null} or
+     * any other parameter instance not implementing {@code GenericDao}.
      */
     public void testPreventsNullOrInvalidDaoInterface() {
 
@@ -79,8 +94,8 @@ public class GenericDaoFactoryBeanUnitTest extends TestCase {
 
     /**
      * Assert that the factory rejects calls to
-     * {@link GenericDaoFactoryBean#setDomainClass(Class)} with {@code null} or
-     * any other parameter instance not implementing {@link Persistable}.
+     * {@code GenericDaoFactoryBean#setDomainClass(Class)} with {@code null} or
+     * any other parameter instance not implementing {@code Persistable}.
      */
     public void testPreventsNullOrInvalidDomainClasses() {
 
@@ -102,8 +117,8 @@ public class GenericDaoFactoryBeanUnitTest extends TestCase {
 
     /**
      * Assert that the factory rejects calls to
-     * {@link GenericDaoFactoryBean#setDaoClass(Class)} with {@code null} or any
-     * other parameter instance not implementing {@link GenericDao}.
+     * {@code GenericDaoFactoryBean#setDaoClass(Class)} with {@code null} or any
+     * other parameter instance not implementing {@code GenericDao}.
      */
     public void testPreventsNullOrInvalidDaoClass() {
 
@@ -125,7 +140,7 @@ public class GenericDaoFactoryBeanUnitTest extends TestCase {
 
     /**
      * Assert that the factory detects unset DAO class and interface in
-     * {@link GenericDaoFactoryBean#afterPropertiesSet()}.
+     * {@code GenericDaoFactoryBean#afterPropertiesSet()}.
      */
     public void testPreventsUnsetDomainClassAndDaoInterface() throws Exception {
 
@@ -161,7 +176,7 @@ public class GenericDaoFactoryBeanUnitTest extends TestCase {
 
     /**
      * Assert that the factory does not allow DAO instance creation if you have
-     * configured a DAO interface extending {@link ExtendedUserDao} but not
+     * configured a DAO interface extending {@code UserExtendedDao} but not
      * provided any custom base implementation class implementing this
      * interface.
      * 
@@ -170,7 +185,7 @@ public class GenericDaoFactoryBeanUnitTest extends TestCase {
     public void testPreventsCreationOfExtendedGenericDaosIfMisconfigured()
             throws Exception {
 
-        factory.setDaoInterface(ExtendedUserDao.class);
+        factory.setDaoInterface(UserExtendedDao.class);
 
         try {
             factory.afterPropertiesSet();

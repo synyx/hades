@@ -12,7 +12,7 @@ interface DaoConfigContext {
      * 
      * @return
      */
-    public abstract boolean configureManually();
+    boolean configureManually();
 
 
     /**
@@ -20,7 +20,7 @@ interface DaoConfigContext {
      * 
      * @return the daoPackageName
      */
-    public abstract String getDaoPackageName();
+    String getDaoPackageName();
 
 
     /**
@@ -28,7 +28,7 @@ interface DaoConfigContext {
      * 
      * @return the entityPackageName
      */
-    public abstract String getEntityPackageName();
+    String getEntityPackageName();
 
 
     /**
@@ -36,7 +36,7 @@ interface DaoConfigContext {
      * 
      * @return the daoClassPostfix
      */
-    public abstract String getDaoClassPostfix();
+    String getDaoClassPostfix();
 
 
     /**
@@ -44,7 +44,7 @@ interface DaoConfigContext {
      * 
      * @return the daoNamePostfix
      */
-    public abstract String getDaoNamePostfix();
+    String getDaoNamePostfix();
 
 
     /**
@@ -52,5 +52,5 @@ interface DaoConfigContext {
      * 
      * @return the daoBaseClassName
      */
-    public abstract String getDaoBaseClassName();
+    String getDaoBaseClassName();
 }

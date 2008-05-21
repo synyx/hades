@@ -12,12 +12,11 @@ import org.synyx.hades.domain.User;
 
 
 /**
- * Base integration test class for <code>PersonDao</code>. Extend this class
- * and provide and application context by overriding
- * <code>getConfigLocations()</code>.
+ * Base integration test class for {@code UserDao}. Extend this class and
+ * provide and application context by overriding
+ * {@code AbstractSingleSpringContextTests#getConfigLocations()}.
  * 
- * @author Eberhard Wolff
- * @author Oliver Gierke
+ * @author Oliver Gierke - gierke@synyx.de
  */
 public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
@@ -35,7 +34,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
      * 
      * @param userDao
      */
-    public void setUserDao(UserDao userDao) {
+    public void setUserDao(final UserDao userDao) {
 
         this.userDao = userDao;
     }
@@ -63,6 +62,9 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     }
 
 
+    /**
+     * Tests creation of users.
+     */
     public void testCreation() {
 
         flushTestUsers();
@@ -70,6 +72,8 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
 
     /**
+     * Tests reading a single user.
+     * 
      * @throws Exception
      */
     public void testRead() throws Exception {
@@ -82,7 +86,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
 
     /**
-     * Tests updating a person.
+     * Tests updating a user.
      */
     public void testUpdate() {
 
@@ -97,7 +101,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
 
     /**
-     * Test
+     * Tests deleting a user.
      */
     public void testDelete() {
 
@@ -109,22 +113,42 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
 
     /**
-     * Tests, that searching by the email address of the reference user returns
+     * Tests, that searching by the lastname of the reference user returns
      * exactly that instance.
      * 
      * @throws Exception
      */
-    public void testFindByName() throws Exception {
+    public void testFindByLastname() throws Exception {
 
         flushTestUsers();
 
-        List<User> byName = userDao.findByEmailAddress("gierke@synyx.de");
+        List<User> byName = userDao.findByLastname("Gierke");
 
         assertTrue(byName.size() == 1);
         assertEquals(firstUser, byName.get(0));
     }
 
 
+    /**
+     * Tests, that searching by the email address of the reference user returns
+     * exactly that instance.
+     * 
+     * @throws Exception
+     */
+    public void testFindByEmailAddress() throws Exception {
+
+        flushTestUsers();
+
+        User byName = userDao.findByEmailAddress("gierke@synyx.de");
+
+        assertNotNull(byName);
+        assertEquals(firstUser, byName);
+    }
+
+
+    /**
+     * Tests reading all users.
+     */
     public void testReadAll() {
 
         flushTestUsers();
@@ -134,6 +158,9 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     }
 
 
+    /**
+     * Tests cascading persistence.
+     */
     public void testCascadesPersisting() {
 
         // Create link prior to persisting
@@ -155,7 +182,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
     /**
      * Tests, that persisting a relationsship without cascade attributes throws
-     * a <code>DataAccessException</code>.
+     * a {@code DataAccessException}.
      */
     public void testPreventsCascadingRolePersisting() {
 
@@ -170,13 +197,16 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     }
 
 
+    /**
+     * Tests cascading on {@literal merge} operation.
+     */
     public void testMergingCascadesCollegueas() {
 
         firstUser.addColleague(secondUser);
         flushTestUsers();
 
         firstUser.addColleague(new User("Florian", "Hopf", "hopf@synyx.de"));
-        userDao.save(firstUser);
+        firstUser = userDao.save(firstUser);
 
         User reference = userDao.readByPrimaryKey(firstUser.getId());
         Set<User> colleagues = reference.getColleagues();
@@ -186,6 +216,10 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     }
 
 
+    /**
+     * Tests that an exception is being thrown if you try to persist some
+     * relation that is not configured to be cascaded.
+     */
     public void testMergingDoesNotCascadeRoles() {
 
         flushTestUsers();
@@ -221,8 +255,8 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
      */
     private void flushTestUsers() {
 
-        userDao.save(firstUser);
-        userDao.save(secondUser);
+        firstUser = userDao.save(firstUser);
+        secondUser = userDao.save(secondUser);
 
         userDao.flush();
 

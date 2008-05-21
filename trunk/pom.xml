@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx</groupId>
 	<artifactId>hades</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-RC2</version>
 	<name>Hades</name>
 	<description>
 		Domain class and DAO development framework
@@ -184,8 +184,17 @@
 					</targetDirectory>
 
 					<foCustomization>
-						src/doc/layout/fo-pdf.xsl
+						src/doc/layout/pdf/fo-pdf.xsl
 					</foCustomization>
+					
+					<htmlCustomization>
+						src/doc/layout/html/fo-html.xsl
+					</htmlCustomization>
+					
+					<htmlStylesheet>
+						resources/styles.css
+					</htmlStylesheet>
+					<chunkedOutput>true</chunkedOutput>
 
 					<fonts>
 						<font>
@@ -193,10 +202,10 @@
 							<style>normal</style>
 							<weight>normal</weight>
 							<embedFile>
-								${basedir}/src/doc/layout/fonts/SteLiR__.ttf
+								${basedir}/src/doc/layout/pdf/fonts/SteLiR__.ttf
 							</embedFile>
 							<metricsFile>
-								${basedir}/src/doc/layout/fonts/SteLiR__.xml
+								${basedir}/src/doc/layout/pdf/fonts/SteLiR__.xml
 							</metricsFile>
 						</font>
 						<font>
@@ -204,10 +213,10 @@
 							<style>italic</style>
 							<weight>normal</weight>
 							<embedFile>
-								${basedir}/src/doc/layout/fonts/SteLiI__.ttf
+								${basedir}/src/doc/layout/pdf/fonts/SteLiI__.ttf
 							</embedFile>
 							<metricsFile>
-								${basedir}/src/doc/layout/fonts/SteLiI__.xml
+								${basedir}/src/doc/layout/pdf/fonts/SteLiI__.xml
 							</metricsFile>
 						</font>
 						<font>
@@ -215,10 +224,10 @@
 							<style>normal</style>
 							<weight>bold</weight>
 							<embedFile>
-								${basedir}/src/doc/layout/fonts/SteLiB__.ttf
+								${basedir}/src/doc/layout/pdf/fonts/SteLiB__.ttf
 							</embedFile>
 							<metricsFile>
-								${basedir}/src/doc/layout/fonts/SteLiB__.xml
+								${basedir}/src/doc/layout/pdf/fonts/SteLiB__.xml
 							</metricsFile>
 						</font>
 						<font>
@@ -226,10 +235,10 @@
 							<style>italic</style>
 							<weight>bold</weight>
 							<embedFile>
-								${basedir}/src/doc/layout/fonts/SteLiBI_.ttf
+								${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.ttf
 							</embedFile>
 							<metricsFile>
-								${basedir}/src/doc/layout/fonts/SteLiBI_.xml
+								${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.xml
 							</metricsFile>
 						</font>
 					</fonts>
@@ -237,12 +246,13 @@
 					<preProcess>
 						<copy todir="${basedir}/target/doc/images">
 							<!-- Copy layout images -->
-							<fileset
-								dir="${basedir}/src/doc/layout/images" />
+							<fileset dir="${basedir}/src/doc/layout/pdf/images" />
+							<fileset dir="${basedir}/src/doc/layout/html/images" />
 							<!-- Copy content images -->
-							<fileset dir="${basedir}/src/doc/images">
-								<exclude name="**/*.txt" />
-							</fileset>
+							<fileset dir="${basedir}/src/doc/images" />
+						</copy>
+						<copy todir="${basedir}/target/doc/resources">
+							<fileset dir="${basedir}/src/doc/layout/html/resources" />
 						</copy>
 					</preProcess>
 
@@ -264,6 +274,14 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-pmd-plugin</artifactId>
+		      <configuration>
+		      	<targetJdk>1.5</targetJdk>
+		      </configuration>
+		    </plugin>
 
 		</plugins>
 	</reporting>
@@ -289,14 +307,14 @@
 
 	<scm>
 		<developerConnection>
-			scm:svn:https://svn.synyx.de/svn/synyx/spring-jpa-dao
+			scm:svn:https://svn.synyx.de/svn/synyx/hades
 		</developerConnection>
 		<tag>trunk</tag>
 	</scm>
 
 	<issueManagement>
 		<system>Trac</system>
-		<url>http://trac.synyx.de/spring-jpa-dao/</url>
+		<url>http://trac.synyx.de/hades/</url>
 	</issueManagement>
 
 	<distributionManagement>
@@ -304,7 +322,7 @@
 		<site>
 			<id>trac.synyx.de</id>
 			<url>
-				scp://trac.synyx.de:24/home/trac/instances/spring-jpa-dao/htdocs/mvn
+				scp://trac.synyx.de:24/home/trac/instances/hades/htdocs/mvn
 			</url>
 		</site>
 
