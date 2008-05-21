@@ -170,10 +170,10 @@
     <xsl:param name="region.after.extent">10mm</xsl:param>
     
     <xsl:param name="body.margin.top">10mm</xsl:param>
-    <xsl:param name="body.margin.bottom">15mm</xsl:param>
+    <xsl:param name="body.margin.bottom">10mm</xsl:param>
     
     <xsl:param name="page.margin.top">10mm</xsl:param>
-    <xsl:param name="page.margin.bottom">15mm</xsl:param>
+    <xsl:param name="page.margin.bottom">10mm</xsl:param>
 	
     <xsl:param name="page.margin.outer">18mm</xsl:param>
     <xsl:param name="page.margin.inner">18mm</xsl:param>
@@ -307,7 +307,7 @@
     <!-- Verbatim text formatting (programlistings) -->
     <xsl:attribute-set name="monospace.verbatim.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="$body.font.small * 1.0"/>
+            <xsl:value-of select="$body.font.small * 0.9"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
