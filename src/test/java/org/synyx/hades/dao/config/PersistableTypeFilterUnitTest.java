@@ -10,7 +10,7 @@ import org.synyx.hades.dao.config.DaoConfigDefinitionParser.PersistableTypeFilte
 
 
 /**
- * Unit test for {@link DaoConfigDefinitionParser.PersistableTypeFilter}.
+ * Unit test for {@code DaoConfigDefinitionParser.PersistableTypeFilter}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */

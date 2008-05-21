@@ -1,4 +1,4 @@
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.page;
 
 /**
  * Abstract interface for pagination information.
@@ -8,11 +8,11 @@ package org.synyx.hades.domain;
 public interface Pageable {
 
     /**
-     * Returns the first item to be returned.
+     * Returns the page to be returned.
      * 
-     * @return the first item to be returned
+     * @return the page to be returned.
      */
-    public abstract int getFirstItem();
+    int getPage();
 
 
     /**
@@ -20,5 +20,5 @@ public interface Pageable {
      * 
      * @return the number of items of that page
      */
-    public abstract int getNumberOfItems();
+    int getNumberOfItems();
 }

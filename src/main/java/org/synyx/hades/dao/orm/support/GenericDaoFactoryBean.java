@@ -2,8 +2,8 @@ package org.synyx.hades.dao.orm.support;
 
 import java.io.Serializable;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
@@ -24,15 +25,20 @@ import org.synyx.hades.domain.Persistable;
 /**
  * Factory bean to create instances of a given DAO interface. Creates a proxy
  * implementing the configured DAO interface and apply an advice handing the
- * control to the <code>FinderExecuter</code> when a method beginning with
- * "find" is called.
+ * control to the {@code FinderExecuter} when a method beginning with "find" is
+ * called.
  * <p>
- * E.g. if you define a method <code>findByName</code> on an interface
- * extending <code>GenericDao&lt;User, Integer&gt;</code> the advice will try
- * to call a named query named <code>User.findByName</code>.
+ * E.g. if you define a method {@code findByName} on an interface extending
+ * {@code GenericDao<User, Integer>} the advice will try to call a named query
+ * named {@code User.findByName}. The advice can distinguish between calls for
+ * lists or a single instance by checking the return value of the defined
+ * method.
  * 
+ * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
- * @author Oliver Gierke
+ * @param <D> the base type for the DAO to create
+ * @param <T> the type of the entity to handle by the DAO
+ * @param <PK> the type of the identifier of the entity
  */
 @SuppressWarnings("unchecked")
 public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends Persistable<PK>, PK extends Serializable>
@@ -45,7 +51,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     private Class<T> domainClass;
     private Class<D> daoClass = (Class<D>) DEFAULT_DAO_IMPLEMENTATION;
 
-    private EntityManager entityManager;
+    private EntityManagerFactory entityManagerFactory;
 
 
     /**
@@ -54,7 +60,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      * @param daoInterface the daoInterface to set
      */
     @Required
-    public void setDaoInterface(Class<GenericDao<T, PK>> daoInterface) {
+    public void setDaoInterface(final Class<GenericDao<T, PK>> daoInterface) {
 
         Assert.notNull(daoInterface);
         Assert.isAssignable(GenericDao.class, daoInterface,
@@ -70,7 +76,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      * @param domainClass the domainClass to set
      */
     @Required
-    public void setDomainClass(Class<T> domainClass) {
+    public void setDomainClass(final Class<T> domainClass) {
 
         Assert.notNull(domainClass);
         Assert.isAssignable(Persistable.class, domainClass,
@@ -87,7 +93,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      * 
      * @param daoClass the daoClass to set
      */
-    public void setDaoClass(Class<D> daoClass) {
+    public void setDaoClass(final Class<D> daoClass) {
 
         Assert.notNull(daoClass);
         Assert.isAssignable(GenericDao.class, daoClass,
@@ -100,12 +106,13 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     /**
      * Setter to inject entity manager.
      * 
-     * @param entityManager the entityManager to set
+     * @param entityManagerFactory the entityManagerFactory to set
      */
-    @PersistenceContext
-    public void setEntityManager(EntityManager entityManager) {
+    @PersistenceUnit
+    public void setEntityManagerFactory(
+            final EntityManagerFactory entityManagerFactory) {
 
-        this.entityManager = entityManager;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
 
@@ -119,7 +126,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         // Instantiate generic dao
         D genericJpaDao = daoClass.newInstance();
         genericJpaDao.setDomainClass(domainClass);
-        genericJpaDao.setEntityManager(entityManager);
+        genericJpaDao.setEntityManagerFactory(entityManagerFactory);
 
         // Create proxy
         ProxyFactory result = new ProxyFactory();
@@ -135,18 +142,29 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
              * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
              */
             @SuppressWarnings("unchecked")
-            public Object invoke(MethodInvocation invocation) throws Throwable {
+            public Object invoke(final MethodInvocation invocation)
+                    throws Throwable {
 
                 String methodName = invocation.getMethod().getName();
 
-                if (methodName.startsWith("find")) {
-                    FinderExecuter<T> target = (FinderExecuter<T>) invocation
-                            .getThis();
-                    return target.executeFinder(methodName, invocation
+                if (!methodName.startsWith("find")) {
+                    return invocation.proceed();
+                }
+
+                FinderExecuter<T> target = (FinderExecuter<T>) invocation
+                        .getThis();
+
+                Class<?> returnType = invocation.getMethod().getReturnType();
+
+                // Execute finder for single object if domain class type is
+                // assignable to the methods return type, else finder for a list
+                // of objects
+                if (ClassUtils.isAssignable(domainClass, returnType)) {
+                    return target.executeObjectFinder(methodName, invocation
                             .getArguments());
                 } else {
-
-                    return invocation.proceed();
+                    return target.executeFinder(methodName, invocation
+                            .getArguments());
                 }
             }
         });

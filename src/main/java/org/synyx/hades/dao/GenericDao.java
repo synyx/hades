@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.synyx.hades.domain.Persistable;
-import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.page.Page;
+import org.synyx.hades.domain.page.Pageable;
 
 
 /**
@@ -23,7 +24,7 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * @param entity
      * @return the saved entity
      */
-    public abstract T save(T entity);
+    T save(final T entity);
 
 
     /**
@@ -32,7 +33,7 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * @param entity
      * @return the saved entity
      */
-    public abstract T saveAndFlush(T entity);
+    T saveAndFlush(final T entity);
 
 
     /**
@@ -42,7 +43,7 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * @return the entity with the given primary key
      * @throws IllegalArgumentException if primaryKey is null
      */
-    public abstract T readByPrimaryKey(PK primaryKey);
+    T readByPrimaryKey(final PK primaryKey);
 
 
     /**
@@ -50,7 +51,7 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * 
      * @return all entities
      */
-    public abstract List<T> readAll();
+    List<T> readAll();
 
 
     /**
@@ -60,7 +61,7 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * @param pageable
      * @return a page of entities
      */
-    public abstract List<T> readAll(Pageable pageable);
+    Page<T> readAll(final Pageable pageable);
 
 
     /**
@@ -68,7 +69,7 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * 
      * @return the number of entities
      */
-    public abstract Long count();
+    Long count();
 
 
     /**
@@ -76,11 +77,11 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * 
      * @param entity
      */
-    public abstract void delete(T entity);
+    void delete(final T entity);
 
 
     /**
      * Flushes all pending changes to the database.
      */
-    public abstract void flush();
+    void flush();
 }

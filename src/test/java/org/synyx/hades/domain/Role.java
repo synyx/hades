@@ -7,9 +7,9 @@ import javax.persistence.Id;
 
 
 /**
- * Example implementation of the very basic {@link Persistable} interface. The
+ * Example implementation of the very basic {@code Persistable} interface. The
  * id type is matching the typisation of the interface.
- * {@link Persitsable#isNew()} is implemented regarding the id as flag.
+ * {@code Persitsable#isNew()} is implemented regarding the id as flag.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -40,7 +40,7 @@ public class Role implements Persistable<Integer> {
      * 
      * @param name
      */
-    public Role(String name) {
+    public Role(final String name) {
 
         this.name = name;
     }

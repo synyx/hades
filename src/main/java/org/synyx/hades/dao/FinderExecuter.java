@@ -19,5 +19,17 @@ public interface FinderExecuter<T> {
      * @param queryArgs
      * @return a list of objects meeting the finder's criterias
      */
-    public List<T> executeFinder(String methodName, Object... queryArgs);
+    List<T> executeFinder(final String methodName, final Object... queryArgs);
+
+
+    /**
+     * Executes a finder for a single result.
+     * 
+     * @param methodName
+     * @param queryArgs
+     * @return a single result returned by the named query
+     * @throws EntityNotFoundException if no entity was found
+     * @throws NonUniqueResultException if more than one entity was found
+     */
+    T executeObjectFinder(final String methodName, final Object... queryArgs);
 }

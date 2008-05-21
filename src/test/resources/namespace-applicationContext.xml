@@ -35,6 +35,7 @@
 		entity-package-name="org.synyx.hades.domain"
 		dao-package-name="org.synyx.hades.dao"
 		dao-name-postfix="ExtendedDao"
+		dao-class-postfix="ExtendedDao"
 		dao-base-class="org.synyx.hades.dao.orm.GenericHibernateJpaDao">
 		<dao:dao name="user"/>
 	</dao:dao-config>

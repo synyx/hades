@@ -10,8 +10,6 @@
 		<config>src/test/resources/namespace-applicationContext.xml</config>
 		<config>src/test/resources/infrastructure.xml</config>
 		<config>src/test/resources/applicationContext.xml</config>
-		<config>src/test/resources/audition-application-context.xml</config>
-		<config>src/test/resources/audition-advice-context.xml</config>
 		<config>src/test/resources/namespace-autoconfig-context.xml</config>
 	</configs>
 	<configSets>

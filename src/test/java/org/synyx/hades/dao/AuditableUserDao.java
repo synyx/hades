@@ -1,5 +1,7 @@
 package org.synyx.hades.dao;
 
+import java.util.List;
+
 import org.synyx.hades.domain.AuditableUser;
 
 
@@ -10,4 +12,11 @@ import org.synyx.hades.domain.AuditableUser;
  */
 public interface AuditableUserDao extends GenericDao<AuditableUser, Long> {
 
+    /**
+     * Returns all users with the given firstname.
+     * 
+     * @param firstname
+     * @return all users with the given firstname.
+     */
+    public List<AuditableUser> findByFirstname(final String firstname);
 }

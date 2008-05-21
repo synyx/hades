@@ -1,5 +1,6 @@
 package org.synyx.hades.dao.config;
 
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -21,7 +22,7 @@ class XmlDaoConfigContext implements DaoConfigContext {
      * 
      * @param daoConfigElement
      */
-    public XmlDaoConfigContext(Element daoConfigElement) {
+    public XmlDaoConfigContext(final Element daoConfigElement) {
 
         this.daoConfigElement = daoConfigElement;
     }
@@ -91,7 +92,7 @@ class XmlDaoConfigContext implements DaoConfigContext {
 
         String postfix = daoConfigElement.getAttribute("dao-name-postfix");
 
-        return ("".equals(postfix)) ? DEFAULT_DAO_POSTFIX : postfix;
+        return (!StringUtils.hasText(postfix)) ? DEFAULT_DAO_POSTFIX : postfix;
     }
 
 

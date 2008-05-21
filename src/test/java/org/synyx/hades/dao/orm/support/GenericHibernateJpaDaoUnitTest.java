@@ -1,21 +1,28 @@
 package org.synyx.hades.dao.orm.support;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import junit.framework.TestCase;
 
 import org.easymock.classextension.EasyMock;
-import org.hibernate.ejb.EntityManagerImpl;
+import org.hibernate.ejb.HibernateEntityManager;
 import org.synyx.hades.dao.orm.GenericHibernateJpaDao;
 import org.synyx.hades.domain.User;
 
 
 /**
+ * Unit test for {@code GenericHibernateJpaDao}. Primarily tests configuration
+ * issues.
+ * 
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class GenericHibernateJpaDaoUnitTest extends TestCase {
 
     private GenericHibernateJpaDao<User, Integer> hibernateDao;
+
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
 
     /*
@@ -26,27 +33,54 @@ public class GenericHibernateJpaDaoUnitTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
 
-        hibernateDao = new GenericHibernateJpaDao<User, Integer>();
-        hibernateDao.setEntityManager(EasyMock
-                .createNiceMock(EntityManagerImpl.class));
+        // Setup mocks
+        entityManagerFactory = EasyMock
+                .createNiceMock(EntityManagerFactory.class);
+        entityManager = EasyMock.createNiceMock(HibernateEntityManager.class);
 
-        hibernateDao.afterPropertiesSet();
+        // Setup DAO
+        hibernateDao = new GenericHibernateJpaDao<User, Integer>();
+        hibernateDao.setEntityManagerFactory(entityManagerFactory);
     }
 
 
+    /**
+     * Tests, that {@code InitializingBean#afterPropertiesSet()} does not reject
+     * configuration if an instance of {@code HibernateEntityManager} is
+     * configured.
+     * 
+     * @throws Exception
+     */
+    public void testCorrectConfiguration() throws Exception {
+
+        EasyMock.expect(entityManagerFactory.createEntityManager()).andReturn(
+                entityManager);
+        EasyMock.replay(entityManagerFactory);
+
+        hibernateDao.afterPropertiesSet();
+
+        EasyMock.verify(entityManagerFactory);
+    }
+
+
+    /**
+     * Tests, that {@code InitializingBean#afterPropertiesSet()} rejects non
+     * {@code HibernateEntityManager} implementations.
+     * 
+     * @throws Exception
+     */
     public void testPreventsNonHibernateEntityManager() throws Exception {
 
-        EntityManager entityManager = EasyMock
-                .createNiceMock(EntityManager.class);
-        EasyMock.replay(entityManager);
+        EasyMock.expect(entityManagerFactory.createEntityManager()).andReturn(
+                EasyMock.createNiceMock(EntityManager.class));
 
-        hibernateDao.setEntityManager(entityManager);
+        EasyMock.replay(entityManagerFactory);
 
         try {
             hibernateDao.afterPropertiesSet();
             fail("Expected IllegalArgumentException!");
         } catch (IllegalArgumentException e) {
-
+            EasyMock.verify(entityManagerFactory);
         }
     }
 }

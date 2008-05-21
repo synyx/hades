@@ -10,6 +10,8 @@ import java.util.Date;
  * be defined by a generics definition.
  * 
  * @author Oliver Gierke - gierke@synyx.de
+ * @param <U> the auditing type. Typically some kind of user.
+ * @param <PK> the type of the auditing type's idenifier
  */
 public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
         extends Persistable<PK> {
@@ -19,7 +21,7 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @return the createdBy
      */
-    public abstract U getCreatedBy();
+    U getCreatedBy();
 
 
     /**
@@ -27,7 +29,7 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @param createdBy the creating entity to set
      */
-    public abstract void setCreatedBy(U createdBy);
+    void setCreatedBy(final U createdBy);
 
 
     /**
@@ -35,7 +37,7 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @return the createdDate
      */
-    public abstract Date getCreatedDate();
+    Date getCreatedDate();
 
 
     /**
@@ -43,7 +45,7 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @param creationDate the creation date to set
      */
-    public abstract void setCreated(Date creationDate);
+    void setCreated(final Date creationDate);
 
 
     /**
@@ -51,7 +53,7 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @return the lastModifiedBy
      */
-    public abstract U getLastModifiedBy();
+    U getLastModifiedBy();
 
 
     /**
@@ -59,7 +61,7 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @param lastModifiedBy the last modifying entity to set
      */
-    public abstract void setLastModifiedBy(U lastModifiedBy);
+    void setLastModifiedBy(final U lastModifiedBy);
 
 
     /**
@@ -67,7 +69,7 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @return the lastModifiedDate
      */
-    public abstract Date getLastModifiedDate();
+    Date getLastModifiedDate();
 
 
     /**
@@ -75,5 +77,5 @@ public interface Auditable<U extends Persistable<PK>, PK extends Serializable>
      * 
      * @param lastModifiedDate the date of the last modification to set
      */
-    public abstract void setLastModified(Date lastModifiedDate);
+    void setLastModified(final Date lastModifiedDate);
 }

@@ -4,7 +4,7 @@ import org.synyx.hades.domain.Role;
 
 
 /**
- * Typing interface for {@link Role}.
+ * Typing interface for {@code Role}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
