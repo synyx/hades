@@ -38,30 +38,19 @@ public class PageImpl<T> implements Page<T> {
      * Constructor of {@code PageImpl}.
      * 
      * @param content
-     * @param number
-     * @param pageSize
+     * @param pageable
      * @param total
      */
-    public PageImpl(final List<T> content, final int number,
-            final int pageSize, final long total) {
+    public PageImpl(final List<T> content, final Pageable pageable,
+            final long total) {
 
         if (null == content) {
             throw new IllegalArgumentException("Content must not be null!");
         }
 
-        if (number < 0) {
-            throw new IllegalArgumentException(
-                    "Page number must not be less than zero!");
-        }
-
-        if (pageSize < 0) {
-            throw new IllegalArgumentException(
-                    "Page size must not be less than zero");
-        }
-
         this.content = content;
-        this.number = number;
-        this.pageSize = pageSize;
+        this.number = pageable.getPage();
+        this.pageSize = pageable.getNumberOfItems();
         this.total = total;
     }
 
