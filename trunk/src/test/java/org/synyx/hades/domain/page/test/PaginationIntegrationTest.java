@@ -85,6 +85,7 @@ public class PaginationIntegrationTest extends AbstractJpaTests {
         Page<User> users = userDao.readAll(new PageRequest(0, 2));
 
         assertEquals(2, users.getPageSize());
+        assertEquals(5, users.getTotalPages());
         assertFalse(users.hasPreviousPage());
         assertTrue(users.hasNextPage());
     }
@@ -105,6 +106,7 @@ public class PaginationIntegrationTest extends AbstractJpaTests {
         users = userDao.readAll(new PageRequest(3, 3));
 
         assertEquals(3, users.getPageSize());
+        assertEquals(4, users.getTotalPages());
         assertEquals(1, users.getNumberOfElements());
         assertTrue(users.hasPreviousPage());
         assertFalse(users.hasNextPage());
