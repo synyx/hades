@@ -76,13 +76,11 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
 
         // Apply pagination
         if (null != pageable) {
-            criteria.setFirstResult(pageable.getPage()
-                    * pageable.getNumberOfItems());
+            criteria.setFirstResult(pageable.getFirstItem());
             criteria.setMaxResults(pageable.getNumberOfItems());
         }
 
-        return new PageImpl(criteria.list(), pageable.getPage(), pageable
-                .getNumberOfItems(), count());
+        return new PageImpl(criteria.list(), pageable, count());
     }
 
 

@@ -37,4 +37,12 @@ public interface Pageable {
      * @return the number of items of that page
      */
     int getNumberOfItems();
+
+
+    /**
+     * Returns the first item relatively to the total number of items.
+     * 
+     * @return the first item to be returned
+     */
+    int getFirstItem();
 }

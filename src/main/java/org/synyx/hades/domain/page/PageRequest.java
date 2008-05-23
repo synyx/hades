@@ -70,4 +70,15 @@ public class PageRequest implements Pageable {
 
         return page;
     }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.domain.page.Pageable#getFirstItem()
+     */
+    public int getFirstItem() {
+
+        return page * size;
+    }
 }

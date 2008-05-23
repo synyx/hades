@@ -108,13 +108,11 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
 
                 // Apply pagination
                 if (null != pageable) {
-                    query.setFirstResult(pageable.getPage()
-                            * pageable.getNumberOfItems());
+                    query.setFirstResult(pageable.getFirstItem());
                     query.setMaxResults(pageable.getNumberOfItems());
                 }
 
-                return new PageImpl(query.getResultList(), pageable.getPage(),
-                        pageable.getNumberOfItems(), count());
+                return new PageImpl(query.getResultList(), pageable, count());
             }
         });
     }
