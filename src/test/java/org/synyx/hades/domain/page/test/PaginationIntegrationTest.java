@@ -1,4 +1,4 @@
-package org.synyx.hades.domain.test;
+package org.synyx.hades.domain.page.test;
 
 import org.springframework.test.jpa.AbstractJpaTests;
 import org.synyx.hades.dao.UserDao;

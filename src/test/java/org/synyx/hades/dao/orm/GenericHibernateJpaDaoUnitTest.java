@@ -1,4 +1,4 @@
-package org.synyx.hades.dao.orm.support;
+package org.synyx.hades.dao.orm;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
