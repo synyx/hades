@@ -294,15 +294,6 @@
 			<url>http://download.java.net/maven/2</url>
 		</repository>
 
-		<!-- 
-		Necessary as Hibernate 3.3.2 EntityManager is not 
-		available in the official Maven repository yet
-		-->
-		<repository>
-			<id>jboss</id>
-			<url>http://repository.jboss.com/maven2</url>
-		</repository>
-
 	</repositories>
 
 	<scm>
