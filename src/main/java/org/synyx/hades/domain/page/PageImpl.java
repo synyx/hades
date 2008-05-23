@@ -84,8 +84,8 @@ public class PageImpl<T> implements Page<T> {
      */
     public int getTotalPages() {
 
-        // TODO Auto-generated method stub
-        return 0;
+        return (int) Math.ceil(new Long(total).doubleValue()
+                / new Integer(pageSize).doubleValue());
     }
 
 
