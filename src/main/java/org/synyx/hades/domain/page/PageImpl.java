@@ -19,6 +19,8 @@ package org.synyx.hades.domain.page;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.util.Assert;
+
 
 /**
  * Basic {@code Page} implementation.
@@ -44,9 +46,8 @@ public class PageImpl<T> implements Page<T> {
     public PageImpl(final List<T> content, final Pageable pageable,
             final long total) {
 
-        if (null == content) {
-            throw new IllegalArgumentException("Content must not be null!");
-        }
+        Assert.notNull(content);
+        Assert.notNull(pageable);
 
         this.content = content;
         this.number = pageable.getPage();
