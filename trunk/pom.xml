@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx</groupId>
 	<artifactId>hades</artifactId>
-	<version>1.0-RC2</version>
+	<version>1.0-RC3-SNAPSHOT</version>
 	<name>Hades</name>
 	<description>
 		Domain class and DAO development framework
