@@ -18,6 +18,7 @@ package org.synyx.hades.dao.config;
 
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -62,7 +63,23 @@ class XmlDaoConfigContext implements DaoConfigContext {
      */
     public boolean configureManually() {
 
-        return daoConfigElement.hasChildNodes();
+        if (!daoConfigElement.hasChildNodes()) {
+            return false;
+        }
+
+        NodeList nodes = getChildNodes();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+
+            Node node = nodes.item(i);
+
+            // Found an XML element?
+            if (Node.ELEMENT_NODE == node.getNodeType()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
