@@ -225,21 +225,21 @@
           <programlisting language="java">public interface GenericDao&lt;T extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
         extends FinderExecuter&lt;T&gt; {
 
-    public abstract T save(T persistable);
+    T save(T persistable);
 
-    public abstract T saveAndFlush(T persistable);
+    T saveAndFlush(T persistable);
 
-    public abstract T readByPrimaryKey(PK primaryKey);
+    T readByPrimaryKey(PK primaryKey);
 
-    public abstract List&lt;T&gt; readAll();
+    List&lt;T&gt; readAll();
 
-    public abstract List&lt;T&gt; readAll(Pageable pageable);
+    Page&lt;T&gt; readAll(Pageable pageable);
 
-    public abstract Long count();
+    Long count();
 
-    public abstract void delete(T persistable);
+    void delete(T persistable);
 
-    public abstract void flush();
+    void flush();
 }</programlisting>
 
           <calloutlist>
@@ -307,9 +307,9 @@
           <programlisting language="java">public interface ExtendedGenericDao&lt;T extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
         extends GenericDao&lt;T, PK&gt; {
 
-    public abstract List&lt;T&gt; readByExample(T... examples);
+    List&lt;T&gt; readByExample(T... examples);
 
-    public abstract List&lt;T&gt; readByExample(Pageable pageable, T... examples);
+    List&lt;T&gt; readByExample(Pageable pageable, T... examples);
 }</programlisting>
 
           <calloutlist>
@@ -661,7 +661,7 @@
           <programlisting language="java">@Entity
 public class User implements Persistable&lt;Long&gt; {
 
-  public static final long = 123L
+  public static final long serialVersionUID = 123L
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -1034,9 +1034,9 @@ public class User implements Persistable&lt;Long&gt; {
 
           <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
-  public List&lt;User&gt; findByLastname(String lastname);
+  List&lt;User&gt; findByLastname(String lastname);
 
-  public User findByEmailAddress(String emailAddress);
+  User findByEmailAddress(String emailAddress);
 }</programlisting>
         </example>
 
@@ -1245,7 +1245,7 @@ public class User extends AbstractPersistable&lt;Long&gt; {
         <programlisting language="java">@Entity
 public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 
-  public static final long = 123L;
+  public static final long = 123L;s
 
   private String username;
   private String password;
