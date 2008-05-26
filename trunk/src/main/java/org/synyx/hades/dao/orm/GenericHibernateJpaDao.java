@@ -24,11 +24,13 @@ import javax.persistence.PersistenceException;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Order;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.page.Page;
 import org.synyx.hades.domain.page.PageImpl;
 import org.synyx.hades.domain.page.Pageable;
@@ -45,12 +47,46 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
     /*
      * (non-Javadoc)
      * 
+     * @see org.synyx.hades.dao.ExtendedGenericDao#readAll(org.synyx.hades.domain.page.Pageable,
+     *      org.synyx.hades.domain.Sort)
+     */
+    @Override
+    public Page<T> readAll(Pageable pageable, Sort sort) {
+
+        if (null == sort) {
+            return readAll(pageable);
+        }
+
+        return null;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.synyx.hades.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.hades.domain.Identifyable)
      */
-    @SuppressWarnings("unchecked")
+
     public List<T> readByExample(final T... examples) {
 
+        return readByExample((Sort) null, examples);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.domain.Sort,
+     *      T[])
+     */
+    @SuppressWarnings("unchecked")
+    public List<T> readByExample(final Sort sort, final T... examples) {
+
         Criteria criteria = prepareCriteria(examples);
+
+        if (null != sort) {
+            applySorting(criteria, sort);
+        }
 
         return criteria.list();
     }
@@ -65,11 +101,25 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
     @SuppressWarnings("unchecked")
     public Page<T> readByExample(final Pageable pageable, final T... examples) {
 
+        return readByExample(pageable, null, examples);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.domain.page.Pageable,
+     *      org.synyx.hades.domain.Sort, T[])
+     */
+    @SuppressWarnings("unchecked")
+    public Page<T> readByExample(final Pageable pageable, final Sort sort,
+            final T... examples) {
+
         Assert.notNull(pageable, "Pageable must not be null!");
 
         // Prevent null examples to cause trouble
         if (null == examples || examples.length == 0) {
-            return readAll(pageable);
+            return readAll(pageable, sort);
         }
 
         Criteria criteria = prepareCriteria(examples);
@@ -78,6 +128,11 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
         if (null != pageable) {
             criteria.setFirstResult(pageable.getFirstItem());
             criteria.setMaxResults(pageable.getNumberOfItems());
+        }
+
+        // Apply sorting
+        if (null != sort) {
+            applySorting(criteria, sort);
         }
 
         return new PageImpl(criteria.list(), pageable, count());
@@ -93,19 +148,19 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
     private Criteria prepareCriteria(final T... examples) {
 
         // Create criteria from hibernate entity manager
-        return (Criteria) getJpaTemplate().execute(new JpaCallback() {
+        return (Criteria) getJpaTemplate().execute(new HibernateJpaCallback() {
 
             /*
              * (non-Javadoc)
              * 
-             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             * @see org.synyx.hades.dao.orm.GenericHibernateJpaDao.HibernateJpaCallback#doInHibernateJpa(org.hibernate.ejb.HibernateEntityManager)
              */
-            public Criteria doInJpa(final EntityManager em)
+            @Override
+            public Criteria doInHibernateJpa(final HibernateEntityManager em)
                     throws PersistenceException {
 
-                HibernateEntityManager hibernateEntityManager = (HibernateEntityManager) em;
-                Criteria criteria = hibernateEntityManager.getSession()
-                        .createCriteria(getDomainClass());
+                Criteria criteria = em.getSession().createCriteria(
+                        getDomainClass());
 
                 // Add examples
                 for (T example : examples) {
@@ -151,5 +206,53 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
                 + " can only be used with Hibernate EntityManager "
                 + "implementation! Please check configuration or use "
                 + GenericJpaDao.class.getSimpleName() + " instead!");
+    }
+
+
+    /**
+     * Applies sorting options to the given criteria.
+     * 
+     * @param criteria
+     * @param sort
+     */
+    private void applySorting(Criteria criteria, Sort sort) {
+
+        for (String property : sort.getProperties()) {
+
+            Order order = (sort.isAscending() ? Order.asc(property) : Order
+                    .desc(property));
+
+            criteria.addOrder(order);
+        }
+    }
+
+    /**
+     * Simple implementation of {@code HibernateJpaCallback} that exposes a
+     * {@code HibernateEntityManager} to a template method.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    private abstract class HibernateJpaCallback implements JpaCallback {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+         */
+        public Object doInJpa(EntityManager em) throws PersistenceException {
+
+            HibernateEntityManager hibernateEntityManager = (HibernateEntityManager) em;
+
+            return doInHibernateJpa(hibernateEntityManager);
+        }
+
+
+        /**
+         * Execute a JPA operation with propietary Hibernate means.
+         * 
+         * @param em
+         * @return
+         */
+        protected abstract Object doInHibernateJpa(HibernateEntityManager em);
     }
 }

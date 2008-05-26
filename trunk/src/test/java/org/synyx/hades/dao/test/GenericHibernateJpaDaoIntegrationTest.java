@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.springframework.test.jpa.AbstractJpaTests;
 import org.synyx.hades.dao.UserExtendedDao;
+import org.synyx.hades.domain.Order;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.User;
 
 
@@ -30,6 +32,8 @@ import org.synyx.hades.domain.User;
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class GenericHibernateJpaDaoIntegrationTest extends AbstractJpaTests {
+
+    private static final int NUMBER_OF_INSTANCES = 10;
 
     private UserExtendedDao userExtendedDao;
     private List<User> referenceUsers;
@@ -66,10 +70,10 @@ public class GenericHibernateJpaDaoIntegrationTest extends AbstractJpaTests {
 
         referenceUsers = new ArrayList<User>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < NUMBER_OF_INSTANCES; i++) {
 
             User user = new User("Firstname" + i, "Lastname" + i, "foo@bar.de"
-                    + i);
+                    + (NUMBER_OF_INSTANCES - i));
             referenceUsers.add(userExtendedDao.save(user));
 
         }
@@ -97,4 +101,20 @@ public class GenericHibernateJpaDaoIntegrationTest extends AbstractJpaTests {
         assertEquals(reference, users.get(0));
     }
 
+
+    /**
+     * Tests, that the generic DAO implementation applies sorting correctly.
+     * 
+     * @throws Exception
+     */
+    public void testReadAllSorted() throws Exception {
+
+        List<User> users = userExtendedDao.readAll(new Sort(Order.ASCENDING,
+                "emailAddress"));
+
+        assertNotNull(users);
+        assertEquals(NUMBER_OF_INSTANCES, users.size());
+
+        assertEquals(referenceUsers.get(NUMBER_OF_INSTANCES - 1), users.get(0));
+    }
 }

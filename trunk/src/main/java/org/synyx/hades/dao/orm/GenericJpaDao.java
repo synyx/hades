@@ -25,8 +25,10 @@ import javax.persistence.Query;
 
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.page.Page;
 import org.synyx.hades.domain.page.PageImpl;
 import org.synyx.hades.domain.page.Pageable;
@@ -80,8 +82,20 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public List<T> readAll() {
 
-        return getJpaTemplate()
-                .find("from " + getDomainClass().getSimpleName());
+        return getJpaTemplate().find(getReadAllQuery());
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.Sort)
+     */
+    @SuppressWarnings("unchecked")
+    public List<T> readAll(final Sort sort) {
+
+        return (null == sort) ? readAll() : getJpaTemplate().find(
+                applyOrderBy(getReadAllQuery(), sort));
     }
 
 
@@ -93,28 +107,27 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public Page<T> readAll(final Pageable pageable) {
 
-        return (Page) getJpaTemplate().execute(new JpaCallback() {
+        Assert.notNull(pageable);
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
-             */
-            public Page doInJpa(final EntityManager em)
-                    throws PersistenceException {
+        return readPage(pageable, getReadAllQuery());
+    }
 
-                Query query = em.createQuery("from "
-                        + getDomainClass().getSimpleName());
 
-                // Apply pagination
-                if (null != pageable) {
-                    query.setFirstResult(pageable.getFirstItem());
-                    query.setMaxResults(pageable.getNumberOfItems());
-                }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.page.Pageable,
+     *      org.synyx.hades.domain.Sort)
+     */
+    public Page<T> readAll(final Pageable pageable, final Sort sort) {
 
-                return new PageImpl(query.getResultList(), pageable, count());
-            }
-        });
+        Assert.notNull(pageable);
+
+        if (null == sort) {
+            return readAll(pageable);
+        }
+
+        return readPage(pageable, applyOrderBy(getReadAllQuery(), sort));
     }
 
 
@@ -136,7 +149,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
                     throws PersistenceException {
 
                 return em.createQuery(
-                        "SELECT count(x) FROM "
+                        "select count(x) from "
                                 + getDomainClass().getSimpleName() + " x")
                         .getSingleResult();
             }
@@ -183,5 +196,75 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     public void flush() {
 
         getJpaTemplate().flush();
+    }
+
+
+    /**
+     * Reads a page of entities for the given JPQL query.
+     * 
+     * @param pageable
+     * @param query
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    protected Page<T> readPage(final Pageable pageable, final String query) {
+
+        return (Page<T>) getJpaTemplate().execute(new JpaCallback() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             */
+            public Page<T> doInJpa(final EntityManager em)
+                    throws PersistenceException {
+
+                Query jpaQuery = em.createQuery(query);
+
+                jpaQuery.setFirstResult(pageable.getFirstItem());
+                jpaQuery.setMaxResults(pageable.getNumberOfItems());
+
+                return new PageImpl<T>(jpaQuery.getResultList(), pageable,
+                        count());
+            }
+        });
+    }
+
+
+    /**
+     * Returns the query string to retrieve all entities.
+     * 
+     * @return
+     */
+    private String getReadAllQuery() {
+
+        return "from " + getDomainClass().getSimpleName() + " x";
+    }
+
+
+    /**
+     * Adds {@literal order by} clause to the JPQL query.
+     * 
+     * @param query
+     * @param sort
+     * @return
+     */
+    private String applyOrderBy(String query, Sort sort) {
+
+        StringBuilder builder = new StringBuilder(query);
+        builder.append(" order by");
+
+        for (String property : sort.getProperties()) {
+            builder.append(" x.");
+            builder.append(property);
+            builder.append(",");
+        }
+
+        builder.deleteCharAt(builder.length() - 1);
+
+        builder.append(" ");
+        builder.append(sort.getOrder().getJpaValue());
+
+        return builder.toString();
     }
 }

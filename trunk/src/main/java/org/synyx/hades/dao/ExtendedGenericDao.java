@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.page.Page;
 import org.synyx.hades.domain.page.Pageable;
 
@@ -47,6 +48,18 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
 
 
     /**
+     * Returns all entites matching the given criteria sorted by the given sort
+     * options.
+     * 
+     * @see ExtendedGenericDao#readByExample(T...)
+     * @param sort
+     * @param examples
+     * @return
+     */
+    List<T> readByExample(final Sort sort, final T... examples);
+
+
+    /**
      * Allows pageable access to all entities matching the given examples. If
      * you provide {@code null} for the pageable, the call is identical to
      * {@code ExtendedGenericDao#readByExample(T...)}.
@@ -56,4 +69,17 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * @return the page of objects meeting the example's criterias
      */
     Page<T> readByExample(final Pageable pageable, final T... examples);
+
+
+    /**
+     * Returns a page of entities matching the provided examples sorted by the
+     * given sorting options.
+     * 
+     * @param pageable
+     * @param sort
+     * @param examples
+     * @return
+     */
+    Page<T> readByExample(final Pageable pageable, final Sort sort,
+            final T... examples);
 }
