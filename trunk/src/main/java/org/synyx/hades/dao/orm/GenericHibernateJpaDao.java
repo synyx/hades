@@ -25,6 +25,7 @@ import javax.persistence.PersistenceException;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.util.Assert;
@@ -47,26 +48,8 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.ExtendedGenericDao#readAll(org.synyx.hades.domain.page.Pageable,
-     *      org.synyx.hades.domain.Sort)
-     */
-    @Override
-    public Page<T> readAll(Pageable pageable, Sort sort) {
-
-        if (null == sort) {
-            return readAll(pageable);
-        }
-
-        return null;
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.synyx.hades.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.hades.domain.Identifyable)
      */
-
     public List<T> readByExample(final T... examples) {
 
         return readByExample((Sort) null, examples);
@@ -122,20 +105,23 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
             return readAll(pageable, sort);
         }
 
-        Criteria criteria = prepareCriteria(examples);
+        Criteria countCriteria = prepareCriteria(examples);
+        countCriteria.setProjection(Projections.rowCount());
+        Integer count = (Integer) countCriteria.uniqueResult();
 
-        // Apply pagination
-        if (null != pageable) {
-            criteria.setFirstResult(pageable.getFirstItem());
-            criteria.setMaxResults(pageable.getNumberOfItems());
-        }
+        Criteria listCriteria = prepareCriteria(examples);
 
         // Apply sorting
         if (null != sort) {
-            applySorting(criteria, sort);
+            applySorting(listCriteria, sort);
         }
 
-        return new PageImpl(criteria.list(), pageable, count());
+        if (null != pageable) {
+            listCriteria.setFirstResult(pageable.getFirstItem());
+            listCriteria.setMaxResults(pageable.getNumberOfItems());
+        }
+
+        return new PageImpl(listCriteria.list(), pageable, count);
     }
 
 

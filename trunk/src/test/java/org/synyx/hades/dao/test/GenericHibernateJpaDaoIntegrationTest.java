@@ -24,6 +24,8 @@ import org.synyx.hades.dao.UserExtendedDao;
 import org.synyx.hades.domain.Order;
 import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.User;
+import org.synyx.hades.domain.page.Page;
+import org.synyx.hades.domain.page.PageRequest;
 
 
 /**
@@ -33,7 +35,7 @@ import org.synyx.hades.domain.User;
  */
 public class GenericHibernateJpaDaoIntegrationTest extends AbstractJpaTests {
 
-    private static final int NUMBER_OF_INSTANCES = 10;
+    private static final int NUMBER_OF_INSTANCES = 9;
 
     private UserExtendedDao userExtendedDao;
     private List<User> referenceUsers;
@@ -72,13 +74,12 @@ public class GenericHibernateJpaDaoIntegrationTest extends AbstractJpaTests {
 
         for (int i = 0; i < NUMBER_OF_INSTANCES; i++) {
 
-            User user = new User("Firstname" + i, "Lastname" + i, "foo@bar.de"
-                    + (NUMBER_OF_INSTANCES - i));
+            User user = new User("Firstname" + i, "Lastname" + i % 2,
+                    "foo@bar.de" + (NUMBER_OF_INSTANCES - i));
             referenceUsers.add(userExtendedDao.save(user));
-
         }
 
-        assertEquals(10, userExtendedDao.count().longValue());
+        assertEquals(NUMBER_OF_INSTANCES, userExtendedDao.count().longValue());
     }
 
 
@@ -116,5 +117,57 @@ public class GenericHibernateJpaDaoIntegrationTest extends AbstractJpaTests {
         assertEquals(NUMBER_OF_INSTANCES, users.size());
 
         assertEquals(referenceUsers.get(NUMBER_OF_INSTANCES - 1), users.get(0));
+    }
+
+
+    /**
+     * Tests that the DAO sorts example queries correctly.
+     * 
+     * @throws Exception
+     */
+    public void testReadSortedByExample() throws Exception {
+
+        User sampleUser = new User();
+        sampleUser.setLastname("Lastname0");
+
+        List<User> users = userExtendedDao.readByExample(new Sort(
+                Order.ASCENDING, "emailAddress"), sampleUser);
+
+        assertNotNull(users);
+        assertEquals((NUMBER_OF_INSTANCES + 1) / 2, users.size());
+
+        User reference = users.get(0);
+
+        // Asser email address order
+        for (int i = 0; i < users.size(); i++) {
+
+            User user = users.get(i);
+            assertTrue(0 >= reference.getEmailAddress().compareTo(
+                    user.getEmailAddress()));
+        }
+    }
+
+
+    /**
+     * Tests that the DAO returns the correct page for a request containing
+     * pagination, sorting and examples.
+     * 
+     * @throws Exception
+     */
+    public void testReadSortedAndPagedByExample() throws Exception {
+
+        User sampleUser = new User();
+        sampleUser.setLastname("Lastname0");
+
+        PageRequest request = new PageRequest(1, 2);
+
+        Page<User> page = userExtendedDao.readByExample(request, new Sort(
+                Order.ASCENDING, "emailAddress"), sampleUser);
+
+        assertNotNull(page);
+        assertTrue(page.hasNextPage());
+        assertTrue(page.hasPreviousPage());
+        assertEquals(5, page.getTotalElements());
+        assertEquals(2, page.getNumberOfElements());
     }
 }
