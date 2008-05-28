@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx</groupId>
 	<artifactId>hades</artifactId>
-	<version>1.0-RC3-SNAPSHOT</version>
+	<version>1.0-RC3</version>
 	<name>Hades</name>
 	<description>
 		Domain class and DAO development framework
@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.7</version>
+			<version>1.8.0.9</version>
 			<scope>test</scope>
 		</dependency>
 
