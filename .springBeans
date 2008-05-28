@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beansProjectDescription>
 	<version>1</version>
-	<pluginVersion><![CDATA[2.0.5.v200805010412]]></pluginVersion>
+	<pluginVersion><![CDATA[2.0.5.v200805211800]]></pluginVersion>
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
@@ -28,6 +28,15 @@
 			<incomplete>false</incomplete>
 			<configs>
 				<config>src/test/resources/applicationContext.xml</config>
+				<config>src/test/resources/infrastructure.xml</config>
+			</configs>
+		</configSet>
+		<configSet>
+			<name><![CDATA[Namespace autoconfiguration]]></name>
+			<allowBeanDefinitionOverriding>true</allowBeanDefinitionOverriding>
+			<incomplete>false</incomplete>
+			<configs>
+				<config>src/test/resources/namespace-autoconfig-context.xml</config>
 				<config>src/test/resources/infrastructure.xml</config>
 			</configs>
 		</configSet>
