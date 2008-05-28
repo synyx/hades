@@ -236,7 +236,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      * 
      * @return
      */
-    private String getReadAllQuery() {
+    protected String getReadAllQuery() {
 
         return "from " + getDomainClass().getSimpleName() + " x";
     }
