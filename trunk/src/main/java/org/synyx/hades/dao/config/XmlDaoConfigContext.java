@@ -17,6 +17,7 @@
 package org.synyx.hades.dao.config;
 
 import org.springframework.util.StringUtils;
+import org.synyx.hades.dao.orm.QueryLookupStrategy;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -27,9 +28,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-class XmlDaoConfigContext implements DaoConfigContext {
-
-    private static final String DEFAULT_DAO_POSTFIX = "Dao";
+class XmlDaoConfigContext extends DaoConfigContext {
 
     private Element daoConfigElement;
 
@@ -45,10 +44,21 @@ class XmlDaoConfigContext implements DaoConfigContext {
     }
 
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Returns the root configuration node.
      * 
-     * @see org.synyx.hades.dao.config.DaoConfigContext#getChildNodes()
+     * @return
+     */
+    public Node getRootNode() {
+
+        return daoConfigElement;
+    }
+
+
+    /**
+     * Returns the child nodes of the root configuration node.
+     * 
+     * @return
      */
     public NodeList getChildNodes() {
 
@@ -61,6 +71,7 @@ class XmlDaoConfigContext implements DaoConfigContext {
      * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#configureManually()
      */
+    @Override
     public boolean configureManually() {
 
         if (!daoConfigElement.hasChildNodes()) {
@@ -88,7 +99,8 @@ class XmlDaoConfigContext implements DaoConfigContext {
      * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoPackageName()
      */
-    public String getDaoPackageName() {
+    @Override
+    protected String getDaoPackageName() {
 
         return daoConfigElement.getAttribute("dao-package-name");
     }
@@ -99,7 +111,8 @@ class XmlDaoConfigContext implements DaoConfigContext {
      * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#getEntityPackageName()
      */
-    public String getEntityPackageName() {
+    @Override
+    protected String getEntityPackageName() {
 
         return daoConfigElement.getAttribute("entity-package-name");
     }
@@ -110,9 +123,14 @@ class XmlDaoConfigContext implements DaoConfigContext {
      * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoClassPostfix()
      */
-    public String getDaoClassPostfix() {
+    @Override
+    protected String getDaoInterfacePostfix() {
 
-        return daoConfigElement.getAttribute("dao-class-postfix");
+        String daoInterfacePostfix = daoConfigElement
+                .getAttribute("dao-interface-postfix");
+
+        return StringUtils.hasText(daoInterfacePostfix) ? daoInterfacePostfix
+                : DEFAULT_DAO_INTERFACE_POSTFIX;
     }
 
 
@@ -121,11 +139,22 @@ class XmlDaoConfigContext implements DaoConfigContext {
      * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoNamePostfix()
      */
+    @Override
     public String getDaoNamePostfix() {
 
         String postfix = daoConfigElement.getAttribute("dao-name-postfix");
 
-        return (!StringUtils.hasText(postfix)) ? DEFAULT_DAO_POSTFIX : postfix;
+        return StringUtils.hasText(postfix) ? postfix
+                : DEFAULT_DAO_BEAN_POSTFIX;
+    }
+
+
+    @Override
+    protected String getDaoImplPostfix() {
+
+        String postfix = daoConfigElement.getAttribute("dao-impl-postfix");
+        return StringUtils.hasText(postfix) ? postfix
+                : DEFAULT_DAO_IMPL_POSTFIX;
     }
 
 
@@ -134,8 +163,25 @@ class XmlDaoConfigContext implements DaoConfigContext {
      * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoBaseClassName()
      */
-    public String getDaoBaseClassName() {
+    @Override
+    protected String getDaoBaseClassName() {
 
         return daoConfigElement.getAttribute("dao-base-class");
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.config.DaoConfigContext#createFinderQueries()
+     */
+    @Override
+    public QueryLookupStrategy getFinderLookupStrategy() {
+
+        String createFinderQueries = daoConfigElement
+                .getAttribute("create-finder-queries");
+
+        return StringUtils.hasText(createFinderQueries) ? QueryLookupStrategy
+                .fromXml(createFinderQueries) : DEFAULT_CREATE_FINDER_QUERIES;
     }
 }

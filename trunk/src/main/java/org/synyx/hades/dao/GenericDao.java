@@ -75,7 +75,7 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * Returns all entities sorted by the given options.
      * 
      * @param sort
-     * @return
+     * @return all entities sorted by the given options
      */
     List<T> readAll(final Sort sort);
 
@@ -90,6 +90,13 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
     Page<T> readAll(final Pageable pageable);
 
 
+    /**
+     * Returns a page of entities sorted by the given sort options.
+     * 
+     * @param pageable
+     * @param sort
+     * @return a page of entities sorted by the given sort options
+     */
     Page<T> readAll(final Pageable pageable, final Sort sort);
 
 

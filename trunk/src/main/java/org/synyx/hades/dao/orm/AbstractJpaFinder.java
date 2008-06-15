@@ -17,6 +17,8 @@
 package org.synyx.hades.dao.orm;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -25,11 +27,14 @@ import javax.persistence.PersistenceException;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.domain.Persistable;
 
@@ -45,8 +50,52 @@ import org.synyx.hades.domain.Persistable;
 public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Serializable>
         implements InitializingBean, FinderExecuter<T> {
 
+    private static final Log log = LogFactory.getLog(AbstractJpaFinder.class);
+    public static final String DEFAULT_FINDER_PREFIX = "findBy";
+
+    private QueryLookupStrategy createFinderQueries = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
+    private String finderPrefix = DEFAULT_FINDER_PREFIX;
+
     private JpaTemplate jpaTemplate;
     private Class<T> domainClass;
+
+
+    /**
+     * Setter to configure finder query lookup. If configured to {@code true}
+     * (default) the queries will be constructed from the method name. If set to
+     * {@code false} it will try to lookup a named query with the following
+     * naming convention: {@code $DomainClass.$DaoMethodName}.
+     * 
+     * @param createFinderQueries the constructQueries to set
+     */
+    public void setCreateFinderQueries(QueryLookupStrategy createFinderQueries) {
+
+        this.createFinderQueries = createFinderQueries;
+    }
+
+
+    /**
+     * Returns the prefix to detect finder methods. All methods starting with
+     * this prefix are going to be treated as finder methods.
+     * 
+     * @return the finderPrefix
+     */
+    public String getFinderPrefix() {
+
+        return finderPrefix;
+    }
+
+
+    /**
+     * Sets the prefix for methods that should be treatened as finder. Defaults
+     * to {@value #DEFAULT_FINDER_PREFIX}.
+     * 
+     * @param finderPrefix the finderPrefix to set
+     */
+    public void setFinderPrefix(String finderPrefix) {
+
+        this.finderPrefix = finderPrefix;
+    }
 
 
     /**
@@ -104,8 +153,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      *      java.lang.Object[])
      */
     @SuppressWarnings("unchecked")
-    public List<T> executeFinder(final String methodName,
-            final Object... queryArgs) {
+    public List<T> executeFinder(final Method method, final Object... queryArgs) {
 
         return getJpaTemplate().executeFind(new JpaCallback() {
 
@@ -117,7 +165,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             public List<T> doInJpa(final EntityManager em)
                     throws PersistenceException {
 
-                Query namedQuery = prepareQuery(em, methodName, queryArgs);
+                Query namedQuery = prepareQuery(method, em, queryArgs);
 
                 return namedQuery.getResultList();
             }
@@ -128,15 +176,14 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
     /**
      * Executes a named query for a single result.
      * 
-     * @param methodName
+     * @param method
      * @param queryArgs
      * @return a single result returned by the named query
      * @throws EntityNotFoundException if no entity was found
      * @throws NonUniqueResultException if more than one entity was found
      */
     @SuppressWarnings("unchecked")
-    public T executeObjectFinder(final String methodName,
-            final Object... queryArgs) {
+    public T executeObjectFinder(final Method method, final Object... queryArgs) {
 
         return (T) getJpaTemplate().execute(new JpaCallback() {
 
@@ -148,7 +195,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             public T doInJpa(final EntityManager em)
                     throws PersistenceException {
 
-                Query namedQuery = prepareQuery(em, methodName, queryArgs);
+                Query namedQuery = prepareQuery(method, em, queryArgs);
 
                 return (T) namedQuery.getSingleResult();
             }
@@ -161,15 +208,15 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * Queries have to be named as follows: T.methodName where methodName has to
      * start with find.
      * 
-     * @param methodName
+     * @param method
+     * @param em
      * @param queryArgs
      * @return
      */
-    private Query prepareQuery(final EntityManager em, final String methodName,
+    private Query prepareQuery(final Method method, final EntityManager em,
             final Object... queryArgs) {
 
-        final String queryName = domainClass.getSimpleName() + "." + methodName;
-        final Query namedQuery = em.createNamedQuery(queryName);
+        Query namedQuery = lookupQuery(method, em);
 
         if (queryArgs != null) {
 
@@ -179,6 +226,140 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
         }
 
         return namedQuery;
+    }
+
+
+    /**
+     * Looks up a query according to the configured lookup strategy.
+     * 
+     * @param method
+     * @param em
+     * @return
+     */
+    private Query lookupQuery(final Method method, final EntityManager em) {
+
+        final String queryName = domainClass.getSimpleName() + "."
+                + method.getName();
+
+        switch (createFinderQueries) {
+
+            case CREATE:
+                return em.createQuery(constructQuery(method));
+
+            case USE_NAMED_QUERY:
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Looking up named query " + queryName);
+                }
+
+                return em.createNamedQuery(queryName);
+
+            case CREATE_IF_NOT_FOUND:
+            default:
+                try {
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("Looking up named query " + queryName);
+                    }
+
+                    return em.createNamedQuery(queryName);
+
+                } catch (IllegalArgumentException e) {
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("Failed to lookup named query " + queryName
+                                + " triggering query creation...");
+                    }
+
+                    return em.createQuery(constructQuery(method));
+                }
+        }
+    }
+
+
+    /**
+     * Returns the query string to retrieve all entities.
+     * 
+     * @return string to retrieve all entities
+     */
+    protected String getReadAllQuery() {
+
+        return "from " + getDomainClass().getSimpleName() + " x";
+    }
+
+
+    /**
+     * Constructs a query from the given method. The method has to start with
+     * {@code #FINDER_PREFIX}.
+     * 
+     * @param method
+     * @return the query string
+     */
+    private String constructQuery(Method method) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("Creating query from method " + method.getName());
+        }
+
+        final String AND = "And";
+        final String OR = "Or";
+
+        String methodName = method.getName();
+        int numberOfBlocks = 0;
+
+        // Reject methods not starting with defined prefix
+        if (!methodName.startsWith(finderPrefix)) {
+            throw new IllegalArgumentException(
+                    "Cannot construct query for non finder method! "
+                            + "Make sure the method starts with '"
+                            + finderPrefix + "'");
+        }
+
+        // Remove prefix
+        methodName = methodName.substring(DEFAULT_FINDER_PREFIX.length(),
+                methodName.length());
+
+        StringBuilder queryBuilder = new StringBuilder(getReadAllQuery()
+                + " where ");
+
+        // Split OR
+        String[] orParts = StringUtils.delimitedListToStringArray(methodName,
+                OR);
+
+        for (String orPart : Arrays.asList(orParts)) {
+
+            // Split AND
+            String[] andParts = StringUtils.delimitedListToStringArray(orPart,
+                    AND);
+
+            StringBuilder andBuilder = new StringBuilder();
+
+            for (String andPart : Arrays.asList(andParts)) {
+
+                andBuilder.append("x.");
+                andBuilder.append(StringUtils.uncapitalize(andPart));
+                andBuilder.append(" = ?");
+                andBuilder.append(" and ");
+
+                numberOfBlocks++;
+            }
+
+            andBuilder.delete(andBuilder.length() - 5, andBuilder.length());
+
+            queryBuilder.append(andBuilder);
+            queryBuilder.append(" or ");
+        }
+
+        // Assert correct number of parameters
+        if (numberOfBlocks != method.getParameterTypes().length) {
+            throw new IllegalArgumentException(
+                    "You have to provide method arguments for each query "
+                            + "criteria to construct the query correctly!");
+        }
+
+        queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
+
+        return queryBuilder.toString();
     }
 
 

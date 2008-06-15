@@ -81,7 +81,6 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * @see org.synyx.hades.hades.dao.ExtendedGenericDao#readbyExample(java.awt.print.Pageable,
      *      T[])
      */
-    @SuppressWarnings("unchecked")
     public Page<T> readByExample(final Pageable pageable, final T... examples) {
 
         return readByExample(pageable, null, examples);
@@ -172,6 +171,8 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
 
         super.afterPropertiesSet();
 
+        // Need to retrieve the entity manager out of the JpaCallback to prevent
+        // exception translation
         EntityManager em = (EntityManager) getJpaTemplate().execute(
                 new JpaCallback() {
 

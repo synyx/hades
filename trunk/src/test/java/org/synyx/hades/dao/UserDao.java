@@ -27,7 +27,7 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public interface UserDao extends GenericDao<User, Integer> {
+public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
 
     /**
      * Retrieve users by their lastname. The finder
@@ -48,4 +48,20 @@ public interface UserDao extends GenericDao<User, Integer> {
      * @return the user with the given email address
      */
     User findByEmailAddress(final String emailAddress);
+
+
+    /**
+     * Retrieves users by the given email and lastname. Acts as a dummy method
+     * declaration to test finder query creation.
+     * 
+     * @param emailAddress
+     * @param lastname
+     * @return
+     */
+    User findByEmailAddressAndLastname(final String emailAddress,
+            final String lastname);
+
+
+    User findByEmailAddressAndLastnameOrFirstname(final String emailAddress,
+            final String lastname, final String username);
 }

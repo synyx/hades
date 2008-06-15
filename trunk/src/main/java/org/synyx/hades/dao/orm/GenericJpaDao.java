@@ -104,7 +104,6 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      * 
      * @see org.synyx.hades.hades.dao.GenericDao#readAll(org.synyx.hades.hades.dao.Pageable)
      */
-    @SuppressWarnings("unchecked")
     public Page<T> readAll(final Pageable pageable) {
 
         Assert.notNull(pageable);
@@ -204,7 +203,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      * 
      * @param pageable
      * @param query
-     * @return
+     * @return a page of entities for the given JPQL query
      */
     @SuppressWarnings("unchecked")
     protected Page<T> readPage(final Pageable pageable, final String query) {
@@ -228,17 +227,6 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
                         count());
             }
         });
-    }
-
-
-    /**
-     * Returns the query string to retrieve all entities.
-     * 
-     * @return
-     */
-    protected String getReadAllQuery() {
-
-        return "from " + getDomainClass().getSimpleName() + " x";
     }
 
 
