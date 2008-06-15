@@ -13,18 +13,30 @@
 					<xsd:complexType>
 						<xsd:attribute name="name" type="xsd:string"
 							use="required" />
+						<xsd:attributeGroup ref="dao-attributes" />
 					</xsd:complexType>
 				</xsd:element>
 			</xsd:sequence>
 
 			<xsd:attribute name="dao-package-name" type="xsd:string" use="required" />
 			<xsd:attribute name="entity-package-name" type="xsd:string" use="required" />
-			<xsd:attribute name="dao-base-class" type="xsd:string" />
-			<xsd:attribute name="dao-class-postfix" type="xsd:string"
-				default="Dao" />
-			<xsd:attribute name="dao-name-postfix" type="xsd:string"
-				default="Dao" />
+			<xsd:attributeGroup ref="dao-attributes" />
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:attributeGroup name="dao-attributes">
+		<xsd:attribute name="dao-base-class" type="xsd:string" />
+		<xsd:attribute name="dao-interface-postfix" type="xsd:string" default="Dao" />
+		<xsd:attribute name="dao-name-postfix" type="xsd:string" default="Dao" />
+		<xsd:attribute name="create-finder-queries" type="finder-strategy" default="create-if-not-found" />
+	</xsd:attributeGroup>
+	
+	<xsd:simpleType name="finder-strategy">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="create" />
+			<xsd:enumeration value="use-named-query" />
+			<xsd:enumeration value="create-if-not-found" />
+		</xsd:restriction>
+	</xsd:simpleType>	
 
 </xsd:schema>

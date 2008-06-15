@@ -18,12 +18,15 @@ package org.synyx.hades.dao.config;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.parsing.BeanComponentDefinition;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
@@ -33,6 +36,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
@@ -78,15 +82,14 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             final ParserContext parserContext) {
 
         XmlDaoConfigContext configContext = new XmlDaoConfigContext(element);
-        BeanDefinitionRegistry registry = parserContext.getRegistry();
 
         if (configContext.configureManually()) {
-            doManualConfiguration(configContext, registry);
+            doManualConfiguration(configContext, parserContext);
         } else {
-            doAutoConfiguration(configContext, registry);
+            doAutoConfiguration(configContext, parserContext);
         }
 
-        registerPostProcessors(registry);
+        registerPostProcessors(parserContext);
 
         return null;
     }
@@ -97,10 +100,10 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * for classes implementing {@code Persistable}.
      * 
      * @param configContext
-     * @param registry
+     * @param parserContext
      */
-    private void doAutoConfiguration(final DaoConfigContext configContext,
-            final BeanDefinitionRegistry registry) {
+    private void doAutoConfiguration(final XmlDaoConfigContext configContext,
+            final ParserContext parserContext) {
 
         if (log.isDebugEnabled()) {
             log.debug("Triggering auto DAO detection");
@@ -121,7 +124,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             String beanName = StringUtils.uncapitalize(ClassUtils
                     .getShortName(definition.getBeanClassName()));
 
-            registerGenericDaoFactoryBean(registry, beanName, configContext);
+            registerGenericDaoFactoryBean(parserContext, beanName,
+                    configContext);
         }
     }
 
@@ -130,10 +134,10 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * Proceeds manual configuration by traversing child elements.
      * 
      * @param context
-     * @param registry
+     * @param parserContext
      */
     private void doManualConfiguration(final XmlDaoConfigContext context,
-            final BeanDefinitionRegistry registry) {
+            final ParserContext parserContext) {
 
         if (log.isDebugEnabled()) {
             log.debug("Triggering manual DAO detection");
@@ -149,7 +153,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 Element childElement = (Element) childNode;
                 String name = childElement.getAttribute("name");
 
-                registerGenericDaoFactoryBean(registry, name, context);
+                registerGenericDaoFactoryBean(parserContext, name, context);
             }
         }
     }
@@ -160,48 +164,92 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * and the provided configuration context. It is mainly used to construct
      * bean name, entity class name and DAO interface name.
      * 
-     * @param registry
+     * @param parserContext
      * @param name
      * @param context
      */
     private void registerGenericDaoFactoryBean(
-            final BeanDefinitionRegistry registry, final String name,
-            final DaoConfigContext context) {
-
-        String entityClassName = StringUtils.capitalize(name);
-
-        String domainClass = context.getEntityPackageName() + "."
-                + entityClassName;
-
-        String daoInterface = context.getDaoPackageName() + "."
-                + entityClassName + context.getDaoClassPostfix();
+            final ParserContext parserContext, final String name,
+            final XmlDaoConfigContext context) {
 
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
                 .rootBeanDefinition(GenericDaoFactoryBean.class);
-        beanDefinitionBuilder.addPropertyValue("daoInterface", daoInterface);
-        beanDefinitionBuilder.addPropertyValue("domainClass", domainClass);
+        beanDefinitionBuilder.addPropertyValue("daoInterface", context
+                .getInterfaceName(name));
+        beanDefinitionBuilder.addPropertyValue("domainClass", context
+                .getDomainClassName(name));
+        beanDefinitionBuilder.addPropertyValue("createFinderQueries", context
+                .getFinderLookupStrategy());
 
         if (StringUtils.hasText(context.getDaoBaseClassName())) {
             beanDefinitionBuilder.addPropertyValue("daoClass", context
                     .getDaoBaseClassName());
         }
 
-        if (log.isDebugEnabled()) {
-            log
-                    .debug("Registering Hades DAO: "
-                            + name
-                            + context.getDaoNamePostfix()
-                            + " - DAO interface: "
-                            + daoInterface
-                            + " - Implementation base class: "
-                            + (StringUtils.hasText(context
-                                    .getDaoBaseClassName()) ? context
-                                    .getDaoBaseClassName()
-                                    : GenericDaoFactoryBean.DEFAULT_DAO_IMPLEMENTATION));
+        BeanDefinition customImplementation = detectCustomImplementation(name,
+                context, parserContext);
+
+        if (null != customImplementation) {
+
+            String implementationBeanName = name + context.getDaoImplPostfix();
+
+            parserContext.registerBeanComponent(new BeanComponentDefinition(
+                    customImplementation, implementationBeanName));
+            beanDefinitionBuilder.addPropertyReference(
+                    "customDaoImplementation", implementationBeanName);
         }
 
-        registry.registerBeanDefinition(name + context.getDaoNamePostfix(),
-                beanDefinitionBuilder.getBeanDefinition());
+        if (log.isDebugEnabled()) {
+
+            StringBuilder builder = new StringBuilder("Registering Hades DAO: ");
+            builder.append(context.getBeanName(name));
+            builder.append(" - DAO interface: ");
+            builder.append(context.getInterfaceName(name));
+            builder.append(" - Implementation base class: ");
+
+            builder
+                    .append(StringUtils.hasText(context.getDaoBaseClassName()) ? context
+                            .getDaoBaseClassName()
+                            : GenericDaoFactoryBean.DEFAULT_DAO_IMPLEMENTATION);
+        }
+
+        AbstractBeanDefinition beanDefinition = beanDefinitionBuilder
+                .getBeanDefinition();
+        beanDefinition.setSource(context.getRootNode());
+
+        BeanComponentDefinition definition = new BeanComponentDefinition(
+                beanDefinition, name + context.getDaoNamePostfix());
+
+        parserContext.registerBeanComponent(definition);
+    }
+
+
+    /**
+     * Looks up a possibly available custom DAO implementation and returns it,
+     * if found.
+     * 
+     * @param name
+     * @param context
+     * @param parserContext
+     * @return the {@code BeanDefinition} of the custom implementation or null
+     *         if none found
+     */
+    private BeanDefinition detectCustomImplementation(final String name,
+            final XmlDaoConfigContext context, final ParserContext parserContext) {
+
+        // Build pattern to lookup implementation class
+        Pattern pattern = Pattern.compile(context
+                .getImplementationClassName(name));
+
+        // Build classpath scanner and lookup bean definition
+        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(
+                false);
+        provider.addIncludeFilter(new RegexPatternTypeFilter(pattern));
+        Set<BeanDefinition> definitions = provider
+                .findCandidateComponents(context.getDaoPackageName());
+
+        // Return first found
+        return (definitions.size() == 0) ? null : definitions.iterator().next();
     }
 
 
@@ -209,9 +257,11 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * Registers necessary (Bean)PostProcessor instances if they have not
      * already been registered.
      * 
-     * @param registry
+     * @param parserContext
      */
-    private void registerPostProcessors(final BeanDefinitionRegistry registry) {
+    private void registerPostProcessors(final ParserContext parserContext) {
+
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
 
         // Create PersistenceAnnotationPostProcessor definition
         if (!registry.containsBeanDefinition(PAB_POST_PROCESSOR.getName())) {
@@ -244,9 +294,9 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      */
     static class PersistableTypeFilter implements TypeFilter {
 
-        private AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(
+        private static final AnnotationTypeFilter ENTITY_ANNOTATION_FILTER = new AnnotationTypeFilter(
                 Entity.class);
-        private AssignableTypeFilter assignableTypeFilter = new AssignableTypeFilter(
+        private static final AssignableTypeFilter PERSISTABLE_FILTER = new AssignableTypeFilter(
                 Persistable.class);
 
 
@@ -261,9 +311,9 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 throws IOException {
 
             // Matches on correct type AND annotation
-            return assignableTypeFilter.match(metadataReader,
+            return PERSISTABLE_FILTER.match(metadataReader,
                     metadataReaderFactory)
-                    && annotationTypeFilter.match(metadataReader,
+                    && ENTITY_ANNOTATION_FILTER.match(metadataReader,
                             metadataReaderFactory);
         }
     }

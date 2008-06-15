@@ -51,10 +51,11 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * Returns all entites matching the given criteria sorted by the given sort
      * options.
      * 
-     * @see ExtendedGenericDao#readByExample(T...)
+     * @see ExtendedGenericDao#readByExample(Persistable...)
      * @param sort
      * @param examples
-     * @return
+     * @return all entites matching the given criteria sorted by the given sort
+     *         options
      */
     List<T> readByExample(final Sort sort, final T... examples);
 
@@ -78,7 +79,8 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * @param pageable
      * @param sort
      * @param examples
-     * @return
+     * @return a page of entities matching the provided examples sorted by the
+     *         given sorting options
      */
     Page<T> readByExample(final Pageable pageable, final Sort sort,
             final T... examples);

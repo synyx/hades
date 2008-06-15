@@ -11,6 +11,12 @@ public class Sort {
     private Order order;
 
 
+    /**
+     * Creates a new instance of {@code Sort}.
+     * 
+     * @param order
+     * @param properties
+     */
     public Sort(Order order, String... properties) {
 
         this.properties = properties;
@@ -43,7 +49,7 @@ public class Sort {
     /**
      * Returns whether the sorting should be ascending.
      * 
-     * @return
+     * @return whether the sorting should be ascending
      */
     public boolean isAscending() {
 

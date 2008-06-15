@@ -13,6 +13,9 @@
 			value="org.synyx.hades.domain.User" />
 		<property name="daoInterface"
 			value="org.synyx.hades.dao.UserDao" />
+			<property name="customDaoImplementation">
+				<bean class="org.synyx.hades.dao.UserDaoImpl" />
+			</property>
 	</bean>
 	
 	<bean id="roleDao"

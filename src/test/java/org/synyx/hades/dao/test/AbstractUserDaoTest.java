@@ -266,6 +266,18 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     }
 
 
+    public void testInvocationOfCustomImplementation() {
+
+        userDao.someCustomMethod(new User());
+    }
+
+
+    public void testOverwritingFinder() {
+
+        userDao.findByOverrridingMethod();
+    }
+
+
     /**
      * Flushes test users to the database.
      */

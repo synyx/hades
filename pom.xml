@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx</groupId>
 	<artifactId>hades</artifactId>
-	<version>1.0-RC3</version>
+	<version>1.0-RC4</version>
 	<name>Hades</name>
 	<description>
 		Domain class and DAO development framework
@@ -76,10 +76,10 @@
 
 		<dependency>
 			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0.2</version>
+			<artifactId>com.springsource.javax.persistence</artifactId>
+			<version>1.0.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -162,6 +162,42 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>configplugin</classifier>
+							<includes>
+								
+								<include>**/*.handlers</include>
+								<include>**/*.schemas</include>
+								<include>**/config/*</include>
+								<include>**/domain/*</include>
+								<include>**/dao/**/*</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 
 			<plugin>
 				<groupId>com.agilejava.docbkx</groupId>

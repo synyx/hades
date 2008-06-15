@@ -16,6 +16,7 @@
 
 package org.synyx.hades.dao;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 
@@ -31,21 +32,21 @@ public interface FinderExecuter<T> {
     /**
      * Executes a finder and returns the result list.
      * 
-     * @param methodName
+     * @param method
      * @param queryArgs
      * @return a list of objects meeting the finder's criterias
      */
-    List<T> executeFinder(final String methodName, final Object... queryArgs);
+    List<T> executeFinder(final Method method, final Object... queryArgs);
 
 
     /**
      * Executes a finder for a single result.
      * 
-     * @param methodName
+     * @param method
      * @param queryArgs
      * @return a single result returned by the named query
      * @throws EntityNotFoundException if no entity was found
      * @throws NonUniqueResultException if more than one entity was found
      */
-    T executeObjectFinder(final String methodName, final Object... queryArgs);
+    T executeObjectFinder(final Method method, final Object... queryArgs);
 }

@@ -17,6 +17,7 @@
 package org.synyx.hades.dao.orm.support;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -35,6 +36,7 @@ import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.AbstractJpaFinder;
 import org.synyx.hades.dao.orm.GenericJpaDao;
+import org.synyx.hades.dao.orm.QueryLookupStrategy;
 import org.synyx.hades.domain.Persistable;
 
 
@@ -66,6 +68,9 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
     private Class<T> domainClass;
     private Class<D> daoClass = (Class<D>) DEFAULT_DAO_IMPLEMENTATION;
+    private Object customDaoImplementation;
+    private QueryLookupStrategy createFinderQueries = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
+    private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
 
     private EntityManagerFactory entityManagerFactory;
 
@@ -83,6 +88,17 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
                 "DAO interface has to implement at least GenericDao!");
 
         this.daoInterface = daoInterface;
+    }
+
+
+    /**
+     * Setter to inject a custom DAO implementation. This class needs
+     * 
+     * @param customDaoImplementation the customDaoImplementation to set
+     */
+    public void setCustomDaoImplementation(Object customDaoImplementation) {
+
+        this.customDaoImplementation = customDaoImplementation;
     }
 
 
@@ -120,6 +136,15 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
 
     /**
+     * @param createFinderQueries the createFinderQueries to set
+     */
+    public void setCreateFinderQueries(QueryLookupStrategy createFinderQueries) {
+
+        this.createFinderQueries = createFinderQueries;
+    }
+
+
+    /**
      * Setter to inject entity manager.
      * 
      * @param entityManagerFactory the entityManagerFactory to set
@@ -143,47 +168,13 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         D genericJpaDao = daoClass.newInstance();
         genericJpaDao.setDomainClass(domainClass);
         genericJpaDao.setEntityManagerFactory(entityManagerFactory);
+        genericJpaDao.setCreateFinderQueries(createFinderQueries);
 
         // Create proxy
         ProxyFactory result = new ProxyFactory();
         result.setTarget(genericJpaDao);
         result.setInterfaces(new Class[] { daoInterface });
-
-        // Add advice to intercept method calls to "find*"
-        result.addAdvice(new MethodInterceptor() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
-             */
-            @SuppressWarnings("unchecked")
-            public Object invoke(final MethodInvocation invocation)
-                    throws Throwable {
-
-                String methodName = invocation.getMethod().getName();
-
-                if (!methodName.startsWith("find")) {
-                    return invocation.proceed();
-                }
-
-                FinderExecuter<T> target = (FinderExecuter<T>) invocation
-                        .getThis();
-
-                Class<?> returnType = invocation.getMethod().getReturnType();
-
-                // Execute finder for single object if domain class type is
-                // assignable to the methods return type, else finder for a list
-                // of objects
-                if (ClassUtils.isAssignable(domainClass, returnType)) {
-                    return target.executeObjectFinder(methodName, invocation
-                            .getArguments());
-                } else {
-                    return target.executeFinder(methodName, invocation
-                            .getArguments());
-                }
-            }
-        });
+        result.addAdvice(new DelegatingMethodInterceptor());
 
         return result.getProxy();
     }
@@ -228,6 +219,36 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
                             + "have to provide an implementation base class that "
                             + "implements this interface!");
         }
+
+        if (null == customDaoImplementation && hasCustomMethod()) {
+
+            throw new BeanCreationException(
+                    "You have configured an "
+                            + "DAO interface with custom methods but not provided a custom implementation!");
+        }
+
+    }
+
+
+    private boolean hasCustomMethod() {
+
+        boolean hasCustomMethod = false;
+
+        for (Method method : daoInterface.getMethods()) {
+
+            if (method.getName().startsWith(finderPrefix)) {
+                continue;
+            }
+
+            if (!method.getDeclaringClass().equals(daoInterface)) {
+                continue;
+            }
+            hasCustomMethod = true;
+            break;
+
+        }
+
+        return hasCustomMethod;
     }
 
 
@@ -240,5 +261,84 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     private boolean isExtendedDaoInterface() {
 
         return ExtendedGenericDao.class.isAssignableFrom(daoInterface);
+    }
+
+    /**
+     * This {@code MethodInterceptor} intercepts calls to methods of the custom
+     * implementation and delegates the to it if configured. Furthermore it
+     * resolves method calls to finders and triggers execution of them. You can
+     * rely on having a custom dao implementation instance set if this returns
+     * true.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    private class DelegatingMethodInterceptor implements MethodInterceptor {
+
+        /**
+         * Returns if the given call is a call to a method of the custom
+         * implementation.
+         * 
+         * @param invocation
+         * @return
+         */
+        private boolean isCallToCustomMethod(MethodInvocation invocation) {
+
+            if (null == customDaoImplementation) {
+                return false;
+            }
+
+            Class<?> declaringClass = invocation.getMethod()
+                    .getDeclaringClass();
+
+            return declaringClass.isInstance(customDaoImplementation);
+        }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
+         */
+        @SuppressWarnings("unchecked")
+        public Object invoke(final MethodInvocation invocation)
+                throws Throwable {
+
+            if (isCallToCustomMethod(invocation)) {
+
+                try {
+                    return invocation.getMethod().invoke(
+                            customDaoImplementation, invocation.getArguments());
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not invoke "
+                            + invocation.toString() + " on "
+                            + customDaoImplementation);
+                }
+            }
+
+            Method method = invocation.getMethod();
+
+            if (method.getName().startsWith(
+                    AbstractJpaFinder.DEFAULT_FINDER_PREFIX)) {
+
+                FinderExecuter<T> target = (FinderExecuter<T>) invocation
+                        .getThis();
+
+                Class<?> returnType = invocation.getMethod().getReturnType();
+
+                // Execute finder for single object if domain class type is
+                // assignable to the methods return type, else finder for a
+                // list
+                // of objects
+                if (ClassUtils.isAssignable(domainClass, returnType)) {
+                    return target.executeObjectFinder(method, invocation
+                            .getArguments());
+                } else {
+                    return target.executeFinder(method, invocation
+                            .getArguments());
+                }
+            }
+
+            return invocation.proceed();
+        }
     }
 }
