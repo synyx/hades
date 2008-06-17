@@ -35,7 +35,7 @@ public interface UserDaoCustom {
     /**
      * Some custom method to implement.
      * 
-     * @param u
+     * @param user
      */
-    void someCustomMethod(User u);
+    void someCustomMethod(User user);
 }

@@ -34,6 +34,7 @@ import org.springframework.util.ClassUtils;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.config.DaoConfigContext;
 import org.synyx.hades.dao.orm.AbstractJpaFinder;
 import org.synyx.hades.dao.orm.GenericJpaDao;
 import org.synyx.hades.dao.orm.QueryLookupStrategy;
@@ -62,17 +63,16 @@ import org.synyx.hades.domain.Persistable;
 public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends Persistable<PK>, PK extends Serializable>
         implements FactoryBean, InitializingBean {
 
-    public static final Class<?> DEFAULT_DAO_IMPLEMENTATION = GenericJpaDao.class;
+    private static final Class<?> DEFAULT_DAO_BASE_CLASS = GenericJpaDao.class;
 
     private Class<GenericDao<T, PK>> daoInterface;
-
     private Class<T> domainClass;
-    private Class<D> daoClass = (Class<D>) DEFAULT_DAO_IMPLEMENTATION;
     private Object customDaoImplementation;
-    private QueryLookupStrategy createFinderQueries = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
-    private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
-
     private EntityManagerFactory entityManagerFactory;
+
+    private Class<D> daoClass = (Class<D>) DEFAULT_DAO_BASE_CLASS;
+    private QueryLookupStrategy queryLookupStrategy = DaoConfigContext.DEFAULT_CREATE_FINDER_QUERIES;
+    private String finderPrefix = DaoConfigContext.DEFAULT_FINDER_PREFIX;
 
 
     /**
@@ -136,11 +136,26 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
 
     /**
-     * @param createFinderQueries the createFinderQueries to set
+     * Sets the strategy of how to lookup a query to execute finders.
+     * 
+     * @param queryLookupStrategy the createFinderQueries to set
      */
-    public void setCreateFinderQueries(QueryLookupStrategy createFinderQueries) {
+    public void setQueryLookupStrategy(QueryLookupStrategy queryLookupStrategy) {
 
-        this.createFinderQueries = createFinderQueries;
+        this.queryLookupStrategy = queryLookupStrategy;
+    }
+
+
+    /**
+     * Configures the method name prefix that triggers automatic finder
+     * execution.
+     * 
+     * @see AbstractJpaFinder#setFinderPrefix(String)
+     * @param finderPrefix
+     */
+    public void setFinderPrefix(String finderPrefix) {
+
+        this.finderPrefix = finderPrefix;
     }
 
 
@@ -168,7 +183,8 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         D genericJpaDao = daoClass.newInstance();
         genericJpaDao.setDomainClass(domainClass);
         genericJpaDao.setEntityManagerFactory(entityManagerFactory);
-        genericJpaDao.setCreateFinderQueries(createFinderQueries);
+        genericJpaDao.setCreateFinderQueries(queryLookupStrategy);
+        genericJpaDao.setFinderPrefix(finderPrefix);
 
         // Create proxy
         ProxyFactory result = new ProxyFactory();
@@ -230,6 +246,13 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     }
 
 
+    /**
+     * Returns if the configured DAO interface has custom methods, that might
+     * have to be delegated to a custom DAO implementation. This is used to
+     * verify DAO configuration
+     * 
+     * @return
+     */
     private boolean hasCustomMethod() {
 
         boolean hasCustomMethod = false;
@@ -317,8 +340,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
             Method method = invocation.getMethod();
 
-            if (method.getName().startsWith(
-                    AbstractJpaFinder.DEFAULT_FINDER_PREFIX)) {
+            if (method.getName().startsWith(finderPrefix)) {
 
                 FinderExecuter<T> target = (FinderExecuter<T>) invocation
                         .getThis();

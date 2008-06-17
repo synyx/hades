@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xsd:schema xmlns="http://www.synyx.de/schema/dao"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:beans="http://www.springframework.org/schema/beans"
@@ -11,31 +11,82 @@
 				<xsd:element name="dao" minOccurs="0"
 					maxOccurs="unbounded">
 					<xsd:complexType>
-						<xsd:attribute name="name" type="xsd:string"
-							use="required" />
+						<xsd:attribute name="id" type="xsd:string" use="required" />
+						<xsd:attribute name="custom-impl-ref" type="xsd:string" />
 						<xsd:attributeGroup ref="dao-attributes" />
 					</xsd:complexType>
 				</xsd:element>
 			</xsd:sequence>
 
-			<xsd:attribute name="dao-package-name" type="xsd:string" use="required" />
-			<xsd:attribute name="entity-package-name" type="xsd:string" use="required" />
+			<xsd:attribute name="dao-package-name" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					Defines the package where the DAO interface will be tried to be detected.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="entity-package-name" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					Defines the package where the entity classes will be tried to be detected.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
 			<xsd:attributeGroup ref="dao-attributes" />
 		</xsd:complexType>
 	</xsd:element>
 	
 	<xsd:attributeGroup name="dao-attributes">
-		<xsd:attribute name="dao-base-class" type="xsd:string" />
-		<xsd:attribute name="dao-interface-postfix" type="xsd:string" default="Dao" />
-		<xsd:attribute name="dao-name-postfix" type="xsd:string" default="Dao" />
-		<xsd:attribute name="create-finder-queries" type="finder-strategy" default="create-if-not-found" />
+		<xsd:attribute name="dao-base-class" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				Defines the DAO beans base class. Defaults to GenericJpaDao.
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="dao-interface-postfix" type="xsd:string" />
+		<xsd:attribute name="dao-name-postfix" type="xsd:string" />
+		<xsd:attribute name="finder-lookup-strategy" type="finder-strategy" />
+		<xsd:attribute name="finder-prefix" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				Defines the method name prefix that will trigger special finder 
+				execution. Defaults to "findBy".
+				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 	</xsd:attributeGroup>
 	
 	<xsd:simpleType name="finder-strategy">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+			Determines the way finder methods are being executed.
+			]]></xsd:documentation>
+		</xsd:annotation>
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="create" />
-			<xsd:enumeration value="use-named-query" />
-			<xsd:enumeration value="create-if-not-found" />
+			<xsd:enumeration value="create-if-not-found">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					Tries to find a named query but creates a custom query if
+					none can be found. (Default)
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="create">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					Creates a query from the finder method's name.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="use-named-query">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					Uses a named query to execute the finder. Fails if no 
+					named query is defined.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>	
 
