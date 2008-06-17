@@ -42,6 +42,8 @@ public class GenericHibernateJpaDaoIntegrationTest extends AbstractJpaTests {
 
 
     /**
+     * Setter to inject a {@code UserExtendedDao}.
+     * 
      * @param extendedUserDao the userDao to set
      */
     public void setUserExtendedDao(UserExtendedDao extendedUserDao) {

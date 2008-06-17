@@ -22,8 +22,8 @@ import org.synyx.hades.domain.User;
 
 
 /**
- * DAO interface for {@code User}s. The two declared methods will trigger named
- * queries as they start with {@code find}.
+ * DAO interface for {@code User}s. The declared methods will trigger named
+ * queries as they start with {@code findBy}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -56,12 +56,23 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      * 
      * @param emailAddress
      * @param lastname
-     * @return
+     * @return the user with the given email address and lastname
      */
     User findByEmailAddressAndLastname(final String emailAddress,
             final String lastname);
 
 
-    User findByEmailAddressAndLastnameOrFirstname(final String emailAddress,
-            final String lastname, final String username);
+    /**
+     * Retrieves users by email address and lastname or firstname. Acts as a
+     * dummy method declaration to test finder query creation.
+     * 
+     * @param emailAddress
+     * @param lastname
+     * @param username
+     * @return the users with the given email address and lastname or the given
+     *         firstname
+     */
+    List<User> findByEmailAddressAndLastnameOrFirstname(
+            final String emailAddress, final String lastname,
+            final String username);
 }

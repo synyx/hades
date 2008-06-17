@@ -36,6 +36,7 @@ import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.FinderExecuter;
+import org.synyx.hades.dao.config.DaoConfigContext;
 import org.synyx.hades.domain.Persistable;
 
 
@@ -51,10 +52,9 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
         implements InitializingBean, FinderExecuter<T> {
 
     private static final Log log = LogFactory.getLog(AbstractJpaFinder.class);
-    public static final String DEFAULT_FINDER_PREFIX = "findBy";
 
     private QueryLookupStrategy createFinderQueries = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
-    private String finderPrefix = DEFAULT_FINDER_PREFIX;
+    private String finderPrefix = DaoConfigContext.DEFAULT_FINDER_PREFIX;
 
     private JpaTemplate jpaTemplate;
     private Class<T> domainClass;
@@ -71,18 +71,6 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
     public void setCreateFinderQueries(QueryLookupStrategy createFinderQueries) {
 
         this.createFinderQueries = createFinderQueries;
-    }
-
-
-    /**
-     * Returns the prefix to detect finder methods. All methods starting with
-     * this prefix are going to be treated as finder methods.
-     * 
-     * @return the finderPrefix
-     */
-    public String getFinderPrefix() {
-
-        return finderPrefix;
     }
 
 
@@ -316,8 +304,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
         }
 
         // Remove prefix
-        methodName = methodName.substring(DEFAULT_FINDER_PREFIX.length(),
-                methodName.length());
+        methodName = methodName.substring(finderPrefix.length(), methodName
+                .length());
 
         StringBuilder queryBuilder = new StringBuilder(getReadAllQuery()
                 + " where ");
