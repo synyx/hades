@@ -172,8 +172,8 @@
     <xsl:param name="body.margin.top">10mm</xsl:param>
     <xsl:param name="body.margin.bottom">10mm</xsl:param>
     
-    <xsl:param name="page.margin.top">10mm</xsl:param>
-    <xsl:param name="page.margin.bottom">10mm</xsl:param>
+    <xsl:param name="page.margin.top">15mm</xsl:param>
+    <xsl:param name="page.margin.bottom">15mm</xsl:param>
 	
     <xsl:param name="page.margin.outer">18mm</xsl:param>
     <xsl:param name="page.margin.inner">18mm</xsl:param>
