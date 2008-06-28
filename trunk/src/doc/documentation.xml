@@ -970,7 +970,78 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       NamedQueries by declaring methods in the DAO interface. NamedQueries can
       be defined in either XML or JPA annotations to the domain class. Let's
       see how configuration of a query to lookup users by their email address
-      can be realized.<note>
+      can be realized.</para>
+
+      <section>
+        <title>Query lookup strategies</title>
+
+        <para>Finders can be executed with 3 different strategies. These
+        strategies define how the query for the finder is constructed at
+        runtime. These strategies can either be configured at the
+        <interfacename>GenericDaoFactoryBean</interfacename> directly or used
+        via XML namespace configuration.</para>
+
+        <simplesect>
+          <title>CREATE</title>
+
+          <para>This strategy will try to construct a JPA query from the
+          finder method's name. Thus you don't need to declare a named query
+          explicitly. This is quite useful if the queries are simple and no
+          special JPA QL is required. CREATE strategy ties your mehod names to
+          the query, what might be unwanted. Read more about query
+          construction in <link
+          linkend="finder-methods.query-creation">FOO</link>.</para>
+        </simplesect>
+
+        <simplesect>
+          <title>USE_NAMED_QUERY</title>
+
+          <para>This strategy tries to find a named query using naming
+          conventions described in <link
+          linkend="finder-methods.named-queries">BAR</link>. If no query is
+          found the finder will fail.</para>
+        </simplesect>
+
+        <simplesect>
+          <title>CREATE_IF_NOT_FOUND</title>
+
+          <para>This strategy is actually a combination of the both mentioned
+          above. It will try to lookup a named query first but create a custom
+          method name based query if no named query was found. This is default
+          lookup strategy and thus will be used if you don't configure
+          anything explicitly. It allows quick query definition by method
+          names but also custom tuning of these queries by introducing JPA
+          named queries for those who need explicit tuning.</para>
+        </simplesect>
+      </section>
+
+      <section id="finder-methods.query-creation">
+        <title>Query creation</title>
+
+        <para>The hades query builder mechanism is useful to build basic
+        <code>WHERE</code> clauses queries. Basically you can define
+        conditions on direct entity properties and concatenate them with
+        <code>AND</code> and <code>OR</code>.<example>
+            <title>Query creation from method names</title>
+
+            <para><programlisting language="java">public interface UserDao&lt;User, Long&gt; {
+
+  findByEmailAddressAndLastname(String emailAddress, String lastname);
+}</programlisting>This method will result in the following query:</para>
+
+            <programlisting>from User u where u.emailAddress = ? and u.lastname = ?</programlisting>
+
+            <para>Besides <code>AND</code> you can use <code>OR</code> to
+            concatenate property constraints. Note, that due to the lack of
+            parenthesis natural binding order (<code>AND</code> binds more
+            than <code>OR</code>) is used for the query.</para>
+          </example></para>
+      </section>
+
+      <section id="finder-methods.named-queries">
+        <title>Using JPA NamedQueries</title>
+
+        <note>
           <para>The examples use simple <code>&lt;named-query /&gt;</code>
           element and <code>@NamedQuery</code> annotation. The queries for
           these configuration elements have to be defined in JPA query
@@ -978,78 +1049,81 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           /&gt;</code> or <code>@NamedNativeQuery</code>, too. These elements
           allow you to define the query in native SQL by losing the database
           platform independence.</para>
-        </note></para>
+        </note>
 
-      <simplesect>
-        <title>XML named query definition</title>
+        <simplesect>
+          <title>XML named query definition</title>
 
-        <para>To use XML configuration simply add the necessary
-        <code>&lt;named-query /&gt;</code> element to the
-        <filename>orm.xml</filename> JPA configuration file located in
-        <filename>META-INF</filename> folder of your classpath. Automatic
-        invocation of named queries is enabled by using some defined naming
-        convention. For more details see below.</para>
+          <para>To use XML configuration simply add the necessary
+          <code>&lt;named-query /&gt;</code> element to the
+          <filename>orm.xml</filename> JPA configuration file located in
+          <filename>META-INF</filename> folder of your classpath. Automatic
+          invocation of named queries is enabled by using some defined naming
+          convention. For more details see below.</para>
 
-        <example>
-          <title>XML named query configuration</title>
+          <example>
+            <title>XML named query configuration</title>
 
-          <programlisting language="xml">&lt;named-query name="User.findByLastname"&gt;
+            <programlisting language="xml">&lt;named-query name="User.findByLastname"&gt;
   &lt;query&gt;SELECT u FROM User u WHERE u.lastname = ?1&lt;/query&gt;
 &lt;/named-query&gt;</programlisting>
-        </example>
+          </example>
 
-        <para>As you can see the query has a special name, the
-        <classname>GenericJpaDao</classname> uses to resolve it at
-        runtime.</para>
-      </simplesect>
+          <para>As you can see the query has a special name, the
+          <classname>GenericJpaDao</classname> uses to resolve it at
+          runtime.</para>
+        </simplesect>
 
-      <simplesect>
-        <title>Annotation configuration</title>
+        <simplesect>
+          <title>Annotation configuration</title>
 
-        <para>Annotation configuration has the advantage not to need another
-        config file to be edited, probably lowering maintenance cost. You pay
-        for that benefit by the need to recompile your domain class for every
-        new query declaration.</para>
+          <para>Annotation configuration has the advantage not to need another
+          config file to be edited, probably lowering maintenance cost. You
+          pay for that benefit by the need to recompile your domain class for
+          every new query declaration.</para>
 
-        <example>
-          <title>Annotation based named query configuration</title>
+          <example>
+            <title>Annotation based named query configuration</title>
 
-          <programlisting language="java">@Entity
+            <programlisting language="java">@Entity
 @NamedQuery(name = "User.findByEmailAddress", 
   query = "SELECT u FROM User u WHERE u.emailAddress = ?1")
 public class User implements Persistable&lt;Long&gt; {
 
 }</programlisting>
-        </example>
-      </simplesect>
+          </example>
+        </simplesect>
 
-      <simplesect>
-        <title>Declaring interfaces</title>
+        <simplesect>
+          <title>Declaring interfaces</title>
 
-        <para>To allow execution of this named query all you need to do is to
-        specify the <interfacename>UserDao</interfacename> as follows:</para>
+          <para>To allow execution of this named query all you need to do is
+          to specify the <interfacename>UserDao</interfacename> as
+          follows:</para>
 
-        <example>
-          <title>Finder method declaration in UserDao</title>
+          <example>
+            <title>Finder method declaration in UserDao</title>
 
-          <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
+            <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
   List&lt;User&gt; findByLastname(String lastname);
 
   User findByEmailAddress(String emailAddress);
 }</programlisting>
-        </example>
+          </example>
 
-        <para>Declaring this method <classname>GenericJpaDao</classname> will
-        try to resolve a call to this method to a named query startig with the
-        simple name of the configured domain class followed by the method name
-        separated by a dot. Note, that the GenericJpaDao implementation
-        distinguishes between finder methods for a single object or lists of
-        object. It will try to retrieve a single result if you provide a
-        return value assignable from the configured domain class. Otherwise i
-        will try to call a named query to return a list. Be sure your named
-        query for a single instance truely returns only one instance.</para>
-      </simplesect>
+          <para>Declaring this method <classname>GenericJpaDao</classname>
+          will try to resolve a call to this method to a named query startig
+          with the simple name of the configured domain class followed by the
+          method name separated by a dot. Note, that the GenericJpaDao
+          implementation distinguishes between finder methods for a single
+          object or lists of object. It will try to retrieve a single result
+          if you provide a return value assignable from the configured domain
+          class. Otherwise i will try to call a named query to return a list.
+          Be sure your named query for a single instance truely returns only
+          one instance.</para>
+        </simplesect>
+      </section>
     </section>
 
     <section>
@@ -1092,42 +1166,31 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
           <areaspec>
             <area coords="1" id="audition-advice-test.superclass" />
 
-            <area coords="3" id="audition-advice-test.reference-to-beans" />
+            <area coords="8" id="audition-advice-test.reference-to-beans" />
 
-            <area coords="6" id="audition-advice-test.test-data" />
-
-            <area coords="8" id="audition-advice-test.setter-injection" />
-
-            <area coords="17" id="audition-advice-test.config-location" />
+            <area coords="13" id="audition-advice-test.test-data" />
 
             <area coords="23" id="audition-advice-test.setup" />
 
             <area coords="40" id="audition-advice-test.test-method" />
           </areaspec>
 
-          <programlisting language="java">public class AuditionAdviceTest extends AbstractJpaTests {
+          <programlisting language="java">@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(location = { "infrastructure.xml", "audition-context.xml", 
+  "dao-context.xml" })
+@Transactional
+public class AuditionAdviceTest extends AbstractJpaTests {
 
+  @Autowired
   private UserDao userDao;
+
+  @Autowired
   private AuditionAdvice advice;
 
   private AuditableUser user;
-
-  public void setUserDao(UserDao userDao) {
-    this.userDao = userDao;
-  }
-
-  public void setAuditionAdvice(AuditionAdvice advice) {
-    this.auditionAdvice = auditionAdvice;
-  }
-
-  @Override
-  public String[] getConfigLocations() {
-    return new String[] { "infrastructure.xml", "audition-context.xml",
-      "dao-context.xml"};
-  }
   
-  @Override
-  public void onSetUpInTransaction() {
+  @Before
+  public void setUp() {
 
     user = new AuditableUser();
     user.setUsername("username");
@@ -1144,6 +1207,7 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
     EasyMock.replay(auditorAware);
   }
 
+  @Test
   public void testApplicationOfAuditionAdvice() {
 
     user = userDao.save(user);
@@ -1158,10 +1222,8 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
 
           <calloutlist>
             <callout arearefs="audition-advice-test.superclass">
-              <para>The test class extends Spring's AbstractJpaTest that
-              provides Dependency Injection for tests and wraps every test
-              method into a transaction, that is rolled back
-              afterwards.</para>
+              <para>Configure the test class to be dependency injected and
+              transactional.</para>
             </callout>
 
             <callout arearefs="audition-advice-test.reference-to-beans">
@@ -1170,15 +1232,6 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
 
             <callout arearefs="audition-advice-test.test-data">
               <para>Test user to be inserted into the database.</para>
-            </callout>
-
-            <callout arearefs="audition-advice-test.setter-injection">
-              <para>Setters to get Spring beans injected.</para>
-            </callout>
-
-            <callout arearefs="audition-advice-test.config-location">
-              <para>Returns the configuration files, Spring shall load to
-              setup the application context.</para>
             </callout>
 
             <callout arearefs="audition-advice-test.setup">
@@ -1305,6 +1358,74 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
           </calloutlist>
         </programlistingco>
       </example>
+    </section>
+
+    <section>
+      <title>Custom implementations</title>
+
+      <para>Often it is necessary to provide a custom implementation for a few
+      DAO methods. Hades eases custom DAO functionality development a lot and
+      allows easy integration with hades generic DAO and finder functionality.
+      To enrich a generic DAO with custom functionality you have to define an
+      interface and an implementation for that functionality first and let the
+      DAO interface you provide by now extend that custom interface.</para>
+
+      <example>
+        <title>Interface for custom DAO functionality</title>
+
+        <programlisting>public interface UserDaoCustom {
+
+  public void someCustomMethod(User user);
+}</programlisting>
+      </example>
+
+      <example>
+        <title>Implementation of custom DAO functionality</title>
+
+        <para><programlisting>public class UserDaoImpl implements UserDaoCustom {
+
+  public void someCustomMethod(User user) {
+    // Your custom implementation
+  }
+}</programlisting>Note that the implementation itself does nor depend on Hades
+        and can be a regular Spring bean. So you can either use standard
+        dependency injection behaviour to inject references to other beans,
+        take part in aspects and so on.</para>
+      </example>
+
+      <example>
+        <title>Changes to the standard DAO interface</title>
+
+        <para><programlisting>public interface UserDao extends GenericDao&lt;User, Long&gt;, UserDaoCustom {
+
+  // Declare finder methods here
+}</programlisting>Let your standard DAO interface extend the custom one. This
+        makes generic DAO and custom functionality available to
+        clients.</para>
+      </example>
+
+      <simplesect>
+        <title>Configuration</title>
+
+        <para>If you use namespace configuration Hades tries to autodetect
+        custom implementations by looking up classes in the configured dao
+        package using the naming conventions for the DAO interface but
+        appending the property <code>dao-impl-postfix</code> to the classname.
+        This prefix defaults to <code>DaoImpl</code>.</para>
+
+        <example>
+          <title>Configuration example</title>
+
+          <para><programlisting>&lt;dao:dao-config dao-package-name="foo.bar.dao" entity-package-name="foo.bar.domain"&gt;
+  &lt;dao:dao id="user" /&gt;
+&lt;/dao:dao-config&gt;
+
+&lt;dao:dao-config dao-package-name="foo.bar.dao" entity-package-name="foo.bar.domain"
+  &gt;
+  &lt;dao:dao id="user" /&gt;
+&lt;/dao:dao-config&gt;</programlisting></para>
+        </example>
+      </simplesect>
     </section>
   </chapter>
 </book>
