@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx</groupId>
 	<artifactId>hades</artifactId>
-	<version>1.0-RC4</version>
+	<version>1.0-RC5-SNAPSHOT</version>
 	<name>Hades</name>
 	<description>
 		Domain class and DAO development framework
@@ -32,7 +32,7 @@
 	</developers>
 
 	<properties>
-		<springVersion>2.5.4</springVersion>
+		<springVersion>2.5.5</springVersion>
 	</properties>
 
 	<dependencies>
