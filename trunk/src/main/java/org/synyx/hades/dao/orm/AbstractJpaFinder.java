@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
@@ -36,7 +37,6 @@ import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.FinderExecuter;
-import org.synyx.hades.dao.config.DaoConfigContext;
 import org.synyx.hades.domain.Persistable;
 
 
@@ -51,10 +51,13 @@ import org.synyx.hades.domain.Persistable;
 public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Serializable>
         implements InitializingBean, FinderExecuter<T> {
 
+    public static final QueryLookupStrategy DEFAULT_QUERY_LOOKUP_STRATEGY = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
+    public static final String DEFAULT_FINDER_PREFIX = "findBy";
+
     private static final Log log = LogFactory.getLog(AbstractJpaFinder.class);
 
-    private QueryLookupStrategy createFinderQueries = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
-    private String finderPrefix = DaoConfigContext.DEFAULT_FINDER_PREFIX;
+    private QueryLookupStrategy createFinderQueries = DEFAULT_QUERY_LOOKUP_STRATEGY;
+    private String finderPrefix = DEFAULT_FINDER_PREFIX;
 
     private JpaTemplate jpaTemplate;
     private Class<T> domainClass;
@@ -138,7 +141,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * (non-Javadoc)
      * 
      * @see com.synyx.jpa.support.FinderExecuter#executeFinder(java.lang.String,
-     *      java.lang.Object[])
+     * java.lang.Object[])
      */
     @SuppressWarnings("unchecked")
     public List<T> executeFinder(final Method method, final Object... queryArgs) {
@@ -148,7 +151,9 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             /*
              * (non-Javadoc)
              * 
-             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             * @see
+             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
+             * .EntityManager)
              */
             public List<T> doInJpa(final EntityManager em)
                     throws PersistenceException {
@@ -178,7 +183,9 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             /*
              * (non-Javadoc)
              * 
-             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             * @see
+             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
+             * .EntityManager)
              */
             public T doInJpa(final EntityManager em)
                     throws PersistenceException {
@@ -231,10 +238,20 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
 
         switch (createFinderQueries) {
 
-            case CREATE:
-                return em.createQuery(constructQuery(method));
+        case CREATE:
+            return em.createQuery(constructQuery(method));
 
-            case USE_NAMED_QUERY:
+        case USE_NAMED_QUERY:
+
+            if (log.isDebugEnabled()) {
+                log.debug("Looking up named query " + queryName);
+            }
+
+            return em.createNamedQuery(queryName);
+
+        case CREATE_IF_NOT_FOUND:
+        default:
+            try {
 
                 if (log.isDebugEnabled()) {
                     log.debug("Looking up named query " + queryName);
@@ -242,25 +259,15 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
 
                 return em.createNamedQuery(queryName);
 
-            case CREATE_IF_NOT_FOUND:
-            default:
-                try {
+            } catch (IllegalArgumentException e) {
 
-                    if (log.isDebugEnabled()) {
-                        log.debug("Looking up named query " + queryName);
-                    }
-
-                    return em.createNamedQuery(queryName);
-
-                } catch (IllegalArgumentException e) {
-
-                    if (log.isDebugEnabled()) {
-                        log.debug("Failed to lookup named query " + queryName
-                                + " triggering query creation...");
-                    }
-
-                    return em.createQuery(constructQuery(method));
+                if (log.isDebugEnabled()) {
+                    log.debug("Failed to lookup named query " + queryName
+                            + " triggering query creation...");
                 }
+
+                return em.createQuery(constructQuery(method));
+            }
         }
     }
 
@@ -354,7 +361,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
     /*
      * (non-Javadoc)
      * 
-     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     * @see
+     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     public void afterPropertiesSet() throws Exception {
 
