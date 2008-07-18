@@ -44,7 +44,6 @@ public class AuditionAdviceUnitTest extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
 
         auditionAdvice = new AuditionAdvice();
