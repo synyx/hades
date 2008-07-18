@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.synyx.hades.dao.orm.AbstractJpaFinder;
 import org.synyx.hades.dao.orm.GenericJpaDao;
 import org.synyx.hades.dao.orm.QueryLookupStrategy;
 import org.w3c.dom.Element;
@@ -36,9 +37,6 @@ import org.w3c.dom.NodeList;
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class DaoConfigContext {
-
-    public static final String DEFAULT_FINDER_PREFIX = "findBy";
-    public static final QueryLookupStrategy DEFAULT_CREATE_FINDER_QUERIES = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
 
     protected static final String DEFAULT_DAO_BASE_CLASS_NAME = GenericJpaDao.class
             .getName();
@@ -151,7 +149,7 @@ public class DaoConfigContext {
                 .getAttribute(FINDER_LOOKUP_STRATEGY);
 
         return StringUtils.hasText(createFinderQueries) ? QueryLookupStrategy
-                .fromXml(createFinderQueries) : DEFAULT_CREATE_FINDER_QUERIES;
+                .fromXml(createFinderQueries) : AbstractJpaFinder.DEFAULT_QUERY_LOOKUP_STRATEGY;
     }
 
 
@@ -166,7 +164,7 @@ public class DaoConfigContext {
         String finderPrefix = element.getAttribute(FINDER_PREFIX);
 
         return StringUtils.hasText(finderPrefix) ? finderPrefix
-                : DEFAULT_FINDER_PREFIX;
+                : AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
     }
 
 

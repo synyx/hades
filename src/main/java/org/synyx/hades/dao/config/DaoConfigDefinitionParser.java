@@ -52,10 +52,10 @@ import org.w3c.dom.Node;
 
 /**
  * Parser to create bean definitions for dao-config namespace. Registers bean
- * definitions for DAOs as well as
- * {@code PersistenceAnnotationBeanPostProcessor} and
- * {@code PersistenceExceptionTranslationPostProcessor} to transparently inject
- * entity manager factory instance and apply exception translation.
+ * definitions for DAOs as well as {@code
+ * PersistenceAnnotationBeanPostProcessor} and {@code
+ * PersistenceExceptionTranslationPostProcessor} to transparently inject entity
+ * manager factory instance and apply exception translation.
  * <p>
  * The definition parser allows two ways of configuration. Either it looks up
  * the manually defined DAO instances or scans the defined domain package for
@@ -77,19 +77,27 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser,
     /*
      * (non-Javadoc)
      * 
-     * @see org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.w3c.dom.Element,
-     *      org.springframework.beans.factory.xml.ParserContext)
+     * @see
+     * org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.
+     * w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)
      */
     public BeanDefinition parse(final Element element,
             final ParserContext parserContext) {
 
-        DaoConfigContext configContext = new DaoConfigContext(element);
-        configContext.validate();
+        try {
+            
+            DaoConfigContext configContext = new DaoConfigContext(element);
+            configContext.validate();
 
-        if (configContext.configureManually()) {
-            doManualConfiguration(configContext, parserContext);
-        } else {
-            doAutoConfiguration(configContext, parserContext);
+            if (configContext.configureManually()) {
+                doManualConfiguration(configContext, parserContext);
+            } else {
+                doAutoConfiguration(configContext, parserContext);
+            }
+
+        } catch (IllegalArgumentException e) {
+            parserContext.getReaderContext().error(e.getMessage(),
+                    parserContext.extractSource(element));
         }
 
         registerPostProcessors(parserContext);
@@ -336,8 +344,10 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser,
         /*
          * (non-Javadoc)
          * 
-         * @see org.springframework.core.type.filter.TypeFilter#match(org.springframework.core.type.classreading.MetadataReader,
-         *      org.springframework.core.type.classreading.MetadataReaderFactory)
+         * @see
+         * org.springframework.core.type.filter.TypeFilter#match(org.springframework
+         * .core.type.classreading.MetadataReader,
+         * org.springframework.core.type.classreading.MetadataReaderFactory)
          */
         public boolean match(final MetadataReader metadataReader,
                 final MetadataReaderFactory metadataReaderFactory)
@@ -355,9 +365,11 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser,
     /*
      * (non-Javadoc)
      * 
-     * @see org.springframework.beans.factory.xml.BeanDefinitionDecorator#decorate(org.w3c.dom.Node,
-     *      org.springframework.beans.factory.config.BeanDefinitionHolder,
-     *      org.springframework.beans.factory.xml.ParserContext)
+     * @see
+     * org.springframework.beans.factory.xml.BeanDefinitionDecorator#decorate
+     * (org.w3c.dom.Node,
+     * org.springframework.beans.factory.config.BeanDefinitionHolder,
+     * org.springframework.beans.factory.xml.ParserContext)
      */
     public BeanDefinitionHolder decorate(Node node,
             BeanDefinitionHolder definition, ParserContext parserContext) {

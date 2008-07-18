@@ -34,7 +34,6 @@ import org.springframework.util.ClassUtils;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.dao.config.DaoConfigContext;
 import org.synyx.hades.dao.orm.AbstractJpaFinder;
 import org.synyx.hades.dao.orm.GenericJpaDao;
 import org.synyx.hades.dao.orm.QueryLookupStrategy;
@@ -64,15 +63,14 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         implements FactoryBean, InitializingBean {
 
     private static final Class<?> DEFAULT_DAO_BASE_CLASS = GenericJpaDao.class;
-
     private Class<GenericDao<T, PK>> daoInterface;
     private Class<T> domainClass;
     private Object customDaoImplementation;
     private EntityManagerFactory entityManagerFactory;
 
     private Class<D> daoClass = (Class<D>) DEFAULT_DAO_BASE_CLASS;
-    private QueryLookupStrategy queryLookupStrategy = DaoConfigContext.DEFAULT_CREATE_FINDER_QUERIES;
-    private String finderPrefix = DaoConfigContext.DEFAULT_FINDER_PREFIX;
+    private QueryLookupStrategy queryLookupStrategy = AbstractJpaFinder.DEFAULT_QUERY_LOOKUP_STRATEGY;
+    private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
 
 
     /**
@@ -322,7 +320,6 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
          * 
          * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
          */
-        @SuppressWarnings("unchecked")
         public Object invoke(final MethodInvocation invocation)
                 throws Throwable {
 
