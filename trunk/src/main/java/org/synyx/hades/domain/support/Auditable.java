@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.support;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import org.synyx.hades.domain.Persistable;
 
 
 /**
