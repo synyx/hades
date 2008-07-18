@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.support;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,10 +24,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.synyx.hades.domain.AbstractPersistable;
+import org.synyx.hades.domain.Persistable;
+
 
 /**
- * Abstract base class for auditable entities. Stores the audition values in
- * persistent fields
+ * Abstract base class for auditable entities. Stores the audition values in persistent fields
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @param <U> the auditing type. Typically some kind of user.
@@ -36,6 +38,8 @@ import javax.persistence.TemporalType;
 @MappedSuperclass
 public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Serializable>
         extends AbstractPersistable<PK> implements Auditable<U, PK> {
+
+    private static final long serialVersionUID = 141481953116476081L;
 
     @OneToOne
     private U createdBy;

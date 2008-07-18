@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Required;
-import org.synyx.hades.domain.Auditable;
 import org.synyx.hades.domain.Persistable;
 
 
