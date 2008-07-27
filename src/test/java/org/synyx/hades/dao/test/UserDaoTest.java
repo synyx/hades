@@ -20,8 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.jpa.AbstractJpaTests;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.domain.Role;
 import org.synyx.hades.domain.User;
@@ -34,9 +41,13 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public abstract class AbstractUserDaoTest extends AbstractJpaTests {
+@Transactional
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:applicationContext.xml")
+public class UserDaoTest {
 
     // CUT
+    @Autowired
     private UserDao userDao;
 
     // Test fixture
@@ -45,25 +56,8 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     private Integer id;
 
 
-    /**
-     * Setter to inject <code>UserDao</code> instance.
-     * 
-     * @param userDao
-     */
-    public void setUserDao(final UserDao userDao) {
-
-        this.userDao = userDao;
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.springframework.test.AbstractTransactionalSpringContextTests#
-     * onSetUpInTransaction()
-     */
-    @Override
-    protected void onSetUpInTransaction() throws Exception {
+    @Before
+    public void onSetUpInTransaction() throws Exception {
 
         firstUser = new User("Oliver", "Gierke", "gierke@synyx.de");
         secondUser = new User("Joachim", "Arrasz", "arrasz@synyx.de");
@@ -71,17 +65,9 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
 
     /**
-     * Simple test for context creation.
-     */
-    public void testContextCreation() {
-
-        assertNotNull(getApplicationContext());
-    }
-
-
-    /**
      * Tests creation of users.
      */
+    @Test
     public void testCreation() {
 
         flushTestUsers();
@@ -93,18 +79,34 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
      * 
      * @throws Exception
      */
+    @Test
     public void testRead() throws Exception {
 
         flushTestUsers();
 
         User foundPerson = userDao.readByPrimaryKey(id);
-        assertEquals(firstUser.getFirstname(), foundPerson.getFirstname());
+        Assert.assertEquals(firstUser.getFirstname(), foundPerson
+                .getFirstname());
+    }
+
+
+    /**
+     * Asserts, that a call to {@code UserDao#readByPrimaryKey(Integer)} returns
+     * {@code null} for invalid not {@code null} ids.
+     */
+    @Test
+    public void testReadByPrimaryKeyReturnsNullForNotFoundEntities() {
+
+        flushTestUsers();
+
+        Assert.assertNull(userDao.readByPrimaryKey(id * 27));
     }
 
 
     /**
      * Tests updating a user.
      */
+    @Test
     public void testUpdate() {
 
         flushTestUsers();
@@ -113,19 +115,21 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
         foundPerson.setLastname("Schlicht");
 
         User updatedPerson = userDao.readByPrimaryKey(id);
-        assertEquals(foundPerson.getFirstname(), updatedPerson.getFirstname());
+        Assert.assertEquals(foundPerson.getFirstname(), updatedPerson
+                .getFirstname());
     }
 
 
     /**
      * Tests deleting a user.
      */
+    @Test
     public void testDelete() {
 
         flushTestUsers();
 
         userDao.delete(firstUser);
-        assertNull(userDao.readByPrimaryKey(id));
+        Assert.assertNull(userDao.readByPrimaryKey(id));
     }
 
 
@@ -135,14 +139,15 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
      * 
      * @throws Exception
      */
+    @Test
     public void testFindByLastname() throws Exception {
 
         flushTestUsers();
 
         List<User> byName = userDao.findByLastname("Gierke");
 
-        assertTrue(byName.size() == 1);
-        assertEquals(firstUser, byName.get(0));
+        Assert.assertTrue(byName.size() == 1);
+        Assert.assertEquals(firstUser, byName.get(0));
     }
 
 
@@ -152,32 +157,35 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
      * 
      * @throws Exception
      */
+    @Test
     public void testFindByEmailAddress() throws Exception {
 
         flushTestUsers();
 
         User byName = userDao.findByEmailAddress("gierke@synyx.de");
 
-        assertNotNull(byName);
-        assertEquals(firstUser, byName);
+        Assert.assertNotNull(byName);
+        Assert.assertEquals(firstUser, byName);
     }
 
 
     /**
      * Tests reading all users.
      */
+    @Test
     public void testReadAll() {
 
         flushTestUsers();
 
         List<User> reference = Arrays.asList(firstUser, secondUser);
-        assertTrue(userDao.readAll().containsAll(reference));
+        Assert.assertTrue(userDao.readAll().containsAll(reference));
     }
 
 
     /**
      * Tests cascading persistence.
      */
+    @Test
     public void testCascadesPersisting() {
 
         // Create link prior to persisting
@@ -188,12 +196,12 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
         // Fetches first user from .. bdatabase
         User firstReferenceUser = userDao.readByPrimaryKey(firstUser.getId());
-        assertEquals(firstUser, firstReferenceUser);
+        Assert.assertEquals(firstUser, firstReferenceUser);
 
         // Fetch colleagues and assert link
         Set<User> colleagues = firstReferenceUser.getColleagues();
-        assertEquals(1, colleagues.size());
-        assertTrue(colleagues.contains(secondUser));
+        Assert.assertEquals(1, colleagues.size());
+        Assert.assertTrue(colleagues.contains(secondUser));
     }
 
 
@@ -201,13 +209,14 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
      * Tests, that persisting a relationsship without cascade attributes throws
      * a {@code DataAccessException}.
      */
+    @Test
     public void testPreventsCascadingRolePersisting() {
 
         firstUser.addRole(new Role("USER"));
 
         try {
             flushTestUsers();
-            fail("Expected DataAccessException!");
+            Assert.fail("Expected DataAccessException!");
         } catch (DataAccessException e) {
 
         }
@@ -217,6 +226,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     /**
      * Tests cascading on {@literal merge} operation.
      */
+    @Test
     public void testMergingCascadesCollegueas() {
 
         firstUser.addColleague(secondUser);
@@ -228,8 +238,8 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
         User reference = userDao.readByPrimaryKey(firstUser.getId());
         Set<User> colleagues = reference.getColleagues();
 
-        assertNotNull(colleagues);
-        assertEquals(2, colleagues.size());
+        Assert.assertNotNull(colleagues);
+        Assert.assertEquals(2, colleagues.size());
     }
 
 
@@ -237,6 +247,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
      * Tests that an exception is being thrown if you try to persist some
      * relation that is not configured to be cascaded.
      */
+    @Test
     public void testMergingDoesNotCascadeRoles() {
 
         flushTestUsers();
@@ -245,7 +256,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
         try {
             userDao.saveAndFlush(firstUser);
-            fail("Expected DataAccessException!");
+            Assert.fail("Expected DataAccessException!");
         } catch (DataAccessException e) {
 
         }
@@ -255,6 +266,7 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     /**
      * Tests, that the generic dao implements count correctly.
      */
+    @Test
     public void testCountsCorrectly() {
 
         Long count = userDao.count();
@@ -263,16 +275,26 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
         user.setEmailAddress("gierke@synyx.de");
         userDao.save(user);
 
-        assertTrue(userDao.count().equals(count + 1));
+        Assert.assertTrue(userDao.count().equals(count + 1));
     }
 
 
+    /**
+     * Tests invoking a method of a custom implementation of the DAO interface.
+     */
+    @Test
     public void testInvocationOfCustomImplementation() {
 
         userDao.someCustomMethod(new User());
     }
 
 
+    /**
+     * Tests that overriding a finder method is recognized by the DAO
+     * implementation. If an overriding method is found it will will be invoked
+     * instead of the automatically generated finder.
+     */
+    @Test
     public void testOverwritingFinder() {
 
         userDao.findByOverrridingMethod();
@@ -291,10 +313,10 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
         id = firstUser.getId();
 
-        assertNotNull(id);
-        assertNotNull(secondUser.getId());
+        Assert.assertNotNull(id);
+        Assert.assertNotNull(secondUser.getId());
 
-        assertTrue(userDao.exists(id));
-        assertTrue(userDao.exists(secondUser.getId()));
+        Assert.assertTrue(userDao.exists(id));
+        Assert.assertTrue(userDao.exists(secondUser.getId()));
     }
 }
