@@ -23,7 +23,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -86,14 +85,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
 
         Assert.notNull(primaryKey, "The given primary key must not be null!");
 
-        try {
-
-            T entity = getJpaTemplate().find(getDomainClass(), primaryKey);
-            return null != entity;
-
-        } catch (IncorrectResultSizeDataAccessException e) {
-            return false;
-        }
+        return null != readByPrimaryKey(primaryKey);
     }
 
 
