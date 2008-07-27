@@ -57,8 +57,9 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
      * Retrives an entity by it's primary key.
      * 
      * @param primaryKey
-     * @return the entity with the given primary key
-     * @throws IllegalArgumentException if primaryKey is null
+     * @return the entity with the given primary key or {@code null} if none
+     *         found
+     * @throws IllegalArgumentException if primaryKey is {@code null}
      */
     T readByPrimaryKey(final PK primaryKey);
 
