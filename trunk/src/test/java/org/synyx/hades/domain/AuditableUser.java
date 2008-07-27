@@ -19,6 +19,8 @@ package org.synyx.hades.domain;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 
+import org.synyx.hades.domain.support.AbstractAuditable;
+
 
 /**
  * Sample auditable user to demonstrate working with
