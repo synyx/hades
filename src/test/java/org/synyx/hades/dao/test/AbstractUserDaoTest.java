@@ -29,8 +29,8 @@ import org.synyx.hades.domain.User;
 
 /**
  * Base integration test class for {@code UserDao}. Extend this class and
- * provide and application context by overriding
- * {@code AbstractSingleSpringContextTests#getConfigLocations()}.
+ * provide and application context by overriding {@code
+ * AbstractSingleSpringContextTests#getConfigLocations()}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -59,7 +59,8 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
     /*
      * (non-Javadoc)
      * 
-     * @see org.springframework.test.AbstractTransactionalSpringContextTests#onSetUpInTransaction()
+     * @seeorg.springframework.test.AbstractTransactionalSpringContextTests#
+     * onSetUpInTransaction()
      */
     @Override
     protected void onSetUpInTransaction() throws Exception {
@@ -292,5 +293,8 @@ public abstract class AbstractUserDaoTest extends AbstractJpaTests {
 
         assertNotNull(id);
         assertNotNull(secondUser.getId());
+
+        assertTrue(userDao.exists(id));
+        assertTrue(userDao.exists(secondUser.getId()));
     }
 }

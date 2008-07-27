@@ -64,6 +64,16 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
 
 
     /**
+     * Returns whether an entity with the given id exists.
+     * 
+     * @param primaryKey
+     * @return true if an entity with the given id exists, alse otherwise
+     * @throws IllegalArgumentException if primaryKey is {@code null}
+     */
+    boolean exists(final PK primaryKey);
+
+
+    /**
      * Returns all instances of the type.
      * 
      * @return all entities
