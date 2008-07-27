@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx</groupId>
 	<artifactId>hades</artifactId>
-	<version>1.0-RC5-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>Hades</name>
 	<description>
 		Domain class and DAO development framework
@@ -129,6 +129,14 @@
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Architecture Rules -->
+		<dependency>
+			<groupId>com.seventytwomiles</groupId>
+			<artifactId>architecture-rules</artifactId>
+			<version>2.1.0</version>
+			<scope>test</scope>
+		</dependency>  
 
 	</dependencies>
 
@@ -171,14 +179,14 @@
 			</plugin>
 			
 			<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<configuration>
+				<archive>
+					<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+				</archive>
+			</configuration>
+		      </plugin>
 
 			
 			<plugin>
@@ -335,6 +343,19 @@
 			<id>maven-repository.dev.java.net</id>
 			<name>Java Dev Net Repository</name>
 			<url>http://download.java.net/maven/2</url>
+		</repository>
+		
+		<repository>
+			<id>architect-rules-repo</id>
+			<name>architecture-rules repository</name>
+			<layout>default</layout>
+			<url> http://architecturerules.googlecode.com/svn/maven2/ </url>
+			<releases>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<checksumPolicy>ignore</checksumPolicy>
+			</snapshots>
 		</repository>
 
 	</repositories>
