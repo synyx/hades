@@ -16,29 +16,26 @@
 
 package org.synyx.hades.dao.test;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
+import org.springframework.test.context.ContextConfiguration;
 
 
 /**
- * Use namespace context to run tests.
+ * Use namespace context to run tests. Checks for existence of required
+ * PostProcessors, too.
  * 
- * @author Eberhard Wolff
  * @author Oliver Gierke - gierke@synyx.de
+ * @author Eberhard Wolff
  */
-public class NamespaceUserDaoTest extends AbstractUserDaoTest {
+@ContextConfiguration(locations = "classpath:namespace-applicationContext.xml", inheritLocations = false)
+public class NamespaceUserDaoTest extends UserDaoTest implements
+        BeanFactoryAware {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.test.AbstractSingleSpringContextTests#getConfigLocations()
-     */
-    @Override
-    protected String[] getConfigLocations() {
-
-        setAutowireMode(AUTOWIRE_BY_NAME);
-        return new String[] { "namespace-applicationContext.xml" };
-    }
+    private BeanFactory beanFactory;
 
 
     /**
@@ -46,10 +43,23 @@ public class NamespaceUserDaoTest extends AbstractUserDaoTest {
      */
     public void testCreationOfPostProcessors() {
 
-        getApplicationContext().getBean(
-                PersistenceAnnotationBeanPostProcessor.class.getName());
+        beanFactory.getBean(PersistenceAnnotationBeanPostProcessor.class
+                .getName());
 
-        getApplicationContext().getBean(
-                PersistenceExceptionTranslationPostProcessor.class.getName());
+        beanFactory.getBean(PersistenceExceptionTranslationPostProcessor.class
+                .getName());
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org
+     * .springframework.beans.factory.BeanFactory)
+     */
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+
+        this.beanFactory = beanFactory;
     }
 }
