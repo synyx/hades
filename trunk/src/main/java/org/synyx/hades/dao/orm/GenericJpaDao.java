@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -36,8 +37,8 @@ import org.synyx.hades.domain.page.Pageable;
 
 /**
  * Default implementation of the <code>GenericDao</code> interface. Use
- * <code>GenericDaoFactoryBean</code> to create instances of it. Furthermore
- * it is able to execute named queries.
+ * <code>GenericDaoFactoryBean</code> to create instances of it. Furthermore it
+ * is able to execute named queries.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
@@ -47,6 +48,9 @@ import org.synyx.hades.domain.page.Pageable;
 @Repository
 public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
         extends AbstractJpaFinder<T, PK> implements GenericDao<T, PK> {
+
+    private static final String COUNT_QUERY_STRING = "select count(x) from %s x";
+
 
     /*
      * (non-Javadoc)
@@ -62,15 +66,34 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     /*
      * (non-Javadoc)
      * 
-     * @see com.synyx.jpa.support.GenericDao#readByPrimaryKey(java.io.Serializable)
+     * @see
+     * com.synyx.jpa.support.GenericDao#readByPrimaryKey(java.io.Serializable)
      */
     public T readByPrimaryKey(final PK primaryKey) {
 
-        if (null == primaryKey) {
-            throw new IllegalArgumentException("primaryKey must not be null!");
-        }
+        Assert.notNull(primaryKey, "The given primaryKey must not be null!");
 
         return getJpaTemplate().find(getDomainClass(), primaryKey);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.GenericDao#exists(java.io.Serializable)
+     */
+    public boolean exists(final PK primaryKey) {
+
+        Assert.notNull(primaryKey, "The given primary key must not be null!");
+
+        try {
+
+            T entity = getJpaTemplate().find(getDomainClass(), primaryKey);
+            return null != entity;
+
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return false;
+        }
     }
 
 
@@ -102,7 +125,9 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.hades.dao.GenericDao#readAll(org.synyx.hades.hades.dao.Pageable)
+     * @see
+     * org.synyx.hades.hades.dao.GenericDao#readAll(org.synyx.hades.hades.dao
+     * .Pageable)
      */
     public Page<T> readAll(final Pageable pageable) {
 
@@ -115,8 +140,9 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.page.Pageable,
-     *      org.synyx.hades.domain.Sort)
+     * @see
+     * org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.page.Pageable
+     * , org.synyx.hades.domain.Sort)
      */
     public Page<T> readAll(final Pageable pageable, final Sort sort) {
 
@@ -142,15 +168,16 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
             /*
              * (non-Javadoc)
              * 
-             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             * @see
+             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
+             * .EntityManager)
              */
             public Object doInJpa(final EntityManager em)
                     throws PersistenceException {
 
                 return em.createQuery(
-                        "select count(x) from "
-                                + getDomainClass().getSimpleName() + " x")
-                        .getSingleResult();
+                        String.format(COUNT_QUERY_STRING, getDomainClass()
+                                .getSimpleName())).getSingleResult();
             }
         });
     }
@@ -176,7 +203,9 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.hades.jpa.support.GenericDao#saveAndFlush(org.synyx.hades.hades.jpa.support.Entity)
+     * @see
+     * org.synyx.hades.hades.jpa.support.GenericDao#saveAndFlush(org.synyx.hades
+     * .hades.jpa.support.Entity)
      */
     public T saveAndFlush(final T entity) {
 
@@ -213,7 +242,9 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
             /*
              * (non-Javadoc)
              * 
-             * @see org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence.EntityManager)
+             * @see
+             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
+             * .EntityManager)
              */
             public Page<T> doInJpa(final EntityManager em)
                     throws PersistenceException {
