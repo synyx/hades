@@ -69,7 +69,8 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     private EntityManagerFactory entityManagerFactory;
 
     private Class<D> daoClass = (Class<D>) DEFAULT_DAO_BASE_CLASS;
-    private QueryLookupStrategy queryLookupStrategy = AbstractJpaFinder.DEFAULT_QUERY_LOOKUP_STRATEGY;
+    private QueryLookupStrategy queryLookupStrategy =
+            AbstractJpaFinder.DEFAULT_QUERY_LOOKUP_STRATEGY;
     private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
 
 
@@ -184,6 +185,8 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         genericJpaDao.setCreateFinderQueries(queryLookupStrategy);
         genericJpaDao.setFinderPrefix(finderPrefix);
 
+        genericJpaDao.afterPropertiesSet();
+
         // Create proxy
         ProxyFactory result = new ProxyFactory();
         result.setTarget(genericJpaDao);
@@ -219,7 +222,8 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     /*
      * (non-Javadoc)
      * 
-     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     * @see
+     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     public void afterPropertiesSet() throws Exception {
 
@@ -308,8 +312,8 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
                 return false;
             }
 
-            Class<?> declaringClass = invocation.getMethod()
-                    .getDeclaringClass();
+            Class<?> declaringClass =
+                    invocation.getMethod().getDeclaringClass();
 
             return declaringClass.isInstance(customDaoImplementation);
         }
@@ -318,29 +322,25 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         /*
          * (non-Javadoc)
          * 
-         * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
+         * @see
+         * org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance
+         * .intercept.MethodInvocation)
          */
         public Object invoke(final MethodInvocation invocation)
                 throws Throwable {
 
             if (isCallToCustomMethod(invocation)) {
 
-                try {
-                    return invocation.getMethod().invoke(
-                            customDaoImplementation, invocation.getArguments());
-                } catch (Exception e) {
-                    throw new RuntimeException("Could not invoke "
-                            + invocation.toString() + " on "
-                            + customDaoImplementation);
-                }
+                return invocation.getMethod().invoke(customDaoImplementation,
+                        invocation.getArguments());
             }
 
             Method method = invocation.getMethod();
 
             if (method.getName().startsWith(finderPrefix)) {
 
-                FinderExecuter<T> target = (FinderExecuter<T>) invocation
-                        .getThis();
+                FinderExecuter<T> target =
+                        (FinderExecuter<T>) invocation.getThis();
 
                 Class<?> returnType = invocation.getMethod().getReturnType();
 
