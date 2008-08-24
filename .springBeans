@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beansProjectDescription>
 	<version>1</version>
-	<pluginVersion><![CDATA[2.0.5.v200805211800]]></pluginVersion>
+	<pluginVersion><![CDATA[2.1.0.v200808011800]]></pluginVersion>
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
@@ -11,6 +11,8 @@
 		<config>src/test/resources/infrastructure.xml</config>
 		<config>src/test/resources/applicationContext.xml</config>
 		<config>src/test/resources/namespace-autoconfig-context.xml</config>
+		<config>src/test/resources/hibernate.xml</config>
+		<config>src/test/resources/eclipselink.xml</config>
 	</configs>
 	<configSets>
 		<configSet>
