@@ -91,6 +91,7 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.15</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Concrete persistence providers -->
@@ -430,14 +431,14 @@
 		</site>
 
 		<repository>
-			<id>maven2.synyx.repository</id>
+			<id>maven2.synyx.de</id>
 			<url>
 				scp://maven2.synyx.de:24/home/mvn/public_html/repository
 			</url>
 		</repository>
 
 		<snapshotRepository>
-			<id>maven2.synyx.repository</id>
+			<id>maven2.synyx.de</id>
 			<url>
 				scp://maven2.synyx.de:24/home/mvn/public_html/repository
 			</url>
