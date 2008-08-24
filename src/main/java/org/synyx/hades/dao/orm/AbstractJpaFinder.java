@@ -358,6 +358,40 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
     }
 
 
+    /**
+     * Asserts that the {@code EntityManager} implementation being used by the
+     * dao is an instance of the given type.
+     * 
+     * @param clazz
+     * @throws IllegalArgumentException if the entity manager is not of the
+     *             given type
+     */
+    protected void assertEntityManagerClass(Class<? extends EntityManager> clazz) {
+
+        EntityManager em = (EntityManager) getJpaTemplate().execute(
+                new JpaCallback() {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see
+                     * org.springframework.orm.jpa.JpaCallback#doInJpa(javax
+                     * .persistence.EntityManager)
+                     */
+                    public EntityManager doInJpa(final EntityManager em)
+                            throws PersistenceException {
+
+                        return em;
+                    }
+                }, true);
+
+        Assert.isInstanceOf(clazz, em, getClass().getSimpleName()
+                + " can only be used with " + clazz.getSimpleName()
+                + "implementation! Please check configuration or use "
+                + GenericJpaDao.class.getSimpleName() + " instead!");
+    }
+
+
     /*
      * (non-Javadoc)
      * 
