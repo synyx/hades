@@ -43,7 +43,8 @@ import org.synyx.hades.domain.User;
  */
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:applicationContext.xml")
+@ContextConfiguration(locations = { "classpath:applicationContext.xml",
+        "classpath:hibernate.xml" })
 public class UserDaoTest {
 
     // CUT
