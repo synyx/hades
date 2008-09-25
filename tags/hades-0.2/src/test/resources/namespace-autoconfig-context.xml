@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:dao="http://www.synyx.de/schema/dao"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.synyx.de/schema/dao http://www.synyx.de/schema/dao/dao-config.xsd">
+
+	<import resource="infrastructure.xml" />
+
+	<dao:dao-config
+		entity-package-name="org.synyx.hades.domain"
+		dao-package-name="org.synyx.hades.dao">
+		
+	</dao:dao-config>
+
+</beans>
