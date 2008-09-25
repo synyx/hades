@@ -357,6 +357,15 @@
 			    <artifactId>javancss-maven-plugin</artifactId>
 			    <version>2.0-beta-2</version>
 		    </plugin>
+		    
+		    <plugin>
+		    	<groupId>org.apache.maven.plugins</groupId>
+		    	<artifactId>maven-release-plugin</artifactId>
+		    	<configuration>
+		    		<scmCommentPrefix> * [maven-release-plugin] </scmCommentPrefix>
+		    	</configuration>
+		    </plugin>
+		    
 					
 		</plugins>
 	</reporting>
@@ -406,11 +415,12 @@
 	
 
 	<scm>
+		<url>http://svn.synyx.org/synyx/opensource/hades</url>
+		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades</connection>
 		<developerConnection>
 			scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades
 		</developerConnection>
 		<tag>trunk</tag>
-		<url>http://svn.synyx.org/synyx/opensource/hades</url>
 	</scm>
 	
 	<ciManagement>
