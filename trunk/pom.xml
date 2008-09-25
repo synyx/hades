@@ -362,7 +362,8 @@
 		    	<groupId>org.apache.maven.plugins</groupId>
 		    	<artifactId>maven-release-plugin</artifactId>
 		    	<configuration>
-		    		<scmCommentPrefix> * [maven-release-plugin] -</scmCommentPrefix>
+		    		<preparationGoals>docbkx:generate-pdf site:site</preparationGoals>
+		    		<scmCommentPrefix> * [maven-release-plugin] - </scmCommentPrefix>
 		    	</configuration>
 		    </plugin>
 		    
