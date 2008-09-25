@@ -3,18 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.synyx</groupId>
+	<groupId>org.synyx.hades</groupId>
 	<artifactId>hades</artifactId>
 	<version>0.2-SNAPSHOT</version>
 	<name>Hades</name>
+	
 	<description>
 		Domain class and DAO development framework
 	</description>
 
 	<organization>
 		<name>Synyx GmbH &amp; Co. KG</name>
-		<url>http://www.synyx.de</url>
+		<url>http://www.synyx.org</url>
 	</organization>
+	
+	<url>http://trac.synyx.org/hades</url>
+	
+	<inceptionYear>2008</inceptionYear>
 
 	<developers>
 		<developer>
@@ -24,15 +29,24 @@
 			<organization>Synyx GmbH &amp; Co. KG</organization>
 			<organizationUrl>http://www.synyx.de</organizationUrl>
 			<roles>
-				<role>Architect</role>
-				<role>Developer</role>
+				<role>Project lead</role>
 			</roles>
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
+	
+	
+	<contributors>
+		<contributor>
+			<name>Eberhard Wolff</name>
+			<organization>Spring Source</organization>
+			<organizationUrl>http://www.springsource.com</organizationUrl>
+		</contributor>
+	</contributors>
+	
 
 	<properties>
-		<springVersion>2.5.5</springVersion>
+		<springVersion>[2.5,3.0)</springVersion>
 	</properties>
 
 	<dependencies>
@@ -118,13 +132,8 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.synyx</groupId>
-			<artifactId>synyx-test-utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-
+		
+		<!-- Test libraries -->
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymockclassextension</artifactId>
@@ -133,24 +142,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.apache.maven.surefire</groupId>
-			<artifactId>surefire-junit4</artifactId>
-			<version>2.4.3</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- Architecture Rules -->
-		<dependency>
-			<groupId>com.seventytwomiles</groupId>
-			<artifactId>architecture-rules</artifactId>
-			<version>2.1.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -331,25 +325,39 @@
 
 	<reporting>
 		<plugins>
-
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
-
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
 			</plugin>
-
+			
 			<plugin>
-		      <groupId>org.apache.maven.plugins</groupId>
-		      <artifactId>maven-pmd-plugin</artifactId>
-		      <configuration>
-		      	<targetJdk>1.5</targetJdk>
-		      </configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<targetJdk>1.5</targetJdk>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-checkstyle-plugin</artifactId>
+		        <configuration>
+          			<configLocation>checkstyle.xml</configLocation>
+        		</configuration>
+			</plugin>
+		      
+		    <plugin>
+		    	<groupId>org.codehaus.mojo</groupId>
+			    <artifactId>javancss-maven-plugin</artifactId>
+			    <version>2.0-beta-2</version>
 		    </plugin>
-
+					
 		</plugins>
 	</reporting>
 	
@@ -359,19 +367,6 @@
 			<id>maven-repository.dev.java.net</id>
 			<name>Java Dev Net Repository</name>
 			<url>http://download.java.net/maven/2</url>
-		</repository>
-		
-		<repository>
-			<id>architect-rules-repo</id>
-			<name>architecture-rules repository</name>
-			<layout>default</layout>
-			<url> http://architecturerules.googlecode.com/svn/maven2</url>
-			<releases>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-			<snapshots>
-				<checksumPolicy>ignore</checksumPolicy>
-			</snapshots>
 		</repository>
 		
 		<repository>
@@ -408,40 +403,40 @@
 			<url>http://repository.springsource.com/maven/bundles/external</url>
 		</repository>
 	</repositories>
+	
 
 	<scm>
 		<developerConnection>
-			scm:svn:https://svn.synyx.de/svn/synyx/hades
+			scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades
 		</developerConnection>
 		<tag>trunk</tag>
+		<url>http://svn.synyx.org/synyx/opensource/hades</url>
 	</scm>
+	
+	<ciManagement>
+		<system>Hudson</system>
+	</ciManagement>
 
 	<issueManagement>
 		<system>Trac</system>
-		<url>http://trac.synyx.de/hades/</url>
+		<url>http://trac.synyx.org/hades</url>
 	</issueManagement>
 
 	<distributionManagement>
 
 		<site>
 			<id>trac.synyx.de</id>
-			<url>
-				scp://trac.synyx.de:24/home/trac/instances/hades/htdocs/mvn
-			</url>
+			<url>scp://trac.synyx.de/home/trac/opensource/hades/htdocs/mvn</url>
 		</site>
 
 		<repository>
 			<id>maven2.synyx.de</id>
-			<url>
-				scp://maven2.synyx.de:24/home/mvn/public_html/repository
-			</url>
+			<url>scp://maven2.synyx.de/home/mvn/public_html/repository</url>
 		</repository>
 
 		<snapshotRepository>
 			<id>maven2.synyx.de</id>
-			<url>
-				scp://maven2.synyx.de:24/home/mvn/public_html/repository
-			</url>
+			<url>scp://maven2.synyx.de/home/mvn/public_html/repository</url>
 		</snapshotRepository>
 
 	</distributionManagement>
