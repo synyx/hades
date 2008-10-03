@@ -1,17 +1,17 @@
 /*
  * Copyright 2002-2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.synyx.hades.domain.support;
@@ -23,25 +23,33 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Required;
+import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Persistable;
 
 
 /**
- * Aspect touching entities being saved. Sets modification date and auditor. if
+ * Aspect touching entities being saved. Sets modification date and auditor. If
  * no {@code AuditorAware} is set only modification and creation date will be
  * set.
  * <p>
- * The advice sets both modification and creation of
+ * The advice intercepts calls to save methods of {@link GenericDao}. It is
+ * implemented using {@link Aspect} annotations to be suitable for all kinds of
+ * aspect weaving. To enable capturing audit data simply register the advice and
+ * activate annotation based aspect:
+ * 
+ * <pre>
+ * &lt;aop:aspectj-autoproxy /&gt;
+ * &lt;bean class=&quot;org.synyx.hades.domain.support.AuditionAdvice&quot; /&gt;
+ * </pre>
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @param <T> the type of the auditing instance
  * @param <PK> the type of the auditing instance's identifier
  */
 @Aspect
-public class AuditionAdvice<T extends Persistable<PK>, PK extends Serializable> {
+public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> {
 
-    private static final Log log = LogFactory.getLog(AuditionAdvice.class);
+    private static final Log log = LogFactory.getLog(AuditingAdvice.class);
 
     private AuditorAware<T, PK> auditorAware;
     private boolean modifyOnCreation = true;
@@ -53,7 +61,6 @@ public class AuditionAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * 
      * @param auditorAware the auditorAware to set
      */
-    @Required
     public void setAuditorAware(final AuditorAware<T, PK> auditorAware) {
 
         this.auditorAware = auditorAware;
@@ -66,9 +73,9 @@ public class AuditionAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * {@code true}.
      * 
      * @param modifyOnCreation if modification information shall be set on
-     *                creation, too
+     *            creation, too
      */
-    public void setModifyOnCreation(boolean modifyOnCreation) {
+    public void setModifyOnCreation(final boolean modifyOnCreation) {
 
         this.modifyOnCreation = modifyOnCreation;
     }
@@ -88,8 +95,9 @@ public class AuditionAdvice<T extends Persistable<PK>, PK extends Serializable> 
         // Log touching
         if (log.isDebugEnabled()) {
 
-            StringBuffer buffer = new StringBuffer("Touched "
-                    + auditable.toString() + " - Last modification on " + now);
+            StringBuffer buffer =
+                    new StringBuffer("Touched " + auditable.toString()
+                            + " - Last modification on " + now);
 
             if (null != auditor) {
                 buffer.append(" by " + auditor.toString());
@@ -109,13 +117,11 @@ public class AuditionAdvice<T extends Persistable<PK>, PK extends Serializable> 
      */
     private T touchAuditor(final Auditable<Persistable<PK>, PK> auditable) {
 
-        T auditor = null;
-
         if (null == auditorAware) {
             return null;
         }
 
-        auditor = auditorAware.getCurrentAuditor();
+        T auditor = auditorAware.getCurrentAuditor();
 
         if (auditable.isNew()) {
 
