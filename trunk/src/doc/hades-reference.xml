@@ -81,7 +81,7 @@
     <title>Preface</title>
 
     <section>
-      <title>Assumtions</title>
+      <title>Assumptions</title>
 
       <para>As Hades makes heavy use of Spring and JPA we assume you have
       certain knowledge of how to work with theses frameworks and
