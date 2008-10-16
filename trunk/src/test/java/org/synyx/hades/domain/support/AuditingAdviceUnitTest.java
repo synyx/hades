@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.synyx.hades.domain.support.test;
+package org.synyx.hades.domain.support;
 
 import junit.framework.TestCase;
 

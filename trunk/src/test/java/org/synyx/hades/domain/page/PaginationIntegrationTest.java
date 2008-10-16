@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.synyx.hades.domain.page.test;
+package org.synyx.hades.domain.page;
 
 import org.springframework.test.jpa.AbstractJpaTests;
 import org.synyx.hades.dao.UserDao;
