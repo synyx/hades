@@ -1,22 +1,23 @@
 /*
  * Copyright 2002-2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.synyx.hades.dao.orm;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -48,7 +49,8 @@ import org.synyx.hades.domain.page.Pageable;
 public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
         extends AbstractJpaFinder<T, PK> implements GenericDao<T, PK> {
 
-    private static final String COUNT_QUERY_STRING = "select count(x) from %s x";
+    private static final String COUNT_QUERY_STRING =
+            "select count(x) from %s x";
 
 
     /*
@@ -203,6 +205,23 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
 
         T result = save(entity);
         flush();
+
+        return result;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.GenericDao#saveAll(java.util.List)
+     */
+    public List<T> saveAll(List<T> entities) {
+
+        List<T> result = new ArrayList<T>();
+
+        for (T entity : entities) {
+            result.add(save(entity));
+        }
 
         return result;
     }
