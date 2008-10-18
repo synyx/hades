@@ -18,6 +18,7 @@ package org.synyx.hades.domain.support;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -82,12 +83,16 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
 
 
     /**
-     * Sets modification date and user on an auditable entity.
+     * Sets modification and creation date and auditor on an auditable entity.
      * 
      * @param auditable
      */
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditable)")
     public void touch(final Auditable<Persistable<PK>, PK> auditable) {
+
+        if (null == auditable) {
+            return;
+        }
 
         T auditor = touchAuditor(auditable);
         Date now = touchDate(auditable);
@@ -104,6 +109,22 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
             }
 
             log.debug(buffer.toString());
+        }
+    }
+
+
+    /**
+     * Sets modification and creation date and auditor on a {@link List} of
+     * {@link Auditable}s.
+     * 
+     * @param auditables
+     */
+    @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditables)")
+    public void touch(final List<Auditable<Persistable<PK>, PK>> auditables) {
+
+        for (Auditable<Persistable<PK>, PK> auditable : auditables) {
+
+            touch(auditable);
         }
     }
 
