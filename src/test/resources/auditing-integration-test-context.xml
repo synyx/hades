@@ -5,15 +5,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-	<bean id="userDao" class="org.easymock.EasyMock" factory-method="createNiceMock">
-		<constructor-arg value="org.synyx.hades.dao.AuditableUserDao" />
-	</bean>
-	
-	<!-- 
 	<import resource="namespace-autoconfig-context.xml" />
-	 -->
 	
 	<aop:aspectj-autoproxy />
+	
 	<bean class="org.synyx.hades.domain.support.AuditingAdvice" />
 
 </beans>
