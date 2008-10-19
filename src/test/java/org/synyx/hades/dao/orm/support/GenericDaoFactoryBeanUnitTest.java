@@ -109,7 +109,7 @@ public class GenericDaoFactoryBeanUnitTest {
      * other parameter instance not implementing {@code Persistable}.
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testPreventsNullDomainClasses() {
+    public void preventsNullDomainClasses() {
 
         factory.setDomainClass(null);
     }
