@@ -206,7 +206,7 @@ public class GenericDaoFactoryBeanUnitTest {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    private interface SampleCustomDao extends GenericDao<User, Long> {
+    private interface SampleCustomDao extends GenericDao<User, Integer> {
 
         void someSampleMethod();
     }
