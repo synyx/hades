@@ -24,6 +24,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.joda.time.DateTime;
 import org.synyx.hades.domain.AbstractPersistable;
 import org.synyx.hades.domain.Persistable;
 
@@ -84,9 +85,9 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * 
      * @see org.synyx.hades.hades.domain.Auditable#getCreatedDate()
      */
-    public Date getCreatedDate() {
+    public DateTime getCreatedDate() {
 
-        return createdDate;
+        return null == createdDate ? null : new DateTime(createdDate);
     }
 
 
@@ -95,9 +96,9 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * 
      * @see org.synyx.hades.hades.domain.Auditable#setCreated(java.util.Date)
      */
-    public void setCreated(final Date createdDate) {
+    public void setCreated(final DateTime createdDate) {
 
-        this.createdDate = createdDate;
+        this.createdDate = null == createdDate ? null : createdDate.toDate();
     }
 
 
@@ -130,9 +131,9 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * 
      * @see org.synyx.hades.hades.domain.Auditable#getLastModifiedDate()
      */
-    public Date getLastModifiedDate() {
+    public DateTime getLastModifiedDate() {
 
-        return lastModifiedDate;
+        return null == lastModifiedDate ? null : new DateTime(lastModifiedDate);
     }
 
 
@@ -142,8 +143,9 @@ public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Se
      * @see
      * org.synyx.hades.hades.domain.Auditable#setLastModified(java.util.Date)
      */
-    public void setLastModified(final Date lastModifiedDate) {
+    public void setLastModified(final DateTime lastModifiedDate) {
 
-        this.lastModifiedDate = lastModifiedDate;
+        this.lastModifiedDate =
+                null == lastModifiedDate ? null : lastModifiedDate.toDate();
     }
 }
