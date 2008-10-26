@@ -17,13 +17,13 @@
 package org.synyx.hades.domain.support;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.joda.time.DateTime;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Persistable;
 
@@ -95,7 +95,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
         }
 
         T auditor = touchAuditor(auditable);
-        Date now = touchDate(auditable);
+        DateTime now = touchDate(auditable);
 
         // Log touching
         if (log.isDebugEnabled()) {
@@ -166,9 +166,9 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditable
      * @return
      */
-    private Date touchDate(final Auditable<Persistable<PK>, PK> auditable) {
+    private DateTime touchDate(final Auditable<Persistable<PK>, PK> auditable) {
 
-        Date now = new Date();
+        DateTime now = new DateTime();
 
         if (auditable.isNew()) {
             auditable.setCreated(now);
