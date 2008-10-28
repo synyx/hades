@@ -243,8 +243,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
             throw new BeanCreationException(
                     String
                             .format(
-                                    "You have custom "
-                                            + "methods in %s but not provided a custom implementation!",
+                                    "You have custom methods in %s but not provided a custom implementation!",
                                     daoInterface));
         }
 

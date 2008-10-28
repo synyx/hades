@@ -83,8 +83,8 @@ public abstract class AbstractPersistable<PK extends Serializable> implements
     @Override
     public String toString() {
 
-        return "Entity of type " + this.getClass().getName() + " with id: "
-                + getId();
+        return String.format("Entity of type %s with id: %s", this.getClass()
+                .getName(), getId().toString());
     }
 
 

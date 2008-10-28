@@ -1,17 +1,17 @@
 /*
  * Copyright 2002-2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.synyx.hades.dao.orm;
@@ -51,12 +51,14 @@ import org.synyx.hades.domain.Persistable;
 public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Serializable>
         implements InitializingBean, FinderExecuter<T> {
 
-    public static final QueryLookupStrategy DEFAULT_QUERY_LOOKUP_STRATEGY = QueryLookupStrategy.CREATE_IF_NOT_FOUND;
+    public static final QueryLookupStrategy DEFAULT_QUERY_LOOKUP_STRATEGY =
+            QueryLookupStrategy.CREATE_IF_NOT_FOUND;
     public static final String DEFAULT_FINDER_PREFIX = "findBy";
 
     private static final Log log = LogFactory.getLog(AbstractJpaFinder.class);
 
-    private QueryLookupStrategy createFinderQueries = DEFAULT_QUERY_LOOKUP_STRATEGY;
+    private QueryLookupStrategy createFinderQueries =
+            DEFAULT_QUERY_LOOKUP_STRATEGY;
     private String finderPrefix = DEFAULT_FINDER_PREFIX;
 
     private JpaTemplate jpaTemplate;
@@ -233,8 +235,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     private Query lookupQuery(final Method method, final EntityManager em) {
 
-        final String queryName = domainClass.getSimpleName() + "."
-                + method.getName();
+        final String queryName =
+                domainClass.getSimpleName() + "." + method.getName();
 
         switch (createFinderQueries) {
 
@@ -254,7 +256,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             try {
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Looking up named query " + queryName);
+                    log.debug(String.format("Looking up named query %s",
+                            queryName));
                 }
 
                 return em.createNamedQuery(queryName);
@@ -262,8 +265,9 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             } catch (IllegalArgumentException e) {
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Failed to lookup named query " + queryName
-                            + " triggering query creation...");
+                    log.debug(String.format("Failed to lookup "
+                            + "named query %s triggering query creation...",
+                            queryName));
                 }
 
                 return em.createQuery(constructQuery(method));
@@ -279,7 +283,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     protected String getReadAllQuery() {
 
-        return "from " + getDomainClass().getSimpleName() + " x";
+        return String.format("from %s x", getDomainClass().getSimpleName());
     }
 
 
@@ -304,28 +308,29 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
 
         // Reject methods not starting with defined prefix
         if (!methodName.startsWith(finderPrefix)) {
-            throw new IllegalArgumentException(
+            throw new IllegalArgumentException(String.format(
                     "Cannot construct query for non finder method! "
-                            + "Make sure the method starts with '"
-                            + finderPrefix + "'");
+                            + "Make sure the method starts with '%s'",
+                    finderPrefix));
         }
 
         // Remove prefix
-        methodName = methodName.substring(finderPrefix.length(), methodName
-                .length());
+        methodName =
+                methodName
+                        .substring(finderPrefix.length(), methodName.length());
 
-        StringBuilder queryBuilder = new StringBuilder(getReadAllQuery()
-                + " where ");
+        StringBuilder queryBuilder =
+                new StringBuilder(getReadAllQuery() + " where ");
 
         // Split OR
-        String[] orParts = StringUtils.delimitedListToStringArray(methodName,
-                OR);
+        String[] orParts =
+                StringUtils.delimitedListToStringArray(methodName, OR);
 
         for (String orPart : Arrays.asList(orParts)) {
 
             // Split AND
-            String[] andParts = StringUtils.delimitedListToStringArray(orPart,
-                    AND);
+            String[] andParts =
+                    StringUtils.delimitedListToStringArray(orPart, AND);
 
             StringBuilder andBuilder = new StringBuilder();
 
@@ -368,8 +373,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     protected void assertEntityManagerClass(Class<? extends EntityManager> clazz) {
 
-        EntityManager em = (EntityManager) getJpaTemplate().execute(
-                new JpaCallback() {
+        EntityManager em =
+                (EntityManager) getJpaTemplate().execute(new JpaCallback() {
 
                     /*
                      * (non-Javadoc)
@@ -385,10 +390,11 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
                     }
                 }, true);
 
-        Assert.isInstanceOf(clazz, em, getClass().getSimpleName()
-                + " can only be used with " + clazz.getSimpleName()
-                + "implementation! Please check configuration or use "
-                + GenericJpaDao.class.getSimpleName() + " instead!");
+        Assert.isInstanceOf(clazz, em, String.format(
+                "%s  can only be used with %s implementation! "
+                        + "Please check configuration or use %s instead!",
+                getClass().getSimpleName(), clazz.getSimpleName(),
+                GenericJpaDao.class.getSimpleName()));
     }
 
 
