@@ -162,6 +162,7 @@ public class PageImpl<T> implements Page<T> {
             contentType = content.get(0).getClass().getName();
         }
 
-        return "Page " + number + " of " + getTotalPages() + " " + contentType;
+        return String.format("Page %s of %d %s", number, getTotalPages(),
+                contentType);
     }
 }
