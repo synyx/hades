@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.wst.xml.core.catalogContributions">
+      <catalogContribution>
+         <public
+               publicId="http://www.synyx.org/schema/hades"
+               uri="platform:/plugin/org.synyx.hades.ide/org/synyx/hades/dao/config/dao-config.xsd"
+               webURL="http://www.synyx.org/schema/hades/dao-config.xsd">
+         </public>
+         <system
+               systemId="http://www.synyx.org/schema/hades/dao-config.xsd"
+               uri="platform:/plugin/org.synyx.hades.ide/org/synyx/hades/dao/config/dao-config.xsd">
+         </system>
+      </catalogContribution>
+   </extension>
+
+</plugin>

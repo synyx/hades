@@ -1,27 +1,38 @@
 Manifest-Version: 1.0
-Bundle-Name: Synyx Hades Bundle
-Bundle-SymbolicName: org.synyx.hades
-Bundle-Version: 0.0.1
-Export-Package: org.synyx.hades.dao;specification-version="0.0.1",
- org.synyx.hades.dao.orm;specification-version="0.0.1",
- org.synyx.hades.dao.orm.support;specification-version="0.0.1",
- org.synyx.hades.dao.test;specification-version="0.0.1",
- org.synyx.hades.domain;specification-version="0.0.1",
- org.synyx.hades.domain.support;specification-version="0.0.1"
-Import-Package: javax.persistence,
- org.aopalliance.intercept,
- org.apache.commons.logging,
- org.aspectj.lang.annotation;optional=true,
- org.hibernate;optional=true,
- org.hibernate.criterion;optional=true,
- org.hibernate.ejb;optional=true,
- org.springframework.aop.framework,
- org.springframework.beans.factory,
- org.springframework.beans.factory.annotation,
- org.springframework.beans.factory.config,
- org.springframework.beans.factory.support,
- org.springframework.beans.factory.xml,
- org.springframework.dao.annotation,
- org.springframework.orm.jpa,
- org.springframework.stereotype,
+Bundle-ManifestVersion: 2
+Bundle-Name: Hades Eclipse Support
+Bundle-SymbolicName: org.synyx.hades.ide;singleton=true
+Bundle-Version: 0.3.0
+Bundle-Vendor: Synyx GmbH & Co. KG
+Export-Package: org.synyx.hades.dao;specification-version="0.3.0",
+ org.synyx.hades.dao.orm;specification-version="0.3.0",
+ org.synyx.hades.dao.orm.support;specification-version="0.3.0",
+ org.synyx.hades.dao.test;specification-version="0.3.0",
+ org.synyx.hades.domain;specification-version="0.3.0",
+ org.synyx.hades.domain.support;specification-version="0.3.0"
+Import-Package: 
+ org.springframework.aop.framework;specification-version="[2.5.0,3.0.0)",
+ org.springframework.beans.factory;specification-version="[2.5.0,3.0.0)",
+ org.springframework.beans.factory.annotation;specification-version="[2.5.0,3.0.0)",
+ org.springframework.beans.factory.config;specification-version="[2.5.0,3.0.0)",
+ org.springframework.beans.factory.support;specification-version="[2.5.0,3.0.0)",
+ org.springframework.beans.factory.xml;specification-version="[2.5.0,3.0.0)",
+ org.springframework.dao.annotation;specification-version="[2.5.0,3.0.0)",
+ org.springframework.orm.jpa;specification-version="[2.5.0,3.0.0)",
+ org.springframework.stereotype;specification-version="[2.5.0,3.0.0)",
  org.w3c.dom
+Require-Bundle: org.springframework.ide.eclipse.beans.core;bundle-version="2.2.0",
+ org.springframework.ide.eclipse.beans.ui;bundle-version="2.2.0",
+ org.springframework.ide.eclipse.beans.ui.editor;bundle-version="2.2.0",
+ org.springframework.ide.eclipse.core;bundle-version="2.2.0",
+ org.eclipse.wst.sse.core;bundle-version="1.1.302",
+ org.eclipse.wst.sse.ui;bundle-version="1.1.2",
+ org.eclipse.wst.xml.core;bundle-version="1.1.305",
+ org.eclipse.wst.xml.ui;bundle-version="1.0.410",
+ org.eclipse.jdt.core;bundle-version="3.4.2",
+ org.eclipse.jdt.ui;bundle-version="3.4.1",
+ org.eclipse.ui.ide;bundle-version="3.4.1",
+ org.eclipse.ui.workbench.texteditor;bundle-version="3.4.1",
+ org.eclipse.jface.text;bundle-version="3.4.1",
+ org.eclipse.core.resources;bundle-version="3.4.1",
+ org.eclipse.core.runtime;bundle-version="3.4.0"
