@@ -74,6 +74,19 @@
         <revremark>RC2 - Added auto configuration, annotation configuration
         for namespaces and finder methods for single instances</revremark>
       </revision>
+
+      <revision>
+        <date>28.10.2008</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Polished code samples a little, added appendix for
+        namespace configuration</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -1373,7 +1386,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       <example>
         <title>Interface for custom DAO functionality</title>
 
-        <programlisting>public interface UserDaoCustom {
+        <programlisting language="java">public interface UserDaoCustom {
 
   public void someCustomMethod(User user);
 }</programlisting>
@@ -1382,7 +1395,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       <example>
         <title>Implementation of custom DAO functionality</title>
 
-        <para><programlisting>public class UserDaoImpl implements UserDaoCustom {
+        <para><programlisting language="java">public class UserDaoImpl implements UserDaoCustom {
 
   public void someCustomMethod(User user) {
     // Your custom implementation
@@ -1396,7 +1409,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       <example>
         <title>Changes to the standard DAO interface</title>
 
-        <para><programlisting>public interface UserDao extends GenericDao&lt;User, Long&gt;, UserDaoCustom {
+        <para><programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt;, UserDaoCustom {
 
   // Declare finder methods here
 }</programlisting>Let your standard DAO interface extend the custom one. This
@@ -1416,16 +1429,63 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <example>
           <title>Configuration example</title>
 
-          <para><programlisting>&lt;dao:dao-config dao-package-name="foo.bar.dao" entity-package-name="foo.bar.domain"&gt;
+          <para><programlisting language="xml">&lt;dao:dao-config dao-package-name="foo.bar.dao" entity-package-name="foo.bar.domain"&gt;
   &lt;dao:dao id="user" /&gt;
 &lt;/dao:dao-config&gt;
 
 &lt;dao:dao-config dao-package-name="foo.bar.dao" entity-package-name="foo.bar.domain"
-  &gt;
+  dao-impl-postfix="FooBar"&gt;
   &lt;dao:dao id="user" /&gt;
 &lt;/dao:dao-config&gt;</programlisting></para>
         </example>
+
+        <para>The first configuration example will try to lookup a class
+        <classname>foo.bar.dao.UserDaoImpl</classname> to act as custom DAO
+        implementation, where the second example will try to lookup
+        <classname>foo.bar.dao.UserFooBar</classname>.</para>
       </simplesect>
     </section>
   </chapter>
+
+  <appendix>
+    <title>Namespace reference</title>
+
+    <para><table>
+        <title>The &lt;dao:config /&gt; element</title>
+
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry></entry>
+
+              <entry></entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table><table>
+        <title>The &lt;dao:dao /&gt; element</title>
+
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry></entry>
+
+              <entry></entry>
+            </row>
+
+            <row>
+              <entry></entry>
+
+              <entry></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table></para>
+  </appendix>
 </book>
