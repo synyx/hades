@@ -84,7 +84,7 @@ public abstract class AbstractPersistable<PK extends Serializable> implements
     public String toString() {
 
         return String.format("Entity of type %s with id: %s", this.getClass()
-                .getName(), getId().toString());
+                .getName(), getId());
     }
 
 
