@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsd:schema xmlns="http://schemas.synyx.org/hades"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:tool="http://www.springframework.org/schema/tool"
 	targetNamespace="http://schemas.synyx.org/hades"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
