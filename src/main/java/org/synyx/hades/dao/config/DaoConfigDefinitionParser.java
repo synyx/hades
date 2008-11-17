@@ -44,7 +44,7 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-import org.synyx.hades.dao.orm.support.GenericDaoFactoryBean;
+import org.synyx.hades.dao.support.GenericDaoFactoryBean;
 import org.synyx.hades.domain.Persistable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
