@@ -8,7 +8,7 @@
 
 	<!-- Configure a DAO for User class -->
 	<bean id="userDao"
-		class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean">
+		class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
 		<property name="domainClass"
 			value="org.synyx.hades.domain.User" />
 		<property name="daoInterface"
@@ -19,7 +19,7 @@
 	</bean>
 	
 	<bean id="roleDao"
-		class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean">
+		class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
 		<property name="domainClass"
 			value="org.synyx.hades.domain.Role" />
 		<property name="daoInterface"

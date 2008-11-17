@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.synyx.hades.dao.orm.support;
+package org.synyx.hades.dao.support;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
