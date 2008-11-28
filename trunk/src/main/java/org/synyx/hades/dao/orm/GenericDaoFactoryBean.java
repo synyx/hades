@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.synyx.hades.dao.support;
+package org.synyx.hades.dao.orm;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -31,12 +31,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.synyx.hades.core.QueryLookupStrategy;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.dao.orm.AbstractJpaFinder;
-import org.synyx.hades.dao.orm.GenericJpaDao;
-import org.synyx.hades.dao.orm.QueryLookupStrategy;
 import org.synyx.hades.domain.Persistable;
 
 

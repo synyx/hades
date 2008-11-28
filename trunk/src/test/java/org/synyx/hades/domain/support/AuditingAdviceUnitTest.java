@@ -20,8 +20,8 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.synyx.hades.domain.AuditableUser;
+import org.synyx.hades.domain.AuditorAware;
 import org.synyx.hades.domain.support.AuditingAdvice;
-import org.synyx.hades.domain.support.AuditorAware;
 
 
 /**

@@ -18,7 +18,7 @@ package org.synyx.hades.domain.page;
 
 import junit.framework.TestCase;
 
-import org.synyx.hades.domain.page.PageRequest;
+import org.synyx.hades.domain.support.PageRequest;
 
 
 /**

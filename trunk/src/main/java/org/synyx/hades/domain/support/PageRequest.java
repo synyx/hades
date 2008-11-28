@@ -14,7 +14,9 @@
  * the License.
  */
 
-package org.synyx.hades.domain.page;
+package org.synyx.hades.domain.support;
+
+import org.synyx.hades.domain.Pageable;
 
 /**
  * Basic Java Bean implementation of {@code Pageable}.

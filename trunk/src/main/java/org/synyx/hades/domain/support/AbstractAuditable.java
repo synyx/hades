@@ -25,7 +25,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.joda.time.DateTime;
-import org.synyx.hades.domain.AbstractPersistable;
+import org.synyx.hades.domain.Auditable;
 import org.synyx.hades.domain.Persistable;
 
 

@@ -44,7 +44,6 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-import org.synyx.hades.dao.support.GenericDaoFactoryBean;
 import org.synyx.hades.domain.Persistable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,6 +65,9 @@ import org.w3c.dom.Node;
  */
 public class DaoConfigDefinitionParser implements BeanDefinitionParser,
         BeanDefinitionDecorator {
+
+    private static final String FACTORY_CLASS =
+            "org.synyx.hades.dao.orm.GenericDaoFactoryBean";
 
     private static final Log log =
             LogFactory.getLog(DaoConfigDefinitionParser.class);
@@ -177,8 +179,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser,
             final ParserContext parserContext, final DaoContext context) {
 
         BeanDefinitionBuilder beanDefinitionBuilder =
-                BeanDefinitionBuilder
-                        .rootBeanDefinition(GenericDaoFactoryBean.class);
+                BeanDefinitionBuilder.rootBeanDefinition(FACTORY_CLASS);
+
         beanDefinitionBuilder.addPropertyValue("daoInterface", context
                 .getInterfaceName());
         beanDefinitionBuilder.addPropertyValue("domainClass", context
@@ -187,8 +189,11 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser,
                 .getFinderLookupStrategy());
         beanDefinitionBuilder.addPropertyValue("daoClass", context
                 .getDaoBaseClassName());
-        beanDefinitionBuilder.addPropertyValue("finderPrefix", context
-                .getFinderPrefix());
+
+        if (null != context.getFinderPrefix()) {
+            beanDefinitionBuilder.addPropertyValue("finderPrefix", context
+                    .getFinderPrefix());
+        }
 
         String customImplementationBeanName =
                 registerCustomImplementation(context, parserContext,

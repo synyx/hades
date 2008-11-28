@@ -25,6 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 
+import org.synyx.hades.domain.support.AbstractPersistable;
+
 
 /**
  * Domain class representing a person emphasizing the use of

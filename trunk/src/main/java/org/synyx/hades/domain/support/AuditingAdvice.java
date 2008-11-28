@@ -25,6 +25,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.joda.time.DateTime;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.domain.Auditable;
+import org.synyx.hades.domain.AuditorAware;
 import org.synyx.hades.domain.Persistable;
 
 

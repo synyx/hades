@@ -18,9 +18,9 @@ package org.synyx.hades.domain.page;
 
 import org.springframework.test.jpa.AbstractJpaTests;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.User;
-import org.synyx.hades.domain.page.Page;
-import org.synyx.hades.domain.page.PageRequest;
+import org.synyx.hades.domain.support.PageRequest;
 
 
 /**

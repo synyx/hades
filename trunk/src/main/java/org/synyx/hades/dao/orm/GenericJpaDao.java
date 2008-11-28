@@ -28,11 +28,11 @@ import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
-import org.synyx.hades.domain.Sort;
-import org.synyx.hades.domain.page.Page;
-import org.synyx.hades.domain.page.PageImpl;
-import org.synyx.hades.domain.page.Pageable;
+import org.synyx.hades.domain.support.PageImpl;
+import org.synyx.hades.domain.support.Sort;
 
 
 /**

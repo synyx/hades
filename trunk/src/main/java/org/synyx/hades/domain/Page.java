@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.synyx.hades.domain.page;
+package org.synyx.hades.domain;
 
 import java.util.Iterator;
 
