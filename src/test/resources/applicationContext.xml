@@ -7,23 +7,17 @@
 	<import resource="infrastructure.xml" />
 
 	<!-- Configure a DAO for User class -->
-	<bean id="userDao"
-		class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
-		<property name="domainClass"
-			value="org.synyx.hades.domain.User" />
-		<property name="daoInterface"
-			value="org.synyx.hades.dao.UserDao" />
-			<property name="customDaoImplementation">
-				<bean class="org.synyx.hades.dao.UserDaoImpl" />
-			</property>
+	<bean id="userDao" class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
+		<property name="domainClass" value="org.synyx.hades.domain.User" />
+		<property name="daoInterface" value="org.synyx.hades.dao.UserDao" />
+		<property name="customDaoImplementation">
+			<bean class="org.synyx.hades.dao.UserDaoImpl" />
+		</property>
 	</bean>
 	
-	<bean id="roleDao"
-		class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
-		<property name="domainClass"
-			value="org.synyx.hades.domain.Role" />
-		<property name="daoInterface"
-			value="org.synyx.hades.dao.RoleDao" />
+	<bean id="roleDao" class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
+		<property name="domainClass" value="org.synyx.hades.domain.Role" />
+		<property name="daoInterface" value="org.synyx.hades.dao.RoleDao" />
 	</bean>
 
 	<!-- Necessary to get the entity manager injected into the factory bean -->
