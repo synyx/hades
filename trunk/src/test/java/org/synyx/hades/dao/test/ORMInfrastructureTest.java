@@ -1,22 +1,29 @@
 /*
  * Copyright 2002-2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.synyx.hades.dao.test;
 
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 /**
@@ -25,23 +32,22 @@ import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class ORMInfrastructureTest extends
-        AbstractDependencyInjectionSpringContextTests {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:infrastructure.xml")
+public class ORMInfrastructureTest {
 
-    /*
-     * (non-Javadoc)
+    @Autowired
+    private ApplicationContext context;
+
+
+    /**
+     * Tests, that the context got initialized and injected correctly.
      * 
-     * @see org.springframework.test.AbstractSingleSpringContextTests#getConfigLocations()
+     * @throws Exception
      */
-    @Override
-    protected String[] getConfigLocations() {
+    @Test
+    public void contextInitialized() throws Exception {
 
-        return new String[] { "infrastructure.xml" };
-    }
-
-
-    public void testFooBar() throws Exception {
-
-        assertNotNull(getApplicationContext());
+        assertNotNull(context);
     }
 }
