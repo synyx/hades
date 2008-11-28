@@ -14,35 +14,26 @@
  * limitations under the License.
  */
 
-package org.synyx.hades.domain.page;
+package org.synyx.hades.domain;
+
+import java.io.Serializable;
+
+
 
 /**
- * Abstract interface for pagination information.
+ * Interface for components that are aware of the application's current auditor.
+ * This will be some kind of user mostly.
  * 
  * @author Oliver Gierke - gierke@synyx.de
+ * @param <T> the type of the auditing instance
+ * @param <PK> the type of the auditing instance's identifier
  */
-public interface Pageable {
+public interface AuditorAware<T extends Persistable<PK>, PK extends Serializable> {
 
     /**
-     * Returns the page to be returned.
+     * Returns the current auditor of the application.
      * 
-     * @return the page to be returned.
+     * @return the current auditor
      */
-    int getPage();
-
-
-    /**
-     * Returns the number of items to be returned.
-     * 
-     * @return the number of items of that page
-     */
-    int getNumberOfItems();
-
-
-    /**
-     * Returns the first item relatively to the total number of items.
-     * 
-     * @return the first item to be returned
-     */
-    int getFirstItem();
+    T getCurrentAuditor();
 }

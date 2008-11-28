@@ -1,17 +1,17 @@
 /*
  * Copyright 2002-2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.synyx.hades.dao.config;
@@ -21,9 +21,7 @@ import java.util.Set;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.synyx.hades.dao.orm.AbstractJpaFinder;
-import org.synyx.hades.dao.orm.GenericJpaDao;
-import org.synyx.hades.dao.orm.QueryLookupStrategy;
+import org.synyx.hades.core.QueryLookupStrategy;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -38,18 +36,20 @@ import org.w3c.dom.NodeList;
  */
 public class DaoConfigContext {
 
-    protected static final String DEFAULT_DAO_BASE_CLASS_NAME = GenericJpaDao.class
-            .getName();
+    protected static final String DEFAULT_DAO_BASE_CLASS_NAME =
+            "org.synyx.hades.dao.orm.GenericJpaDao";
     protected static final String DEFAULT_DAO_BEAN_POSTFIX = "Dao";
     protected static final String DEFAULT_DAO_INTERFACE_POSTFIX = "Dao";
     protected static final String DEFAULT_DAO_IMPL_POSTFIX = "DaoImpl";
 
-    protected static final String FINDER_LOOKUP_STRATEGY = "finder-lookup-strategy";
+    protected static final String FINDER_LOOKUP_STRATEGY =
+            "finder-lookup-strategy";
     protected static final String DAO_PACKAGE_NAME = "dao-package-name";
     protected static final String ENTITY_PACKAGE_NAME = "entity-package-name";
     protected static final String DAO_NAME_POSTFIX = "dao-name-postfix";
     protected static final String DAO_IMPL_POSTFIX = "dao-impl-postfix";
-    protected static final String DAO_INTERFACE_POSTFIX = "dao-interface-postfix";
+    protected static final String DAO_INTERFACE_POSTFIX =
+            "dao-interface-postfix";
     protected static final String DAO_BASE_CLASS_NAME = "dao-base-class";
     protected static final String FINDER_PREFIX = "finder-prefix";
 
@@ -145,11 +145,11 @@ public class DaoConfigContext {
      */
     public QueryLookupStrategy getFinderLookupStrategy() {
 
-        String createFinderQueries = element
-                .getAttribute(FINDER_LOOKUP_STRATEGY);
+        String createFinderQueries =
+                element.getAttribute(FINDER_LOOKUP_STRATEGY);
 
         return StringUtils.hasText(createFinderQueries) ? QueryLookupStrategy
-                .fromXml(createFinderQueries) : AbstractJpaFinder.DEFAULT_QUERY_LOOKUP_STRATEGY;
+                .fromXml(createFinderQueries) : null;
     }
 
 
@@ -157,14 +157,13 @@ public class DaoConfigContext {
      * Returns the method name prefix that triggers finder resolution and
      * execution.
      * 
-     * @return
+     * @return the finder prefix if one configured or {@code null} if not.
      */
     public String getFinderPrefix() {
 
         String finderPrefix = element.getAttribute(FINDER_PREFIX);
 
-        return StringUtils.hasText(finderPrefix) ? finderPrefix
-                : AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
+        return StringUtils.hasText(finderPrefix) ? finderPrefix : null;
     }
 
 
@@ -199,8 +198,8 @@ public class DaoConfigContext {
      */
     protected String getDaoInterfacePostfix() {
 
-        String daoInterfacePostfix = element
-                .getAttribute(DAO_INTERFACE_POSTFIX);
+        String daoInterfacePostfix =
+                element.getAttribute(DAO_INTERFACE_POSTFIX);
 
         return StringUtils.hasText(daoInterfacePostfix) ? daoInterfacePostfix
                 : DEFAULT_DAO_INTERFACE_POSTFIX;

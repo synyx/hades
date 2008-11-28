@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.support;
 
 import java.io.Serializable;
 
@@ -22,6 +22,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+
+import org.synyx.hades.domain.Persistable;
 
 
 /**

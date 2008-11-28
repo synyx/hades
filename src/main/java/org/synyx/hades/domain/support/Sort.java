@@ -1,4 +1,4 @@
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.support;
 
 /**
  * Sort option for queries.

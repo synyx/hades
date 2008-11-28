@@ -19,10 +19,10 @@ package org.synyx.hades.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
-import org.synyx.hades.domain.Sort;
-import org.synyx.hades.domain.page.Page;
-import org.synyx.hades.domain.page.Pageable;
+import org.synyx.hades.domain.support.Sort;
 
 
 /**

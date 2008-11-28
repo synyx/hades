@@ -1,4 +1,4 @@
-package org.synyx.hades.dao.orm;
+package org.synyx.hades.core;
 
 /**
  * Query lookup strategy to execute finders.

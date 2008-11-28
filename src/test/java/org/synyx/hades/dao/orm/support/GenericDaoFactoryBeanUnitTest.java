@@ -30,7 +30,7 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.dao.UserExtendedDao;
-import org.synyx.hades.dao.support.GenericDaoFactoryBean;
+import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
 import org.synyx.hades.domain.User;
 
 

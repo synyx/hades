@@ -36,6 +36,7 @@ import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.synyx.hades.core.QueryLookupStrategy;
 import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.domain.Persistable;
 
@@ -75,19 +76,23 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     public void setCreateFinderQueries(QueryLookupStrategy createFinderQueries) {
 
-        this.createFinderQueries = createFinderQueries;
+        this.createFinderQueries =
+                null == createFinderQueries ? DEFAULT_QUERY_LOOKUP_STRATEGY
+                        : createFinderQueries;
     }
 
 
     /**
      * Sets the prefix for methods that should be treatened as finder. Defaults
-     * to {@value #DEFAULT_FINDER_PREFIX}.
+     * to {@value #DEFAULT_FINDER_PREFIX}. Setting {@code null} will reset the
+     * default value.
      * 
      * @param finderPrefix the finderPrefix to set
      */
     public void setFinderPrefix(String finderPrefix) {
 
-        this.finderPrefix = finderPrefix;
+        this.finderPrefix =
+                null == finderPrefix ? DEFAULT_FINDER_PREFIX : finderPrefix;
     }
 
 
