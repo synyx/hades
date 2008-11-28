@@ -7,7 +7,7 @@
 	<import resource="infrastructure.xml" />
 
 	<!-- Configure a DAO for User class -->
-	<bean id="userDao" class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
+	<bean id="userDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
 		<property name="domainClass" value="org.synyx.hades.domain.User" />
 		<property name="daoInterface" value="org.synyx.hades.dao.UserDao" />
 		<property name="customDaoImplementation">
@@ -15,7 +15,7 @@
 		</property>
 	</bean>
 	
-	<bean id="roleDao" class="org.synyx.hades.dao.support.GenericDaoFactoryBean">
+	<bean id="roleDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
 		<property name="domainClass" value="org.synyx.hades.domain.Role" />
 		<property name="daoInterface" value="org.synyx.hades.dao.RoleDao" />
 	</bean>
