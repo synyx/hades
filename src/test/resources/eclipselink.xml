@@ -2,17 +2,36 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:hades="http://schemas.synyx.org/hades"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://schemas.synyx.org/hades http://schemas.synyx.org/hades/hades.xsd">
 
-	<bean id="vendorAdaptor" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" parent="abstractVendorAdaptor" />
+	<!-- Configure LoadTimeWeaver. Be sure to start JVM with -javaagent=path/to/spring-agent.jar -->
+	<context:load-time-weaver aspectj-weaving="autodetect" />
+
+	<!-- EclipseLink vendor adaptor with workaround platform class for HSQL usage -->
+	<bean id="vendorAdaptor" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" parent="abstractVendorAdaptor">
+		<property name="databasePlatform" value="org.synyx.hades.dao.orm.EclipseLinkHSQLPlatform" />
+	</bean>	
 	
 	<util:properties id="jpaProperties">
 		<prop key="eclipselink.jdbc.driver">org.hsqldb.jdbcDriver</prop>
 		<prop key="eclipselink.jdbc.url">jdbc:hsqldb:mem:hades</prop>
 		<prop key="eclipselink.jdbc.user">sa</prop>
 		<prop key="eclipselink.jdbc.password"></prop>
-		<prop key="eclipselink.ddl-generation">drop-and-create-tables</prop>
+		<prop key="eclipselink.ddl-generation">create-tables</prop>
 	</util:properties>
+	
+	<hades:dao-config
+		entity-package-name="org.synyx.hades.domain"
+		dao-package-name="org.synyx.hades.dao"
+		dao-name-postfix="ExtendedDao"
+		dao-interface-postfix="ExtendedDao"
+		dao-base-class="org.synyx.hades.dao.orm.GenericEclipseLinkJpaDao">
+		<hades:dao id="user" />
+	</hades:dao-config>
 
 </beans>
