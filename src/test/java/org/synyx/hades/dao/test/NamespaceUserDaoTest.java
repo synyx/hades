@@ -32,7 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Eberhard Wolff
  */
 @ContextConfiguration(locations = "classpath:namespace-applicationContext.xml", inheritLocations = false)
-public class NamespaceUserDaoTest extends UserDaoTest implements
+public class NamespaceUserDaoTest extends UserDaoIntegrationTest implements
         BeanFactoryAware {
 
     private BeanFactory beanFactory;
