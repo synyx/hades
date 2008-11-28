@@ -32,7 +32,6 @@
 		</developer>
 	</developers>
 	
-	
 	<contributors>
 		<contributor>
 			<name>Eberhard Wolff</name>
@@ -40,10 +39,10 @@
 			<organizationUrl>http://www.springsource.com</organizationUrl>
 		</contributor>
 	</contributors>
-	
 
 	<properties>
 		<springVersion>[2.5,3.0.0)</springVersion>
+		<spring.agent.version>2.5.6</spring.agent.version>
 	</properties>
 
 	<dependencies>
@@ -128,8 +127,14 @@
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.2</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		     <groupId>org.springframework</groupId>
+		     <artifactId>spring-agent</artifactId>
+		     <version>${springVersion}</version>
+		     <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -143,30 +148,35 @@
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Concrete persistence providers -->
-		<!-- Hibernate -->
-		
-		<!-- EclipseLink -->
-
-		
-		<!-- Test libraries -->
-
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.4.3</version>
+				<configuration>
+					<argLine>-javaagent:${settings.localRepository}/org/springframework/spring-agent/${spring.agent.version}/spring-agent-${spring.agent.version}.jar</argLine>
+					<forkMode>pertest</forkMode>
+				</configuration>
+				
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.0.4</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -195,44 +205,35 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>1.4.3</version>
 				<executions>
 					<execution>
-						<id>binary</id>
-						<phase>package</phase>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
 						<goals>
-							<goal>jar</goal>
+							<goal>manifest</goal>
 						</goals>
-						<configuration>
-							<excludes>
-								<exclude>plugin.xml</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-					<execution>
-						<id>plugin</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<archive>
-								<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-							</archive>
-							<classifier>configplugin</classifier>
-							<includes>
-								<include>plugin.xml</include>
-								<include>**/*.handlers</include>
-								<include>**/*.schemas</include>
-								<include>**/config/*</include>
-								<include>**/domain/*</include>
-								<include>**/dao/**/*</include>
-							</includes>
-							<finalName>org.synyx.hades.ide_${version}</finalName>
-						</configuration>
 					</execution>
 				</executions>
+		        <configuration>
+					<instructions>
+						<Export-Package>org.synyx.hades.dao,org.synyx.hades.dao.orm,org.synyx.hades.dao.support,org.synyx.hades.domain,org.synyx.hades.domain.page,org.synyx.hades.domain.support</Export-Package>
+						<Bundle-SymbolicName>${pom.groupId}</Bundle-SymbolicName>
+						<Include-Resource>src/main/resources</Include-Resource>
+					</instructions>
+				</configuration>
 			</plugin>
-
 
 			<plugin>
 				<groupId>com.agilejava.docbkx</groupId>
@@ -353,40 +354,74 @@
 
 	<reporting>
 		<plugins>
-		
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+                <version>2.0-beta-1</version>
+            </plugin>
+            
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.5</version>
 			</plugin>
 			
+			<!-- Metrics plugins -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
+				<version>2.0-beta-2</version>
 			</plugin>
 			
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<configuration>
-					<targetJdk>1.5</targetJdk>
-				</configuration>
-			</plugin>
-		      
-		    <plugin>
 		    	<groupId>org.codehaus.mojo</groupId>
 			    <artifactId>javancss-maven-plugin</artifactId>
 			    <version>2.0-beta-2</version>
 		    </plugin>
-		    
+			
+			<!-- Code checks -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<targetJdk>1.5</targetJdk>
+				</configuration>
+			</plugin>
+		
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+            
+		    <!-- Releasing and changelog -->
 		    <plugin>
 		    	<groupId>org.apache.maven.plugins</groupId>
 		    	<artifactId>maven-release-plugin</artifactId>
+		    	<version>2.0-beta-7</version>
 		    	<configuration>
 		    		<preparationGoals>clean verify docbkx:generate-pdf site:site</preparationGoals>
 		    		<scmCommentPrefix> * [maven-release-plugin] - </scmCommentPrefix>
 		    	</configuration>
 		    </plugin>
 		    
+		    <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.1-SNAPSHOT</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>trac-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<query>status=closed&amp;groupdesc=1&amp;group=milestone&amp;milestone=!&amp;owner=gierke_cvs&amp;order=priority</query>
+		            <outputEncoding>UTF-8</outputEncoding>
+		        </configuration>
+		    </plugin>
 					
 		</plugins>
 	</reporting>
@@ -432,6 +467,7 @@
 				External Bundle Releases</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
 		</repository>
+		
 	</repositories>
 	
 
@@ -446,8 +482,8 @@
 	</ciManagement>
 
 	<issueManagement>
-		<system>Trac</system>
-		<url>http://trac.synyx.org/hades</url>
+		<system>trac</system>
+		<url>http://trac.synyx.org/hades/</url>
 	</issueManagement>
 
 	<distributionManagement>
