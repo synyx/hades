@@ -283,7 +283,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     protected String getReadAllQuery() {
 
-        return String.format("from %s x", getDomainClass().getSimpleName());
+        return String.format("select x from %s x", getDomainClass()
+                .getSimpleName());
     }
 
 
