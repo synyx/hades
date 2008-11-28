@@ -1,17 +1,17 @@
 /*
  * Copyright 2002-2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.synyx.hades.dao.orm;
@@ -34,7 +34,7 @@ import org.synyx.hades.domain.page.Pageable;
 
 
 /**
- * Implements extended generic dao functionality with Hibernate.
+ * Implements extended {@link ExtendedGenericDao} functionality with Hibernate.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -64,11 +64,8 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
     @SuppressWarnings("unchecked")
     public List<T> readByExample(final Sort sort, final T... examples) {
 
-        Criteria criteria = prepareCriteria(examples);
-
-        if (null != sort) {
-            applySorting(criteria, sort);
-        }
+        Criteria criteria = applyExamples(examples);
+        applySorting(criteria, sort);
 
         return criteria.list();
     }
@@ -105,21 +102,15 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
             return readAll(pageable, sort);
         }
 
-        Criteria countCriteria = prepareCriteria(examples);
+        Criteria countCriteria = applyExamples(examples);
         countCriteria.setProjection(Projections.rowCount());
         Integer count = (Integer) countCriteria.uniqueResult();
 
-        Criteria listCriteria = prepareCriteria(examples);
+        Criteria listCriteria = applyExamples(examples);
 
         // Apply sorting
-        if (null != sort) {
-            applySorting(listCriteria, sort);
-        }
-
-        if (null != pageable) {
-            listCriteria.setFirstResult(pageable.getFirstItem());
-            listCriteria.setMaxResults(pageable.getNumberOfItems());
-        }
+        applySorting(listCriteria, sort);
+        applyPagination(listCriteria, pageable);
 
         return new PageImpl(listCriteria.list(), pageable, count);
     }
@@ -131,7 +122,7 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * @param examples
      * @return
      */
-    protected Criteria prepareCriteria(final T... examples) {
+    private Criteria applyExamples(final T... examples) {
 
         // Create criteria from hibernate entity manager
         return (Criteria) getJpaTemplate().execute(
@@ -171,7 +162,11 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * @param criteria
      * @param sort
      */
-    protected void applySorting(Criteria criteria, Sort sort) {
+    private void applySorting(Criteria criteria, Sort sort) {
+
+        if (null == sort) {
+            return;
+        }
 
         for (String property : sort.getProperties()) {
 
@@ -180,6 +175,21 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
                             .desc(property));
 
             criteria.addOrder(order);
+        }
+    }
+
+
+    /**
+     * Applies the given {@link Pageable} to the given {@link Criteria}.
+     * 
+     * @param criteria
+     * @param pageable
+     */
+    private void applyPagination(Criteria criteria, Pageable pageable) {
+
+        if (null != pageable) {
+            criteria.setFirstResult(pageable.getFirstItem());
+            criteria.setMaxResults(pageable.getNumberOfItems());
         }
     }
 
