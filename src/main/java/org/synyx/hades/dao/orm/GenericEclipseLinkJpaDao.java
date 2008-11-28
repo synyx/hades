@@ -1,7 +1,24 @@
+/*
+ * Copyright 2002-2008 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package org.synyx.hades.dao.orm;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Vector;
 
 import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.expressions.ExpressionBuilder;
@@ -9,6 +26,7 @@ import org.eclipse.persistence.jpa.JpaEntityManager;
 import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.queries.ReadAllQuery;
 import org.eclipse.persistence.queries.ReportQuery;
+import org.eclipse.persistence.queries.ReportQueryResult;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.domain.Order;
@@ -90,31 +108,20 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
         // Prepare query to count totals
         ReportQuery countQuery = new ReportQuery();
         applyExamples(countQuery, examples);
-        Long total = (Long) executeQuery(countQuery);
+        countQuery.addCount();
+
+        Vector<ReportQueryResult> totals = executeQuery(countQuery);
+        Integer total = (Integer) totals.get(0).getByIndex(0);
 
         // Prepare page query
         ReadAllQuery query = new ReadAllQuery();
         applySorting(query, sort);
-        applyPagination(query, pageable);
         applyExamples(query, examples);
+        applyPagination(query, pageable);
 
         List<T> entities = (List<T>) executeQuery(query);
 
         return new PageImpl(entities, pageable, total);
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.synyx.hades.dao.orm.AbstractJpaFinder#afterPropertiesSet()
-     */
-    @Override
-    public void afterPropertiesSet() throws Exception {
-
-        super.afterPropertiesSet();
-
-        assertEntityManagerClass(JpaEntityManager.class);
     }
 
 
@@ -125,9 +132,10 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
      * @param query
      * @return
      */
-    private Object executeQuery(final DatabaseQuery query) {
+    @SuppressWarnings("unchecked")
+    private <S> S executeQuery(final DatabaseQuery query) {
 
-        return getJpaTemplate().execute(
+        return (S) getJpaTemplate().execute(
                 new NativeEntityManagerJpaCallback<JpaEntityManager>() {
 
                     /*
@@ -138,10 +146,9 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
                      * (javax.persistence.EntityManager)
                      */
                     @Override
-                    protected Object doInNativeEntityManager(
-                            JpaEntityManager em) {
+                    protected Object doInNativeEntityManager(JpaEntityManager em) {
 
-                        return em.getSession().executeQuery(query);
+                        return em.getServerSession().executeQuery(query);
                     }
                 });
     }
@@ -208,6 +215,25 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
         }
 
         query.setFirstResult(pageable.getFirstItem());
-        query.setMaxRows(pageable.getNumberOfItems());
+
+        // Workaround:
+        // setMaxRows does NOT count regard setFirstResult as start to add the
+        // given value to, but counts from the very beginning. Thus we have to
+        // add the offset manually
+        query.setMaxRows(pageable.getFirstItem() + pageable.getNumberOfItems());
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.orm.AbstractJpaFinder#afterPropertiesSet()
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+        super.afterPropertiesSet();
+
+        assertEntityManagerClass(JpaEntityManager.class);
     }
 }
