@@ -27,9 +27,9 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>V0.2</releaseinfo>
+    <releaseinfo>V0.3</releaseinfo>
 
-    <pubdate>25.09.2008</pubdate>
+    <pubdate>28.11.2008</pubdate>
 
     <copyright>
       <year>2008</year>
@@ -87,6 +87,19 @@
         <revremark>Polished code samples a little, added appendix for
         namespace configuration</revremark>
       </revision>
+
+      <revision>
+        <date>29.11.2008</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation for EclipseLink, fixed various typos,
+        XML namespace corrections</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -100,7 +113,7 @@
       certain knowledge of how to work with theses frameworks and
       specifications. Hades is implemented using some container hooks of
       Spring, AOP features. Nevetheless you do not have to have deep insight
-      in conainer internals to use Hades although it would let you understnad
+      in conainer internals to use Hades although it would let you understand
       things more deeply.</para>
     </section>
 
@@ -113,8 +126,8 @@
         <para>The Java Persistence API was invented in conjunction with EJB3
         and serves as standard for persisting objects in JavaSE and JavaEE
         environments. It abstracts differences of various available OR Mappers
-        like Hibernate and Toplink and guarantees interoperability as far as
-        possible. Although the version 1.0 has its shortcomings, JPA can be
+        like Hibernate and EclipseLink and guarantees interoperability as far
+        as possible. Although the version 1.0 has its shortcomings, JPA can be
         considered a future technology.</para>
       </simplesect>
 
@@ -133,7 +146,7 @@
         <para>Spring offers a lot of support for various technologies in data
         access area. It's main benefit regarding JPA is the ease and power of
         configuration along with proper exception translation into Spring's
-        DataAccessException hierarchy</para>
+        <classname>DataAccessException</classname> hierarchy</para>
       </simplesect>
     </section>
   </preface>
@@ -156,10 +169,11 @@
 
       <para>Using both of these technologies makes developers life a lot
       easier regarding rich domain model's persistence. Nevertheless the
-      amount of boilerplate code especially for DAOs is still quite high.
-      Besides that there is no higher level concept supporting you designing
-      persistent domain classes. Hades is aiming to bridge that gap, providing
-      sophisticated support for domain modeling and easing persistence.</para>
+      amount of boilerplate code especially for <glossterm>DAO</glossterm>s is
+      still quite high. Besides that there is no higher level concept
+      supporting you designing persistent domain classes. Hades is aiming to
+      bridge that gap, providing sophisticated support for domain modeling and
+      easing persistence.</para>
 
       <para>The following chapters will introduce the core concepts and
       interfaces of Hades roughly surrounding various steps of sophistication.
@@ -170,12 +184,15 @@
     <section>
       <title>Entities and DAOs</title>
 
-      <para>The two central interfaces in Hades are Entity and GenericDao.
-      Entity defines the core contract for persistent domain classes that a
-      GenericDao can handle. GenricDao itself provides sophisticated support
-      for CRUD operations. Beyond that the base implementation of that
-      interface provides even more sophisticated features. Read more on that
-      below.</para>
+      <para>The two central interfaces in Hades are
+      <interfacename>Persistable</interfacename> and
+      <interfacename>GenericDao</interfacename>. Entity defines the core
+      contract for persistent domain classes that a
+      <interfacename>GenericDao</interfacename> can handle.
+      <interfacename>GenericDao</interfacename> itself provides sophisticated
+      support for <glossterm>CRUD</glossterm> operations. Beyond that the base
+      implementation of that interface provides even more sophisticated
+      features. Read more on that below.</para>
 
       <example>
         <title>Persistable interface</title>
@@ -189,12 +206,13 @@
 }</programlisting>
       </example>
 
-      <para>Persistables have to be identifyable to be retrieved from the
-      database. Thus your entities will have to provide an id or primary key.
-      The id can be of any serializable type, beginning with rather simple
-      types like Integer or Long up to complex multi column dedicated key
-      classes. The parameterization of the interface will ensure typesafety on
-      the id.</para>
+      <para><interfacename>Persistable</interfacename>s have to be
+      identifyable to be retrieved from the database. Thus your entities will
+      have to provide an id or primary key. The id can be of any serializable
+      type, beginning with rather simple types like
+      <classname>Integer</classname> or <classname>Long</classname> up to
+      complex multi column dedicated key classes. The parameterization of the
+      interface will ensure typesafety on the id.</para>
 
       <para>The <code>isNew()</code> method is used by
       <interfacename>GenericDao</interfacename> implementations to distinguish
@@ -233,6 +251,8 @@
             <area coords="16" id="generic-dao.delete" />
 
             <area coords="18" id="generic-dao.flush" />
+
+            <area coords="20" id="generic-dao.exists" />
           </areaspec>
 
           <programlisting language="java">public interface GenericDao&lt;T extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
@@ -253,6 +273,8 @@
     void delete(T persistable);
 
     void flush();
+
+    boolean exists(PK primaryKey);
 }</programlisting>
 
           <calloutlist>
@@ -288,6 +310,10 @@
             <callout arearefs="generic-dao.flush">
               <para>Flushes pending changes to the database.</para>
             </callout>
+
+            <callout arearefs="generic-dao.exists">
+              <para>Returns whether an entity with the given id exists.</para>
+            </callout>
           </calloutlist>
         </programlistingco>
       </example>
@@ -295,16 +321,18 @@
       <para>Hades provides a <classname>GenericDaoFactoryBean</classname> that
       allows setting up instances for this interface in declarative manner. So
       all you need to do is declaring an interface extending and thus typing
-      the generic interface accordingly.</para>
+      the generic interface accordingly. To create DAO instances Hades
+      provides a <classname>GenericDaoFactoryBean</classname>. Read more on
+      configuration in <xref linkend="sample-app.configuration" />.</para>
 
       <para>For more sophisticated DAO operations Hades provides
-      ExtendedGenericDao. It contains functionality that can not be
-      implemented with standard JPA features in the current version. So
-      implementations will have to rely on persistence providers proprietary
-      API. Extending this interface with your concrete DAO interface will
-      require to configure a custom DAO implementation to
-      GenericDaoFactoryBean. Hades currently offers an implementation based on
-      Hibernate.</para>
+      <interfacename>ExtendedGenericDao</interfacename>. It contains
+      functionality that can not be implemented with standard JPA features in
+      the version 1.0. So implementations will have to rely on persistence
+      providers proprietary API. Extending this interface with your concrete
+      DAO interface will require to configure a custom DAO implementation to
+      <classname>GenericDaoFactoryBean</classname>. Hades currently offers an
+      implementation based on Hibernate as well as EclipseLink.</para>
 
       <example>
         <title>ExtendedGenericDao interface</title>
@@ -313,8 +341,13 @@
           <areaspec>
             <area coords="4" id="extended-generic-dao.read-by-example" />
 
-            <area coords="6"
+            <area coords="6" id="extended-generic-dao.read-by-example-sorted" />
+
+            <area coords="8"
                   id="extended-generic-dao.read-by-example-pageable" />
+
+            <area coords="10"
+                  id="extended-generic-dao.read-by-example-pageable-sorted" />
           </areaspec>
 
           <programlisting language="java">public interface ExtendedGenericDao&lt;T extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
@@ -322,19 +355,33 @@
 
     List&lt;T&gt; readByExample(T... examples);
 
-    List&lt;T&gt; readByExample(Pageable pageable, T... examples);
+    List&lt;T&gt; readbyExample(Sort sort, T... examples);
+
+    Page&lt;T&gt; readByExample(Pageable pageable, T... examples);
+
+    Page&lt;T&gt; readByExample(Pageable pageable, Sort sort, T... examples);
 }</programlisting>
 
           <calloutlist>
             <callout arearefs="extended-generic-dao.read-by-example">
-              <para>Returns all entities matching the given examples. if you
-              provide more that one example, their restrictions will be OR
-              concatenated.</para>
+              <para>Returns all entities matching the given examples. If you
+              provide more that one example, their restrictions will be
+              <code>OR</code> concatenated.</para>
+            </callout>
+
+            <callout arearefs="extended-generic-dao.read-by-example-pageable">
+              <para>Returns all entities matching the given examples, sorted
+              by the given sort option.</para>
             </callout>
 
             <callout arearefs="extended-generic-dao.read-by-example-pageable">
               <para>Returns a single page of the restriction result defined by
               the given example.</para>
+            </callout>
+
+            <callout arearefs="extended-generic-dao.read-by-example-pageable-sorted">
+              <para>Returns a single page of the restriction result defined by
+              the given example sorted by the given sort option.</para>
             </callout>
           </calloutlist>
         </programlistingco>
@@ -351,7 +398,7 @@
       domain classes have to implement a more advanced interface:</para>
 
       <example>
-        <title>Auditable interface</title>
+        <title><interfacename>Auditable</interfacename> interface</title>
 
         <programlisting language="java">public interface Auditable&lt;U extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
         extends Persistable&lt;PK&gt; {
@@ -381,24 +428,23 @@
       <note>
         <para>To minimize boilerplate code Hades offers
         <classname>AbstractPersistable</classname> and
-        <classname>AbstractAuditablePersistable</classname> base classes that
-        implement and preconfigure entities. Thus you can decide to only
-        implement the interface or enjoy more sophisticated support by
-        extending the base class. Hades will never force you to use
-        inheritance!</para>
+        <classname>AbstractAuditable</classname> base classes that implement
+        and preconfigure entities. Thus you can decide to only implement the
+        interface or enjoy more sophisticated support by extending the base
+        class. Hades will never force you to use inheritance!</para>
       </note>
 
       <simplesect>
-        <title>AuditionAdvice</title>
+        <title><code>AuditingAdvice</code></title>
 
-        <para>The <classname>AuditionAdvice</classname> is used to
+        <para>The <classname>AuditingAdvice</classname> is used to
         transparently set audition information during the work with the DAO.
         The advice gets access to the user changing or creating the entity
         through the <interfacename>AuditorAware</interfacename>
         interface.</para>
 
         <example>
-          <title>CurrentUserAware interface</title>
+          <title><interfacename>AuditorAware</interfacename> interface</title>
 
           <programlisting language="java">public interface AuditorAware&lt;T extends Persistable&lt;PK&gt;, 
   PK extends Serializable&gt; {
@@ -417,17 +463,18 @@
         configuration has to look something like this:</para>
 
         <example>
-          <title>Configuration of AuditionAdvice</title>
+          <title>Configuration of
+          <interfacename>AuditingAdvice</interfacename></title>
 
           <para></para>
 
           <programlistingco>
             <areaspec>
-              <area coords="9" id="audition-advice.aop-activation" />
+              <area coords="9" id="auditing-advice.aop-activation" />
 
-              <area coords="11" id="audition-advice.audition-advice" />
+              <area coords="11" id="auditing-advice.audition-advice" />
 
-              <area coords="15" id="audition-advice.current-user-aware" />
+              <area coords="15" id="auditing-advice.current-user-aware" />
             </areaspec>
 
             <programlisting language="xml">&lt;beans xmlns="http://www.springframework.org/schema/beans"
@@ -440,7 +487,7 @@
 
   &lt;aop:aspectj-autoproxy /&gt;
 
-  &lt;bean class="org.synyx.hades.domain.support.AuditionAdvice"&gt;
+  &lt;bean class="org.synyx.hades.domain.support.AuditingAdvice"&gt;
     &lt;property name="auditorAware" ref="auditorAware" /&gt;
   &lt;/bean&gt;
 
@@ -449,16 +496,16 @@
 &lt;/beans&gt;</programlisting>
 
             <calloutlist>
-              <callout arearefs="audition-advice.aop-activation">
+              <callout arearefs="auditing-advice.aop-activation">
                 <para>Activate auto proxy creation for spring beans.</para>
               </callout>
 
-              <callout arearefs="audition-advice.audition-advice">
+              <callout arearefs="auditing-advice.audition-advice">
                 <para>Declare the advice as spring bean and add a reference to
-                the <interfacename>AuditiorAware</interfacename>.</para>
+                the <interfacename>AuditorAware</interfacename>.</para>
               </callout>
 
-              <callout arearefs="audition-advice.current-user-aware">
+              <callout arearefs="auditing-advice.current-user-aware">
                 <para>Declare a spring bean that implements
                 <interfacename>AuditorAware</interfacename>.</para>
               </callout>
@@ -485,22 +532,6 @@
       support stepping forward using more sophisticated features of it.</para>
 
       <section>
-        <title>JPA</title>
-
-        <para>Hades is considered a DAO framework to work with JPA. Although
-        the DAO abstraction could be to simple JDBC access, too, we focus on
-        JPA in this release. This concludes in support for all major JPA
-        persistence provders like Hibernate, OpenJPA and Toplink.</para>
-
-        <note>
-          <para>Although Toplink Essentials is the JPA reference
-          implementation it does not implement all features specified and
-          furthermore shows some bugs regarding cascading persistence. Thus we
-          advice to choose some other library instead, e.g. Hibernate.</para>
-        </note>
-      </section>
-
-      <section>
         <title>Configuration</title>
 
         <para>To get started with Hades you need to setup your application in
@@ -519,7 +550,7 @@
       <title>Infrastructure</title>
 
       <simplesect>
-        <title>DataSource</title>
+        <title><interfacename>DataSource</interfacename></title>
 
         <para>As you might already know, Spring's data base access support is
         mainly centered around working with a
@@ -586,10 +617,11 @@
       </simplesect>
 
       <simplesect>
-        <title>EntityManager(Factory)</title>
+        <title><interfacename>EntityManager</interfacename>(<interfacename>Factory</interfacename>)</title>
 
         <example>
-          <title>EntityManager configuration</title>
+          <title><interfacename>EntityManager</interfacename>
+          configuration</title>
 
           <programlistingco>
             <areaspec>
@@ -644,22 +676,37 @@
 &lt;/bean&gt;</programlisting>
         </example>
       </simplesect>
+
+      <simplesect>
+        <title>BeanPostProcessors</title>
+
+        <para>As Hades leverages Spring 2.5 annotations to activate exception
+        translation and injecting <interfacename>EntityManager</interfacename>
+        instances we need to configure 2
+        <interfacename>BeanPostProcessor</interfacename>s.</para>
+
+        <example>
+          <title>BeanPostProcessor configuration</title>
+
+          <programlisting language="xml">&lt;bean
+  class="org...PersistenceAnnotationBeanPostProcessor" /&gt;
+
+&lt;bean
+  class="org...PersistenceExceptionTranslationPostProcessor" /&gt;</programlisting>
+        </example>
+      </simplesect>
     </section>
 
     <section>
       <title>Basic entities and DAOs</title>
 
-      <para>Working with Hades will offer support working with domain classes
-      and DAOs for the domain classes. The Data Access Objects pattern is a
-      well known and widely adopted pattern to implement persistent objects.
-      Nevertheless implementing DAOs for domain classes ist often cumbersome
-      and results in boilerplate code.</para>
-
-      <para>Generic approaches to DAO implementation can head two different
-      roads. One approach is to implement exactly one DAO instance that can
-      handle all domain classes. This mostly concludes in passing the domain
-      classes type into every method call and thus makes the interface rather
-      technical and clutters it with unnatural parameters.</para>
+      <para>Now we are going to create the entities and DAOs needed to manage
+      users with roles. Note that we will start with an implementation with
+      the least possible coupling to Hades. The will force us to configure a
+      few things ourselves but decrease dependencies. If you want to know, how
+      you can ease things a little more see <xref
+      linkend="sample-app.base-classes" /> and <xref
+      linkend="sample-app.namespace" />.</para>
 
       <section>
         <title>Users and roles</title>
@@ -669,7 +716,7 @@
         <classname>Role</classname>. Take a look at the code snippets:</para>
 
         <example>
-          <title>User entity</title>
+          <title><classname>User</classname> entity</title>
 
           <programlisting language="java">@Entity
 public class User implements Persistable&lt;Long&gt; {
@@ -706,7 +753,7 @@ public class User implements Persistable&lt;Long&gt; {
         address.</para>
 
         <example>
-          <title>Role entity</title>
+          <title><classname>Role</classname> entity</title>
 
           <programlisting language="java">@Entity
 public class Role implements Persistable&lt;Integer&gt; {
@@ -759,15 +806,15 @@ public class Role implements Persistable&lt;Integer&gt; {
         on your own.</para>
       </section>
 
-      <section>
+      <section id="sample-app.configuration">
         <title>Configuration</title>
 
         <para><classname>GenericJpaDao</classname> is the base implementation
         of <interfacename>GenericDao</interfacename> that serves basic
         purposes very well. It uses Spring's exception translation and entity
         manager injection facilities so that its creation logic is
-        encapsulated into <classname>GenericJpaDaoFactoryBean</classname>. So
-        the basic configuration for a DAO instance looks as follows:</para>
+        encapsulated into <classname>GenericDaoFactoryBean</classname>. So the
+        basic configuration for a DAO instance looks as follows:</para>
 
         <example>
           <title>Simple DAO configuration</title>
@@ -798,9 +845,9 @@ public class Role implements Persistable&lt;Integer&gt; {
             <calloutlist>
               <callout arearefs="simple-dao-config.infrastructure-import">
                 <para>Import infrastructure configuration. Supposed we have
-                combined the configuration examples shown in <link
-                linkend="infrastructure">Infrastructure section</link> into a
-                file named <filename>infrastructure.xml</filename>.</para>
+                combined the configuration examples shown in <xref
+                linkend="infrastructure" /> into a file named
+                <filename>infrastructure.xml</filename>.</para>
               </callout>
 
               <callout arearefs="simple-dao-config.domain-class">
@@ -817,14 +864,19 @@ public class Role implements Persistable&lt;Integer&gt; {
             </calloutlist>
           </programlistingco>
         </example>
+
+        <para>This is smallest standard XML configuration possible. There are
+        a lot more options on GenericDaoFactoryBean, but you rather choose XML
+        namespace configuration due to less verbosity.</para>
       </section>
 
       <section>
         <title>Client code</title>
 
         <para>The previously declared <interfacename>UserDao</interfacename>
-        can be accessed via its bean id from the ApplicationContext, although
-        you definately are better off letting the container inject it into you
+        can be accessed via its bean id from the
+        <interfacename>ApplicationContext</interfacename>, although you
+        definately are better off letting the container inject it into you
         client:</para>
 
         <example>
@@ -839,7 +891,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       </section>
     </section>
 
-    <section>
+    <section id="sample-app.namespace">
       <title>Easing configuration - Spring namespaces</title>
 
       <para>Configuring DAOs the standard way can become cumbersome if your
@@ -865,26 +917,26 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:dao="http://www.synyx.de/schema/dao"
+  xmlns:hades="http://schemas.synyx.de/hades"
   xsi:schemaLocation="http://www.springframework.org/schema/beans 
     http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-    http://www.synyx.de/schema/dao 
-    http://www.synyx.de/schema/dao/dao-config.xsd"&gt;
+    http://schemas.synyx.org/hades
+    http://schemas.synyx.org/hades/hades.xsd"&gt;
 
   &lt;import resource="infrastructure.xml" /&gt;
 
-  &lt;dao:dao-config
+  &lt;hades:dao-config
     entity-package-name="org.synyx.hades.domain"
     dao-package-name="org.synyx.hades.dao"&gt;
 
-    &lt;dao:dao name="user" /&gt;
-    &lt;dao:dao name="role" /&gt;
-  &lt;/dao:dao-config&gt;
+    &lt;hades:dao id="user" /&gt;
+    &lt;hades:dao id="role" /&gt;
+  &lt;/hades:dao-config&gt;
 
 &lt;/beans&gt;</programlisting>
 
           <calloutlist>
-            <callout arearefs="config.dao-ns-import">
+            <callout arearefs="config.dao-ns-import config.dao-ns-location">
               <para>Import the dao namespace to be available in the xml
               configuraton document.</para>
             </callout>
@@ -900,13 +952,12 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
             <callout arearefs="config.dao-instance">
               <para>Declare a single DAO instance. Each <code
-              language="xml">&lt;dao:dao /&gt;</code> element will result in a
+              language="xml">&lt;dao /&gt;</code> element will result in a
               single declaration of a
               <classname>GenericDaoFactoryBean</classname> with a domain class
-              set to
-              <code><code>${dao-config.entity-package-name}.${dao.name}</code></code>
+              set to <code>${dao-config.entity-package-name}.${dao.id}</code>
               and a DAO interface set to
-              <code>${dao-config.dao-package-name}.${dao.name}.${dao-config.dao-name-postfix}</code>
+              <code>${dao-config.dao-package-name}.${dao.id}.${dao-config.dao-name-postfix}</code>
               where <code>dao-name-postfix</code> defaults to
               <code>Dao</code>. Given this example this will result in a
               domain class <classname>org.synyx.hades.domain.User</classname>
@@ -921,19 +972,19 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       entirely so we encourage to use this kind of configuration over the
       simple one.</para>
 
-      <para>The <code>&lt;dao:dao-config /&gt;</code> element allows two
-      further attributes to be defined. With <code>dao-name-postfix</code> you
-      can customize the bean id for the DAO registered. This defaults to
+      <para>The <code>&lt;dao-config /&gt;</code> element allows two further
+      attributes to be defined. With <code>dao-name-postfix</code> you can
+      customize the bean id for the DAO registered. This defaults to
       <code>Dao</code>. <code>dao-base-class</code> allows to define a custom
-      base class for the DAO proxy created. For more details see <link
-      linkend="vendor-specific-features">section on vendor specific
-      features</link>.</para>
+      base class for the DAO proxy created. For more details see <xref
+      linkend="vendor-specific-features" />.</para>
 
-      <simplesect>
+      <simplesect id="config.autoconfig">
         <title>Auto configuration</title>
 
         <para>You can simplify configuration even more by adding no
-        &lt;dao:dao /&gt; elements to &lt;dao:config /&gt; at all.</para>
+        <code>&lt;dao /&gt;</code> elements to <code>&lt;dao-config
+        /&gt;</code> at all.</para>
 
         <example>
           <title>Automatic DAO configuration</title>
@@ -941,15 +992,15 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:dao="http://www.synyx.de/schema/dao"
+  xmlns:hades="http://schemas.synyx.org/hades"
   xsi:schemaLocation="http://www.springframework.org/schema/beans 
     http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-    http://www.synyx.de/schema/dao 
-    http://www.synyx.de/schema/dao/dao-config.xsd"&gt;
+    http://schemas.synyx.org/hades 
+    http://schemas.synyx.org/hades/hades.xsd"&gt;
 
   &lt;import resource="infrastructure.xml" /&gt;
 
-  &lt;dao:dao-config
+  &lt;hades:dao-config
     entity-package-name="org.synyx.hades.domain"
     dao-package-name="org.synyx.hades.dao" /&gt;
 
@@ -985,7 +1036,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       see how configuration of a query to lookup users by their email address
       can be realized.</para>
 
-      <section>
+      <section id="sample-app.finders.strategies">
         <title>Query lookup strategies</title>
 
         <para>Finders can be executed with 3 different strategies. These
@@ -1000,19 +1051,19 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           <para>This strategy will try to construct a JPA query from the
           finder method's name. Thus you don't need to declare a named query
           explicitly. This is quite useful if the queries are simple and no
-          special JPA QL is required. CREATE strategy ties your mehod names to
-          the query, what might be unwanted. Read more about query
-          construction in <link
-          linkend="finder-methods.query-creation">FOO</link>.</para>
+          special JPA QL is required. <code>CREATE</code> strategy ties your
+          mehod names to the query, what might be unwanted. Read more about
+          query construction in <xref
+          linkend="finder-methods.query-creation" />.</para>
         </simplesect>
 
         <simplesect>
           <title>USE_NAMED_QUERY</title>
 
           <para>This strategy tries to find a named query using naming
-          conventions described in <link
-          linkend="finder-methods.named-queries">BAR</link>. If no query is
-          found the finder will fail.</para>
+          conventions described in <xref
+          linkend="finder-methods.named-queries" />. If no query is found the
+          finder will fail.</para>
         </simplesect>
 
         <simplesect>
@@ -1037,7 +1088,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
         <code>AND</code> and <code>OR</code>.<example>
             <title>Query creation from method names</title>
 
-            <para><programlisting language="java">public interface UserDao&lt;User, Long&gt; {
+            <para><programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
   findByEmailAddressAndLastname(String emailAddress, String lastname);
 }</programlisting>This method will result in the following query:</para>
@@ -1128,13 +1179,14 @@ public class User implements Persistable&lt;Long&gt; {
           <para>Declaring this method <classname>GenericJpaDao</classname>
           will try to resolve a call to this method to a named query startig
           with the simple name of the configured domain class followed by the
-          method name separated by a dot. Note, that the GenericJpaDao
-          implementation distinguishes between finder methods for a single
-          object or lists of object. It will try to retrieve a single result
-          if you provide a return value assignable from the configured domain
-          class. Otherwise i will try to call a named query to return a list.
-          Be sure your named query for a single instance truely returns only
-          one instance.</para>
+          method name separated by a dot. Note, that the
+          <interfacename>GenericJpaDao</interfacename> implementation
+          distinguishes between finder methods for a single object or lists of
+          object. It will try to retrieve a single result if you provide a
+          return value assignable from the configured domain class. Otherwise
+          i will try to call a named query to return a list. Be sure your
+          named query for a single instance truely returns only one
+          instance.</para>
         </simplesect>
       </section>
     </section>
@@ -1143,8 +1195,8 @@ public class User implements Persistable&lt;Long&gt; {
       <title>Auditable entities</title>
 
       <para>Suppose you want to keep track of who created user entities and
-      who changed them. All you need to do is implement Auditable
-      interface</para>
+      who changed them. All you need to do is implement
+      <interfacename>Auditable</interfacename> interface</para>
 
       <example>
         <title>AuditableUser</title>
@@ -1169,23 +1221,23 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
       <filename>infrastructure.xml</filename> (for infrastructure setup),
       <filename>audition-context.xml</filename> (to setup the audition advice)
       and <filename>dao-context.xml</filename> (for the actual DAOs) the work
-      of the audition advice can be demonstrated by the following
-      testcase:</para>
+      of the <classname>AuditingAdvice</classname> can be demonstrated by the
+      following testcase:</para>
 
       <example>
-        <title>Testcase for audition advice</title>
+        <title>Testcase for <classname>AuditingAdvice</classname></title>
 
         <programlistingco>
           <areaspec>
-            <area coords="1" id="audition-advice-test.superclass" />
+            <area coords="1" id="auditing-advice-test.superclass" />
 
-            <area coords="8" id="audition-advice-test.reference-to-beans" />
+            <area coords="8" id="auditing-advice-test.reference-to-beans" />
 
-            <area coords="13" id="audition-advice-test.test-data" />
+            <area coords="13" id="auditing-advice-test.test-data" />
 
-            <area coords="23" id="audition-advice-test.setup" />
+            <area coords="23" id="auditing-advice-test.setup" />
 
-            <area coords="40" id="audition-advice-test.test-method" />
+            <area coords="40" id="auditing-advice-test.test-method" />
           </areaspec>
 
           <programlisting language="java">@RunWith(SpringJUnit4ClassRunner.class)
@@ -1234,27 +1286,27 @@ public class AuditionAdviceTest extends AbstractJpaTests {
 }</programlisting>
 
           <calloutlist>
-            <callout arearefs="audition-advice-test.superclass">
+            <callout arearefs="auditing-advice-test.superclass">
               <para>Configure the test class to be dependency injected and
               transactional.</para>
             </callout>
 
-            <callout arearefs="audition-advice-test.reference-to-beans">
+            <callout arearefs="auditing-advice-test.reference-to-beans">
               <para>References to Spring beans.</para>
             </callout>
 
-            <callout arearefs="audition-advice-test.test-data">
+            <callout arearefs="auditing-advice-test.test-data">
               <para>Test user to be inserted into the database.</para>
             </callout>
 
-            <callout arearefs="audition-advice-test.setup">
+            <callout arearefs="auditing-advice-test.setup">
               <para>Create a dummy <classname>User</classname> instance and a
               mock <interfacename>CurrentUserAware</interfacename>, that
               always returns the dummy user. Apply this mock to the
               advice.</para>
             </callout>
 
-            <callout arearefs="audition-advice-test.test-method">
+            <callout arearefs="auditing-advice-test.test-method">
               <para>The actual test simply saves the dummy
               <classname>User</classname> instance and verifys the advice got
               applied. Note that advice application is completely transparent
@@ -1265,7 +1317,7 @@ public class AuditionAdviceTest extends AbstractJpaTests {
       </example>
     </section>
 
-    <section>
+    <section id="sample-app.base-classes">
       <title>Using abstract base classes</title>
 
       <para>As you could see declaring the id and implementing methods defined
@@ -1273,11 +1325,12 @@ public class AuditionAdviceTest extends AbstractJpaTests {
       base class that already implements the necessary methods the way shown
       above but leaves you the power to define the id type.</para>
 
-      <para>Using AbstractPersistable would simplify User code like
-      this</para>
+      <para>Using <classname>AbstractPersistable</classname> would simplify
+      User code like this</para>
 
       <example>
-        <title>User based on AbstractPersistable</title>
+        <title>User based on
+        <classname>AbstractPersistable</classname></title>
 
         <programlisting language="java">@Entity
 public class User extends AbstractPersistable&lt;Long&gt; {
@@ -1306,7 +1359,8 @@ public class User extends AbstractPersistable&lt;Long&gt; {
       members</para>
 
       <example>
-        <title>AuditableUser based on AbstractAuditable</title>
+        <title><classname>AuditableUser</classname> based on
+        <classname>AbstractAuditable</classname></title>
 
         <programlisting language="java">@Entity
 public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
@@ -1329,7 +1383,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       <para>All the functionality described until now can be used with any JPA
       persistence provider as it only relies on features specified by JPA.
       Nevertheless JPA does not include certain features like the well known
-      Criteria API. As some persistence providers provide more sophisticated
+      criteria API. As some persistence providers provide more sophisticated
       features we introduce the
       <interfacename>ExtendedGenericDao</interfacename> interface and a few
       implementations that make use of proprietary persistence provider's
@@ -1338,32 +1392,38 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       defined in the JPA spec or rely on your persistence providers extended
       features.</para>
 
+      <para>Currently Hades provides implementations for
+      <interfacename>ExtendedGenericDao</interfacename> based on Hibernate and
+      EclipseLink. Note, that you can use basic DAO functionality with
+      <emphasis>any</emphasis> JPA persistence provider.</para>
+
       <para>E.g. to setup your application to use the
       <classname>GenericHibernateJpaDao</classname> you have to extend the DAO
       configuration as follows.</para>
 
       <example>
-        <title>Configuration to use GenericHibernateJpaDao</title>
+        <title>Configuration to use
+        <classname>GenericHibernateJpaDao</classname></title>
 
         <programlistingco>
           <areaspec>
             <area coords="4" id="hibernate-dao-config.dao-base-class" />
           </areaspec>
 
-          <programlisting language="xml">&lt;dao:dao-config
+          <programlisting language="xml">&lt;dao-config
   entity-package-name="org.synyx.hades.domain"
   dao-package-name="org.synyx.hades.dao"
   dao-base-class="org.synyx.hades.dao.orm.GenericHibernateJpaDao"&gt;
 
-  &lt;dao:dao name="user" /&gt;
-  &lt;dao:dao name="role" /&gt;
-&lt;/dao:dao-config&gt;</programlisting>
+  &lt;dao name="user" /&gt;
+  &lt;dao name="role" /&gt;
+&lt;/dao-config&gt;</programlisting>
 
           <calloutlist>
             <callout arearefs="hibernate-dao-config.dao-base-class">
               <para>Declare the specific DAO implementation in the
-              <code>&lt;dao:dao-config /&gt;</code> element. This
-              implementaion class has to implement at least
+              <code>&lt;dao-config /&gt;</code> element. This implementaion
+              class has to implement at least
               <interfacename>GenericDao</interfacename> but of course only
               makes sense if the interface your specific DAO interface extends
               is also implemented by the class.</para>
@@ -1371,6 +1431,18 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
           </calloutlist>
         </programlistingco>
       </example>
+
+      <note>
+        <para>Using EclipseLink as a persistence provider you will have to
+        activate load time weaving for your application. Furthermore there is
+        a <ulink
+        url="https://bugs.eclipse.org/bugs/show_bug.cgi?id=240618">known
+        bug</ulink> regarding combination of EclipseLink and HSQL you should
+        be aware of. With <classname>EclipseLinkHSQLPLatform</classname> Hades
+        provides a workaround for this. See the
+        <filename>eclipselink.xml</filename> configuration file in the test
+        directory for details.</para>
+      </note>
     </section>
 
     <section>
@@ -1429,20 +1501,24 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <example>
           <title>Configuration example</title>
 
-          <para><programlisting language="xml">&lt;dao:dao-config dao-package-name="foo.bar.dao" entity-package-name="foo.bar.domain"&gt;
-  &lt;dao:dao id="user" /&gt;
-&lt;/dao:dao-config&gt;
+          <para><programlisting language="xml">&lt;dao-config dao-package-name="foo.bar.dao" 
+  entity-package-name="foo.bar.domain"&gt;
+  &lt;dao id="user" /&gt;
+&lt;/dao-config&gt;
 
-&lt;dao:dao-config dao-package-name="foo.bar.dao" entity-package-name="foo.bar.domain"
+&lt;dao-config dao-package-name="foo.bar.dao" 
+  entity-package-name="foo.bar.domain"
   dao-impl-postfix="FooBar"&gt;
-  &lt;dao:dao id="user" /&gt;
-&lt;/dao:dao-config&gt;</programlisting></para>
+  &lt;dao id="user" /&gt;
+&lt;/dao-config&gt;</programlisting></para>
         </example>
 
         <para>The first configuration example will try to lookup a class
         <classname>foo.bar.dao.UserDaoImpl</classname> to act as custom DAO
         implementation, where the second example will try to lookup
         <classname>foo.bar.dao.UserFooBar</classname>.</para>
+
+        <para>TODO: Document manual wiring</para>
       </simplesect>
     </section>
   </chapter>
@@ -1450,42 +1526,222 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
   <appendix>
     <title>Namespace reference</title>
 
-    <para><table>
-        <title>The &lt;dao:config /&gt; element</title>
+    <section>
+      <title>The <code>&lt;dao-config /&gt;</code> element</title>
+
+      <para>The <code>&lt;dao-config /&gt;</code> element acts as container
+      for <code>&lt;dao /&gt;</code> elements or can be left empty to trigger
+      auto detection<footnote>
+          <para>see <xref linkend="config.autoconfig" /></para>
+        </footnote> of DAO instances. Attributes defined for
+      <code>&lt;dao-config /&gt;</code> act are propagated to contained
+      <code>&lt;dao /&gt;</code> elements but can be overridden of
+      course.</para>
+
+      <table>
+        <title>Attributes</title>
 
         <tgroup cols="2">
+          <colspec colwidth="1*" />
+
+          <colspec colwidth="2*" />
+
+          <thead>
+            <row>
+              <entry>Name</entry>
+
+              <entry>Description</entry>
+            </row>
+          </thead>
+
           <tbody>
             <row>
-              <entry></entry>
+              <entry><code>entity-package-name</code></entry>
 
-              <entry></entry>
+              <entry>Defines the package to be used to construct entity class
+              names from or to be scanned for entity classes in auto detection
+              mode.</entry>
             </row>
 
             <row>
-              <entry></entry>
+              <entry><code>dao-package-name</code></entry>
 
-              <entry></entry>
+              <entry>Defines the package to be used to construct DAO inteface
+              names from or to be scanned for DAO interfaces extending
+              <interfacename>GenericDao</interfacename> in auto detection
+              mode.</entry>
+            </row>
+
+            <row>
+              <entry><code>dao-base-class</code></entry>
+
+              <entry>Defines the base class that shall be used to create the
+              DAO proxy. Be sure to set a vendor specific implementation if
+              your DAOs extend
+              <interfacename>ExtendedGenericDao</interfacename>. Defaults to
+              <classname>GenericJpaDao</classname>.</entry>
+            </row>
+
+            <row>
+              <entry><code>dao-interface-postfix</code></entry>
+
+              <entry>Defines the postfix to autodetect DAO interfaces. In auto
+              configuration mode (no nested <code>&lt;dao /&gt;</code>
+              elements) all classes with the given postfix will be considered
+              as candidates for DAO instances. Defaults to
+              <code>Dao</code>.</entry>
+            </row>
+
+            <row>
+              <entry><code>dao-name-postfix</code></entry>
+
+              <entry>Defines the postfix for the bean name the DAO instances
+              get registered in the
+              <interfacename>ApplicationContext</interfacename> as well as the
+              interface name. This will be appended to the simple domain class
+              name. Defaults to <code>Dao</code>.</entry>
+            </row>
+
+            <row>
+              <entry><code>dao-impl-postfix</code></entry>
+
+              <entry>Defines the postfix to autodetect custom DAO
+              implementations. Classes whose names end with the configured
+              postfix will be considered as candidates. Defaults to
+              <code>DaoImpl</code>.</entry>
+            </row>
+
+            <row>
+              <entry><code>finder-lookup-strategy</code></entry>
+
+              <entry>Determines the strategy to be used to create finder
+              queries. See <xref linkend="sample-app.finders.strategies" />
+              for details. Defaults to
+              <code>create-if-not-found</code>.</entry>
+            </row>
+
+            <row>
+              <entry><code>finder-prefix</code></entry>
+
+              <entry>Define the method prefixes to detect finder methods, the
+              DAO shall execute finders for. Defaults to
+              <code>findBy</code>.</entry>
             </row>
           </tbody>
         </tgroup>
-      </table><table>
-        <title>The &lt;dao:dao /&gt; element</title>
+      </table>
+    </section>
+
+    <section>
+      <title>The <code>&lt;dao /&gt;</code> element</title>
+
+      <para>The <code>&lt;dao /&gt;</code> element can contain all attributes
+      of <code>&lt;dao-config /&gt;</code> except
+      <code>entity-package-name</code> and <code>dao-package-name</code>. This
+      will result in overriding the values configured in the surrounding
+      <code>&lt;dao-config /&gt;</code> block. Thus here we will only document
+      extended attributes.</para>
+
+      <table>
+        <title>Attributes</title>
 
         <tgroup cols="2">
+          <colspec colwidth="1*" />
+
+          <colspec colwidth="2*" />
+
           <tbody>
             <row>
-              <entry></entry>
+              <entry><code>id</code></entry>
 
-              <entry></entry>
+              <entry>Defines the base name DAO interface names will be derived
+              from. The interface will get <code>dao-interface-postfix</code>
+              appended and tried to be looked up in
+              <code>dao-package-name</code>.</entry>
             </row>
 
             <row>
-              <entry></entry>
+              <entry><code>custom-impl-ref</code></entry>
 
-              <entry></entry>
+              <entry>Defines a reference to a custom DAO implementation
+              bean.</entry>
             </row>
           </tbody>
         </tgroup>
-      </table></para>
+      </table>
+    </section>
   </appendix>
+
+  <glossary>
+    <glossdiv>
+      <title>A</title>
+
+      <glossentry>
+        <glossterm>AOP</glossterm>
+
+        <glossdef>
+          <para>Aspect oriented programming</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+
+    <glossdiv>
+      <title>C</title>
+
+      <glossentry>
+        <glossterm>Commons DBCP</glossterm>
+
+        <glossdef>
+          <para>Commons DataBase Connection Pools - Library of the Apache
+          foundation offering pooling implementations of the
+          <interfacename>DataSource</interfacename> interface.</para>
+        </glossdef>
+      </glossentry>
+
+      <glossentry>
+        <glossterm>CRUD</glossterm>
+
+        <glossdef>
+          <para>Create, Read, Update, Delete - Basic persistence
+          operations</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+
+    <glossdiv>
+      <title>D</title>
+
+      <glossentry>
+        <glossterm>DAO</glossterm>
+
+        <glossdef>
+          <para>Data Access Object - Pattern to separate persisting logic from
+          the object to be persisted</para>
+        </glossdef>
+      </glossentry>
+
+      <glossentry>
+        <glossterm>Dependency Injection</glossterm>
+
+        <glossdef>
+          <para>Pattern to hand a component's dependency to the component from
+          outside, freeing the component to lookup the dependant itself. For
+          more information see <ulink
+          url="http://en.wikipedia.org/wiki/Dependency_Injection">http://en.wikipedia.org/wiki/Dependency_Injection</ulink>.</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+
+    <glossdiv>
+      <title>J</title>
+
+      <glossentry>
+        <glossterm>JPA</glossterm>
+
+        <glossdef>
+          <para>Java Persistence Api</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+  </glossary>
 </book>
