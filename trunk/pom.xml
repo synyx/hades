@@ -168,7 +168,6 @@
 				<version>2.4.3</version>
 				<configuration>
 					<argLine>-javaagent:${settings.localRepository}/org/springframework/spring-agent/${spring.agent.version}/spring-agent-${spring.agent.version}.jar</argLine>
-					<forkMode>pertest</forkMode>
 				</configuration>
 				
 			</plugin>
