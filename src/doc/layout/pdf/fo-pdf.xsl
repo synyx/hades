@@ -7,14 +7,14 @@
     <!-- Import highlighting color codes -->
     <xsl:import href="highlight-fo.xsl"/>
     
-    
     <xsl:param name="glossterm.auto.link">1</xsl:param>
     <xsl:param name="highlight.source">1</xsl:param>
     <xsl:param name="use.extensions">1</xsl:param>
+    <xsl:param name="fop1.extensions">1</xsl:param>
     <xsl:param name="callouts.extension">1</xsl:param>
     
      
-     <!-- Custom Title Page -->
+    <!-- Custom Title Page -->
 
     <xsl:template name="book.titlepage.recto">
         <fo:block>
@@ -186,6 +186,25 @@
     <!-- Left aligned text and no hyphenation -->
     <xsl:param name="alignment">justify</xsl:param>
     <xsl:param name="hyphenate">true</xsl:param>
+    
+    <!-- Links -->
+    <xsl:param name="xref.with.number.and.title" select="1"/>
+    
+    <xsl:attribute-set name="xref.properties">
+	  <xsl:attribute name="color">
+	    <xsl:choose>
+	      <xsl:when test="self::ulink | self::xref">blue</xsl:when>
+	      <xsl:otherwise>inherit</xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:attribute>
+	  <xsl:attribute name="text-decoration">
+	    <xsl:choose>
+	      <xsl:when test="self::ulink | self::xref">underline</xsl:when>
+	      <xsl:otherwise>inherit</xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:attribute>
+	</xsl:attribute-set>
+    
 
     <!-- Default Font size -->
     <xsl:param name="title.font.family">StellaLining</xsl:param>
@@ -202,7 +221,7 @@
         <xsl:attribute name="font-family">
             <xsl:value-of select="$monospace.font.family"/>
         </xsl:attribute>
-        <xsl:attribute name="font-size">0.8em</xsl:attribute>
+        <xsl:attribute name="font-size">0.9em</xsl:attribute>
     </xsl:attribute-set>
 
     <!-- Tables -->
@@ -307,7 +326,7 @@
     <!-- Verbatim text formatting (programlistings) -->
     <xsl:attribute-set name="monospace.verbatim.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="$body.font.small * 0.9"/>
+            <xsl:value-of select="$body.font.small"/>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
@@ -401,6 +420,7 @@
         </fo:basic-link>
     </xsl:template>
     
+    <!--
     <xsl:template match="xref">
         <fo:basic-link internal-destination="{@linkend}" xsl:use-attribute-sets="xref.properties" text-decoration="underline" color="blue">
             <xsl:choose>
@@ -412,6 +432,6 @@
                 </xsl:otherwise>
             </xsl:choose>
         </fo:basic-link>
-    </xsl:template>
+    </xsl:template>-->
 	
 </xsl:stylesheet>
