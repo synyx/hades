@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.synyx.hades.domain.AuditableUser;
 import org.synyx.hades.domain.AuditorAware;
-import org.synyx.hades.domain.support.AuditingAdvice;
 
 
 /**
@@ -33,7 +32,7 @@ import org.synyx.hades.domain.support.AuditingAdvice;
 public class AuditingAdviceUnitTest extends TestCase {
 
     private AuditingAdvice auditionAdvice;
-    private AuditorAware<AuditableUser, Long> auditorAware;
+    private AuditorAware<AuditableUser> auditorAware;
 
     private AuditableUser user;
 

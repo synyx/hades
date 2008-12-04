@@ -54,7 +54,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
 
     private static final Log log = LogFactory.getLog(AuditingAdvice.class);
 
-    private AuditorAware<T, PK> auditorAware;
+    private AuditorAware<T> auditorAware;
     private boolean modifyOnCreation = true;
 
 
@@ -64,7 +64,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * 
      * @param auditorAware the auditorAware to set
      */
-    public void setAuditorAware(final AuditorAware<T, PK> auditorAware) {
+    public void setAuditorAware(final AuditorAware<T> auditorAware) {
 
         this.auditorAware = auditorAware;
     }
