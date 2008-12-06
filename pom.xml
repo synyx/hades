@@ -417,7 +417,7 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<query>status=closed&amp;groupdesc=1&amp;group=milestone&amp;milestone=!&amp;owner=gierke_cvs&amp;order=priority</query>
+					<query>groupdesc=1&amp;group=milestone&amp;milestone=!&amp;order=priority</query>
 		            <outputEncoding>UTF-8</outputEncoding>
 		        </configuration>
 		    </plugin>
