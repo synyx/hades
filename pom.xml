@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx.hades</groupId>
 	<artifactId>hades</artifactId>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.3</version>
 	<name>Hades</name>
 	
 	<description>
@@ -405,6 +405,7 @@
 		    	</configuration>
 		    </plugin>
 		    
+		    <!-- 
 		    <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changes-plugin</artifactId>
@@ -421,6 +422,7 @@
 		            <outputEncoding>UTF-8</outputEncoding>
 		        </configuration>
 		    </plugin>
+		     -->
 					
 		</plugins>
 	</reporting>
@@ -471,9 +473,9 @@
 	
 
 	<scm>
-		<url>http://svn.synyx.org/synyx/opensource/hades</url>
-		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades</connection>
-		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades</developerConnection>
+		<url>http://svn.synyx.org/synyx/opensource/hades/tags/hades-0.3</url>
+		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades/tags/hades-0.3</connection>
+		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades/tags/hades-0.3</developerConnection>
 	</scm>
 	
 	<ciManagement>
