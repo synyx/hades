@@ -61,7 +61,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         implements FactoryBean, InitializingBean {
 
     private static final Class<?> DEFAULT_DAO_BASE_CLASS = GenericJpaDao.class;
-    private Class<GenericDao<T, PK>> daoInterface;
+    private Class<? extends GenericDao<T, PK>> daoInterface;
     private Class<T> domainClass;
     private Object customDaoImplementation;
     private EntityManagerFactory entityManagerFactory;
@@ -72,13 +72,21 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
 
 
+    public static <D extends AbstractJpaFinder<T, PK>, T extends Persistable<PK>, PK extends Serializable> GenericDaoFactoryBean<D, T, PK> create() {
+
+        return new GenericDaoFactoryBean<D, T, PK>();
+    }
+
+
     /**
-     * Setter to inject the dao interface to implement.
+     * Setter to inject the dao interface to implement. Defaults to
+     * {@link GenericDao}.
      * 
      * @param daoInterface the daoInterface to set
      */
     @Required
-    public void setDaoInterface(final Class<GenericDao<T, PK>> daoInterface) {
+    public void setDaoInterface(
+            final Class<? extends GenericDao<T, PK>> daoInterface) {
 
         Assert.notNull(daoInterface);
         Assert.isAssignable(GenericDao.class, daoInterface,
@@ -251,7 +259,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     /**
      * Returns if the configured DAO interface has custom methods, that might
      * have to be delegated to a custom DAO implementation. This is used to
-     * verify DAO configuration
+     * verify DAO configuration.
      * 
      * @return
      */
@@ -259,15 +267,23 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
         boolean hasCustomMethod = false;
 
+        // No detection required if no typing interface was configured
+        if (GenericDao.class.equals(daoInterface)) {
+            return false;
+        }
+
         for (Method method : daoInterface.getMethods()) {
 
+            // Skip finder methods
             if (method.getName().startsWith(finderPrefix)) {
                 continue;
             }
 
+            // Skip methods of super interfaces
             if (!method.getDeclaringClass().equals(daoInterface)) {
                 continue;
             }
+
             hasCustomMethod = true;
             break;
 
