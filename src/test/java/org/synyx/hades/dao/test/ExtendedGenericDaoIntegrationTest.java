@@ -32,10 +32,10 @@ import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.UserExtendedDao;
 import org.synyx.hades.dao.orm.GenericHibernateJpaDao;
 import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.User;
 import org.synyx.hades.domain.support.Order;
 import org.synyx.hades.domain.support.PageRequest;
-import org.synyx.hades.domain.support.Sort;
 
 
 /**
@@ -165,11 +165,10 @@ public class ExtendedGenericDaoIntegrationTest {
         sampleUser.setLastname("Lastname0");
 
         // Request second page with 2 instances
-        PageRequest request = new PageRequest(1, 2);
+        PageRequest request =
+                new PageRequest(1, 2, Order.ASCENDING, "emailAddress");
 
-        Page<User> page =
-                userExtendedDao.readByExample(request, new Sort(
-                        Order.ASCENDING, "emailAddress"), sampleUser);
+        Page<User> page = userExtendedDao.readByExample(request, sampleUser);
 
         assertNotNull(page);
         assertTrue(page.hasNextPage());
