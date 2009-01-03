@@ -17,6 +17,8 @@
 package org.synyx.hades.domain.support;
 
 import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.Sort;
+
 
 /**
  * Basic Java Bean implementation of {@code Pageable}.
@@ -27,10 +29,11 @@ public class PageRequest implements Pageable {
 
     private int page;
     private int size;
+    private Sort sort;
 
 
     /**
-     * Creates a new {@code PageRequest}. Pages are zero indexed, thus providing
+     * Creates a new {@link PageRequest}. Pages are zero indexed, thus providing
      * 0 for {@code page} will return the first page.
      * 
      * @param size
@@ -50,6 +53,48 @@ public class PageRequest implements Pageable {
 
         this.page = page;
         this.size = size;
+    }
+
+
+    /**
+     * Creates a new {@link PageRequest} with sort parameters applied.
+     * 
+     * @param page
+     * @param size
+     * @param order
+     * @param properties
+     */
+    public PageRequest(final int page, final int size, Order order,
+            String... properties) {
+
+        this(page, size, new Sort(order, properties));
+    }
+
+
+    /**
+     * Creates a new {@link PageRequest} with sort parameters applied.
+     * 
+     * @param page
+     * @param size
+     * @param sort
+     */
+    public PageRequest(final int page, final int size, final Sort sort) {
+
+        this(page, size);
+        this.sort = sort;
+    }
+
+
+    /**
+     * Creates a new {@link PageRequest} by using the given {@link Pageable}'s
+     * properties as setup values.
+     * 
+     * @param pageable
+     */
+    public PageRequest(Pageable pageable) {
+
+        this(pageable.getPage(), pageable.getNumberOfItems(), pageable
+                .getSort());
     }
 
 
@@ -83,5 +128,16 @@ public class PageRequest implements Pageable {
     public int getFirstItem() {
 
         return page * size;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.domain.Pageable#getSort()
+     */
+    public Sort getSort() {
+
+        return sort;
     }
 }

@@ -27,14 +27,13 @@ import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.queries.ReadAllQuery;
 import org.eclipse.persistence.queries.ReportQuery;
 import org.eclipse.persistence.queries.ReportQueryResult;
-import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.support.Order;
 import org.synyx.hades.domain.support.PageImpl;
-import org.synyx.hades.domain.support.Sort;
 
 
 /**
@@ -82,27 +81,12 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
      * org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.
      * domain.page.Pageable, T[])
      */
-    public Page<T> readByExample(Pageable pageable, T... examples) {
-
-        return readByExample(pageable, null, examples);
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.
-     * domain.page.Pageable, org.synyx.hades.domain.Sort, T[])
-     */
     @SuppressWarnings("unchecked")
-    public Page<T> readByExample(Pageable pageable, Sort sort, T... examples) {
-
-        Assert.notNull(pageable, "Pageable must not be null!");
+    public Page<T> readByExample(Pageable pageable, T... examples) {
 
         // Prevent null examples to cause trouble
         if (null == examples || examples.length == 0) {
-            return readAll(pageable, sort);
+            return readAll(pageable);
         }
 
         // Prepare query to count totals
@@ -115,7 +99,6 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
 
         // Prepare page query
         ReadAllQuery query = new ReadAllQuery();
-        applySorting(query, sort);
         applyExamples(query, examples);
         applyPagination(query, pageable);
 
@@ -221,6 +204,8 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
         // given value to, but counts from the very beginning. Thus we have to
         // add the offset manually
         query.setMaxRows(pageable.getFirstItem() + pageable.getNumberOfItems());
+
+        applySorting(query, pageable.getSort());
     }
 
 

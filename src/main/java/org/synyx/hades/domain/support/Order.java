@@ -32,4 +32,23 @@ public enum Order {
 
         return jpaValue;
     }
+
+
+    /**
+     * Returns the {@link Order} enum for the given JPA value.
+     * 
+     * @param value
+     * @return
+     */
+    public static Order fromJpaValue(String value) {
+
+        for (Order order : Order.values()) {
+            if (order.getJpaValue().equals(value)) {
+                return order;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format(
+                "Invalid value '%s' given!", value));
+    }
 }
