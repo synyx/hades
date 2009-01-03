@@ -1,17 +1,17 @@
 /*
  * Copyright 2002-2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.synyx.hades.dao;
@@ -22,7 +22,7 @@ import java.util.List;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
-import org.synyx.hades.domain.support.Sort;
+import org.synyx.hades.domain.Sort;
 
 
 /**
@@ -70,18 +70,4 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * @return the page of objects meeting the example's criterias
      */
     Page<T> readByExample(final Pageable pageable, final T... examples);
-
-
-    /**
-     * Returns a page of entities matching the provided examples sorted by the
-     * given sorting options.
-     * 
-     * @param pageable
-     * @param sort
-     * @param examples
-     * @return a page of entities matching the provided examples sorted by the
-     *         given sorting options
-     */
-    Page<T> readByExample(final Pageable pageable, final Sort sort,
-            final T... examples);
 }

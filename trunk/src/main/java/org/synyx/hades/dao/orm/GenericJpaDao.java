@@ -31,8 +31,8 @@ import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.support.PageImpl;
-import org.synyx.hades.domain.support.Sort;
 
 
 /**
@@ -112,7 +112,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     public List<T> readAll(final Sort sort) {
 
         return (null == sort) ? readAll() : getJpaTemplate().find(
-                applyOrderBy(getReadAllQuery(), sort));
+                applySorting(getReadAllQuery(), sort));
     }
 
 
@@ -125,28 +125,12 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public Page<T> readAll(final Pageable pageable) {
 
-        Assert.notNull(pageable);
+        if (null == pageable) {
 
-        return readPage(pageable, getReadAllQuery());
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.page.Pageable
-     * , org.synyx.hades.domain.Sort)
-     */
-    public Page<T> readAll(final Pageable pageable, final Sort sort) {
-
-        Assert.notNull(pageable);
-
-        if (null == sort) {
-            return readAll(pageable);
+            return new PageImpl<T>(readAll());
         }
 
-        return readPage(pageable, applyOrderBy(getReadAllQuery(), sort));
+        return readPage(pageable, getReadAllQuery());
     }
 
 
@@ -260,7 +244,10 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
             public Page<T> doInJpa(final EntityManager em)
                     throws PersistenceException {
 
-                Query jpaQuery = em.createQuery(query);
+                applySorting(query, pageable.getSort());
+
+                Query jpaQuery =
+                        em.createQuery(applySorting(query, pageable.getSort()));
 
                 jpaQuery.setFirstResult(pageable.getFirstItem());
                 jpaQuery.setMaxResults(pageable.getNumberOfItems());
@@ -279,7 +266,11 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      * @param sort
      * @return
      */
-    private String applyOrderBy(String query, Sort sort) {
+    private String applySorting(String query, Sort sort) {
+
+        if (null == sort) {
+            return query;
+        }
 
         StringBuilder builder = new StringBuilder(query);
         builder.append(" order by");

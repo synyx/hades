@@ -24,13 +24,12 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.ejb.HibernateEntityManager;
-import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.support.PageImpl;
-import org.synyx.hades.domain.support.Sort;
 
 
 /**
@@ -78,28 +77,12 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * org.synyx.hades.hades.dao.ExtendedGenericDao#readbyExample(java.awt.print
      * .Pageable, T[])
      */
-    public Page<T> readByExample(final Pageable pageable, final T... examples) {
-
-        return readByExample(pageable, null, examples);
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.
-     * domain.page.Pageable, org.synyx.hades.domain.Sort, T[])
-     */
     @SuppressWarnings("unchecked")
-    public Page<T> readByExample(final Pageable pageable, final Sort sort,
-            final T... examples) {
-
-        Assert.notNull(pageable, "Pageable must not be null!");
+    public Page<T> readByExample(final Pageable pageable, final T... examples) {
 
         // Prevent null examples to cause trouble
         if (null == examples || examples.length == 0) {
-            return readAll(pageable, sort);
+            return readAll(pageable);
         }
 
         Criteria countCriteria = applyExamples(examples);
@@ -108,8 +91,7 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
 
         Criteria listCriteria = applyExamples(examples);
 
-        // Apply sorting
-        applySorting(listCriteria, sort);
+        // Apply pagination
         applyPagination(listCriteria, pageable);
 
         return new PageImpl(listCriteria.list(), pageable, count);
@@ -187,10 +169,13 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      */
     private void applyPagination(Criteria criteria, Pageable pageable) {
 
-        if (null != pageable) {
-            criteria.setFirstResult(pageable.getFirstItem());
-            criteria.setMaxResults(pageable.getNumberOfItems());
+        if (null == pageable) {
+            return;
         }
+
+        criteria.setFirstResult(pageable.getFirstItem());
+        criteria.setMaxResults(pageable.getNumberOfItems());
+        applySorting(criteria, pageable.getSort());
     }
 
 

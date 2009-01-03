@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.Sort;
 
 
 /**
@@ -35,6 +36,7 @@ public class PageImpl<T> implements Page<T> {
     private int number;
     private int pageSize;
     private long total;
+    private Sort sort;
 
 
     /**
@@ -51,14 +53,32 @@ public class PageImpl<T> implements Page<T> {
             throw new IllegalArgumentException("Content must not be null!");
         }
 
-        if (null == pageable) {
-            throw new IllegalArgumentException("Pageable must not be null!");
-        }
-
         this.content = content;
-        this.number = pageable.getPage();
-        this.pageSize = pageable.getNumberOfItems();
         this.total = total;
+
+        if (null == pageable) {
+
+            this.number = 0;
+            this.pageSize = content.size();
+
+        } else {
+
+            this.number = pageable.getPage();
+            this.pageSize = pageable.getNumberOfItems();
+            this.sort = pageable.getSort();
+        }
+    }
+
+
+    /**
+     * Creates a new {@link PageImpl} with the given content. This will result
+     * in the created {@link Page} being identical to the entire {@link List}.
+     * 
+     * @param content
+     */
+    public PageImpl(final List<T> content) {
+
+        this(content, null, content.size());
     }
 
 
@@ -137,6 +157,17 @@ public class PageImpl<T> implements Page<T> {
     public boolean hasNextPage() {
 
         return ((number + 1) * pageSize) < total;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.domain.Page#getSort()
+     */
+    public Sort getSort() {
+
+        return sort;
     }
 
 
