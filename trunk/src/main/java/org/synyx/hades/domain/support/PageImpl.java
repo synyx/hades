@@ -16,6 +16,7 @@
 
 package org.synyx.hades.domain.support;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -179,6 +180,17 @@ public class PageImpl<T> implements Page<T> {
     public Iterator<T> iterator() {
 
         return content.iterator();
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.domain.Page#asList()
+     */
+    public List<T> asList() {
+
+        return new ArrayList<T>(content);
     }
 
 
