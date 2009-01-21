@@ -21,7 +21,6 @@ import static junit.framework.Assert.*;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -44,27 +43,21 @@ public class GenericDaoFactoryBeanUnitTest {
 
     private GenericDaoFactoryBean factory;
 
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
 
     @Before
     public void setUp() {
 
-        entityManagerFactory =
-                EasyMock.createNiceMock(EntityManagerFactory.class);
         entityManager = EasyMock.createNiceMock(EntityManager.class);
 
-        EasyMock.expect(entityManagerFactory.createEntityManager()).andReturn(
-                entityManager);
-
-        EasyMock.replay(entityManagerFactory, entityManager);
+        EasyMock.replay(entityManager);
 
         // Setup standard factory configuration
         factory = new GenericDaoFactoryBean();
         factory.setDomainClass(User.class);
         factory.setDaoInterface(UserDao.class);
-        factory.setEntityManagerFactory(entityManagerFactory);
+        factory.setEntityManager(entityManager);
     }
 
 

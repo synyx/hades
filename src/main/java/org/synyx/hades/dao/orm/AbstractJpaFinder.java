@@ -22,18 +22,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.orm.jpa.JpaCallback;
-import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.core.QueryLookupStrategy;
@@ -56,13 +52,13 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             QueryLookupStrategy.CREATE_IF_NOT_FOUND;
     public static final String DEFAULT_FINDER_PREFIX = "findBy";
 
-    private static final Log log = LogFactory.getLog(AbstractJpaFinder.class);
+    private static final Log LOG = LogFactory.getLog(AbstractJpaFinder.class);
 
     private QueryLookupStrategy createFinderQueries =
             DEFAULT_QUERY_LOOKUP_STRATEGY;
     private String finderPrefix = DEFAULT_FINDER_PREFIX;
 
-    private JpaTemplate jpaTemplate;
+    private EntityManager entityManager;
     private Class<T> domainClass;
 
 
@@ -97,27 +93,25 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
 
 
     /**
-     * Setter to inject {@code EntityManagerFactory}.
+     * Returns the {@link EntityManager}.
      * 
-     * @param entityManagerFactory
+     * @return
      */
-    @Required
-    @PersistenceUnit
-    public void setEntityManagerFactory(
-            final EntityManagerFactory entityManagerFactory) {
+    protected EntityManager getEntityManager() {
 
-        this.jpaTemplate = new JpaTemplate(entityManagerFactory);
+        return this.entityManager;
     }
 
 
     /**
-     * Returns the {@code JpaTemplate}.
+     * Setter to inject {@code EntityManager}.
      * 
-     * @return the {@code JpaTemplate}
+     * @param entityManager
      */
-    protected JpaTemplate getJpaTemplate() {
+    @PersistenceContext
+    public void setEntityManager(final EntityManager entityManager) {
 
-        return this.jpaTemplate;
+        this.entityManager = entityManager;
     }
 
 
@@ -153,23 +147,9 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
     @SuppressWarnings("unchecked")
     public List<T> executeFinder(final Method method, final Object... queryArgs) {
 
-        return getJpaTemplate().executeFind(new JpaCallback() {
+        Query namedQuery = prepareQuery(method, queryArgs);
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see
-             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
-             * .EntityManager)
-             */
-            public List<T> doInJpa(final EntityManager em)
-                    throws PersistenceException {
-
-                Query namedQuery = prepareQuery(method, em, queryArgs);
-
-                return namedQuery.getResultList();
-            }
-        });
+        return namedQuery.getResultList();
     }
 
 
@@ -185,23 +165,9 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
     @SuppressWarnings("unchecked")
     public T executeObjectFinder(final Method method, final Object... queryArgs) {
 
-        return (T) getJpaTemplate().execute(new JpaCallback() {
+        Query namedQuery = prepareQuery(method, queryArgs);
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see
-             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
-             * .EntityManager)
-             */
-            public T doInJpa(final EntityManager em)
-                    throws PersistenceException {
-
-                Query namedQuery = prepareQuery(method, em, queryArgs);
-
-                return (T) namedQuery.getSingleResult();
-            }
-        });
+        return (T) namedQuery.getSingleResult();
     }
 
 
@@ -211,14 +177,12 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * start with find.
      * 
      * @param method
-     * @param em
      * @param queryArgs
      * @return
      */
-    private Query prepareQuery(final Method method, final EntityManager em,
-            final Object... queryArgs) {
+    private Query prepareQuery(final Method method, final Object... queryArgs) {
 
-        Query namedQuery = lookupQuery(method, em);
+        Query namedQuery = lookupQuery(method);
 
         if (queryArgs != null) {
 
@@ -235,10 +199,9 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * Looks up a query according to the configured lookup strategy.
      * 
      * @param method
-     * @param em
      * @return
      */
-    private Query lookupQuery(final Method method, final EntityManager em) {
+    private Query lookupQuery(final Method method) {
 
         final String queryName =
                 domainClass.getSimpleName() + "." + method.getName();
@@ -246,36 +209,36 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
         switch (createFinderQueries) {
 
         case CREATE:
-            return em.createQuery(constructQuery(method));
+            return entityManager.createQuery(constructQuery(method));
 
         case USE_NAMED_QUERY:
 
-            if (log.isDebugEnabled()) {
-                log.debug("Looking up named query " + queryName);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Looking up named query " + queryName);
             }
 
-            return em.createNamedQuery(queryName);
+            return entityManager.createNamedQuery(queryName);
 
         case CREATE_IF_NOT_FOUND:
         default:
             try {
 
-                if (log.isDebugEnabled()) {
-                    log.debug(String.format("Looking up named query %s",
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(String.format("Looking up named query %s",
                             queryName));
                 }
 
-                return em.createNamedQuery(queryName);
+                return entityManager.createNamedQuery(queryName);
 
             } catch (IllegalArgumentException e) {
 
-                if (log.isDebugEnabled()) {
-                    log.debug(String.format("Failed to lookup "
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(String.format("Failed to lookup "
                             + "named query %s triggering query creation...",
                             queryName));
                 }
 
-                return em.createQuery(constructQuery(method));
+                return entityManager.createQuery(constructQuery(method));
             }
         }
     }
@@ -286,10 +249,21 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * 
      * @return string to retrieve all entities
      */
-    protected String getReadAllQuery() {
+    protected String getReadAllQueryString() {
 
         return String.format("select x from %s x", getDomainClass()
                 .getSimpleName());
+    }
+
+
+    /**
+     * Returns the query to retrieve all entities.
+     * 
+     * @return the query to retrieve all entities.
+     */
+    protected Query getReadAllQuery() {
+
+        return getEntityManager().createQuery(getReadAllQueryString());
     }
 
 
@@ -302,8 +276,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     private String constructQuery(Method method) {
 
-        if (log.isDebugEnabled()) {
-            log.debug("Creating query from method " + method.getName());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Creating query from method " + method.getName());
         }
 
         final String AND = "And";
@@ -326,7 +300,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
                         .substring(finderPrefix.length(), methodName.length());
 
         StringBuilder queryBuilder =
-                new StringBuilder(getReadAllQuery() + " where ");
+                new StringBuilder(getReadAllQueryString() + " where ");
 
         // Split OR
         String[] orParts =
@@ -379,25 +353,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     protected void assertEntityManagerClass(Class<? extends EntityManager> clazz) {
 
-        EntityManager em =
-                (EntityManager) getJpaTemplate().execute(new JpaCallback() {
-
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @see
-                     * org.springframework.orm.jpa.JpaCallback#doInJpa(javax
-                     * .persistence.EntityManager)
-                     */
-                    public EntityManager doInJpa(final EntityManager em)
-                            throws PersistenceException {
-
-                        return em;
-                    }
-                }, true);
-
-        Assert.isInstanceOf(clazz, em, String.format(
-                "%s  can only be used with %s implementation! "
+        Assert.isInstanceOf(clazz, entityManager, String.format(
+                "%s can only be used with %s implementation! "
                         + "Please check configuration or use %s instead!",
                 getClass().getSimpleName(), clazz.getSimpleName(),
                 GenericJpaDao.class.getSimpleName()));
@@ -412,7 +369,6 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      */
     public void afterPropertiesSet() throws Exception {
 
-        Assert.notNull(jpaTemplate, "JpaTemplate must not be null! Either "
-                + "set an EntityManagerFactory or a JpaTemplate yourself!");
+        Assert.notNull(entityManager, "EntityManager must not be null!");
     }
 }

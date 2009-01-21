@@ -118,22 +118,7 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
     @SuppressWarnings("unchecked")
     private <S> S executeQuery(final DatabaseQuery query) {
 
-        return (S) getJpaTemplate().execute(
-                new NativeEntityManagerJpaCallback<JpaEntityManager>() {
-
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @seeorg.synyx.hades.dao.orm.EntityManagerJpaCallback#
-                     * doInConcreteEntityManager
-                     * (javax.persistence.EntityManager)
-                     */
-                    @Override
-                    protected Object doInNativeEntityManager(JpaEntityManager em) {
-
-                        return em.getServerSession().executeQuery(query);
-                    }
-                });
+        return (S) getEntityManager().getServerSession().executeQuery(query);
     }
 
 
@@ -206,6 +191,18 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
         query.setMaxRows(pageable.getFirstItem() + pageable.getNumberOfItems());
 
         applySorting(query, pageable.getSort());
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.orm.AbstractJpaFinder#getEntityManager()
+     */
+    @Override
+    protected JpaEntityManager getEntityManager() {
+
+        return (JpaEntityManager) super.getEntityManager();
     }
 
 
