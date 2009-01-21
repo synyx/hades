@@ -17,6 +17,7 @@
 package org.synyx.hades.domain;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -99,4 +100,12 @@ public interface Page<T> extends Iterable<T> {
      * @see java.lang.Iterable#iterator()
      */
     Iterator<T> iterator();
+
+
+    /**
+     * Returns the page content as {@link List}.
+     * 
+     * @return
+     */
+    List<T> asList();
 }
