@@ -19,8 +19,8 @@ package org.synyx.hades.dao.orm;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -64,7 +64,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
     private Class<? extends GenericDao<T, PK>> daoInterface;
     private Class<T> domainClass;
     private Object customDaoImplementation;
-    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     private Class<D> daoClass = (Class<D>) DEFAULT_DAO_BASE_CLASS;
     private QueryLookupStrategy queryLookupStrategy =
@@ -169,11 +169,10 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      * 
      * @param entityManagerFactory the entityManagerFactory to set
      */
-    @PersistenceUnit
-    public void setEntityManagerFactory(
-            final EntityManagerFactory entityManagerFactory) {
+    @PersistenceContext
+    public void setEntityManager(final EntityManager entityManager) {
 
-        this.entityManagerFactory = entityManagerFactory;
+        this.entityManager = entityManager;
     }
 
 
@@ -186,8 +185,8 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
         // Instantiate generic dao
         D genericJpaDao = daoClass.newInstance();
+        genericJpaDao.setEntityManager(entityManager);
         genericJpaDao.setDomainClass(domainClass);
-        genericJpaDao.setEntityManagerFactory(entityManagerFactory);
         genericJpaDao.setCreateFinderQueries(queryLookupStrategy);
         genericJpaDao.setFinderPrefix(finderPrefix);
 

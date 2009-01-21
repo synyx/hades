@@ -20,11 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
@@ -60,7 +57,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public void delete(final T entity) {
 
-        getJpaTemplate().remove(entity);
+        getEntityManager().remove(entity);
     }
 
 
@@ -74,7 +71,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
 
         Assert.notNull(primaryKey, "The given primaryKey must not be null!");
 
-        return getJpaTemplate().find(getDomainClass(), primaryKey);
+        return getEntityManager().find(getDomainClass(), primaryKey);
     }
 
 
@@ -99,7 +96,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public List<T> readAll() {
 
-        return getJpaTemplate().find(getReadAllQuery());
+        return getReadAllQuery().getResultList();
     }
 
 
@@ -111,8 +108,11 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public List<T> readAll(final Sort sort) {
 
-        return (null == sort) ? readAll() : getJpaTemplate().find(
-                applySorting(getReadAllQuery(), sort));
+        Query query =
+                getEntityManager().createQuery(
+                        applySorting(getReadAllQueryString(), sort));
+
+        return (null == sort) ? readAll() : query.getResultList();
     }
 
 
@@ -130,7 +130,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
             return new PageImpl<T>(readAll());
         }
 
-        return readPage(pageable, getReadAllQuery());
+        return readPage(pageable, getReadAllQueryString());
     }
 
 
@@ -141,23 +141,9 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public Long count() {
 
-        return (Long) getJpaTemplate().execute(new JpaCallback() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see
-             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
-             * .EntityManager)
-             */
-            public Object doInJpa(final EntityManager em)
-                    throws PersistenceException {
-
-                return em.createQuery(
-                        String.format(COUNT_QUERY_STRING, getDomainClass()
-                                .getSimpleName())).getSingleResult();
-            }
-        });
+        return (Long) getEntityManager().createQuery(
+                String.format(COUNT_QUERY_STRING, getDomainClass()
+                        .getSimpleName())).getSingleResult();
     }
 
 
@@ -169,9 +155,9 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     public T save(final T entity) {
 
         if (entity.isNew()) {
-            getJpaTemplate().persist(entity);
+            getEntityManager().persist(entity);
         } else {
-            getJpaTemplate().merge(entity);
+            getEntityManager().merge(entity);
         }
 
         return entity;
@@ -218,7 +204,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public void flush() {
 
-        getJpaTemplate().flush();
+        getEntityManager().flush();
     }
 
 
@@ -232,30 +218,16 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     @SuppressWarnings("unchecked")
     protected Page<T> readPage(final Pageable pageable, final String query) {
 
-        return (Page<T>) getJpaTemplate().execute(new JpaCallback() {
+        applySorting(query, pageable.getSort());
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see
-             * org.springframework.orm.jpa.JpaCallback#doInJpa(javax.persistence
-             * .EntityManager)
-             */
-            public Page<T> doInJpa(final EntityManager em)
-                    throws PersistenceException {
+        Query jpaQuery =
+                getEntityManager().createQuery(
+                        applySorting(query, pageable.getSort()));
 
-                applySorting(query, pageable.getSort());
+        jpaQuery.setFirstResult(pageable.getFirstItem());
+        jpaQuery.setMaxResults(pageable.getNumberOfItems());
 
-                Query jpaQuery =
-                        em.createQuery(applySorting(query, pageable.getSort()));
-
-                jpaQuery.setFirstResult(pageable.getFirstItem());
-                jpaQuery.setMaxResults(pageable.getNumberOfItems());
-
-                return new PageImpl<T>(jpaQuery.getResultList(), pageable,
-                        count());
-            }
-        });
+        return new PageImpl<T>(jpaQuery.getResultList(), pageable, count());
     }
 
 

@@ -16,13 +16,14 @@
 
 package org.synyx.hades.dao.orm;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import static org.easymock.EasyMock.*;
 
-import junit.framework.TestCase;
+import javax.persistence.EntityManager;
 
 import org.easymock.classextension.EasyMock;
 import org.hibernate.ejb.HibernateEntityManager;
+import org.junit.Before;
+import org.junit.Test;
 import org.synyx.hades.domain.User;
 
 
@@ -32,11 +33,10 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class GenericHibernateJpaDaoUnitTest extends TestCase {
+public class GenericHibernateJpaDaoUnitTest {
 
     private GenericHibernateJpaDao<User, Integer> hibernateDao;
 
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
 
@@ -45,17 +45,15 @@ public class GenericHibernateJpaDaoUnitTest extends TestCase {
      * 
      * @see junit.framework.TestCase#setUp()
      */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() {
 
         // Setup mocks
-        entityManagerFactory = EasyMock
-                .createNiceMock(EntityManagerFactory.class);
         entityManager = EasyMock.createNiceMock(HibernateEntityManager.class);
 
         // Setup DAO
         hibernateDao = new GenericHibernateJpaDao<User, Integer>();
-        hibernateDao.setEntityManagerFactory(entityManagerFactory);
+        hibernateDao.setEntityManager(entityManager);
     }
 
 
@@ -66,15 +64,14 @@ public class GenericHibernateJpaDaoUnitTest extends TestCase {
      * 
      * @throws Exception
      */
-    public void testCorrectConfiguration() throws Exception {
+    @Test
+    public void correctConfiguration() throws Exception {
 
-        EasyMock.expect(entityManagerFactory.createEntityManager()).andReturn(
-                entityManager);
-        EasyMock.replay(entityManagerFactory);
+        EasyMock.replay(entityManager);
 
         hibernateDao.afterPropertiesSet();
 
-        EasyMock.verify(entityManagerFactory);
+        EasyMock.verify(entityManager);
     }
 
 
@@ -84,18 +81,14 @@ public class GenericHibernateJpaDaoUnitTest extends TestCase {
      * 
      * @throws Exception
      */
-    public void testPreventsNonHibernateEntityManager() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void preventsNonHibernateEntityManager() throws Exception {
 
-        EasyMock.expect(entityManagerFactory.createEntityManager()).andReturn(
-                EasyMock.createNiceMock(EntityManager.class));
+        entityManager = createNiceMock(EntityManager.class);
+        hibernateDao.setEntityManager(entityManager);
 
-        EasyMock.replay(entityManagerFactory);
+        replay(entityManager);
 
-        try {
-            hibernateDao.afterPropertiesSet();
-            fail("Expected IllegalArgumentException!");
-        } catch (IllegalArgumentException e) {
-            EasyMock.verify(entityManagerFactory);
-        }
+        hibernateDao.afterPropertiesSet();
     }
 }

@@ -106,35 +106,18 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      */
     private Criteria applyExamples(final T... examples) {
 
-        // Create criteria from hibernate entity manager
-        return (Criteria) getJpaTemplate().execute(
-                new NativeEntityManagerJpaCallback<HibernateEntityManager>() {
+        Criteria criteria =
+                getEntityManager().getSession()
+                        .createCriteria(getDomainClass());
 
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @seeorg.synyx.hades.dao.orm.EntityManagerJpaCallback#
-                     * doInConcreteEntityManager
-                     * (javax.persistence.EntityManager)
-                     */
-                    @Override
-                    protected Object doInNativeEntityManager(
-                            HibernateEntityManager em) {
+        // Add examples
+        for (T example : examples) {
 
-                        Criteria criteria =
-                                em.getSession()
-                                        .createCriteria(getDomainClass());
+            Example criteriaExample = Example.create(example);
+            criteria.add(criteriaExample);
+        }
 
-                        // Add examples
-                        for (T example : examples) {
-
-                            Example criteriaExample = Example.create(example);
-                            criteria.add(criteriaExample);
-                        }
-
-                        return criteria;
-                    }
-                }, true);
+        return criteria;
     }
 
 
@@ -158,6 +141,18 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
 
             criteria.addOrder(order);
         }
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.orm.AbstractJpaFinder#getEntityManager()
+     */
+    @Override
+    protected HibernateEntityManager getEntityManager() {
+
+        return (HibernateEntityManager) super.getEntityManager();
     }
 
 
