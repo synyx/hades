@@ -16,6 +16,7 @@
 
 package org.synyx.hades.domain.support;
 
+import org.synyx.hades.domain.Order;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
 
