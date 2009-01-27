@@ -83,14 +83,28 @@ public class UserDaoFinderIntegrationTest {
 
 
     /**
+     * Tests that the DAO returns {@code null} for not found objects for finder
+     * methods that return a single domain object.
+     */
+    @Test
+    public void returnsNullIfNothingFound() {
+
+        User user = userDao.findByEmailAddress("foobar");
+
+        Assert.assertEquals(null, user);
+    }
+
+
+    /**
      * Tests creation of a simple query consisting of {@code AND} and {@code OR}
      * parts.
      */
     @Test
     public void testAndOrFinder() {
 
-        List<User> users = userDao.findByEmailAddressAndLastnameOrFirstname(
-                "bar", "foo", "foobar");
+        List<User> users =
+                userDao.findByEmailAddressAndLastnameOrFirstname("bar", "foo",
+                        "foobar");
 
         Assert.assertNotNull(users);
         Assert.assertEquals(2, users.size());
