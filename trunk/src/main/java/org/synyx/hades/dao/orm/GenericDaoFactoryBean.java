@@ -16,7 +16,6 @@
 
 package org.synyx.hades.dao.orm;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import javax.persistence.EntityManager;
@@ -52,29 +51,40 @@ import org.synyx.hades.domain.Persistable;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
- * @param <D> the base type for the DAO to create
  * @param <T> the type of the entity to handle by the DAO
  * @param <PK> the type of the identifier of the entity
  */
-@SuppressWarnings("unchecked")
-public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends Persistable<PK>, PK extends Serializable>
-        implements FactoryBean, InitializingBean {
+public class GenericDaoFactoryBean<T extends Persistable<?>> implements
+        FactoryBean, InitializingBean {
 
-    private static final Class<?> DEFAULT_DAO_BASE_CLASS = GenericJpaDao.class;
-    private Class<? extends GenericDao<T, PK>> daoInterface;
+    @SuppressWarnings("unchecked")
+    private static final Class<GenericJpaDao> DEFAULT_DAO_CLASS =
+            GenericJpaDao.class;
+
+    private Class<? extends GenericDao<T, ?>> daoInterface;
     private Class<T> domainClass;
     private Object customDaoImplementation;
     private EntityManager entityManager;
 
-    private Class<D> daoClass = (Class<D>) DEFAULT_DAO_BASE_CLASS;
+    @SuppressWarnings("unchecked")
+    private Class<? extends AbstractJpaFinder> daoClass;
+    private boolean configureManually;
+
     private QueryLookupStrategy queryLookupStrategy =
             AbstractJpaFinder.DEFAULT_QUERY_LOOKUP_STRATEGY;
     private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
 
 
-    public static <D extends AbstractJpaFinder<T, PK>, T extends Persistable<PK>, PK extends Serializable> GenericDaoFactoryBean<D, T, PK> create() {
+    public static <T extends Persistable<?>, D extends GenericDao<T, ?>> GenericDaoFactoryBean<T> create(
+            Class<T> domainClass,
+            Class<? extends GenericDao<T, ?>> daoInterface, EntityManager em) {
 
-        return new GenericDaoFactoryBean<D, T, PK>();
+        GenericDaoFactoryBean<T> factory = new GenericDaoFactoryBean<T>();
+        factory.setDomainClass(domainClass);
+        factory.setDaoInterface(daoInterface);
+        factory.setEntityManager(em);
+
+        return factory;
     }
 
 
@@ -86,7 +96,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      */
     @Required
     public void setDaoInterface(
-            final Class<? extends GenericDao<T, PK>> daoInterface) {
+            final Class<? extends GenericDao<T, ?>> daoInterface) {
 
         Assert.notNull(daoInterface);
         Assert.isAssignable(GenericDao.class, daoInterface,
@@ -130,13 +140,22 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      * 
      * @param daoClass the daoClass to set
      */
-    public void setDaoClass(final Class<D> daoClass) {
+    @SuppressWarnings("unchecked")
+    public <D extends AbstractJpaFinder<T, ?>> void setDaoClass(
+            final Class<D> daoClass) {
 
-        Assert.notNull(daoClass);
-        Assert.isAssignable(GenericDao.class, daoClass,
-                "DAO base class has to implement at least GenericDao!");
+        if (null == daoClass) {
 
-        this.daoClass = daoClass;
+            this.daoClass = DEFAULT_DAO_CLASS;
+            this.configureManually = false;
+            return;
+        }
+
+        Assert.isAssignable(AbstractJpaFinder.class, daoClass,
+                "DAO base class has to extend AbstractJpaFinder!");
+
+        this.daoClass = (Class<AbstractJpaFinder<T, ?>>) daoClass;
+        this.configureManually = true;
     }
 
 
@@ -181,10 +200,11 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
      * 
      * @see org.springframework.beans.factory.FactoryBean#getObject()
      */
+    @SuppressWarnings("unchecked")
     public Object getObject() throws Exception {
 
         // Instantiate generic dao
-        D genericJpaDao = daoClass.newInstance();
+        AbstractJpaFinder<T, ?> genericJpaDao = daoClass.newInstance();
         genericJpaDao.setEntityManager(entityManager);
         genericJpaDao.setDomainClass(domainClass);
         genericJpaDao.setCreateFinderQueries(queryLookupStrategy);
@@ -235,14 +255,6 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         Assert.notNull(daoInterface);
         Assert.notNull(domainClass);
 
-        if (isExtendedDaoInterface()
-                && !ExtendedGenericDao.class.isAssignableFrom(daoClass)) {
-            throw new BeanCreationException(
-                    "If you want to create ExtendedGenericDao instances you "
-                            + "have to provide an implementation base class that "
-                            + "implements this interface!");
-        }
-
         if (null == customDaoImplementation && hasCustomMethod()) {
 
             throw new BeanCreationException(
@@ -252,6 +264,18 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
                                     daoInterface));
         }
 
+        if (!configureManually) {
+            this.daoClass = autoDetectDaoClass();
+        }
+
+        if (isExtendedDaoInterface()
+                && !ExtendedGenericDao.class.isAssignableFrom(daoClass)) {
+
+            throw new BeanCreationException(
+                    "If you want to create ExtendedGenericDao instances you "
+                            + "have to provide an implementation base class that "
+                            + "implements this interface!");
+        }
     }
 
 
@@ -289,6 +313,50 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
         }
 
         return hasCustomMethod;
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends GenericJpaDao> autoDetectDaoClass() {
+
+        if (isEntityManagerOfType(entityManager,
+                "org.hibernate.ejb.HibernateEntityManager")) {
+            return GenericHibernateJpaDao.class;
+        }
+
+        if (isEntityManagerOfType(entityManager,
+                "org.eclipse.persistence.jpa.JpaEntityManager")) {
+            return GenericEclipseLinkJpaDao.class;
+        }
+
+        return DEFAULT_DAO_CLASS;
+    }
+
+
+    /**
+     * Returns whether the given {@link EntityManager} is of the given type.
+     * 
+     * @param em
+     * @param type the fully qualified expected {@link EntityManager} type.
+     * @return
+     */
+    private boolean isEntityManagerOfType(EntityManager em, String type) {
+
+        try {
+
+            @SuppressWarnings("unchecked")
+            Class<? extends EntityManager> emType =
+                    (Class<? extends EntityManager>) Class.forName(type);
+
+            emType.cast(em);
+
+            return true;
+
+        } catch (ClassNotFoundException e) {
+            return false;
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
 
@@ -354,6 +422,7 @@ public class GenericDaoFactoryBean<D extends AbstractJpaFinder<T, PK>, T extends
 
             if (method.getName().startsWith(finderPrefix)) {
 
+                @SuppressWarnings("unchecked")
                 FinderExecuter<T> target =
                         (FinderExecuter<T>) invocation.getThis();
 
