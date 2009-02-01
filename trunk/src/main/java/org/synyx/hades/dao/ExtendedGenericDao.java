@@ -70,4 +70,12 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * @return the page of objects meeting the example's criterias
      */
     Page<T> readByExample(final Pageable pageable, final T... examples);
+
+
+    /**
+     * Deletes all entities mathing the given examples.
+     * 
+     * @param examples
+     */
+    void deleteByExample(final T... examples);
 }

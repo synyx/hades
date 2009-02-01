@@ -108,6 +108,22 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
     }
 
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.ExtendedGenericDao#deleteByExample(T[])
+     */
+    public void deleteByExample(T... examples) {
+
+        // For EclipseLink entities have to be merged manually before removing
+        // them
+        for (T entity : readByExample(examples)) {
+
+            delete(getEntityManager().merge(entity));
+        }
+    }
+
+
     /**
      * Executes the given query and returns the execution result. Clients have
      * to cast to the expected return type.

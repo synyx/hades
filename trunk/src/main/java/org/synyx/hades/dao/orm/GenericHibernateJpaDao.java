@@ -98,6 +98,19 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
     }
 
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.ExtendedGenericDao#deleteByExample(T[])
+     */
+    public void deleteByExample(final T... examples) {
+
+        for (T entity : readByExample(examples)) {
+            delete(entity);
+        }
+    }
+
+
     /**
      * Prepares a {@code Criteria} for the given examples.
      * 

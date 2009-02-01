@@ -176,4 +176,22 @@ public class ExtendedGenericDaoIntegrationTest {
         assertEquals(5, page.getTotalElements());
         assertEquals(2, page.getNumberOfElements());
     }
+
+
+    /**
+     * Tests deleting users by giving example objects.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void deleteByExample() {
+
+        User user = new User();
+        user.setFirstname("Firstname5");
+
+        userExtendedDao.deleteByExample(user);
+
+        assertEquals(NUMBER_OF_INSTANCES - 1, userExtendedDao.count()
+                .longValue());
+    }
 }
