@@ -125,6 +125,12 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable>
 
 
     /**
+     * Deletes all entities managed by the DAO.
+     */
+    void deleteAll();
+
+
+    /**
      * Flushes all pending changes to the database.
      */
     void flush();

@@ -20,6 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,9 +50,11 @@ import org.synyx.hades.domain.User;
  */
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:applicationContext.xml",
-        "classpath:hibernate.xml" })
+@ContextConfiguration(locations = { "classpath:applicationContext.xml" })
 public class UserDaoIntegrationTest {
+
+    @PersistenceContext
+    private EntityManager em;
 
     // CUT
     @Autowired
@@ -74,7 +80,12 @@ public class UserDaoIntegrationTest {
     @Test
     public void testCreation() {
 
+        Query countQuery = em.createQuery("select count(u) from User u");
+        Long before = (Long) countQuery.getSingleResult();
+
         flushTestUsers();
+
+        Assert.assertEquals(before + 2, countQuery.getSingleResult());
     }
 
 
@@ -183,6 +194,23 @@ public class UserDaoIntegrationTest {
 
         List<User> reference = Arrays.asList(firstUser, secondUser);
         Assert.assertTrue(userDao.readAll().containsAll(reference));
+    }
+
+
+    /**
+     * Tests that all users get deleted by triggering
+     * {@link UserDao#deleteAll()}.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void deleteAll() throws Exception {
+
+        flushTestUsers();
+
+        userDao.deleteAll();
+
+        Assert.assertEquals((Long) 0L, userDao.count());
     }
 
 
