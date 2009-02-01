@@ -36,8 +36,6 @@ import org.w3c.dom.NodeList;
  */
 public class DaoConfigContext {
 
-    protected static final String DEFAULT_DAO_BASE_CLASS_NAME =
-            "org.synyx.hades.dao.orm.GenericJpaDao";
     protected static final String DEFAULT_DAO_BEAN_POSTFIX = "Dao";
     protected static final String DEFAULT_DAO_INTERFACE_POSTFIX = "Dao";
     protected static final String DEFAULT_DAO_IMPL_POSTFIX = "DaoImpl";
@@ -228,10 +226,7 @@ public class DaoConfigContext {
      */
     protected String getDaoBaseClassName() {
 
-        String daoBaseClassName = element.getAttribute(DAO_BASE_CLASS_NAME);
-
-        return StringUtils.hasText(daoBaseClassName) ? daoBaseClassName
-                : DEFAULT_DAO_BASE_CLASS_NAME;
+        return element.getAttribute(DAO_BASE_CLASS_NAME);
     }
 
 

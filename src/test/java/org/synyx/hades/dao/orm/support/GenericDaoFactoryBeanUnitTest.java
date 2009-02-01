@@ -18,18 +18,18 @@ package org.synyx.hades.dao.orm.support;
 
 import static junit.framework.Assert.*;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.BeanCreationException;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.dao.UserExtendedDao;
 import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
+import org.synyx.hades.dao.orm.GenericJpaDao;
 import org.synyx.hades.domain.User;
 
 
@@ -38,10 +38,9 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-@SuppressWarnings("unchecked")
 public class GenericDaoFactoryBeanUnitTest {
 
-    private GenericDaoFactoryBean factory;
+    private GenericDaoFactoryBean<User> factory;
 
     private EntityManager entityManager;
 
@@ -54,9 +53,9 @@ public class GenericDaoFactoryBeanUnitTest {
         EasyMock.replay(entityManager);
 
         // Setup standard factory configuration
-        factory = new GenericDaoFactoryBean();
-        factory.setDomainClass(User.class);
-        factory.setDaoInterface(UserDao.class);
+        factory =
+                GenericDaoFactoryBean.create(User.class, UserDao.class,
+                        entityManager);
         factory.setEntityManager(entityManager);
     }
 
@@ -90,13 +89,6 @@ public class GenericDaoFactoryBeanUnitTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsInvalidDaoInterface() {
-
-        factory.setDaoInterface(List.class);
-    }
-
-
     /**
      * Assert that the factory rejects calls to {@code
      * GenericDaoFactoryBean#setDomainClass(Class)} with {@code null} or any
@@ -109,29 +101,18 @@ public class GenericDaoFactoryBeanUnitTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsInvalidDomainClasses() {
-
-        factory.setDomainClass(String.class);
-    }
-
-
     /**
-     * Assert that the factory rejects calls to {@code
-     * GenericDaoFactoryBean#setDaoClass(Class)} with {@code null} or any other
-     * parameter instance not implementing {@code GenericDao}.
+     * Assert that the factory uses {@link GenericJpaDao} as default on invoking
+     * {@code GenericDaoFactoryBean#setDaoClass(Class)} with {@code null}.
+     * 
+     * @throws Exception
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsNullDaoClass() {
+    @Test
+    public void preventsNullDaoClass() throws Exception {
 
         factory.setDaoClass(null);
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsInvalidDaoClass() {
-
-        factory.setDaoClass(String.class);
+        assertEquals(GenericJpaDao.class, ((Advised) factory.getObject())
+                .getTargetClass());
     }
 
 
@@ -142,7 +123,7 @@ public class GenericDaoFactoryBeanUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsUnsetDaoInterface() throws Exception {
 
-        factory = new GenericDaoFactoryBean();
+        factory = new GenericDaoFactoryBean<User>();
         factory.afterPropertiesSet();
     }
 
@@ -150,7 +131,7 @@ public class GenericDaoFactoryBeanUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsUnsetDomainClass() throws Exception {
 
-        factory = new GenericDaoFactoryBean();
+        factory = new GenericDaoFactoryBean<User>();
         factory.setDaoInterface(UserDao.class);
         factory.afterPropertiesSet();
     }
