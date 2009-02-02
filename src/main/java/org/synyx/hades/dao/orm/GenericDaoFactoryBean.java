@@ -52,7 +52,6 @@ import org.synyx.hades.domain.Persistable;
  * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
  * @param <T> the type of the entity to handle by the DAO
- * @param <PK> the type of the identifier of the entity
  */
 public class GenericDaoFactoryBean<T extends Persistable<?>> implements
         FactoryBean, InitializingBean {
@@ -186,7 +185,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
     /**
      * Setter to inject entity manager.
      * 
-     * @param entityManagerFactory the entityManagerFactory to set
+     * @param entityManager the {@link EntityManager} to set
      */
     @PersistenceContext
     public void setEntityManager(final EntityManager entityManager) {
@@ -340,11 +339,11 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      * @param type the fully qualified expected {@link EntityManager} type.
      * @return
      */
+    @SuppressWarnings("unchecked")
     private boolean isEntityManagerOfType(EntityManager em, String type) {
 
         try {
 
-            @SuppressWarnings("unchecked")
             Class<? extends EntityManager> emType =
                     (Class<? extends EntityManager>) Class.forName(type);
 
@@ -409,6 +408,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
          * org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance
          * .intercept.MethodInvocation)
          */
+        @SuppressWarnings("unchecked")
         public Object invoke(final MethodInvocation invocation)
                 throws Throwable {
 
@@ -422,7 +422,6 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
 
             if (method.getName().startsWith(finderPrefix)) {
 
-                @SuppressWarnings("unchecked")
                 FinderExecuter<T> target =
                         (FinderExecuter<T>) invocation.getThis();
 
