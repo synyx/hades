@@ -1,6 +1,11 @@
 package org.synyx.hades.dao.config;
 
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.synyx.hades.dao.AuditableUserDao;
 import org.synyx.hades.dao.RoleDao;
 import org.synyx.hades.dao.UserDao;
@@ -11,30 +16,23 @@ import org.synyx.hades.dao.UserDao;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public abstract class AbstractDaoConfigIntegrationTest extends
-        AbstractDependencyInjectionSpringContextTests {
+@RunWith(SpringJUnit4ClassRunner.class)
+public abstract class AbstractDaoConfigIntegrationTest {
 
+    @Autowired(required = false)
     protected UserDao userDao;
+
+    @Autowired(required = false)
     protected RoleDao roleDao;
+
+    @Autowired(required = false)
     protected AuditableUserDao auditableUserDao;
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.test.AbstractDependencyInjectionSpringContextTests#prepareTestInstance()
-     */
-    @Override
-    protected void prepareTestInstance() throws Exception {
-
-        setPopulateProtectedVariables(true);
-        super.prepareTestInstance();
-    }
 
 
     /**
      * Asserts that context creation detects 3 DAO beans.
      */
+    @Test
     public void testContextCreation() {
 
         assertNotNull(userDao);

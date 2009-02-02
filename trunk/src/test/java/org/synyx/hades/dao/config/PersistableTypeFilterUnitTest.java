@@ -16,10 +16,12 @@
 
 package org.synyx.hades.dao.config;
 
+import static org.junit.Assert.*;
+
 import java.util.Set;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.synyx.hades.dao.config.DaoConfigDefinitionParser.PersistableTypeFilter;
@@ -30,18 +32,13 @@ import org.synyx.hades.dao.config.DaoConfigDefinitionParser.PersistableTypeFilte
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class PersistableTypeFilterUnitTest extends TestCase {
+public class PersistableTypeFilterUnitTest {
 
     private PersistableTypeFilter filter;
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() {
 
         filter = new DaoConfigDefinitionParser.PersistableTypeFilter();
     }
@@ -52,16 +49,17 @@ public class PersistableTypeFilterUnitTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testFindsPersistableTypes() throws Exception {
 
         // Create scanner and apply filter
-        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(
-                false);
-        provider.addIncludeFilter(filter);
+        ClassPathScanningCandidateComponentProvider provider =
+                new DaoConfigDefinitionParser.AbstractClassesAwareComponentProvider(
+                        filter);
 
-        Set<BeanDefinition> beanDefinitions = provider
-                .findCandidateComponents("org.synyx.hades.domain");
+        Set<BeanDefinition> beanDefinitions =
+                provider.findCandidateComponents("org.synyx.hades.domain");
 
-        assertEquals(3, beanDefinitions.size());
+        assertEquals(4, beanDefinitions.size());
     }
 }

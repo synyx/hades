@@ -16,6 +16,7 @@
 
 package org.synyx.hades.dao.config;
 
+import org.springframework.test.context.ContextConfiguration;
 
 
 /**
@@ -23,17 +24,7 @@ package org.synyx.hades.dao.config;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
+@ContextConfiguration(locations = "classpath:namespace-autoconfig-context.xml")
 public class DaoAutoConfigIntegrationTest extends
         AbstractDaoConfigIntegrationTest {
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.test.AbstractSingleSpringContextTests#getConfigLocations()
-     */
-    @Override
-    protected String[] getConfigLocations() {
-
-        return new String[] { "namespace-autoconfig-context.xml" };
-    }
 }

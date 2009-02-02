@@ -17,6 +17,7 @@
 package org.synyx.hades.dao.config;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -24,13 +25,12 @@ import javax.persistence.Entity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -44,9 +44,9 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Persistable;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 
 /**
@@ -63,8 +63,7 @@ import org.w3c.dom.Node;
  * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
  */
-public class DaoConfigDefinitionParser implements BeanDefinitionParser,
-        BeanDefinitionDecorator {
+public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
     private static final String FACTORY_CLASS =
             "org.synyx.hades.dao.orm.GenericDaoFactoryBean";
@@ -124,24 +123,53 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser,
             log.debug("Triggering auto DAO detection");
         }
 
-        // Create scanner and apply filter
-        ClassPathScanningCandidateComponentProvider provider =
-                new ClassPathScanningCandidateComponentProvider(false);
-        provider.addIncludeFilter(new PersistableTypeFilter());
+        // Detect available DAO interfaces
+        Set<String> daoInterfaces =
+                getDaoInterfacesForAutoConfig(configContext);
 
-        Set<BeanDefinition> beanDefinitions =
-                provider.findCandidateComponents(configContext
+        ClassPathScanningCandidateComponentProvider scanner =
+                new AbstractClassesAwareComponentProvider(
+                        new PersistableTypeFilter());
+
+        // Detect entity candidates
+        Set<BeanDefinition> entityCandidates =
+                scanner.findCandidateComponents(configContext
                         .getEntityPackageName());
 
-        for (BeanDefinition definition : beanDefinitions) {
+        for (BeanDefinition candidate : entityCandidates) {
 
             String id =
-                    StringUtils.uncapitalize(ClassUtils.getShortName(definition
+                    StringUtils.uncapitalize(ClassUtils.getShortName(candidate
                             .getBeanClassName()));
 
-            registerGenericDaoFactoryBean(parserContext, new DaoContext(id,
-                    configContext));
+            DaoContext context = new DaoContext(id, configContext);
+
+            // Only define factory instance if an according interface exists
+            if (daoInterfaces.contains(context.getInterfaceName())) {
+
+                registerGenericDaoFactoryBean(parserContext, context);
+            }
         }
+    }
+
+
+    private Set<String> getDaoInterfacesForAutoConfig(
+            final DaoConfigContext configContext) {
+
+        ClassPathScanningCandidateComponentProvider scanner =
+                new AbstractClassesAwareComponentProvider(
+                        new InterfaceTypeFilter(GenericDao.class));
+
+        Set<BeanDefinition> findCandidateComponents =
+                scanner.findCandidateComponents(configContext
+                        .getDaoPackageName());
+
+        Set<String> interfaceNames = new HashSet<String>();
+        for (BeanDefinition definition : findCandidateComponents) {
+            interfaceNames.add(definition.getBeanClassName());
+        }
+
+        return interfaceNames;
     }
 
 
@@ -377,19 +405,76 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser,
         }
     }
 
-
-    /*
-     * (non-Javadoc)
+    /**
+     * Custom {@link ClassPathScanningCandidateComponentProvider} that does not
+     * skip abstract classes or interfaces.
      * 
-     * @see
-     * org.springframework.beans.factory.xml.BeanDefinitionDecorator#decorate
-     * (org.w3c.dom.Node,
-     * org.springframework.beans.factory.config.BeanDefinitionHolder,
-     * org.springframework.beans.factory.xml.ParserContext)
+     * @author Oliver Gierke - gierke@synyx.de
      */
-    public BeanDefinitionHolder decorate(Node node,
-            BeanDefinitionHolder definition, ParserContext parserContext) {
+    static class AbstractClassesAwareComponentProvider extends
+            ClassPathScanningCandidateComponentProvider {
 
-        return definition;
+        /**
+         * Creates a new {@link AbstractClassesAwareComponentProvider}.
+         * 
+         * @param filter to be added as include filter
+         */
+        public AbstractClassesAwareComponentProvider(TypeFilter filter) {
+
+            super(false);
+            addIncludeFilter(filter);
+        }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @seeorg.springframework.context.annotation.
+         * ClassPathScanningCandidateComponentProvider
+         * #isCandidateComponent(org.springframework
+         * .beans.factory.annotation.AnnotatedBeanDefinition)
+         */
+        @Override
+        protected boolean isCandidateComponent(
+                AnnotatedBeanDefinition beanDefinition) {
+
+            return beanDefinition.getMetadata().isIndependent();
+        }
+    }
+
+    /**
+     * {@link TypeFilter} that only matches interfaces. Thus setting this up
+     * makes only sense providing an interface type as {@code targetType}.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    class InterfaceTypeFilter extends AssignableTypeFilter {
+
+        /**
+         * Creates a new {@link InterfaceTypeFilter}.
+         * 
+         * @param targetType
+         */
+        public InterfaceTypeFilter(Class<?> targetType) {
+
+            super(targetType);
+        }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @seeorg.springframework.core.type.filter.
+         * AbstractTypeHierarchyTraversingFilter
+         * #match(org.springframework.core.type.classreading.MetadataReader,
+         * org.springframework.core.type.classreading.MetadataReaderFactory)
+         */
+        @Override
+        public boolean match(MetadataReader metadataReader,
+                MetadataReaderFactory metadataReaderFactory) throws IOException {
+
+            return metadataReader.getClassMetadata().isInterface()
+                    && super.match(metadataReader, metadataReaderFactory);
+        }
     }
 }
