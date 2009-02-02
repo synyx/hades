@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -160,7 +159,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
      * @param method
      * @param queryArgs
      * @return a single result returned by the named query
-     * @throws EntityNotFoundException if no entity was found
+     * @throws javax.persistence.EntityNotFoundException if no entity was found
      * @throws NonUniqueResultException if more than one entity was found
      */
     @SuppressWarnings("unchecked")
