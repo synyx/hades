@@ -4,5 +4,6 @@
 		<class>org.synyx.hades.domain.User</class>
 		<class>org.synyx.hades.domain.Role</class>
 		<class>org.synyx.hades.domain.AuditableUser</class>
+		<class>org.synyx.hades.domain.Account</class>
 	</persistence-unit>
 </persistence>
