@@ -49,13 +49,6 @@
 	</xsd:element>
 	
 	<xsd:attributeGroup name="dao-attributes">
-		<xsd:attribute name="dao-base-class" type="classType">
-			<xsd:annotation>
-				<xsd:documentation><![CDATA[
-				Defines the DAO beans base class. Defaults to GenericJpaDao.
-				]]></xsd:documentation>
-			</xsd:annotation>
-		</xsd:attribute>
 		<xsd:attribute name="dao-interface-postfix" type="xsd:string" />
 		<xsd:attribute name="dao-name-postfix" type="xsd:string" />
 		<xsd:attribute name="dao-impl-postfix" type="xsd:string" /> 
