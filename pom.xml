@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx.hades</groupId>
 	<artifactId>hades</artifactId>
 	<version>0.4-SNAPSHOT</version>
 	<name>Hades</name>
-	
+
 	<description>
 		Domain class and DAO development framework
 	</description>
@@ -16,7 +17,7 @@
 	
 	<url>http://trac.synyx.org/hades</url>
 	
-	<inceptionYear>2008</inceptionYear>
+	<inceptionYear>2009</inceptionYear>
 
 	<developers>
 		<developer>
@@ -197,6 +198,7 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<phase>deploy</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -488,7 +490,6 @@
 		</repository>
 		
 	</repositories>
-	
 
 	<scm>
 		<url>http://svn.synyx.org/synyx/opensource/hades</url>
@@ -501,8 +502,8 @@
 	</ciManagement>
 
 	<issueManagement>
-		<system>trac</system>
-		<url>http://trac.synyx.org/hades/</url>
+		<system>redmine</system>
+		<url>http://hades.synyx.org/</url>
 	</issueManagement>
 
 	<distributionManagement>
