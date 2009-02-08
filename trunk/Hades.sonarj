@@ -40,6 +40,7 @@
                 </element>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|Core"/>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Implementation"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Interface"/>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain Interface"/>
             </element>
             <element name="Domain Interface" type="Layer">
