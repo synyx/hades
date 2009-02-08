@@ -27,12 +27,12 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>V0.3</releaseinfo>
+    <releaseinfo>V0.4</releaseinfo>
 
     <pubdate>06.12.2008</pubdate>
 
     <copyright>
-      <year>2008</year>
+      <year>2009</year>
 
       <holder>Synyx GmbH &amp; Co. KG</holder>
     </copyright>
@@ -111,6 +111,31 @@
         </author>
 
         <revremark>Prepare 0.3</revremark>
+      </revision>
+
+      <revision>
+        <date>26.01.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Updated version and copyright date</revremark>
+      </revision>
+
+      <revision>
+        <date>06.02.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added FAQ entry how to integrate Hades into existing DAO
+        layer based on HibernateDaoSupport</revremark>
       </revision>
     </revhistory>
   </bookinfo>
@@ -628,7 +653,7 @@
         </example>
       </simplesect>
 
-      <simplesect>
+      <simplesect id="infrastructure.entity-manager-factory">
         <title><interfacename>EntityManager</interfacename>(<interfacename>Factory</interfacename>)</title>
 
         <example>
@@ -1682,6 +1707,47 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         </tgroup>
       </table>
     </section>
+  </appendix>
+
+  <appendix>
+    <title>Frequently asked questions</title>
+
+    <qandaset>
+      <qandadiv>
+        <qandaentry>
+          <question>
+            <para>Currently I have implemented a DAO layer based on
+            <classname>HibernateDaoSupport</classname>. I create a
+            <classname>SessionFactory</classname> by using Springs
+            <classname>AnnotationSessionFactoryBean</classname>. How do I get
+            Hades DAOs working in this environment.</para>
+          </question>
+
+          <answer>
+            <para>You have to replace
+            <classname>AnnotationSessionFactoryBean</classname> with the
+            <classname>LocalContainerEntityManagerFactoryBean</classname> as
+            described in <xref
+            linkend="infrastructure.entity-manager-factory" />. Supposed you
+            have registered it under <code>entityManagerFactory</code> you can
+            reference it in you DAOs based on
+            <classname>HibernateDaoSupport</classname> as follows:</para>
+
+            <example>
+              <title>Looking up a SessionFactory from an
+              HibernateEntityManagerFactory</title>
+
+              <programlisting language="xml">&lt;bean class="com.acme.YourDaoBasedOnHibernateDaoSupport"&gt;
+  &lt;property name="sessionFactory"&gt;
+    &lt;bean factory-bean="entityManagerFactory" 
+      factory-method="getSessionFactory" /&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+            </example>
+          </answer>
+        </qandaentry>
+      </qandadiv>
+    </qandaset>
   </appendix>
 
   <glossary>
