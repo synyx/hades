@@ -444,7 +444,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    class InterfaceTypeFilter extends AssignableTypeFilter {
+    static class InterfaceTypeFilter extends AssignableTypeFilter {
 
         /**
          * Creates a new {@link InterfaceTypeFilter}.

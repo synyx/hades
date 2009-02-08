@@ -40,9 +40,15 @@ public class AbstractPersistableUnitTest {
         // Reference with null id
         assertNotEquals(user, new SampleUser(null));
 
-        // Refernce with same id
+        // Reference with same id
         user.setId(1L);
         assertEquals(user, new SampleUser(1L));
+
+        // Inequality on subclasses
+        assertNotEquals(user, new SampleUser(1L) {
+
+            private static final long serialVersionUID = 7716397091688803365L;
+        });
 
         // Another class with same id
         assertNotEquals(user, new SampleRole(1L));

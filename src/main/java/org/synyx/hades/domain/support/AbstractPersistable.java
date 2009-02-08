@@ -98,11 +98,15 @@ public abstract class AbstractPersistable<PK extends Serializable> implements
     @Override
     public boolean equals(Object obj) {
 
+        if (null == obj) {
+            return false;
+        }
+
         if (this == obj) {
             return true;
         }
 
-        if (!obj.getClass().equals(this.getClass())) {
+        if (!getClass().equals(obj.getClass())) {
             return false;
         }
 
