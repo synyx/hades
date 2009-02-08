@@ -101,8 +101,7 @@ public class PageImpl<T> implements Page<T> {
      */
     public int getTotalPages() {
 
-        return (int) Math.ceil(new Long(total).doubleValue()
-                / new Integer(pageSize).doubleValue());
+        return (int) Math.ceil((double) total / (double) pageSize);
     }
 
 

@@ -58,8 +58,8 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
             DEFAULT_QUERY_LOOKUP_STRATEGY;
     private String finderPrefix = DEFAULT_FINDER_PREFIX;
 
-    private EntityManager entityManager;
-    private Class<T> domainClass;
+    private EntityManager entityManager = null;
+    private Class<T> domainClass = null;
 
 
     /**

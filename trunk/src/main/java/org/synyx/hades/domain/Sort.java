@@ -1,6 +1,5 @@
 package org.synyx.hades.domain;
 
-
 /**
  * Sort option for queries.
  * 
@@ -20,7 +19,7 @@ public class Sort {
      */
     public Sort(Order order, String... properties) {
 
-        this.properties = properties;
+        this.properties = properties.clone();
         this.order = order;
     }
 
@@ -32,7 +31,7 @@ public class Sort {
      */
     public String[] getProperties() {
 
-        return properties;
+        return properties.clone();
     }
 
 
