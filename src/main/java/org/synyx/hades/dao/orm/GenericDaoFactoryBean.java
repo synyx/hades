@@ -315,6 +315,13 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
     }
 
 
+    /**
+     * Determines the base class for the DAO to be created by checking the
+     * {@link EntityManager}'s concrete type. If no well known type can be
+     * detected {@link #DEFAULT_DAO_CLASS} will be returned.
+     * 
+     * @return
+     */
     @SuppressWarnings("unchecked")
     private Class<? extends GenericJpaDao> autoDetectDaoClass() {
 

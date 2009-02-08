@@ -79,8 +79,8 @@ public class DaoContext extends DaoConfigContext {
 
 
     /**
-     * Returns the id of the DAO bean registered in the
-     * {@code ApplicationContext}.
+     * Returns the id of the DAO bean registered in the {@code
+     * ApplicationContext}.
      * 
      * @return
      */
@@ -249,23 +249,9 @@ public class DaoContext extends DaoConfigContext {
     @Override
     protected String getDaoInterfacePostfix() {
 
-        String daoInterfacePostfix = element
-                .getAttribute(DAO_INTERFACE_POSTFIX);
+        String daoInterfacePostfix =
+                element.getAttribute(DAO_INTERFACE_POSTFIX);
         return StringUtils.hasText(daoInterfacePostfix) ? daoInterfacePostfix
                 : parent.getDaoInterfacePostfix();
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoBaseClassName()
-     */
-    @Override
-    protected String getDaoBaseClassName() {
-
-        String daoBaseClassName = element.getAttribute(DAO_BASE_CLASS_NAME);
-        return StringUtils.hasText(daoBaseClassName) ? daoBaseClassName
-                : parent.getDaoBaseClassName();
     }
 }

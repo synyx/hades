@@ -215,8 +215,6 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 .getDomainClassName());
         beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
                 .getFinderLookupStrategy());
-        beanDefinitionBuilder.addPropertyValue("daoClass", context
-                .getDaoBaseClassName());
 
         if (null != context.getFinderPrefix()) {
             beanDefinitionBuilder.addPropertyValue("finderPrefix", context
@@ -239,8 +237,6 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             builder.append(context.getBeanName());
             builder.append(" - DAO interface: ");
             builder.append(context.getInterfaceName());
-            builder.append(" - Implementation base class: ");
-            builder.append(context.getDaoBaseClassName());
             builder.append(" - Custom implementation: ");
             builder.append(customImplementationBeanName);
 

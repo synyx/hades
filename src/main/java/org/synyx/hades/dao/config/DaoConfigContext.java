@@ -220,17 +220,6 @@ public class DaoConfigContext {
 
 
     /**
-     * Returns the DAOs base class' name.
-     * 
-     * @return the daoBaseClassName
-     */
-    protected String getDaoBaseClassName() {
-
-        return element.getAttribute(DAO_BASE_CLASS_NAME);
-    }
-
-
-    /**
      * Returns the postfix used to lookup custom DAO implementations. Defaults
      * to {@value #DEFAULT_DAO_IMPL_POSTFIX}.
      * 
