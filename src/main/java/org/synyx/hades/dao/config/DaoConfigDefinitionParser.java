@@ -34,6 +34,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -123,13 +124,17 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             log.debug("Triggering auto DAO detection");
         }
 
+        ResourceLoader resourceLoader =
+                parserContext.getReaderContext().getResourceLoader();
+
         // Detect available DAO interfaces
         Set<String> daoInterfaces =
-                getDaoInterfacesForAutoConfig(configContext);
+                getDaoInterfacesForAutoConfig(configContext, resourceLoader);
 
         ClassPathScanningCandidateComponentProvider scanner =
                 new AbstractClassesAwareComponentProvider(
                         new PersistableTypeFilter());
+        scanner.setResourceLoader(resourceLoader);
 
         // Detect entity candidates
         Set<BeanDefinition> entityCandidates =
@@ -154,11 +159,12 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
 
     private Set<String> getDaoInterfacesForAutoConfig(
-            final DaoConfigContext configContext) {
+            final DaoConfigContext configContext, final ResourceLoader loader) {
 
         ClassPathScanningCandidateComponentProvider scanner =
                 new AbstractClassesAwareComponentProvider(
                         new InterfaceTypeFilter(GenericDao.class));
+        scanner.setResourceLoader(loader);
 
         Set<BeanDefinition> findCandidateComponents =
                 scanner.findCandidateComponents(configContext
@@ -215,11 +221,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 .getDomainClassName());
         beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
                 .getFinderLookupStrategy());
-
-        if (null != context.getFinderPrefix()) {
-            beanDefinitionBuilder.addPropertyValue("finderPrefix", context
-                    .getFinderPrefix());
-        }
+        beanDefinitionBuilder.addPropertyValue("finderPrefix", context
+                .getFinderPrefix());
 
         String customImplementationBeanName =
                 registerCustomImplementation(context, parserContext,
