@@ -70,7 +70,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
     private boolean configureManually;
 
     private QueryLookupStrategy queryLookupStrategy =
-            AbstractJpaFinder.DEFAULT_QUERY_LOOKUP_STRATEGY;
+            QueryLookupStrategy.getDefault();
     private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
 
 
@@ -140,7 +140,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      * @param daoClass the daoClass to set
      */
     @SuppressWarnings("unchecked")
-    public <D extends AbstractJpaFinder<T, ?>> void setDaoClass(
+    public <D extends AbstractJpaFinder<T>> void setDaoClass(
             final Class<D> daoClass) {
 
         if (null == daoClass) {
@@ -153,7 +153,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
         Assert.isAssignable(AbstractJpaFinder.class, daoClass,
                 "DAO base class has to extend AbstractJpaFinder!");
 
-        this.daoClass = (Class<AbstractJpaFinder<T, ?>>) daoClass;
+        this.daoClass = (Class<AbstractJpaFinder<T>>) daoClass;
         this.configureManually = true;
     }
 
@@ -165,7 +165,9 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      */
     public void setQueryLookupStrategy(QueryLookupStrategy queryLookupStrategy) {
 
-        this.queryLookupStrategy = queryLookupStrategy;
+        this.queryLookupStrategy =
+                null == queryLookupStrategy ? QueryLookupStrategy.getDefault()
+                        : queryLookupStrategy;
     }
 
 
@@ -178,7 +180,9 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      */
     public void setFinderPrefix(String finderPrefix) {
 
-        this.finderPrefix = finderPrefix;
+        this.finderPrefix =
+                null == finderPrefix ? AbstractJpaFinder.DEFAULT_FINDER_PREFIX
+                        : finderPrefix;
     }
 
 
@@ -203,7 +207,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
     public Object getObject() throws Exception {
 
         // Instantiate generic dao
-        AbstractJpaFinder<T, ?> genericJpaDao = daoClass.newInstance();
+        AbstractJpaFinder<T> genericJpaDao = daoClass.newInstance();
         genericJpaDao.setEntityManager(entityManager);
         genericJpaDao.setDomainClass(domainClass);
         genericJpaDao.setCreateFinderQueries(queryLookupStrategy);

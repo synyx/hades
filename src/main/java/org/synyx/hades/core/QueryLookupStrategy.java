@@ -32,9 +32,20 @@ public enum QueryLookupStrategy {
     public static QueryLookupStrategy fromXml(String xml) {
 
         if (null == xml) {
-            return CREATE_IF_NOT_FOUND;
+            return getDefault();
         }
 
         return valueOf(xml.toUpperCase().replace("-", "_"));
+    }
+
+
+    /**
+     * Returns the default strategy to be used.
+     * 
+     * @return
+     */
+    public static QueryLookupStrategy getDefault() {
+
+        return CREATE_IF_NOT_FOUND;
     }
 }

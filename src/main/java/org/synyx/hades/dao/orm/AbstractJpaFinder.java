@@ -16,7 +16,6 @@
 
 package org.synyx.hades.dao.orm;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -45,17 +44,15 @@ import org.synyx.hades.domain.Persistable;
  * @param <T> the type of entity to be handled
  * @param <PK> the type of the entity's identifier
  */
-public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Serializable>
-        implements InitializingBean, FinderExecuter<T> {
+public abstract class AbstractJpaFinder<T extends Persistable<?>> implements
+        InitializingBean, FinderExecuter<T> {
 
-    public static final QueryLookupStrategy DEFAULT_QUERY_LOOKUP_STRATEGY =
-            QueryLookupStrategy.CREATE_IF_NOT_FOUND;
     public static final String DEFAULT_FINDER_PREFIX = "findBy";
 
     private static final Log LOG = LogFactory.getLog(AbstractJpaFinder.class);
 
     private QueryLookupStrategy createFinderQueries =
-            DEFAULT_QUERY_LOOKUP_STRATEGY;
+            QueryLookupStrategy.getDefault();
     private String finderPrefix = DEFAULT_FINDER_PREFIX;
 
     private EntityManager entityManager = null;
@@ -73,7 +70,7 @@ public abstract class AbstractJpaFinder<T extends Persistable<PK>, PK extends Se
     public void setCreateFinderQueries(QueryLookupStrategy createFinderQueries) {
 
         this.createFinderQueries =
-                null == createFinderQueries ? DEFAULT_QUERY_LOOKUP_STRATEGY
+                null == createFinderQueries ? QueryLookupStrategy.getDefault()
                         : createFinderQueries;
     }
 
