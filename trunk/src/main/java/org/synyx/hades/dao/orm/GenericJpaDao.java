@@ -44,7 +44,7 @@ import org.synyx.hades.domain.support.PageImpl;
  */
 @Repository
 public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
-        extends AbstractJpaFinder<T, PK> implements GenericDao<T, PK> {
+        extends AbstractJpaFinder<T> implements GenericDao<T, PK> {
 
     private static final String COUNT_QUERY_STRING =
             "select count(x) from %s x";
