@@ -229,7 +229,7 @@
 				</executions>
 		        <configuration>
 					<instructions>
-						<Export-Package>org.synyx.hades.dao,org.synyx.hades.dao.orm,org.synyx.hades.dao.support,org.synyx.hades.domain,org.synyx.hades.domain.page,org.synyx.hades.domain.support</Export-Package>
+						<Export-Package>org.synyx.hades.dao,org.synyx.hades.dao.config,org.synyx.hades.dao.orm,org.synyx.hades.domain,org.synyx.hades.domain.support</Export-Package>
 						<Bundle-SymbolicName>${pom.groupId}</Bundle-SymbolicName>
 						<Include-Resource>src/main/resources</Include-Resource>
 					</instructions>
