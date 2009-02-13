@@ -9,6 +9,10 @@
 	<modules>
 		<module>hades</module>
 		<module>hades-eclipse-plugin</module>
-		<module>hades-feature</module>
+		<module>hades-eclipse-feature</module>
 	</modules>
+	<properties>
+		<plugin.groupId>${groupId}.eclipse</plugin.groupId>
+		<plugin.version>0.1-SNAPSHOT</plugin.version>
+	</properties>
 </project>
