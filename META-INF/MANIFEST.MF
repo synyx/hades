@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hades Eclipse Plugin
+Bundle-SymbolicName: org.synyx.hades.eclipse;singleton:=true
+Bundle-Version: 0.1
+Bundle-ClassPath: hades-0.4-SNAPSHOT.jar, 
+ com.springsource.javax.persistence-1.0.0.jar,
+ .
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.wst.sse.core,
+ org.eclipse.wst.sse.ui,
+ org.eclipse.wst.xml.core,
+ org.eclipse.wst.xml.ui,
+ org.springframework.ide.eclipse.core,
+ org.springframework.ide.eclipse.beans.core,
+ org.springframework.ide.eclipse.beans.ui,
+ org.springframework.ide.eclipse.beans.ui.editor,
+ org.springframework.bundle.spring,
+ org.apache.commons.logging,
+ org.eclipse.ui.navigator;bundle-version="3.3.101",
+ org.springframework.ide.eclipse.ui;bundle-version="2.2.1"
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Synyx GmbH & Co. KG
+Export-Package: 
+ org.synyx.hades.eclipse
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
