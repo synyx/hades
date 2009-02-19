@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
 
 
 /**
- * Utility methhods to work with Hades configuration.
+ * Utility methods to work with Hades configuration.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
