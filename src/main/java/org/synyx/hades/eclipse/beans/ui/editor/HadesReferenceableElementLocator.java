@@ -2,7 +2,6 @@ package org.synyx.hades.eclipse.beans.ui.editor;
 
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
 import org.springframework.ide.eclipse.beans.ui.editor.namespaces.DefaultReferenceableElementsLocator;
 import org.synyx.hades.eclipse.HadesUtils;
 import org.w3c.dom.Document;
@@ -24,11 +23,9 @@ public class HadesReferenceableElementLocator extends
      * #getReferenceableElements(org.w3c.dom.Document,
      * org.eclipse.core.resources.IFile)
      */
-    public Map<String, Node> getReferenceableElements(Document document,
-            IFile file) {
+    public Map<String, Node> getReferenceableElements(Document document) {
 
-        Map<String, Node> result =
-                super.getReferenceableElements(document, file);
+        Map<String, Node> result = super.getReferenceableElements(document);
 
         NodeList childNodes = document.getDocumentElement().getChildNodes();
         Node hadesElement = null;
