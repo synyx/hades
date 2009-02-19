@@ -2,19 +2,25 @@
 <feature
       id="org.synyx.hades.eclipse.feature"
       label="Hades Namespace Support"
-      version="0.1"
+      version="0.1.0"
       provider-name="Synyx GmbH &amp; Co. KG">
 
    <description>
       Allows enhanced handling of Hades DAOs in Spring IDE.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+      2009 Synyx GmbH &amp; Co. KG
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://www.apache.org/licenses/LICENSE-2.0.txt">
+      Copyright 2009 The original authors
+
+  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at 
+
+  http://www.apache.org/licenses/LICENSE-2.0 
+  
+  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
    </license>
 
    <url>
