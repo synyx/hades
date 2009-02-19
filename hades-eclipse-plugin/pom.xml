@@ -3,12 +3,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx.hades.eclipse</groupId>
 	<artifactId>hades-eclipse-plugin</artifactId>
-	<packaging>jar</packaging>
+	<packaging>eclipse-plugin</packaging>
 	<name>Hades Eclipse plugin</name>
 	<version>${plugin.version}</version>
+	
 	<parent>
 		<artifactId>hades-parent</artifactId>
 		<groupId>org.synyx.hades</groupId>
 		<version>0.4-SNAPSHOT</version>
 	</parent>
+	
+	<dependencies>
+		<dependency>
+			<groupId>${parent.groupId}</groupId>
+			<artifactId>hades</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+	</dependencies>
 </project>
