@@ -137,6 +137,19 @@
         <revremark>Added FAQ entry how to integrate Hades into existing DAO
         layer based on HibernateDaoSupport</revremark>
       </revision>
+
+      <revision>
+        <date>19.02.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added chapter on Hades Eclipse plugin, removed remarks on
+        configuration of dao base class, some typos</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -1012,9 +1025,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       <para>The <code>&lt;dao-config /&gt;</code> element allows two further
       attributes to be defined. With <code>dao-name-postfix</code> you can
       customize the bean id for the DAO registered. This defaults to
-      <code>Dao</code>. <code>dao-base-class</code> allows to define a custom
-      base class for the DAO proxy created. For more details see <xref
-      linkend="vendor-specific-features" />.</para>
+      <code>Dao</code>.</para>
 
       <simplesect id="config.autoconfig">
         <title>Auto configuration</title>
@@ -1434,6 +1445,19 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       EclipseLink. Note, that you can use basic DAO functionality with
       <emphasis>any</emphasis> JPA persistence provider.</para>
 
+      <note>
+        <para>Starting with version 0.4 Hades is able to detect the
+        persistence provider you chose itself. So there is no need to
+        configure it explicitly. It will be able to use the appropriate types
+        to back the DAO proxy itself if you use either Hibernate or
+        EclipseLink. For any other persistence provider it will fall back on
+        <code>GenericJpaDao</code>, that does not provide the extended DAO
+        functionality listed in <code>ExtendedGenericDao</code>. If you try to
+        create DAO instances for DAO interfaces extending
+        <code>ExtendedGenericDao</code> but use OpenJPA e.g. Hades will
+        complain at configuration time.</para>
+      </note>
+
       <para>E.g. to setup your application to use the
       <classname>GenericHibernateJpaDao</classname> you have to extend the DAO
       configuration as follows.</para>
@@ -1509,7 +1533,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
   public void someCustomMethod(User user) {
     // Your custom implementation
   }
-}</programlisting>Note that the implementation itself does nor depend on Hades
+}</programlisting>Note that the implementation itself does not depend on Hades
         and can be a regular Spring bean. So you can either use standard
         dependency injection behaviour to inject references to other beans,
         take part in aspects and so on.</para>
@@ -1556,6 +1580,74 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <classname>foo.bar.dao.UserFooBar</classname>.</para>
 
         <para>TODO: Document manual wiring</para>
+      </simplesect>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Eclipse plugin</title>
+
+    <abstract>
+      <para>To tightly integrate Hades into your application it is useful to
+      leverage the features provided by Spring IDE. You can achieve this using
+      the Hades Eclipse plugin. This chapter explains in detail how to install
+      the plugin and what features you can expect by it.</para>
+    </abstract>
+
+    <section>
+      <title>Installation</title>
+
+      <para>You can install the plugin by simply pointing your Eclipse update
+      manager to <ulink
+      url="http://updatesite.synyx.org">http://updatesite.synyx.org</ulink>
+      and choosing the Hades Namespace Integration.</para>
+    </section>
+
+    <section>
+      <title>Features</title>
+
+      <simplesect>
+        <title>Code completion for XML elements attributes</title>
+
+        <para>By handing over the Hades XSD you gain code completion for XML
+        elements and especially attributes. This regards entity-package-name
+        and dao-package-name in particular as well as the custom-element-ref
+        attribute in the &lt;dao /&gt; element.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Beans detection using automatic dao detection mode</title>
+
+        <para>If you use the automatic DAO detection mode as shown in <xref
+        linkend="hades-xml-editor" /> you will get all discovered DAO beans
+        correctly listed in the Spring Elements section of your Project
+        Explorer. The beans also lists property values like the finder prefix
+        or the query lookup strategy including implicit defaults.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Marking the DAO interfaces to be Spring beans</title>
+
+        <para>The DAO interfaces Hades creates beans for are marked with the
+        usual Spring Bean S you are used to from other bean classes.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Content assist for bean references is aware of Hades
+        beans</title>
+
+        <para>Trying to reference a DAO bean will now correctly show up the
+        beans as suggestions during content assist.</para>
+
+        <figure id="hades-xml-editor">
+          <title>Hades integration into Spring IDE</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/hades-xml-editor.png" width="100%" />
+            </imageobject>
+          </mediaobject>
+        </figure>
       </simplesect>
     </section>
   </chapter>
@@ -1607,16 +1699,6 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
               names from or to be scanned for DAO interfaces extending
               <interfacename>GenericDao</interfacename> in auto detection
               mode.</entry>
-            </row>
-
-            <row>
-              <entry><code>dao-base-class</code></entry>
-
-              <entry>Defines the base class that shall be used to create the
-              DAO proxy. Be sure to set a vendor specific implementation if
-              your DAOs extend
-              <interfacename>ExtendedGenericDao</interfacename>. Defaults to
-              <classname>GenericJpaDao</classname>.</entry>
             </row>
 
             <row>
