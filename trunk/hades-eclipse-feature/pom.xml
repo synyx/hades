@@ -9,7 +9,7 @@
 	<parent>
 		<artifactId>hades-parent</artifactId>
 		<groupId>org.synyx.hades</groupId>
-		<version>0.4-SNAPSHOT</version>
+		<version>0.4</version>
 	</parent>
 	<build>
 		<plugins>
