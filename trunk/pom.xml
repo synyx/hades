@@ -5,7 +5,7 @@
 	<artifactId>hades-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Parent project for Hades</name>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4</version>
 	<modules>
 		<module>hades</module>
 		<!--
