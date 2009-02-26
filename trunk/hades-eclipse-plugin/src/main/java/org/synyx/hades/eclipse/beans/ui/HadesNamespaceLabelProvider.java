@@ -14,6 +14,10 @@ import org.synyx.hades.eclipse.HadesUtils;
 
 
 /**
+ * Tweaks bean text to reflect the actual DAO interface rather than the factory.
+ * Applies the defaults for properties, too, as they are not reflected at this
+ * parsing stage.
+ * 
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class HadesNamespaceLabelProvider extends DefaultNamespaceLabelProvider {
