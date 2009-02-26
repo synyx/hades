@@ -28,7 +28,7 @@ public interface Pageable {
      * 
      * @return the page to be returned.
      */
-    int getPage();
+    int getPageNumber();
 
 
     /**
@@ -36,7 +36,7 @@ public interface Pageable {
      * 
      * @return the number of items of that page
      */
-    int getNumberOfItems();
+    int getPageSize();
 
 
     /**

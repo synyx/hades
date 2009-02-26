@@ -204,7 +204,7 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
         // setMaxRows does NOT count regard setFirstResult as start to add the
         // given value to, but counts from the very beginning. Thus we have to
         // add the offset manually
-        query.setMaxRows(pageable.getFirstItem() + pageable.getNumberOfItems());
+        query.setMaxRows(pageable.getFirstItem() + pageable.getPageSize());
 
         applySorting(query, pageable.getSort());
     }
