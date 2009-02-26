@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hades Eclipse Plugin
 Bundle-SymbolicName: org.synyx.hades.eclipse;singleton:=true
 Bundle-Version: 0.1.0
-Bundle-ClassPath: hades-0.4-SNAPSHOT.jar, 
+Bundle-ClassPath: hades-0.4.jar, 
  com.springsource.javax.persistence-1.0.0.jar,
  .
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.4.0,3.5.0)",
