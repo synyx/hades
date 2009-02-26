@@ -182,7 +182,7 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
         }
 
         criteria.setFirstResult(pageable.getFirstItem());
-        criteria.setMaxResults(pageable.getNumberOfItems());
+        criteria.setMaxResults(pageable.getPageSize());
         applySorting(criteria, pageable.getSort());
     }
 

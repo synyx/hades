@@ -16,7 +16,7 @@
 
 package org.synyx.hades.domain.support;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,18 +34,16 @@ import org.synyx.hades.domain.Sort;
 public class PageImpl<T> implements Page<T> {
 
     private List<T> content;
-    private int number;
-    private int pageSize;
+    private Pageable pageable;
     private long total;
-    private Sort sort;
 
 
     /**
      * Constructor of {@code PageImpl}.
      * 
-     * @param content
-     * @param pageable
-     * @param total
+     * @param content the content of this page
+     * @param pageable the paging information
+     * @param total the total amount of items available
      */
     public PageImpl(final List<T> content, final Pageable pageable,
             final long total) {
@@ -57,17 +55,9 @@ public class PageImpl<T> implements Page<T> {
         this.content = content;
         this.total = total;
 
-        if (null == pageable) {
-
-            this.number = 0;
-            this.pageSize = content.size();
-
-        } else {
-
-            this.number = pageable.getPage();
-            this.pageSize = pageable.getNumberOfItems();
-            this.sort = pageable.getSort();
-        }
+        this.pageable =
+                null == pageable ? new PageRequest(0, content.size())
+                        : pageable;
     }
 
 
@@ -79,18 +69,29 @@ public class PageImpl<T> implements Page<T> {
      */
     public PageImpl(final List<T> content) {
 
-        this(content, null, content.size());
+        this(content, null, (null == content) ? 0 : content.size());
     }
 
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.domain.page.Page#getNumber()
+     * @see org.synyx.hades.domain.Page#getNumber()
      */
     public int getNumber() {
 
-        return number;
+        return pageable.getPageNumber();
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.domain.Page#getSize()
+     */
+    public int getSize() {
+
+        return pageable.getPageSize();
     }
 
 
@@ -101,18 +102,7 @@ public class PageImpl<T> implements Page<T> {
      */
     public int getTotalPages() {
 
-        return (int) Math.ceil((double) total / (double) pageSize);
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.synyx.hades.domain.page.Page#getPageSize()
-     */
-    public int getPageSize() {
-
-        return pageSize;
+        return (int) Math.ceil((double) total / (double) getSize());
     }
 
 
@@ -145,7 +135,7 @@ public class PageImpl<T> implements Page<T> {
      */
     public boolean hasPreviousPage() {
 
-        return number > 0;
+        return getNumber() > 0;
     }
 
 
@@ -156,18 +146,7 @@ public class PageImpl<T> implements Page<T> {
      */
     public boolean hasNextPage() {
 
-        return ((number + 1) * pageSize) < total;
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.synyx.hades.domain.Page#getSort()
-     */
-    public Sort getSort() {
-
-        return sort;
+        return ((getNumber() + 1) * getSize()) < total;
     }
 
 
@@ -189,7 +168,18 @@ public class PageImpl<T> implements Page<T> {
      */
     public List<T> asList() {
 
-        return new ArrayList<T>(content);
+        return Collections.unmodifiableList(content);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.domain.Page#getSort()
+     */
+    public Sort getSort() {
+
+        return pageable.getSort();
     }
 
 
@@ -207,7 +197,51 @@ public class PageImpl<T> implements Page<T> {
             contentType = content.get(0).getClass().getName();
         }
 
-        return String.format("Page %s of %d containing %s instances", number,
-                getTotalPages(), contentType);
+        return String.format("Page %s of %d containing %s instances",
+                getNumber(), getTotalPages(), contentType);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof PageImpl)) {
+            return false;
+        }
+
+        PageImpl<?> that = (PageImpl<?>) obj;
+
+        boolean totalEqual = this.total == that.total;
+        boolean contentEqual = this.content.equals(that.content);
+        boolean pageableEqual = this.pageable.equals(that.pageable);
+
+        return totalEqual && contentEqual && pageableEqual;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        int result = 17;
+
+        result = 31 * result + (int) (total ^ total >>> 32);
+        result = 31 * result + pageable.hashCode();
+        result = 31 * result + content.hashCode();
+
+        return result;
     }
 }

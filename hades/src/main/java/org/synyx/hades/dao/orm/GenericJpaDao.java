@@ -240,7 +240,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
                         applySorting(query, pageable.getSort()));
 
         jpaQuery.setFirstResult(pageable.getFirstItem());
-        jpaQuery.setMaxResults(pageable.getNumberOfItems());
+        jpaQuery.setMaxResults(pageable.getPageSize());
 
         return new PageImpl<T>(jpaQuery.getResultList(), pageable, count());
     }
