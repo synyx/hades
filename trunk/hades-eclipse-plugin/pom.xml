@@ -5,19 +5,14 @@
 	<artifactId>hades-eclipse-plugin</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>Hades Eclipse plugin</name>
-	<version>${plugin.version}</version>
+	<version>0.1</version>
 	
-	<parent>
-		<artifactId>hades-parent</artifactId>
-		<groupId>org.synyx.hades</groupId>
-		<version>0.4</version>
-	</parent>
 	
 	<dependencies>
 		<dependency>
-			<groupId>${parent.groupId}</groupId>
+			<groupId>org.synyx.hades</groupId>
 			<artifactId>hades</artifactId>
-			<version>${parent.version}</version>
+			<version>0.4</version>
 		</dependency>
 	</dependencies>
 </project>
