@@ -1,4 +1,4 @@
-#Sun Feb 08 17:43:25 CET 2009
+#Thu Feb 19 12:31:53 CET 2009
 sonar.project.name=hades
 sonar.context.file=Hades.sonarj
-sonar.violation.marker=Error
+sonar.violation.marker=Warning
