@@ -39,19 +39,19 @@ public interface Page<T> extends Iterable<T> {
 
 
     /**
+     * Returns the size of the page.
+     * 
+     * @return the size of the page
+     */
+    int getSize();
+
+
+    /**
      * Returns the number of total pages.
      * 
      * @return the number of toral pages
      */
     int getTotalPages();
-
-
-    /**
-     * Returns the size of the page.
-     * 
-     * @return the size of the page
-     */
-    int getPageSize();
 
 
     /**
@@ -86,14 +86,6 @@ public interface Page<T> extends Iterable<T> {
     boolean hasNextPage();
 
 
-    /**
-     * Returns the sorting parameters for the page.
-     * 
-     * @return
-     */
-    Sort getSort();
-
-
     /*
      * (non-Javadoc)
      * 
@@ -108,4 +100,12 @@ public interface Page<T> extends Iterable<T> {
      * @return
      */
     List<T> asList();
+
+
+    /**
+     * Returns the sorting parameters for the page.
+     * 
+     * @return
+     */
+    Sort getSort();
 }

@@ -16,7 +16,15 @@
 
 package org.synyx.hades.domain.page;
 
-import org.springframework.test.jpa.AbstractJpaTests;
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.User;
@@ -28,46 +36,23 @@ import org.synyx.hades.domain.support.PageRequest;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class PaginationIntegrationTest extends AbstractJpaTests {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:namespace-applicationContext.xml")
+@Transactional
+public class PaginationIntegrationTest {
 
+    @Autowired
     private UserDao userDao;
 
 
-    /**
-     * Setter to inject {@code UserDao}.
-     * 
-     * @param userDao the userDao to set
-     */
-    public void setUserDao(UserDao userDao) {
-
-        this.userDao = userDao;
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.test.AbstractSingleSpringContextTests#getConfigLocations()
-     */
-    @Override
-    protected String[] getConfigLocations() {
-
-        return new String[] { "namespace-applicationContext.xml" };
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.test.AbstractTransactionalSpringContextTests#onSetUpInTransaction()
-     */
-    @Override
-    protected void onSetUpInTransaction() throws Exception {
+    @Before
+    public void setUp() {
 
         for (int i = 0; i < 10; i++) {
 
-            User user = new User(String.valueOf(i), String.valueOf(i),
-                    "foo@bar.de" + i);
+            User user =
+                    new User(String.valueOf(i), String.valueOf(i), "foo@bar.de"
+                            + i);
 
             userDao.save(user);
         }
@@ -80,11 +65,12 @@ public class PaginationIntegrationTest extends AbstractJpaTests {
      * Tests lookup of a first page. Checks, that it has no previous page but a
      * next page.
      */
+    @Test
     public void testCorrectFirstPage() {
 
         Page<User> users = userDao.readAll(new PageRequest(0, 2));
 
-        assertEquals(2, users.getPageSize());
+        assertEquals(2, users.getSize());
         assertEquals(5, users.getTotalPages());
         assertFalse(users.hasPreviousPage());
         assertTrue(users.hasNextPage());
@@ -95,17 +81,18 @@ public class PaginationIntegrationTest extends AbstractJpaTests {
      * Tests lookups of a last page. Checks, that it has no next page but a
      * previous one.
      */
+    @Test
     public void testCorrectLastPage() {
 
         Page<User> users = userDao.readAll(new PageRequest(4, 2));
 
-        assertEquals(2, users.getPageSize());
+        assertEquals(2, users.getSize());
         assertTrue(users.hasPreviousPage());
         assertFalse(users.hasNextPage());
 
         users = userDao.readAll(new PageRequest(3, 3));
 
-        assertEquals(3, users.getPageSize());
+        assertEquals(3, users.getSize());
         assertEquals(4, users.getTotalPages());
         assertEquals(1, users.getNumberOfElements());
         assertTrue(users.hasPreviousPage());
@@ -116,11 +103,12 @@ public class PaginationIntegrationTest extends AbstractJpaTests {
     /**
      * Tests accessing an invalid page.
      */
+    @Test
     public void testAccessingInvalidPage() {
 
         Page<User> users = userDao.readAll(new PageRequest(2, 5));
 
-        assertEquals(5, users.getPageSize());
+        assertEquals(5, users.getSize());
         assertEquals(0, users.getNumberOfElements());
         assertTrue(users.hasPreviousPage());
         assertFalse(users.hasNextPage());
