@@ -14,7 +14,7 @@
 		-->
 	</modules>
 	<properties>
-		<plugin.version>0.1-SNAPSHOT</plugin.version>
+		<plugin.version>0.1</plugin.version>
 	</properties>
 
 	<build>
