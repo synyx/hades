@@ -191,7 +191,7 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * Checks, that a {@code HibernateEntityManager} was set and rejects
      * configuration otherwise.
      * 
-     * @see org.synyx.hades.dao.orm.AbstractJpaFinder#afterPropertiesSet()
+     * @see org.synyx.hades.dao.orm.GenericDaoSupport#afterPropertiesSet()
      */
     @Override
     public void afterPropertiesSet() throws Exception {
