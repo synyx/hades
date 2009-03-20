@@ -16,6 +16,8 @@
 
 package org.synyx.hades.dao.test;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -85,7 +87,7 @@ public class UserDaoIntegrationTest {
 
         flushTestUsers();
 
-        Assert.assertEquals(before + 2, countQuery.getSingleResult());
+        assertEquals(before + 2, countQuery.getSingleResult());
     }
 
 
@@ -100,8 +102,7 @@ public class UserDaoIntegrationTest {
         flushTestUsers();
 
         User foundPerson = userDao.readByPrimaryKey(id);
-        Assert.assertEquals(firstUser.getFirstname(), foundPerson
-                .getFirstname());
+        assertEquals(firstUser.getFirstname(), foundPerson.getFirstname());
     }
 
 
@@ -114,7 +115,7 @@ public class UserDaoIntegrationTest {
 
         flushTestUsers();
 
-        Assert.assertNull(userDao.readByPrimaryKey(id * 27));
+        assertNull(userDao.readByPrimaryKey(id * 27));
     }
 
 
@@ -130,8 +131,7 @@ public class UserDaoIntegrationTest {
         foundPerson.setLastname("Schlicht");
 
         User updatedPerson = userDao.readByPrimaryKey(id);
-        Assert.assertEquals(foundPerson.getFirstname(), updatedPerson
-                .getFirstname());
+        assertEquals(foundPerson.getFirstname(), updatedPerson.getFirstname());
     }
 
 
@@ -144,7 +144,7 @@ public class UserDaoIntegrationTest {
         flushTestUsers();
 
         userDao.delete(firstUser);
-        Assert.assertNull(userDao.readByPrimaryKey(id));
+        assertNull(userDao.readByPrimaryKey(id));
     }
 
 
@@ -161,8 +161,8 @@ public class UserDaoIntegrationTest {
 
         List<User> byName = userDao.findByLastname("Gierke");
 
-        Assert.assertTrue(byName.size() == 1);
-        Assert.assertEquals(firstUser, byName.get(0));
+        assertTrue(byName.size() == 1);
+        assertEquals(firstUser, byName.get(0));
     }
 
 
@@ -179,8 +179,8 @@ public class UserDaoIntegrationTest {
 
         User byName = userDao.findByEmailAddress("gierke@synyx.de");
 
-        Assert.assertNotNull(byName);
-        Assert.assertEquals(firstUser, byName);
+        assertNotNull(byName);
+        assertEquals(firstUser, byName);
     }
 
 
@@ -193,7 +193,7 @@ public class UserDaoIntegrationTest {
         flushTestUsers();
 
         List<User> reference = Arrays.asList(firstUser, secondUser);
-        Assert.assertTrue(userDao.readAll().containsAll(reference));
+        assertTrue(userDao.readAll().containsAll(reference));
     }
 
 
@@ -210,7 +210,7 @@ public class UserDaoIntegrationTest {
 
         userDao.deleteAll();
 
-        Assert.assertEquals((Long) 0L, userDao.count());
+        assertEquals((Long) 0L, userDao.count());
     }
 
 
@@ -228,12 +228,12 @@ public class UserDaoIntegrationTest {
 
         // Fetches first user from .. bdatabase
         User firstReferenceUser = userDao.readByPrimaryKey(firstUser.getId());
-        Assert.assertEquals(firstUser, firstReferenceUser);
+        assertEquals(firstUser, firstReferenceUser);
 
         // Fetch colleagues and assert link
         Set<User> colleagues = firstReferenceUser.getColleagues();
-        Assert.assertEquals(1, colleagues.size());
-        Assert.assertTrue(colleagues.contains(secondUser));
+        assertEquals(1, colleagues.size());
+        assertTrue(colleagues.contains(secondUser));
     }
 
 
@@ -248,7 +248,7 @@ public class UserDaoIntegrationTest {
 
         try {
             flushTestUsers();
-            Assert.fail("Expected DataAccessException!");
+            fail("Expected DataAccessException!");
         } catch (DataAccessException e) {
 
         }
@@ -270,8 +270,8 @@ public class UserDaoIntegrationTest {
         User reference = userDao.readByPrimaryKey(firstUser.getId());
         Set<User> colleagues = reference.getColleagues();
 
-        Assert.assertNotNull(colleagues);
-        Assert.assertEquals(2, colleagues.size());
+        assertNotNull(colleagues);
+        assertEquals(2, colleagues.size());
     }
 
 
@@ -288,7 +288,7 @@ public class UserDaoIntegrationTest {
 
         try {
             userDao.saveAndFlush(firstUser);
-            Assert.fail("Expected DataAccessException!");
+            fail("Expected DataAccessException!");
         } catch (DataAccessException e) {
 
         }
@@ -307,7 +307,7 @@ public class UserDaoIntegrationTest {
         user.setEmailAddress("gierke@synyx.de");
         userDao.save(user);
 
-        Assert.assertTrue(userDao.count().equals(count + 1));
+        assertTrue(userDao.count().equals(count + 1));
     }
 
 
@@ -330,6 +330,13 @@ public class UserDaoIntegrationTest {
     public void testOverwritingFinder() {
 
         userDao.findByOverrridingMethod();
+    }
+
+
+    @Test
+    public void testUsesHadesQueryAnnotation() {
+
+        assertEquals(null, userDao.findByHadesQuery("gierke@synyx.de"));
     }
 
 

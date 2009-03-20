@@ -18,6 +18,8 @@ package org.synyx.hades.dao.orm.support;
 
 import static junit.framework.Assert.*;
 
+import java.io.Serializable;
+
 import javax.persistence.EntityManager;
 
 import org.easymock.EasyMock;
@@ -25,12 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.BeanCreationException;
-import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
-import org.synyx.hades.dao.UserExtendedDao;
 import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
 import org.synyx.hades.dao.orm.GenericJpaDao;
-import org.synyx.hades.domain.User;
 
 
 /**
@@ -40,7 +39,7 @@ import org.synyx.hades.domain.User;
  */
 public class GenericDaoFactoryBeanUnitTest {
 
-    private GenericDaoFactoryBean<User> factory;
+    private GenericDaoFactoryBean<UserDao> factory;
 
     private EntityManager entityManager;
 
@@ -53,9 +52,7 @@ public class GenericDaoFactoryBeanUnitTest {
         EasyMock.replay(entityManager);
 
         // Setup standard factory configuration
-        factory =
-                GenericDaoFactoryBean.create(User.class, UserDao.class,
-                        entityManager);
+        factory = GenericDaoFactoryBean.create(UserDao.class, entityManager);
         factory.setEntityManager(entityManager);
     }
 
@@ -90,18 +87,6 @@ public class GenericDaoFactoryBeanUnitTest {
 
 
     /**
-     * Assert that the factory rejects calls to {@code
-     * GenericDaoFactoryBean#setDomainClass(Class)} with {@code null} or any
-     * other parameter instance not implementing {@code Persistable}.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsNullDomainClasses() {
-
-        factory.setDomainClass(null);
-    }
-
-
-    /**
      * Assert that the factory uses {@link GenericJpaDao} as default on invoking
      * {@code GenericDaoFactoryBean#setDaoClass(Class)} with {@code null}.
      * 
@@ -123,33 +108,7 @@ public class GenericDaoFactoryBeanUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsUnsetDaoInterface() throws Exception {
 
-        factory = new GenericDaoFactoryBean<User>();
-        factory.afterPropertiesSet();
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsUnsetDomainClass() throws Exception {
-
-        factory = new GenericDaoFactoryBean<User>();
-        factory.setDaoInterface(UserDao.class);
-        factory.afterPropertiesSet();
-    }
-
-
-    /**
-     * Assert that the factory does not allow DAO instance creation if you have
-     * configured a DAO interface extending {@code UserExtendedDao} but not
-     * provided any custom base implementation class implementing this
-     * interface.
-     * 
-     * @throws Exception
-     */
-    @Test(expected = BeanCreationException.class)
-    public void preventsCreationOfExtendedGenericDaosIfMisconfigured()
-            throws Exception {
-
-        factory.setDaoInterface(UserExtendedDao.class);
+        factory = new GenericDaoFactoryBean<UserDao>();
         factory.afterPropertiesSet();
     }
 
@@ -181,7 +140,7 @@ public class GenericDaoFactoryBeanUnitTest {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    private interface SampleCustomDao extends GenericDao<User, Integer> {
+    private interface SampleCustomDao extends Serializable, UserDao {
 
         void someSampleMethod();
     }

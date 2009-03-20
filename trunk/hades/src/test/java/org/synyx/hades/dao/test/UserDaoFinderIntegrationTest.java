@@ -26,8 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.synyx.hades.core.QueryLookupStrategy;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.synyx.hades.domain.User;
 
 
