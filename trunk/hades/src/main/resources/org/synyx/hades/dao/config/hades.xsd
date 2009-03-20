@@ -30,17 +30,10 @@
 				</xsd:element>
 			</xsd:sequence>
 
-			<xsd:attribute name="dao-package-name" type="xsd:string" use="required">
+			<xsd:attribute name="package" type="xsd:string" use="required">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
 					Defines the package where the DAO interface will be tried to be detected.
-					]]></xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="entity-package-name" type="xsd:string" use="required">
-				<xsd:annotation>
-					<xsd:documentation><![CDATA[
-					Defines the package where the entity classes will be tried to be detected.
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
