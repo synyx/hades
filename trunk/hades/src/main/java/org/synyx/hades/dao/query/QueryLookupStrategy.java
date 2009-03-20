@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.synyx.hades.core;
+package org.synyx.hades.dao.query;
 
 /**
  * Query lookup strategy to execute finders.
@@ -26,18 +26,52 @@ public enum QueryLookupStrategy {
     /**
      * Always creates the query from the given method.
      */
-    CREATE,
+    CREATE {
+
+        @Override
+        public HadesQuery resolveQuery(FinderMethod method) {
+
+            return SimpleHadesQuery.construct(method);
+        }
+
+    },
 
     /**
      * Uses a named query named {@literal $DomainClass.$DaoMethodName}.
      */
-    USE_NAMED_QUERY,
+    USE_NAMED_QUERY {
+
+        @Override
+        public HadesQuery resolveQuery(FinderMethod method) {
+
+            return NamedHadesQuery.lookupFrom(method);
+        }
+    },
 
     /**
      * Tries to lookup a named query but creates a query from the method name if
      * no named query found.
      */
-    CREATE_IF_NOT_FOUND;
+    CREATE_IF_NOT_FOUND {
+
+        @Override
+        public HadesQuery resolveQuery(FinderMethod method) {
+
+            HadesQuery query = SimpleHadesQuery.fromHadesAnnotation(method);
+
+            if (null != query) {
+                return query;
+            }
+
+            query = NamedHadesQuery.lookupFrom(method);
+
+            if (null != query) {
+                return query;
+            }
+
+            return SimpleHadesQuery.construct(method);
+        }
+    };
 
     /**
      * Returns a strategy from the given XML value.
@@ -64,4 +98,14 @@ public enum QueryLookupStrategy {
 
         return CREATE_IF_NOT_FOUND;
     }
+
+
+    /**
+     * Resolves a {@link HadesQuery} from the given {@link FinderMethod} that
+     * can be executed afterwards.
+     * 
+     * @param method
+     * @return
+     */
+    public abstract HadesQuery resolveQuery(FinderMethod method);
 }
