@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.synyx.hades.core.QueryLookupStrategy;
+import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,8 +42,7 @@ public class DaoConfigContext {
 
     protected static final String FINDER_LOOKUP_STRATEGY =
             "finder-lookup-strategy";
-    protected static final String DAO_PACKAGE_NAME = "dao-package-name";
-    protected static final String ENTITY_PACKAGE_NAME = "entity-package-name";
+    protected static final String DAO_PACKAGE_NAME = "package";
     protected static final String DAO_NAME_POSTFIX = "dao-name-postfix";
     protected static final String DAO_IMPL_POSTFIX = "dao-impl-postfix";
     protected static final String DAO_INTERFACE_POSTFIX =
@@ -93,12 +92,6 @@ public class DaoConfigContext {
      */
     public void validate() {
 
-        if (!StringUtils.hasText(getEntityPackageName())) {
-            throw new IllegalArgumentException(
-                    "You have to configure an entity package! Use "
-                            + ENTITY_PACKAGE_NAME
-                            + " attribute on dao-config element.");
-        }
     }
 
 
@@ -173,17 +166,6 @@ public class DaoConfigContext {
     protected String getDaoPackageName() {
 
         return element.getAttribute(DAO_PACKAGE_NAME);
-    }
-
-
-    /**
-     * Returns the entity package name.
-     * 
-     * @return the entityPackageName
-     */
-    protected String getEntityPackageName() {
-
-        return element.getAttribute(ENTITY_PACKAGE_NAME);
     }
 
 

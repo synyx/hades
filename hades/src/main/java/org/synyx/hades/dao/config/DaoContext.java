@@ -17,6 +17,7 @@
 package org.synyx.hades.dao.config;
 
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
@@ -66,6 +67,27 @@ public class DaoContext extends DaoConfigContext {
     }
 
 
+    /**
+     * Creates a {@link DaoContext} from the given DAO interface name.
+     * 
+     * @param interfaceName
+     * @param parent
+     * @return
+     */
+    public static DaoContext fromInterfaceName(String interfaceName,
+            DaoConfigContext parent) {
+
+        String postfix = parent.getDaoInterfacePostfix();
+        String shortName = ClassUtils.getShortName(interfaceName);
+
+        String id =
+                StringUtils.uncapitalize(shortName).substring(0,
+                        shortName.lastIndexOf(postfix));
+
+        return new DaoContext(id, parent);
+    }
+
+
     /*
      * (non-Javadoc)
      * 
@@ -87,17 +109,6 @@ public class DaoContext extends DaoConfigContext {
     public String getId() {
 
         return this.id;
-    }
-
-
-    /**
-     * Returns the full qualified domain class name.
-     * 
-     * @return
-     */
-    public String getDomainClassName() {
-
-        return getEntityPackageName() + "." + StringUtils.capitalize(id);
     }
 
 
@@ -182,20 +193,6 @@ public class DaoContext extends DaoConfigContext {
         String finderPrefix = element.getAttribute(FINDER_PREFIX);
         return StringUtils.hasText(finderPrefix) ? finderPrefix : parent
                 .getFinderPrefix();
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.synyx.hades.dao.config.DaoConfigContext#getEntityPackageName()
-     */
-    @Override
-    protected String getEntityPackageName() {
-
-        String entityPackageName = element.getAttribute(ENTITY_PACKAGE_NAME);
-        return StringUtils.hasText(entityPackageName) ? entityPackageName
-                : parent.getEntityPackageName();
     }
 
 

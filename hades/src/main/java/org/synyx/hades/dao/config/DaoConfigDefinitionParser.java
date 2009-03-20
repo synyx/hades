@@ -16,12 +16,12 @@
 
 package org.synyx.hades.dao.config;
 
+import static org.synyx.hades.util.ClassUtils.*;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.persistence.Entity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,16 +37,12 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.domain.Persistable;
 import org.w3c.dom.Element;
 
 
@@ -131,29 +127,10 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         Set<String> daoInterfaces =
                 getDaoInterfacesForAutoConfig(configContext, resourceLoader);
 
-        ClassPathScanningCandidateComponentProvider scanner =
-                new AbstractClassesAwareComponentProvider(
-                        new PersistableTypeFilter());
-        scanner.setResourceLoader(resourceLoader);
+        for (String daoInterface : daoInterfaces) {
 
-        // Detect entity candidates
-        Set<BeanDefinition> entityCandidates =
-                scanner.findCandidateComponents(configContext
-                        .getEntityPackageName());
-
-        for (BeanDefinition candidate : entityCandidates) {
-
-            String id =
-                    StringUtils.uncapitalize(ClassUtils.getShortName(candidate
-                            .getBeanClassName()));
-
-            DaoContext context = new DaoContext(id, configContext);
-
-            // Only define factory instance if an according interface exists
-            if (daoInterfaces.contains(context.getInterfaceName())) {
-
-                registerGenericDaoFactoryBean(parserContext, context);
-            }
+            registerGenericDaoFactoryBean(parserContext, DaoContext
+                    .fromInterfaceName(daoInterface, configContext));
         }
     }
 
@@ -217,8 +194,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
         beanDefinitionBuilder.addPropertyValue("daoInterface", context
                 .getInterfaceName());
-        beanDefinitionBuilder.addPropertyValue("domainClass", context
-                .getDomainClassName());
+        // beanDefinitionBuilder.addPropertyValue("domainClass", context
+        // .getDomainClassName());
         beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
                 .getFinderLookupStrategy());
         beanDefinitionBuilder.addPropertyValue("finderPrefix", context
@@ -371,40 +348,6 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     }
 
     /**
-     * {@code TypeFilter} implementation that detects classes that implement
-     * {@code Persistable} and are annotated with {@link Entity}.
-     * 
-     * @author Oliver Gierke - gierke@synyx.de
-     */
-    static class PersistableTypeFilter implements TypeFilter {
-
-        private static final AnnotationTypeFilter ENTITY_ANNOTATION_FILTER =
-                new AnnotationTypeFilter(Entity.class);
-        private static final AssignableTypeFilter PERSISTABLE_FILTER =
-                new AssignableTypeFilter(Persistable.class);
-
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.springframework.core.type.filter.TypeFilter#match(org.springframework
-         * .core.type.classreading.MetadataReader,
-         * org.springframework.core.type.classreading.MetadataReaderFactory)
-         */
-        public boolean match(final MetadataReader metadataReader,
-                final MetadataReaderFactory metadataReaderFactory)
-                throws IOException {
-
-            // Matches on correct type AND annotation
-            return PERSISTABLE_FILTER.match(metadataReader,
-                    metadataReaderFactory)
-                    && ENTITY_ANNOTATION_FILTER.match(metadataReader,
-                            metadataReaderFactory);
-        }
-    }
-
-    /**
      * Custom {@link ClassPathScanningCandidateComponentProvider} that does not
      * skip abstract classes or interfaces.
      * 
@@ -437,7 +380,13 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         protected boolean isCandidateComponent(
                 AnnotatedBeanDefinition beanDefinition) {
 
-            return beanDefinition.getMetadata().isIndependent();
+            boolean isNonHadesInterfaces =
+                    !HADES_DAO_INTERFACE_NAMES.contains(beanDefinition
+                            .getBeanClassName());
+            boolean isTopLevelType =
+                    !beanDefinition.getMetadata().hasEnclosingClass();
+
+            return isNonHadesInterfaces && isTopLevelType;
         }
     }
 
