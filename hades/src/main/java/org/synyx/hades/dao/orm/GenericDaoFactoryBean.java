@@ -17,6 +17,8 @@
 package org.synyx.hades.dao.orm;
 
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,12 +31,12 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.synyx.hades.core.QueryLookupStrategy;
 import org.synyx.hades.dao.ExtendedGenericDao;
-import org.synyx.hades.dao.FinderExecuter;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.query.FinderMethod;
+import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.synyx.hades.domain.Persistable;
+import org.synyx.hades.util.ClassUtils;
 
 
 /**
@@ -53,33 +55,31 @@ import org.synyx.hades.domain.Persistable;
  * @author Eberhard Wolff
  * @param <T> the type of the entity to handle by the DAO
  */
-public class GenericDaoFactoryBean<T extends Persistable<?>> implements
+public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> implements
         FactoryBean, InitializingBean {
 
     @SuppressWarnings("unchecked")
     private static final Class<GenericJpaDao> DEFAULT_DAO_CLASS =
             GenericJpaDao.class;
 
-    private Class<? extends GenericDao<T, ?>> daoInterface;
-    private Class<T> domainClass;
+    private Class<? extends T> daoInterface;
     private Object customDaoImplementation;
     private EntityManager entityManager;
 
     @SuppressWarnings("unchecked")
-    private Class<? extends AbstractJpaFinder> daoClass;
+    private Class<? extends GenericDaoSupport> daoClass;
     private boolean configureManually;
 
     private QueryLookupStrategy queryLookupStrategy =
             QueryLookupStrategy.getDefault();
-    private String finderPrefix = AbstractJpaFinder.DEFAULT_FINDER_PREFIX;
+    private String finderPrefix = GenericDaoSupport.DEFAULT_FINDER_PREFIX;
 
 
-    public static <T extends Persistable<?>, D extends GenericDao<T, ?>> GenericDaoFactoryBean<T> create(
-            Class<T> domainClass,
-            Class<? extends GenericDao<T, ?>> daoInterface, EntityManager em) {
+    public static <T extends GenericDao<?, ?>> GenericDaoFactoryBean<T> create(
+            Class<T> daoInterface, EntityManager em) {
 
         GenericDaoFactoryBean<T> factory = new GenericDaoFactoryBean<T>();
-        factory.setDomainClass(domainClass);
+        // factory.setDomainClass(domainClass);
         factory.setDaoInterface(daoInterface);
         factory.setEntityManager(em);
 
@@ -94,8 +94,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      * @param daoInterface the daoInterface to set
      */
     @Required
-    public void setDaoInterface(
-            final Class<? extends GenericDao<T, ?>> daoInterface) {
+    public void setDaoInterface(final Class<? extends T> daoInterface) {
 
         Assert.notNull(daoInterface);
         Assert.isAssignable(GenericDao.class, daoInterface,
@@ -117,22 +116,6 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
 
 
     /**
-     * Setter to inject the domain class to manage.
-     * 
-     * @param domainClass the domainClass to set
-     */
-    @Required
-    public void setDomainClass(final Class<T> domainClass) {
-
-        Assert.notNull(domainClass);
-        Assert.isAssignable(Persistable.class, domainClass,
-                "Domain class has to implement at least Persistable!");
-
-        this.domainClass = domainClass;
-    }
-
-
-    /**
      * Setter to inject a custom DAO base class. If this setter is not called
      * the factory will use {@link GenericJpaDao} as implementation base class
      * as default.
@@ -140,7 +123,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      * @param daoClass the daoClass to set
      */
     @SuppressWarnings("unchecked")
-    public <D extends AbstractJpaFinder<T>> void setDaoClass(
+    public <D extends GenericDaoSupport<?>> void setDaoClass(
             final Class<D> daoClass) {
 
         if (null == daoClass) {
@@ -150,10 +133,10 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
             return;
         }
 
-        Assert.isAssignable(AbstractJpaFinder.class, daoClass,
+        Assert.isAssignable(GenericDaoSupport.class, daoClass,
                 "DAO base class has to extend AbstractJpaFinder!");
 
-        this.daoClass = (Class<AbstractJpaFinder<T>>) daoClass;
+        this.daoClass = (Class<GenericDaoSupport<?>>) daoClass;
         this.configureManually = true;
     }
 
@@ -175,13 +158,13 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      * Configures the method name prefix that triggers automatic finder
      * execution.
      * 
-     * @see AbstractJpaFinder#setFinderPrefix(String)
+     * @see GenericDaoSupport#setFinderPrefix(String)
      * @param finderPrefix
      */
     public void setFinderPrefix(String finderPrefix) {
 
         this.finderPrefix =
-                null == finderPrefix ? AbstractJpaFinder.DEFAULT_FINDER_PREFIX
+                null == finderPrefix ? GenericDaoSupport.DEFAULT_FINDER_PREFIX
                         : finderPrefix;
     }
 
@@ -207,11 +190,9 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
     public Object getObject() throws Exception {
 
         // Instantiate generic dao
-        AbstractJpaFinder<T> genericJpaDao = daoClass.newInstance();
+        GenericDaoSupport genericJpaDao = daoClass.newInstance();
         genericJpaDao.setEntityManager(entityManager);
-        genericJpaDao.setDomainClass(domainClass);
-        genericJpaDao.setCreateFinderQueries(queryLookupStrategy);
-        genericJpaDao.setFinderPrefix(finderPrefix);
+        genericJpaDao.setDomainClass(getDomainClass());
 
         genericJpaDao.afterPropertiesSet();
 
@@ -219,7 +200,7 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
         ProxyFactory result = new ProxyFactory();
         result.setTarget(genericJpaDao);
         result.setInterfaces(new Class[] { daoInterface });
-        result.addAdvice(new DelegatingMethodInterceptor());
+        result.addAdvice(new FinderExecuterMethodInterceptor());
 
         return result.getProxy();
     }
@@ -256,7 +237,10 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
     public void afterPropertiesSet() throws Exception {
 
         Assert.notNull(daoInterface);
-        Assert.notNull(domainClass);
+        if (null == getDomainClass()) {
+            throw new BeanCreationException(
+                    "Could not retrieve domain class from interface. Make sure it extends GenericDao.");
+        }
 
         if (null == customDaoImplementation && hasCustomMethod()) {
 
@@ -316,6 +300,18 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
         }
 
         return hasCustomMethod;
+    }
+
+
+    /**
+     * Returns the domain class from the DAO interface.
+     * 
+     * @return
+     */
+
+    public Class<? extends Persistable<?>> getDomainClass() {
+
+        return ClassUtils.getDomainClass(daoInterface);
     }
 
 
@@ -390,7 +386,33 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    private class DelegatingMethodInterceptor implements MethodInterceptor {
+    class FinderExecuterMethodInterceptor implements MethodInterceptor {
+
+        private Map<Method, FinderMethod> queries =
+                new ConcurrentHashMap<Method, FinderMethod>();
+
+
+        /**
+         * Creates a new {@link FinderExecuterMethodInterceptor}. Builds a model
+         * of {@link FinderMethod}s to be invoked on execution of DAO interface
+         * methods.
+         */
+        public FinderExecuterMethodInterceptor() {
+
+            for (Method method : daoInterface.getMethods()) {
+
+                if (isFinderMethod(method)) {
+
+                    FinderMethod finder =
+                            new FinderMethod(method, finderPrefix,
+                                    getDomainClass(), queryLookupStrategy,
+                                    entityManager);
+
+                    queries.put(method, finder);
+                }
+            }
+        }
+
 
         /**
          * Returns if the given call is a call to a method of the custom
@@ -399,16 +421,29 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
          * @param invocation
          * @return
          */
-        private boolean isCallToCustomMethod(MethodInvocation invocation) {
+        private boolean isCallToCustomMethod(Method method) {
 
             if (null == customDaoImplementation) {
                 return false;
             }
 
-            Class<?> declaringClass =
-                    invocation.getMethod().getDeclaringClass();
+            Class<?> declaringClass = method.getDeclaringClass();
 
             return declaringClass.isInstance(customDaoImplementation);
+        }
+
+
+        /**
+         * Returns whether the given {@link Method} is to be regarded as finder
+         * method.
+         * 
+         * @param method
+         * @return
+         */
+        private boolean isFinderMethod(Method method) {
+
+            return !isCallToCustomMethod(method)
+                    && method.getName().startsWith(finderPrefix);
         }
 
 
@@ -419,36 +454,21 @@ public class GenericDaoFactoryBean<T extends Persistable<?>> implements
          * org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance
          * .intercept.MethodInvocation)
          */
-        @SuppressWarnings("unchecked")
         public Object invoke(final MethodInvocation invocation)
                 throws Throwable {
 
-            if (isCallToCustomMethod(invocation)) {
-
-                return invocation.getMethod().invoke(customDaoImplementation,
-                        invocation.getArguments());
-            }
-
             Method method = invocation.getMethod();
 
-            if (method.getName().startsWith(finderPrefix)) {
+            if (isCallToCustomMethod(method)) {
 
-                FinderExecuter<T> target =
-                        (FinderExecuter<T>) invocation.getThis();
+                return method.invoke(customDaoImplementation, invocation
+                        .getArguments());
+            }
 
-                Class<?> returnType = invocation.getMethod().getReturnType();
+            if (queries.containsKey(method)) {
 
-                // Execute finder for single object if domain class type is
-                // assignable to the methods return type, else finder for a
-                // list
-                // of objects
-                if (ClassUtils.isAssignable(domainClass, returnType)) {
-                    return target.executeObjectFinder(method, invocation
-                            .getArguments());
-                } else {
-                    return target.executeFinder(method, invocation
-                            .getArguments());
-                }
+                return queries.get(method).executeQuery(
+                        invocation.getArguments());
             }
 
             return invocation.proceed();

@@ -44,13 +44,7 @@ import org.synyx.hades.domain.support.PageImpl;
  */
 @Repository
 public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
-        extends AbstractJpaFinder<T> implements GenericDao<T, PK> {
-
-    private static final String COUNT_QUERY_STRING =
-            "select count(x) from %s x";
-
-    private static final String DELETE_ALL_QUERY_STRING = "delete from %s x";
-
+        extends GenericDaoSupport<T> implements GenericDao<T, PK> {
 
     /*
      * (non-Javadoc)
@@ -70,9 +64,8 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public void deleteAll() {
 
-        getEntityManager().createQuery(
-                String.format(DELETE_ALL_QUERY_STRING, getDomainClass()
-                        .getSimpleName())).executeUpdate();
+        getEntityManager().createQuery(getDeleteAllQueryString())
+                .executeUpdate();
     }
 
 
@@ -156,9 +149,8 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public Long count() {
 
-        return (Long) getEntityManager().createQuery(
-                String.format(COUNT_QUERY_STRING, getDomainClass()
-                        .getSimpleName())).getSingleResult();
+        return (Long) getEntityManager().createQuery(getCountQueryString())
+                .getSingleResult();
     }
 
 
@@ -243,17 +235,6 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
         jpaQuery.setMaxResults(pageable.getPageSize());
 
         return new PageImpl<T>(jpaQuery.getResultList(), pageable, count());
-    }
-
-
-    /**
-     * Returns the query string to delete all entities.
-     * 
-     * @return
-     */
-    protected String getDeleteAllQueryString() {
-
-        return DELETE_ALL_QUERY_STRING;
     }
 
 
