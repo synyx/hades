@@ -68,7 +68,8 @@ public class DaoContext extends DaoConfigContext {
 
 
     /**
-     * Creates a {@link DaoContext} from the given DAO interface name.
+     * Creates a {@link DaoContext} from the given DAO interface name. Derives
+     * DAO id, as well as the package name to use from the given interface.
      * 
      * @param interfaceName
      * @param parent
@@ -84,7 +85,23 @@ public class DaoContext extends DaoConfigContext {
                 StringUtils.uncapitalize(shortName).substring(0,
                         shortName.lastIndexOf(postfix));
 
-        return new DaoContext(id, parent);
+        final String packageName =
+                interfaceName.substring(0,
+                        interfaceName.lastIndexOf(shortName) - 1);
+
+        return new DaoContext(id, parent) {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.synyx.hades.dao.config.DaoContext#getDaoPackageName()
+             */
+            @Override
+            protected String getDaoPackageName() {
+
+                return packageName;
+            }
+        };
     }
 
 
