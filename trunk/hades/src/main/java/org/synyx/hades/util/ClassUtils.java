@@ -35,7 +35,7 @@ public abstract class ClassUtils {
     /**
      * Hades own DAO interfaces.
      */
-    public static final List<String> HADES_DAO_INTERFACE_NAMES =
+    private static final List<String> HADES_DAO_INTERFACE_NAMES =
             Arrays.asList(GenericDao.class.getName(), ExtendedGenericDao.class
                     .getName());
 
@@ -100,5 +100,29 @@ public abstract class ClassUtils {
         boolean isGenericDao = type.getRawType().equals(GenericDao.class);
 
         return isGenericDao || isExtendedGenericDao;
+    }
+
+
+    /**
+     * Returns wthere the given type is a Hades DAO interface.
+     * 
+     * @param interfaze
+     * @return
+     */
+    public static boolean isHadesDaoInterface(Class<?> interfaze) {
+
+        return isHadesDaoInterface(interfaze.getName());
+    }
+
+
+    /**
+     * Returns whether the given type name is a Hades DAO interface name.
+     * 
+     * @param interfaceName
+     * @return
+     */
+    public static boolean isHadesDaoInterface(String interfaceName) {
+
+        return HADES_DAO_INTERFACE_NAMES.contains(interfaceName);
     }
 }
