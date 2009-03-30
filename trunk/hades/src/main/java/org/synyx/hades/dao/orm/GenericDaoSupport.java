@@ -19,11 +19,8 @@ package org.synyx.hades.dao.orm;
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.synyx.hades.domain.Persistable;
 
@@ -33,12 +30,8 @@ import org.synyx.hades.domain.Persistable;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @param <T> the type of entity to be handled
- * @param <PK> the type of the entity's identifier
  */
-public abstract class GenericDaoSupport<T extends Persistable<?>> implements
-        InitializingBean {
-
-    public static final String DEFAULT_FINDER_PREFIX = "findBy";
+public abstract class GenericDaoSupport<T extends Persistable<?>> {
 
     private EntityManager entityManager = null;
     private Class<T> domainClass = null;
@@ -60,10 +53,11 @@ public abstract class GenericDaoSupport<T extends Persistable<?>> implements
      * 
      * @param entityManager
      */
-    @PersistenceContext
     public void setEntityManager(final EntityManager entityManager) {
 
         this.entityManager = entityManager;
+
+        validate();
     }
 
 
@@ -83,7 +77,6 @@ public abstract class GenericDaoSupport<T extends Persistable<?>> implements
      * 
      * @param domainClass the domain class to set
      */
-    @Required
     public void setDomainClass(final Class<T> domainClass) {
 
         this.domainClass = domainClass;
@@ -152,14 +145,14 @@ public abstract class GenericDaoSupport<T extends Persistable<?>> implements
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+    /**
+     * Callback method to validate the class setup.
      */
-    public void afterPropertiesSet() throws Exception {
+    public void validate() {
 
-        Assert.notNull(entityManager, "EntityManager must not be null!");
+        if (null == entityManager) {
+            throw new IllegalArgumentException(
+                    "EntityManager must not be null!");
+        }
     }
 }

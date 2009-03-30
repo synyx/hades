@@ -16,7 +16,7 @@
 
 package org.synyx.hades.dao.orm.support;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.*;
 
 import java.io.Serializable;
 
@@ -26,7 +26,7 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
+import org.synyx.hades.dao.orm.GenericDaoFactory;
 import org.synyx.hades.domain.User;
 
 
@@ -35,9 +35,9 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class GenericDaoFactoryBeanUnitTest {
+public class GenericDaoFactoryUnitTest {
 
-    private GenericDaoFactoryBean<SampleDao> factory;
+    private GenericDaoFactory factory;
 
     private EntityManager entityManager;
 
@@ -50,8 +50,7 @@ public class GenericDaoFactoryBeanUnitTest {
         EasyMock.replay(entityManager);
 
         // Setup standard factory configuration
-        factory = GenericDaoFactoryBean.create(SampleDao.class, entityManager);
-        factory.setEntityManager(entityManager);
+        factory = GenericDaoFactory.create(entityManager);
     }
 
 
@@ -64,35 +63,9 @@ public class GenericDaoFactoryBeanUnitTest {
     @Test
     public void setsUpBasicInstanceCorrectly() throws Exception {
 
-        factory.afterPropertiesSet();
+        SampleDao userDao = factory.getDao(SampleDao.class);
 
-        SampleDao sampleDao = (SampleDao) factory.getObject();
-
-        assertNotNull(sampleDao);
-    }
-
-
-    /**
-     * Assert that the factory rejects calls to {@code
-     * GenericDaoFactoryBean#setDaoInterface(Class)} with {@code null} or any
-     * other parameter instance not implementing {@code GenericDao}.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsNullDaoInterface() {
-
-        factory.setDaoInterface(null);
-    }
-
-
-    /**
-     * Assert that the factory detects unset DAO class and interface in {@code
-     * GenericDaoFactoryBean#afterPropertiesSet()}.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsUnsetDaoInterface() throws Exception {
-
-        factory = new GenericDaoFactoryBean<SampleDao>();
-        factory.afterPropertiesSet();
+        assertNotNull(userDao);
     }
 
 
@@ -108,11 +81,8 @@ public class GenericDaoFactoryBeanUnitTest {
     public void capturesMissingCustomImplementationAndProvidesInterfacename()
             throws Exception {
 
-        factory.setDaoInterface(SampleCustomDao.class);
-
         try {
-            factory.afterPropertiesSet();
-            fail("Expected BeanCreationException");
+            factory.getDao(SampleCustomDao.class);
         } catch (IllegalArgumentException e) {
             assertTrue(e.getMessage().contains(SampleCustomDao.class.getName()));
         }

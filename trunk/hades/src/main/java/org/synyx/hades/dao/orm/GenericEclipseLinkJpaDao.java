@@ -225,13 +225,12 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.orm.AbstractJpaFinder#afterPropertiesSet()
+     * @see org.synyx.hades.dao.orm.GenericDaoSupport#validate()
      */
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void validate() {
 
-        super.afterPropertiesSet();
-
+        super.validate();
         assertEntityManagerClass(JpaEntityManager.class);
     }
 }

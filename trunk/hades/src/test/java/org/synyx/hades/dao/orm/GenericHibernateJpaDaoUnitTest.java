@@ -69,7 +69,7 @@ public class GenericHibernateJpaDaoUnitTest {
 
         EasyMock.replay(entityManager);
 
-        hibernateDao.afterPropertiesSet();
+        hibernateDao.validate();
 
         EasyMock.verify(entityManager);
     }
@@ -89,6 +89,6 @@ public class GenericHibernateJpaDaoUnitTest {
 
         replay(entityManager);
 
-        hibernateDao.afterPropertiesSet();
+        hibernateDao.validate();
     }
 }
