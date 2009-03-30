@@ -7,8 +7,6 @@
 
 	<import resource="infrastructure.xml" />
 
-	<hades:dao-config package="org.synyx.hades.dao">
-		
-	</hades:dao-config>
+	<hades:dao-config base-package="org.synyx.**.dao" />
 
 </beans>
