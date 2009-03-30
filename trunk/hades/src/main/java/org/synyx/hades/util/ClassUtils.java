@@ -20,6 +20,8 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Persistable;
@@ -124,5 +126,44 @@ public abstract class ClassUtils {
     public static boolean isHadesDaoInterface(String interfaceName) {
 
         return HADES_DAO_INTERFACE_NAMES.contains(interfaceName);
+    }
+
+
+    /**
+     * Returns whether the given {@link EntityManager} is of the given type.
+     * 
+     * @param em
+     * @param type the fully qualified expected {@link EntityManager} type.
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean isEntityManagerOfType(EntityManager em, String type) {
+
+        try {
+
+            Class<? extends EntityManager> emType =
+                    (Class<? extends EntityManager>) Class.forName(type);
+
+            emType.cast(em);
+
+            return true;
+
+        } catch (ClassNotFoundException e) {
+            return false;
+        } catch (ClassCastException e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Returns if the DAO bean to be created shall implement
+     * {@link ExtendedGenericDao}.
+     * 
+     * @return
+     */
+    public static boolean isExtendedDaoInterface(Class<?> daoInterface) {
+
+        return ExtendedGenericDao.class.isAssignableFrom(daoInterface);
     }
 }
