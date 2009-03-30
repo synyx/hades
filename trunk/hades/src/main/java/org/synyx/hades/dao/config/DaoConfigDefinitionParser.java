@@ -145,7 +145,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
         Set<BeanDefinition> findCandidateComponents =
                 scanner.findCandidateComponents(configContext
-                        .getDaoPackageName());
+                        .getDaoBasePackageName());
 
         Set<String> interfaceNames = new HashSet<String>();
         for (BeanDefinition definition : findCandidateComponents) {
@@ -194,8 +194,6 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
         beanDefinitionBuilder.addPropertyValue("daoInterface", context
                 .getInterfaceName());
-        // beanDefinitionBuilder.addPropertyValue("domainClass", context
-        // .getDomainClassName());
         beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
                 .getFinderLookupStrategy());
         beanDefinitionBuilder.addPropertyValue("finderPrefix", context
@@ -306,7 +304,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 new ClassPathScanningCandidateComponentProvider(false);
         provider.addIncludeFilter(new RegexPatternTypeFilter(pattern));
         Set<BeanDefinition> definitions =
-                provider.findCandidateComponents(context.getDaoPackageName());
+                provider.findCandidateComponents(context
+                        .getDaoBasePackageName());
 
         return 0 == definitions.size() ? null : definitions.iterator().next();
     }
@@ -381,8 +380,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 AnnotatedBeanDefinition beanDefinition) {
 
             boolean isNonHadesInterfaces =
-                    !HADES_DAO_INTERFACE_NAMES.contains(beanDefinition
-                            .getBeanClassName());
+                    !isHadesDaoInterface(beanDefinition.getBeanClassName());
             boolean isTopLevelType =
                     !beanDefinition.getMetadata().hasEnclosingClass();
 
