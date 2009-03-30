@@ -42,7 +42,7 @@ public class DaoConfigContext {
 
     protected static final String FINDER_LOOKUP_STRATEGY =
             "finder-lookup-strategy";
-    protected static final String DAO_PACKAGE_NAME = "package";
+    protected static final String DAO_PACKAGE_NAME = "base-package";
     protected static final String DAO_NAME_POSTFIX = "dao-name-postfix";
     protected static final String DAO_IMPL_POSTFIX = "dao-impl-postfix";
     protected static final String DAO_INTERFACE_POSTFIX =
@@ -163,7 +163,7 @@ public class DaoConfigContext {
      * 
      * @return the daoPackageName
      */
-    protected String getDaoPackageName() {
+    protected String getDaoBasePackageName() {
 
         return element.getAttribute(DAO_PACKAGE_NAME);
     }

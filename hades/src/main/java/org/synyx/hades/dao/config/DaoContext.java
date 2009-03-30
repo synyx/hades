@@ -97,7 +97,7 @@ public class DaoContext extends DaoConfigContext {
              * @see org.synyx.hades.dao.config.DaoContext#getDaoPackageName()
              */
             @Override
-            protected String getDaoPackageName() {
+            protected String getDaoBasePackageName() {
 
                 return packageName;
             }
@@ -147,7 +147,7 @@ public class DaoContext extends DaoConfigContext {
      */
     public String getInterfaceName() {
 
-        return getDaoPackageName() + "." + StringUtils.capitalize(id)
+        return getDaoBasePackageName() + "." + StringUtils.capitalize(id)
                 + getDaoInterfacePostfix();
     }
 
@@ -160,7 +160,7 @@ public class DaoContext extends DaoConfigContext {
      */
     public String getImplementationClassName() {
 
-        return getDaoPackageName() + "." + StringUtils.capitalize(id)
+        return getDaoBasePackageName() + "." + StringUtils.capitalize(id)
                 + getDaoImplPostfix();
     }
 
@@ -219,11 +219,11 @@ public class DaoContext extends DaoConfigContext {
      * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoPackageName()
      */
     @Override
-    protected String getDaoPackageName() {
+    protected String getDaoBasePackageName() {
 
         String daoPackageName = element.getAttribute(DAO_PACKAGE_NAME);
         return StringUtils.hasText(daoPackageName) ? daoPackageName : parent
-                .getDaoPackageName();
+                .getDaoBasePackageName();
     }
 
 
