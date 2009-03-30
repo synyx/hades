@@ -24,7 +24,7 @@
 		
 	-->
 	<hades:dao-config
-		package="org.synyx.hades.dao" >
+		base-package="org.synyx.hades.dao" >
 
 		<hades:dao id="user" />
 		<hades:dao id="role" />
@@ -35,7 +35,7 @@
 	<bean id="userDaoImpl" class="org.synyx.hades.dao.UserDaoImpl" />
 
 	<hades:dao-config
-		package="org.synyx.hades.dao"
+		base-package="org.synyx.hades.dao"
 		dao-name-postfix="ExtendedDao"
 		dao-interface-postfix="ExtendedDao">
 		<hades:dao id="user" />
