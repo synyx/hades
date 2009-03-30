@@ -49,8 +49,9 @@ public enum QueryLookupStrategy {
     },
 
     /**
-     * Tries to lookup a named query but creates a query from the method name if
-     * no named query found.
+     * Tries to lookup a declared query (either named query or an annotated
+     * {@link org.synyx.hades.dao.Query} but creates a query from the method
+     * name if no declared query found.
      */
     CREATE_IF_NOT_FOUND {
 
