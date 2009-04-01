@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
@@ -33,9 +34,8 @@ import org.synyx.hades.domain.support.PageImpl;
 
 
 /**
- * Default implementation of the <code>GenericDao</code> interface. Use
- * <code>GenericDaoFactoryBean</code> to create instances of it. Furthermore it
- * is able to execute named queries.
+ * Default implementation of the {@link GenericDao} interface. This will offer
+ * you a more sophisticated interface than the plain {@link EntityManager}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
@@ -45,6 +45,27 @@ import org.synyx.hades.domain.support.PageImpl;
 @Repository
 public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
         extends GenericDaoSupport<T> implements GenericDao<T, PK> {
+
+    /**
+     * Factory method to create {@link GenericJpaDao} instances.
+     * 
+     * @param <T> the type of the entity to handle
+     * @param <PK> the type of the entity's identifier
+     * @param entityManager the {@link EntityManager} backing the DAO
+     * @param domainClass the domain class to handle
+     * @return
+     */
+    public static <T extends Persistable<PK>, PK extends Serializable> GenericJpaDao<T, PK> create(
+            final EntityManager entityManager, final Class<T> domainClass) {
+
+        GenericJpaDao<T, PK> dao = new GenericJpaDao<T, PK>();
+        dao.setEntityManager(entityManager);
+        dao.setDomainClass(domainClass);
+        dao.validate();
+
+        return dao;
+    }
+
 
     /*
      * (non-Javadoc)
