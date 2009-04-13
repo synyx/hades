@@ -4,7 +4,7 @@
 	<groupId>org.synyx.hades</groupId>
 	<artifactId>hades-sample</artifactId>
 	<name>Hades Sample</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	
 	<description>
 		Small sample project showing the usage of Hades.
@@ -22,7 +22,7 @@
 		<!-- Hades -->
 		<dependency>
 			<groupId>org.synyx.hades</groupId>
-			<artifactId>hades</artifactId>
+			<artifactId>org.synyx.hades</artifactId>
 			<version>0.5-SNAPSHOT</version>
 		</dependency>
 		
