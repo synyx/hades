@@ -27,7 +27,7 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>V0.4</releaseinfo>
+    <releaseinfo>V0.5</releaseinfo>
 
     <pubdate>06.12.2008</pubdate>
 
@@ -149,6 +149,18 @@
 
         <revremark>Added chapter on Hades Eclipse plugin, removed remarks on
         configuration of dao base class, some typos</revremark>
+      </revision>
+
+      <revision>
+        <date>02.04.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Preare version 0.5</revremark>
       </revision>
     </revhistory>
   </bookinfo>
@@ -873,8 +885,6 @@ public class Role implements Persistable&lt;Integer&gt; {
             <areaspec>
               <area coords="1" id="simple-dao-config.infrastructure-import" />
 
-              <area coords="5" id="simple-dao-config.domain-class" />
-
               <area coords="6" id="simple-dao-config.dao-interface" />
             </areaspec>
 
@@ -882,13 +892,11 @@ public class Role implements Persistable&lt;Integer&gt; {
 
 &lt;bean id="userDao" 
     class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean"&gt;
-  &lt;property name="domainClass" value="org.synyx.hades.domain.User" /&gt;
   &lt;property name="daoInterface" value="org.synyx.hades.dao.UserDao" /&gt;
 &lt;/bean&gt;
 
 &lt;bean id="roleDao"
     class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean"&gt;
-  &lt;property name="domainClass" value="org.synyx.hades.domain.Role" /&gt;
   &lt;property name="daoInterface" value="org.synyx.hades.dao.RoleDao" /&gt;
 &lt;/bean&gt;</programlisting>
 
@@ -897,13 +905,7 @@ public class Role implements Persistable&lt;Integer&gt; {
                 <para>Import infrastructure configuration. Supposed we have
                 combined the configuration examples shown in <xref
                 linkend="infrastructure" /> into a file named
-                <filename>infrastructure.xml</filename>.</para>
-              </callout>
-
-              <callout arearefs="simple-dao-config.domain-class">
-                <para>Declare the domain class that you want to persist. This
-                class has to implement
-                <interfacename>Persistable</interfacename>.</para>
+                <filename>infrastructure.xml</filename></para>
               </callout>
 
               <callout arearefs="simple-dao-config.dao-interface">
@@ -961,7 +963,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
             <area coords="12" id="config.dao-config" />
 
-            <area coords="16" id="config.dao-instance" />
+            <area coords="13" id="config.dao-instance" />
           </areaspec>
 
           <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -975,10 +977,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
   &lt;import resource="infrastructure.xml" /&gt;
 
-  &lt;hades:dao-config
-    entity-package-name="org.synyx.hades.domain"
-    dao-package-name="org.synyx.hades.dao"&gt;
-
+  &lt;hades:dao-config base-package="org.synyx.hades.dao"&gt;
     &lt;hades:dao id="user" /&gt;
     &lt;hades:dao id="role" /&gt;
   &lt;/hades:dao-config&gt;
@@ -1004,14 +1003,12 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
               <para>Declare a single DAO instance. Each <code
               language="xml">&lt;dao /&gt;</code> element will result in a
               single declaration of a
-              <classname>GenericDaoFactoryBean</classname> with a domain class
-              set to <code>${dao-config.entity-package-name}.${dao.id}</code>
-              and a DAO interface set to
-              <code>${dao-config.dao-package-name}.${dao.id}.${dao-config.dao-name-postfix}</code>
+              <classname>GenericDaoFactoryBean</classname> with a DAO
+              interface set to
+              <code>${dao-config.base-package}.${dao.id}.${dao-config.dao-name-postfix}</code>
               where <code>dao-name-postfix</code> defaults to
-              <code>Dao</code>. Given this example this will result in a
-              domain class <classname>org.synyx.hades.domain.User</classname>
-              and a DAO interface of
+              <code>Dao</code>. Given this example this will result in a DAO
+              interface of
               <interfacename>org.synyx.hades.dao.UserDao</interfacename>.</para>
             </callout>
           </calloutlist>
@@ -1048,19 +1045,17 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
   &lt;import resource="infrastructure.xml" /&gt;
 
-  &lt;hades:dao-config
-    entity-package-name="org.synyx.hades.domain"
-    dao-package-name="org.synyx.hades.dao" /&gt;
+  &lt;hades:dao-config base-package="org.synyx.hades.dao" /&gt;
 
 &lt;/beans&gt;</programlisting>
         </example>
 
-        <para>This will trigger auto detection mechanism of DAOs that looks
-        for entity classes implementing
-        <interfacename>Persistable</interfacename> in the package you defined
-        in <code>entity-package-name</code>. For each candidate found it will
-        set up an DAO instances supposing you've placed the DAO interfaces in
-        the configured package and named them as described above.</para>
+        <para>This will trigger auto detection mechanism of DAOs that extend
+        <interfacename>GenericDao</interfacename> or
+        <interfacename>ExtendedGenericDao</interfacename>. For each candidate
+        found it will set up an DAO instances supposing you've placed the DAO
+        interfaces in the configured package and named them as described
+        above.</para>
 
         <note>
           <para>You have to be careful to decide for the correct DAO base
@@ -1236,6 +1231,12 @@ public class User implements Persistable&lt;Long&gt; {
           named query for a single instance truely returns only one
           instance.</para>
         </simplesect>
+      </section>
+
+      <section>
+        <title>Using @Query</title>
+
+        <para>TODO</para>
       </section>
     </section>
 
@@ -1471,11 +1472,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
             <area coords="4" id="hibernate-dao-config.dao-base-class" />
           </areaspec>
 
-          <programlisting language="xml">&lt;dao-config
-  entity-package-name="org.synyx.hades.domain"
-  dao-package-name="org.synyx.hades.dao"
-  dao-base-class="org.synyx.hades.dao.orm.GenericHibernateJpaDao"&gt;
-
+          <programlisting language="xml">&lt;dao-config base-package="org.synyx.hades.dao"&gt;
   &lt;dao name="user" /&gt;
   &lt;dao name="role" /&gt;
 &lt;/dao-config&gt;</programlisting>
@@ -1562,13 +1559,11 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <example>
           <title>Configuration example</title>
 
-          <para><programlisting language="xml">&lt;dao-config dao-package-name="foo.bar.dao" 
-  entity-package-name="foo.bar.domain"&gt;
+          <para><programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
   &lt;dao id="user" /&gt;
 &lt;/dao-config&gt;
 
-&lt;dao-config dao-package-name="foo.bar.dao" 
-  entity-package-name="foo.bar.domain"
+&lt;dao-config base-package="foo.bar.dao"
   dao-impl-postfix="FooBar"&gt;
   &lt;dao id="user" /&gt;
 &lt;/dao-config&gt;</programlisting></para>
@@ -1610,9 +1605,9 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <title>Code completion for XML elements attributes</title>
 
         <para>By handing over the Hades XSD you gain code completion for XML
-        elements and especially attributes. This regards entity-package-name
-        and dao-package-name in particular as well as the custom-element-ref
-        attribute in the &lt;dao /&gt; element.</para>
+        elements and especially attributes. This regards
+        <code>base-package</code> in particular as well as the
+        custom-element-ref attribute in the &lt;dao /&gt; element.</para>
       </simplesect>
 
       <simplesect>
@@ -1685,20 +1680,14 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 
           <tbody>
             <row>
-              <entry><code>entity-package-name</code></entry>
-
-              <entry>Defines the package to be used to construct entity class
-              names from or to be scanned for entity classes in auto detection
-              mode.</entry>
-            </row>
-
-            <row>
-              <entry><code>dao-package-name</code></entry>
+              <entry><code>base-package</code></entry>
 
               <entry>Defines the package to be used to construct DAO inteface
               names from or to be scanned for DAO interfaces extending
               <interfacename>GenericDao</interfacename> in auto detection
-              mode.</entry>
+              mode. All packages below the configured package will be scanned,
+              too. In auto configuration mode (no nested <code>&lt;dao
+              /&gt;</code> elements) wildcards are also allowed.</entry>
             </row>
 
             <row>
@@ -1755,9 +1744,8 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       <title>The <code>&lt;dao /&gt;</code> element</title>
 
       <para>The <code>&lt;dao /&gt;</code> element can contain all attributes
-      of <code>&lt;dao-config /&gt;</code> except
-      <code>entity-package-name</code> and <code>dao-package-name</code>. This
-      will result in overriding the values configured in the surrounding
+      of <code>&lt;dao-config /&gt;</code> except <code>base-package</code>.
+      This will result in overriding the values configured in the surrounding
       <code>&lt;dao-config /&gt;</code> block. Thus here we will only document
       extended attributes.</para>
 
@@ -1776,7 +1764,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
               <entry>Defines the base name DAO interface names will be derived
               from. The interface will get <code>dao-interface-postfix</code>
               appended and tried to be looked up in
-              <code>dao-package-name</code>.</entry>
+              <code>base-package</code>.</entry>
             </row>
 
             <row>
