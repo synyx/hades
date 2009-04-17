@@ -1,4 +1,4 @@
-package org.synyx.hades.sample.dao;
+package org.synyx.hades.sample.dao.simple;
 
 import java.util.List;
 
