@@ -1,10 +1,11 @@
-package org.synyx.hades.sample.dao;
+package org.synyx.hades.sample.dao.impl;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.synyx.hades.sample.dao.UserDaoCustom;
 import org.synyx.hades.sample.domain.User;
 
 
