@@ -268,7 +268,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             if (log.isDebugEnabled()) {
                 log.debug("Registering custom DAO implementation: "
                         + context.getImplementationBeanName() + " "
-                        + context.getImplementationClassName());
+                        + beanDefinition.getBeanClassName());
             }
 
             parserContext.registerBeanComponent(new BeanComponentDefinition(
@@ -297,7 +297,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private BeanDefinition detectCustomImplementation(final DaoContext context) {
 
         // Build pattern to lookup implementation class
-        Pattern pattern = Pattern.compile(context.getImplementationClassName());
+        Pattern pattern =
+                Pattern.compile(".*" + context.getImplementationClassName());
 
         // Build classpath scanner and lookup bean definition
         ClassPathScanningCandidateComponentProvider provider =

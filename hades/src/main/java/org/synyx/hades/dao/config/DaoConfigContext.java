@@ -36,9 +36,9 @@ import org.w3c.dom.NodeList;
  */
 public class DaoConfigContext {
 
-    protected static final String DEFAULT_DAO_BEAN_POSTFIX = "Dao";
-    protected static final String DEFAULT_DAO_INTERFACE_POSTFIX = "Dao";
-    protected static final String DEFAULT_DAO_IMPL_POSTFIX = "DaoImpl";
+    // protected static final String DEFAULT_DAO_BEAN_POSTFIX = "Dao";
+    // protected static final String DEFAULT_DAO_INTERFACE_POSTFIX = "Dao";
+    protected static final String DEFAULT_DAO_IMPL_POSTFIX = "Impl";
 
     protected static final String FINDER_LOOKUP_STRATEGY =
             "finder-lookup-strategy";
@@ -166,38 +166,6 @@ public class DaoConfigContext {
     protected String getDaoBasePackageName() {
 
         return element.getAttribute(DAO_PACKAGE_NAME);
-    }
-
-
-    /**
-     * Returns the DAO interface postfix. This postfix is used to construct the
-     * DAO interface name from the {@code dao} configuration elements. Defaults
-     * to {@value #DEFAULT_DAO_BEAN_POSTFIX}.
-     * 
-     * @return the daoClassPostfix
-     */
-    protected String getDaoInterfacePostfix() {
-
-        String daoInterfacePostfix =
-                element.getAttribute(DAO_INTERFACE_POSTFIX);
-
-        return StringUtils.hasText(daoInterfacePostfix) ? daoInterfacePostfix
-                : DEFAULT_DAO_INTERFACE_POSTFIX;
-    }
-
-
-    /**
-     * Returns the DAO bean name postfix. Defaults to
-     * {@value #DEFAULT_DAO_BEAN_POSTFIX}.
-     * 
-     * @return the daoNamePostfix
-     */
-    protected String getDaoNamePostfix() {
-
-        String postfix = element.getAttribute(DAO_NAME_POSTFIX);
-
-        return StringUtils.hasText(postfix) ? postfix
-                : DEFAULT_DAO_BEAN_POSTFIX;
     }
 
 

@@ -78,12 +78,9 @@ public class DaoContext extends DaoConfigContext {
     public static DaoContext fromInterfaceName(String interfaceName,
             DaoConfigContext parent) {
 
-        String postfix = parent.getDaoInterfacePostfix();
         String shortName = ClassUtils.getShortName(interfaceName);
 
-        String id =
-                StringUtils.uncapitalize(shortName).substring(0,
-                        shortName.lastIndexOf(postfix));
+        String id = StringUtils.uncapitalize(shortName);
 
         final String packageName =
                 interfaceName.substring(0,
@@ -136,7 +133,7 @@ public class DaoContext extends DaoConfigContext {
      */
     public String getBeanName() {
 
-        return id + getDaoNamePostfix();
+        return id;
     }
 
 
@@ -147,21 +144,19 @@ public class DaoContext extends DaoConfigContext {
      */
     public String getInterfaceName() {
 
-        return getDaoBasePackageName() + "." + StringUtils.capitalize(id)
-                + getDaoInterfacePostfix();
+        return getDaoBasePackageName() + "." + StringUtils.capitalize(id);
     }
 
 
     /**
-     * Returns the full qualified class name of a possible custom DAO
-     * implementation class to detect.
+     * Returns the class name of a possible custom DAO implementation class to
+     * detect.
      * 
      * @return
      */
     public String getImplementationClassName() {
 
-        return getDaoBasePackageName() + "." + StringUtils.capitalize(id)
-                + getDaoImplPostfix();
+        return StringUtils.capitalize(id) + getDaoImplPostfix();
     }
 
 
@@ -230,20 +225,6 @@ public class DaoContext extends DaoConfigContext {
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoNamePostfix()
-     */
-    @Override
-    protected String getDaoNamePostfix() {
-
-        String daoNamePostfix = element.getAttribute(DAO_NAME_POSTFIX);
-        return StringUtils.hasText(daoNamePostfix) ? daoNamePostfix : parent
-                .getDaoNamePostfix();
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoImplPostfix()
      */
     @Override
@@ -252,20 +233,5 @@ public class DaoContext extends DaoConfigContext {
         String daoImplPostfix = element.getAttribute(DAO_IMPL_POSTFIX);
         return StringUtils.hasLength(daoImplPostfix) ? daoImplPostfix : parent
                 .getDaoImplPostfix();
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoInterfacePostfix()
-     */
-    @Override
-    protected String getDaoInterfacePostfix() {
-
-        String daoInterfacePostfix =
-                element.getAttribute(DAO_INTERFACE_POSTFIX);
-        return StringUtils.hasText(daoInterfacePostfix) ? daoInterfacePostfix
-                : parent.getDaoInterfacePostfix();
     }
 }

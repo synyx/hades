@@ -42,8 +42,6 @@
 	</xsd:element>
 	
 	<xsd:attributeGroup name="dao-attributes">
-		<xsd:attribute name="dao-interface-postfix" type="xsd:string" />
-		<xsd:attribute name="dao-name-postfix" type="xsd:string" />
 		<xsd:attribute name="dao-impl-postfix" type="xsd:string" /> 
 		<xsd:attribute name="finder-lookup-strategy" type="finder-strategy" />
 		<xsd:attribute name="finder-prefix" type="xsd:string">
