@@ -46,7 +46,7 @@ public class BasicSample {
         User user = new User();
         user.setUsername("username");
 
-        userDao.save(user);
+        user = userDao.save(user);
 
         em.getTransaction().commit();
 

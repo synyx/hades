@@ -37,7 +37,7 @@ public class HadesSimpleUserDaoSample {
         User user = new User();
         user.setUsername("username");
 
-        userDao.save(user);
+        user = userDao.save(user);
 
         assertEquals(user, userDao.readByPrimaryKey(user.getId()));
     }
@@ -49,7 +49,7 @@ public class HadesSimpleUserDaoSample {
         User user = new User();
         user.setUsername("foobar");
 
-        userDao.save(user);
+        user = userDao.save(user);
 
         List<User> users = userDao.findByUsername("foobar");
 
