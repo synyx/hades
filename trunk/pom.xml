@@ -14,6 +14,7 @@
 		<module>hades-eclipse-feature</module>
 		-->
 	</modules>
+	
 	<properties>
 		<plugin.version>0.1</plugin.version>
 	</properties>
@@ -31,4 +32,16 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<distributionManagement>
+		<repository>
+			<id>nexus.synyx.de</id>
+			<url>http://nexus.synyx.de/content/repositories/public-release</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus.synyx.de</id>
+			<url>http://nexus.synyx.de/content/repositories/public-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
 </project>
