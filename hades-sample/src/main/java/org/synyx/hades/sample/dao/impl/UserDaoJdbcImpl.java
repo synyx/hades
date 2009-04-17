@@ -1,4 +1,4 @@
-package org.synyx.hades.sample.dao;
+package org.synyx.hades.sample.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.synyx.hades.sample.dao.UserDaoCustom;
 import org.synyx.hades.sample.domain.User;
 
 
