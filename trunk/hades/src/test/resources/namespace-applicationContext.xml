@@ -26,19 +26,17 @@
 	<hades:dao-config
 		base-package="org.synyx.hades.dao" >
 
-		<hades:dao id="user" />
-		<hades:dao id="role" />
-		<hades:dao id="auditableUser" finder-lookup-strategy="create" />
+		<hades:dao id="userDao" />
+		<hades:dao id="roleDao" />
+		<hades:dao id="auditableUserDao" finder-lookup-strategy="create" />
 	</hades:dao-config>
 	
 	<!-- Register custom DAO implementation explicitly -->
 	<bean id="userDaoImpl" class="org.synyx.hades.dao.UserDaoImpl" />
 
 	<hades:dao-config
-		base-package="org.synyx.hades.dao"
-		dao-name-postfix="ExtendedDao"
-		dao-interface-postfix="ExtendedDao">
-		<hades:dao id="user" />
+		base-package="org.synyx.hades.dao">
+		<hades:dao id="userExtendedDao" />
 	</hades:dao-config>
 
 </beans>
