@@ -49,7 +49,7 @@ public class BasicFactorySetup {
         User user = new User();
         user.setUsername("username");
 
-        userDao.saveAndFlush(user);
+        user = userDao.saveAndFlush(user);
 
         em.getTransaction().commit();
 
