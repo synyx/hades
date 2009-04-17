@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:hades="http://schemas.synyx.org/hades"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://schemas.synyx.org/hades http://schemas.synyx.org/hades/hades.xsd">
+
+	<import resource="infrastructure.xml" />
+	
+	<hades:dao-config base-package="org.synyx.hades.sample.dao">
+		<hades:dao id="user" custom-impl-ref="userDaoCustom" />
+	</hades:dao-config>
+	
+	<bean id="userDaoCustom" class="org.synyx.hades.sample.dao.UserDaoJdbcImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>

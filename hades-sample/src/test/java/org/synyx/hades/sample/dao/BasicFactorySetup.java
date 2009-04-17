@@ -9,6 +9,7 @@ import javax.persistence.Persistence;
 import org.junit.Before;
 import org.junit.Test;
 import org.synyx.hades.dao.orm.GenericDaoFactory;
+import org.synyx.hades.sample.dao.simple.SimpleUserDao;
 import org.synyx.hades.sample.domain.User;
 
 

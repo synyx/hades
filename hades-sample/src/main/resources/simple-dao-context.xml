@@ -8,15 +8,6 @@
 	<import resource="infrastructure.xml" />
 
 	<hades:dao-config 
-	  base-package="org.synyx.hades.sample.dao" />
-	  
-	<!-- 
-	
-	<bean id="userDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.synyx.hades.sample.dao.UserDao" />
-		<property name="domainClass" value="org.synyx.hades.sample.domain" />
-	</bean>
-	
-	 -->
+	  base-package="org.synyx.hades.sample.dao.simple" />
 	
 </beans>
