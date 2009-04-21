@@ -112,6 +112,17 @@ public class GenericDaoFactory {
 
 
     /**
+     * Returns the configured {@link QueryLookupStrategy}.
+     * 
+     * @return the queryLookupStrategy
+     */
+    public QueryLookupStrategy getQueryLookupStrategy() {
+
+        return queryLookupStrategy;
+    }
+
+
+    /**
      * Sets the strategy of how to lookup a query to execute finders.
      * 
      * @param queryLookupStrategy the createFinderQueries to set

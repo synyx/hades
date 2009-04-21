@@ -39,7 +39,7 @@ public enum QueryLookupStrategy {
     /**
      * Uses a named query named {@literal $DomainClass.$DaoMethodName}.
      */
-    USE_NAMED_QUERY {
+    USE_DECLARED_QUERY {
 
         @Override
         public HadesQuery resolveQuery(FinderMethod method) {
