@@ -247,8 +247,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         String beanName = context.getImplementationBeanName();
 
         // Already a bean configured?
-        if (parserContext.getRegistry().containsBeanDefinition(
-                context.getImplementationBeanName())) {
+        if (parserContext.getRegistry().containsBeanDefinition(beanName)) {
 
             beanDefinitionBuilder.addPropertyReference(
                     "customDaoImplementation", beanName);
