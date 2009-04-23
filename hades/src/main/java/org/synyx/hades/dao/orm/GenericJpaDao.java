@@ -55,7 +55,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      * @param domainClass the domain class to handle
      * @return
      */
-    public static <T extends Persistable<PK>, PK extends Serializable> GenericJpaDao<T, PK> create(
+    public static <T extends Persistable<PK>, PK extends Serializable> GenericDao<T, PK> create(
             final EntityManager entityManager, final Class<T> domainClass) {
 
         GenericJpaDao<T, PK> dao = new GenericJpaDao<T, PK>();
