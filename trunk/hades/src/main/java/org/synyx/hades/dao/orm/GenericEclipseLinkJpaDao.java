@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.persistence.EntityManager;
+
 import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.expressions.ExpressionBuilder;
 import org.eclipse.persistence.jpa.JpaEntityManager;
@@ -43,6 +45,28 @@ import org.synyx.hades.domain.support.PageImpl;
  */
 public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Serializable>
         extends GenericJpaDao<T, PK> implements ExtendedGenericDao<T, PK> {
+
+    /**
+     * Factory method to create {@link GenericEclipseLinkJpaDao} instances.
+     * 
+     * @param <T> the type of the entity to handle
+     * @param <PK> the type of the entity's identifier
+     * @param entityManager the {@link EntityManager} backing the DAO
+     * @param domainClass the domain class to handle
+     * @return
+     */
+    public static <T extends Persistable<PK>, PK extends Serializable> ExtendedGenericDao<T, PK> create(
+            final EntityManager entityManager, final Class<T> domainClass) {
+
+        GenericEclipseLinkJpaDao<T, PK> dao =
+                new GenericEclipseLinkJpaDao<T, PK>();
+        dao.setEntityManager(entityManager);
+        dao.setDomainClass(domainClass);
+        dao.validate();
+
+        return dao;
+    }
+
 
     /*
      * (non-Javadoc)

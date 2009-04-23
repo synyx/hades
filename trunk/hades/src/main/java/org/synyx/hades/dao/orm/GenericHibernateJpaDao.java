@@ -19,6 +19,8 @@ package org.synyx.hades.dao.orm;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
@@ -39,6 +41,27 @@ import org.synyx.hades.domain.support.PageImpl;
  */
 public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serializable>
         extends GenericJpaDao<T, PK> implements ExtendedGenericDao<T, PK> {
+
+    /**
+     * Factory method to create {@link GenericHibernateJpaDao} instances.
+     * 
+     * @param <T> the type of the entity to handle
+     * @param <PK> the type of the entity's identifier
+     * @param entityManager the {@link EntityManager} backing the DAO
+     * @param domainClass the domain class to handle
+     * @return
+     */
+    public static <T extends Persistable<PK>, PK extends Serializable> ExtendedGenericDao<T, PK> create(
+            final EntityManager entityManager, final Class<T> domainClass) {
+
+        GenericHibernateJpaDao<T, PK> dao = new GenericHibernateJpaDao<T, PK>();
+        dao.setEntityManager(entityManager);
+        dao.setDomainClass(domainClass);
+        dao.validate();
+
+        return dao;
+    }
+
 
     /*
      * (non-Javadoc)
