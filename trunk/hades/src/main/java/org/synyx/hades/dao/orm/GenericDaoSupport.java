@@ -19,6 +19,7 @@ package org.synyx.hades.dao.orm;
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.util.Assert;
@@ -53,6 +54,7 @@ public abstract class GenericDaoSupport<T extends Persistable<?>> {
      * 
      * @param entityManager
      */
+    @PersistenceContext
     public void setEntityManager(final EntityManager entityManager) {
 
         this.entityManager = entityManager;
@@ -151,8 +153,7 @@ public abstract class GenericDaoSupport<T extends Persistable<?>> {
     public void validate() {
 
         if (null == entityManager) {
-            throw new IllegalArgumentException(
-                    "EntityManager must not be null!");
+            throw new IllegalStateException("EntityManager must not be null!");
         }
     }
 }
