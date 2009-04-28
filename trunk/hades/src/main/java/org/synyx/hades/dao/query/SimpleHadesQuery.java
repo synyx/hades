@@ -20,8 +20,20 @@ import java.lang.reflect.Method;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+
+/**
+ * {@link HadesQuery} implementation that inspects a {@link FinderMethod} for
+ * the existanve of an {@link org.synyx.hades.dao.Query} annotation and creates
+ * a JPA {@link Query} from it.
+ * 
+ * @author Oliver Gierke - gierke@synyx.de
+ */
 public class SimpleHadesQuery extends AbstractHadesQuery {
+
+    private static final Log LOG = LogFactory.getLog(SimpleHadesQuery.class);
 
     private String queryString;
 

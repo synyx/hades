@@ -18,6 +18,9 @@ package org.synyx.hades.dao.query;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * Implementation of {@link HadesQuery} based on
@@ -26,6 +29,8 @@ import javax.persistence.Query;
  * @author Oliver Gierke - gierke@synyx.de
  */
 class NamedHadesQuery extends AbstractHadesQuery {
+
+    private static final Log LOG = LogFactory.getLog(NamedHadesQuery.class);
 
     private String queryName;
 

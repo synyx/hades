@@ -156,10 +156,6 @@ public class FinderMethod {
      */
     String constructQuery() {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Creating query from method " + method.getName());
-        }
-
         final String AND = "And";
         final String OR = "Or";
 
@@ -210,7 +206,14 @@ public class FinderMethod {
 
         queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
 
-        return queryBuilder.toString();
+        String query = queryBuilder.toString();
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(String.format("Created query '%s' from method %s", query,
+                    method.getName()));
+        }
+
+        return query;
     }
 
 

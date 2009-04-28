@@ -19,9 +19,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 /**
  * Abstract base class to implement {@link HadesQuery}s. Simply looks up a JPA
@@ -30,9 +27,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Oliver Gierke - gierke@synyx.de
  */
 abstract class AbstractHadesQuery implements HadesQuery {
-
-    protected static final Log LOG =
-            LogFactory.getLog(AbstractHadesQuery.class);
 
     private FinderMethod method;
 
@@ -56,9 +50,8 @@ abstract class AbstractHadesQuery implements HadesQuery {
      */
     public Object execute(Object... parameters) {
 
-        Query query =
-                method.prepareQuery(getQuery(method.getEntityManager()),
-                        parameters);
+        Query query = getQuery(method.getEntityManager());
+        query = method.prepareQuery(query, parameters);
 
         try {
             return method.isCollectionFinder() ? query.getResultList() : query
