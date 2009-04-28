@@ -12,6 +12,23 @@ import org.synyx.hades.sample.domain.User;
 
 /**
  * Class with the implementation of the custom DAO code. Uses JDBC in this case.
+ * For basic programatic setup see {@link UserDaoImpl} for examples.
+ * <p>
+ * As you need to hand the instance a {@link javax.sql.DataSource} or
+ * {@link org.springframework.jdbc.core.simple.SimpleJdbcTemplate} you manually
+ * need to declare it as Spring bean:
+ * 
+ * <pre>
+ * &lt;hades:dao-config base-package=&quot;org.synyx.hades.sample.dao&quot; /&gt;
+ * 
+ * &lt;bean id=&quot;userDaoImpl&quot; class=&quot;...UserDaoJdbcImpl&quot;&gt;
+ *   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+ * &lt;/bean&gt;
+ * </pre>
+ * 
+ * Using {@code userDaoImpl} will cause the DAO instance get this bean injected
+ * for custom DAO logic as the default postfix for custom DAO instances is
+ * {@code Impl}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -46,6 +63,8 @@ public class UserDaoJdbcImpl extends SimpleJdbcDaoSupport implements
             User user = new User();
             user.setId(rs.getLong("id"));
             user.setUsername(rs.getString("username"));
+            user.setLastname(rs.getString("lastname"));
+            user.setFirstname(rs.getString("firstname"));
 
             return user;
         }
