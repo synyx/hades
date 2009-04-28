@@ -66,6 +66,12 @@
 			<version>1.5.2</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.5.4</version>
+			<scope>runtime</scope>
+		</dependency>
 		
 	</dependencies>
 	
@@ -90,6 +96,7 @@
 						<goals>
 							<goal>transform</goal>
 						</goals>
+						<phase>package</phase>
 					</execution>
 				</executions>
 				<configuration>
