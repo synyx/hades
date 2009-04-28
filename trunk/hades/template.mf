@@ -6,6 +6,8 @@ Bundle-Version: 0.5
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Template: 
  org.synyx.hades.dao.*;version="0.5"
+Excluded-Exports: 
+ org.synyx.hades.util
 Import-Template: 
  javax.persistence.*;version="[1.0.0,1.1.0)", 
  org.aopalliance.*;version="1.0", 
