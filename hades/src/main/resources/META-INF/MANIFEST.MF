@@ -50,7 +50,6 @@ Export-Package: org.synyx.hades.dao;version="0.5";uses:="org.synyx.had
  domain",org.synyx.hades.dao.query;version="0.5";uses:="javax.persiste
  nce",org.synyx.hades.domain;version="0.5";uses:="org.joda.time",org.s
  ynyx.hades.domain.support;version="0.5";uses:="javax.persistence,org.
- aspectj.lang.annotation,org.joda.time,org.synyx.hades.domain",org.syn
- yx.hades.util;version="0.5";uses:="javax.persistence"
+ aspectj.lang.annotation,org.joda.time,org.synyx.hades.domain"
 Bundle-Version: 0.5
 
