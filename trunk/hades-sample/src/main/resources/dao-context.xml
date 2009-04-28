@@ -7,12 +7,11 @@
 
 	<import resource="infrastructure.xml" />
 	
-	<hades:dao-config base-package="org.synyx.hades.sample.dao">
-		<hades:dao id="user" custom-impl-ref="userDaoCustom" />
-	</hades:dao-config>
+	<hades:dao-config base-package="org.synyx.hades.sample.dao" />
 	
-	<bean id="userDaoCustom" class="org.synyx.hades.sample.dao.UserDaoJdbcImpl">
+	<!-- Custom configuration for the custom implementation based on JDBC -->
+	<bean id="userDaoImpl" class="org.synyx.hades.sample.dao.impl.UserDaoJdbcImpl">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-
+	
 </beans>
