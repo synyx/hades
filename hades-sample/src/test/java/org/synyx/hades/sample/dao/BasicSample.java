@@ -38,8 +38,13 @@ public class BasicSample {
     }
 
 
+    /**
+     * Tests saving users. Don't mimic transactionality shown here. It seriously
+     * lacks resource cleanup in case of an exception. Simplification serves
+     * descriptivness.
+     */
     @Test
-    public void savingUsers() throws Exception {
+    public void savingUsers() {
 
         em.getTransaction().begin();
 

@@ -15,7 +15,7 @@ import org.synyx.hades.sample.domain.User;
 
 
 /**
- * Intergration test showing the basic usage of {@link UserDao}.
+ * Intergration test showing the basic usage of {@link SimpleUserDao}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -48,10 +48,11 @@ public class HadesSimpleUserDaoSample {
 
         User user = new User();
         user.setUsername("foobar");
+        user.setLastname("lastname");
 
         user = userDao.save(user);
 
-        List<User> users = userDao.findByUsername("foobar");
+        List<User> users = userDao.findByLastname("lastname");
 
         assertNotNull(users);
         assertTrue(users.contains(user));
