@@ -26,9 +26,11 @@ public class BasicFactorySetup {
     private SimpleUserDao userDao;
     private EntityManager em;
 
+    private User user;
+
 
     /**
-     * Creates a {@link UserDao} instance.
+     * Creates a {@link SimpleUserDao} instance.
      * 
      * @throws Exception
      */
@@ -38,22 +40,28 @@ public class BasicFactorySetup {
         em = factory.createEntityManager();
 
         userDao = GenericDaoFactory.create(em).getDao(SimpleUserDao.class);
-    }
-
-
-    @Test
-    public void savingUsers() throws Exception {
 
         em.getTransaction().begin();
 
-        User user = new User();
+        user = new User();
         user.setUsername("username");
+        user.setLastname("lastname");
 
-        user = userDao.saveAndFlush(user);
+        user = userDao.save(user);
 
         em.getTransaction().commit();
+    }
 
-        assertEquals(user, userDao.findByUsername("username").get(0));
+
+    /**
+     * Showing invocation of finder method.
+     */
+    @Test
+    public void savingUsers() {
+
+        assertEquals(user, userDao.findByTheUsersName("username"));
+
+        assertEquals(user, userDao.findByLastname("lastname").get(0));
     }
 
 }

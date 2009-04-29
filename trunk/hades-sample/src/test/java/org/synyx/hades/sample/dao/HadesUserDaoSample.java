@@ -43,17 +43,21 @@ public class HadesUserDaoSample {
 
 
     @Test
-    public void foo() throws Exception {
+    public void foo() {
 
         User user = new User();
         user.setUsername("foobar");
+        user.setLastname("lastname");
 
         user = userDao.save(user);
 
-        List<User> users = userDao.findByUsername("foobar");
+        List<User> users = userDao.findByLastname("lastname");
 
         assertNotNull(users);
         assertTrue(users.contains(user));
+
+        User reference = userDao.findByTheUsersName("foobar");
+        assertEquals(user, reference);
     }
 
 
