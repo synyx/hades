@@ -359,7 +359,7 @@ public class GenericDaoFactory {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    class FinderExecuterMethodInterceptor implements MethodInterceptor {
+    public class FinderExecuterMethodInterceptor implements MethodInterceptor {
 
         public static final String DEFAULT_FINDER_PREFIX = "findBy";
 
