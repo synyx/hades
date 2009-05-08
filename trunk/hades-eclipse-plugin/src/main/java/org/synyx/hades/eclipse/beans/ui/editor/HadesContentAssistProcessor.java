@@ -44,8 +44,7 @@ public class HadesContentAssistProcessor extends
         IContentAssistCalculator calculator =
                 new PackageContentAssistCalculator();
 
-        registerContentAssistCalculator("dao-package-name", calculator);
-        registerContentAssistCalculator("entity-package-name", calculator);
+        registerContentAssistCalculator("base-package", calculator);
 
         registerContentAssistCalculator("dao", "custom-impl-ref",
                 new BeanReferenceContentAssistCalculator(true));
