@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.synyx.hades.dao.orm.GenericDaoFactory;
@@ -35,7 +36,7 @@ public class BasicFactorySetup {
      * @throws Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
         em = factory.createEntityManager();
 
@@ -45,11 +46,21 @@ public class BasicFactorySetup {
 
         user = new User();
         user.setUsername("username");
+        user.setFirstname("firstname");
         user.setLastname("lastname");
 
         user = userDao.save(user);
 
-        em.getTransaction().commit();
+    }
+
+
+    /**
+     * Rollback transaction.
+     */
+    @After
+    public void tearDown() {
+
+        em.getTransaction().rollback();
     }
 
 
@@ -57,11 +68,10 @@ public class BasicFactorySetup {
      * Showing invocation of finder method.
      */
     @Test
-    public void savingUsers() {
+    public void executingFinders() {
 
         assertEquals(user, userDao.findByTheUsersName("username"));
-
         assertEquals(user, userDao.findByLastname("lastname").get(0));
+        assertEquals(user, userDao.findByFirstname("firstname").get(0));
     }
-
 }
