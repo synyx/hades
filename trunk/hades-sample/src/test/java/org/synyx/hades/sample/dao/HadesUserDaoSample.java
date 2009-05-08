@@ -64,7 +64,7 @@ public class HadesUserDaoSample {
     /**
      * Test invocation of custom method.
      */
-    // @Test
+    @Test
     public void testCustomMethod() {
 
         User user = new User();
