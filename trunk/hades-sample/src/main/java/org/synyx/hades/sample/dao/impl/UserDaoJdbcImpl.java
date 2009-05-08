@@ -35,7 +35,7 @@ import org.synyx.hades.sample.domain.User;
 public class UserDaoJdbcImpl extends SimpleJdbcDaoSupport implements
         UserDaoCustom {
 
-    private static final String COMPLICATED_SQL = "SELECT * FROM Users";
+    private static final String COMPLICATED_SQL = "SELECT * FROM User";
 
 
     /*
