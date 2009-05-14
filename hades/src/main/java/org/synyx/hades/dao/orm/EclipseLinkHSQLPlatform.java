@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.eclipse.persistence.platform.database.HSQLPlatform;
-import org.springframework.orm.jpa.JpaVendorAdapter;
 
 
 /**
  * Workaround for a bug in EclipseLink when using HSQL as database. Be sure you
- * configure this platform on your {@link JpaVendorAdapter} if you are using
+ * configure this platform on your
+ * {@link org.springframework.orm.jpa.JpaVendorAdapter} if you are using
  * Eclipselink with HSQL.
  * 
  * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=240618

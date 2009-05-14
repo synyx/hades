@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class SimpleHadesQuery extends AbstractHadesQuery {
+final class SimpleHadesQuery extends AbstractHadesQuery {
 
     private static final Log LOG = LogFactory.getLog(SimpleHadesQuery.class);
 

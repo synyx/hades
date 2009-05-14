@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.joda.time.DateTime;
-import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Auditable;
 import org.synyx.hades.domain.AuditorAware;
 import org.synyx.hades.domain.Persistable;
@@ -35,10 +34,11 @@ import org.synyx.hades.domain.Persistable;
  * no {@code AuditorAware} is set only modification and creation date will be
  * set.
  * <p>
- * The advice intercepts calls to save methods of {@link GenericDao}. It is
- * implemented using {@link Aspect} annotations to be suitable for all kinds of
- * aspect weaving. To enable capturing audit data simply register the advice and
- * activate annotation based aspect:
+ * The advice intercepts calls to save methods of
+ * {@link org.synyx.hades.dao.GenericDao}. It is implemented using
+ * {@link Aspect} annotations to be suitable for all kinds of aspect weaving. To
+ * enable capturing audit data simply register the advice and activate
+ * annotation based aspect:
  * 
  * <pre>
  * &lt;aop:aspectj-autoproxy /&gt;
@@ -52,7 +52,7 @@ import org.synyx.hades.domain.Persistable;
 @Aspect
 public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> {
 
-    private static final Log log = LogFactory.getLog(AuditingAdvice.class);
+    private static final Log LOG = LogFactory.getLog(AuditingAdvice.class);
 
     private AuditorAware<T> auditorAware;
     private boolean modifyOnCreation = true;
@@ -100,17 +100,19 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
         DateTime now = touchDate(auditable);
 
         // Log touching
-        if (log.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
 
             StringBuffer buffer =
-                    new StringBuffer("Touched " + auditable.toString()
-                            + " - Last modification on " + now);
+                    new StringBuffer(String.format(
+                            "Touched %s - Last modification: %s", auditable
+                                    .toString(), now));
 
             if (null != auditor) {
-                buffer.append(" by " + auditor.toString());
+                buffer.append(" by ");
+                buffer.append(auditor.toString());
             }
 
-            log.debug(buffer.toString());
+            LOG.debug(buffer.toString());
         }
     }
 

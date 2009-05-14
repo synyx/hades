@@ -45,7 +45,6 @@ public class DaoContext extends DaoConfigContext {
     public DaoContext(Element element, DaoConfigContext parent) {
 
         super(element);
-        this.element = element;
         this.parent = parent;
         this.id = element.getAttribute("id");
     }
@@ -179,7 +178,7 @@ public class DaoContext extends DaoConfigContext {
      */
     public boolean autodetectCustomImplementation() {
 
-        return !StringUtils.hasText(element.getAttribute(CUSTOM_IMPL_REF));
+        return !StringUtils.hasText(getElement().getAttribute(CUSTOM_IMPL_REF));
     }
 
 
@@ -190,7 +189,7 @@ public class DaoContext extends DaoConfigContext {
      */
     public String getCustomImplementationRef() {
 
-        return element.getAttribute(CUSTOM_IMPL_REF);
+        return getElement().getAttribute(CUSTOM_IMPL_REF);
     }
 
 
@@ -202,7 +201,7 @@ public class DaoContext extends DaoConfigContext {
     @Override
     public String getFinderPrefix() {
 
-        String finderPrefix = element.getAttribute(FINDER_PREFIX);
+        String finderPrefix = getElement().getAttribute(FINDER_PREFIX);
         return StringUtils.hasText(finderPrefix) ? finderPrefix : parent
                 .getFinderPrefix();
     }
@@ -216,7 +215,7 @@ public class DaoContext extends DaoConfigContext {
     @Override
     protected String getDaoBasePackageName() {
 
-        String daoPackageName = element.getAttribute(DAO_PACKAGE_NAME);
+        String daoPackageName = getElement().getAttribute(DAO_PACKAGE_NAME);
         return StringUtils.hasText(daoPackageName) ? daoPackageName : parent
                 .getDaoBasePackageName();
     }
@@ -230,7 +229,7 @@ public class DaoContext extends DaoConfigContext {
     @Override
     protected String getDaoImplPostfix() {
 
-        String daoImplPostfix = element.getAttribute(DAO_IMPL_POSTFIX);
+        String daoImplPostfix = getElement().getAttribute(DAO_IMPL_POSTFIX);
         return StringUtils.hasLength(daoImplPostfix) ? daoImplPostfix : parent
                 .getDaoImplPostfix();
     }

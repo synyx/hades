@@ -80,10 +80,10 @@ public class FinderMethod {
         this.domainClass = domainClass;
         this.em = em;
 
-        strategy =
+        QueryLookupStrategy strategyToUse =
                 null == strategy ? QueryLookupStrategy.getDefault() : strategy;
 
-        this.hadesQuery = strategy.resolveQuery(this);
+        this.hadesQuery = strategyToUse.resolveQuery(this);
     }
 
 
@@ -156,8 +156,8 @@ public class FinderMethod {
      */
     String constructQuery() {
 
-        final String AND = "And";
-        final String OR = "Or";
+        final String and = "And";
+        final String or = "Or";
 
         String methodName = method.getName();
         int numberOfBlocks = 0;
@@ -171,13 +171,13 @@ public class FinderMethod {
 
         // Split OR
         String[] orParts =
-                StringUtils.delimitedListToStringArray(methodName, OR);
+                StringUtils.delimitedListToStringArray(methodName, or);
 
         for (String orPart : Arrays.asList(orParts)) {
 
             // Split AND
             String[] andParts =
-                    StringUtils.delimitedListToStringArray(orPart, AND);
+                    StringUtils.delimitedListToStringArray(orPart, and);
 
             StringBuilder andBuilder = new StringBuilder();
 

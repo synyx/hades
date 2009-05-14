@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-class NamedHadesQuery extends AbstractHadesQuery {
+final class NamedHadesQuery extends AbstractHadesQuery {
 
     private static final Log LOG = LogFactory.getLog(NamedHadesQuery.class);
 
