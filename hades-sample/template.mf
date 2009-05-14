@@ -1,8 +1,8 @@
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.synyx.hades.sample
-Bundle-Name: Hades Sample
+Bundle-SymbolicName: ${project.artifactId}
+Bundle-Name: ${project.name}
 Bundle-Vendor: Synyx GmbH & Co. KG
-Bundle-Version: 0.5
+Bundle-Version: ${osgi.version}
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: 
  javax.sql;version="0.0.0",
