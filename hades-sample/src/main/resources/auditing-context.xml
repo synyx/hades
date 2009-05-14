@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<import resource="infrastructure.xml" />
+	
+	<aop:aspectj-autoproxy />
+	
+	<!-- 
+	 - Declare advice to enable auditing 
+	 - Reference AuditorAware to also keep track of WHO changed entities 
+	-->
+	<bean class="org.synyx.hades.domain.support.AuditingAdvice">
+		<property name="auditorAware" ref="auditorAware" />
+	</bean>
+	
+	<bean id="auditorAware" class="org.synyx.hades.sample.auditing.AuditorAwareImpl" />
+	
+
+	<!-- 
+	 - Manually configure DAO instance for AuditableUser
+	 - Register postprocessors to enable EntityManager wiring as well as exception translation
+	 - Get rid of this stuff by using the namespace ;)
+	-->
+	<bean id="auditableUserDao" class="org.synyx.hades.dao.orm.GenericHibernateJpaDao" init-method="validate">
+		<property name="domainClass" value="org.synyx.hades.sample.auditing.AuditableUser" />
+	</bean>
+	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+</beans>

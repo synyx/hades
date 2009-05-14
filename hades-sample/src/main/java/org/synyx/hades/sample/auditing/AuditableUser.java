@@ -1,11 +1,18 @@
-package org.synyx.hades.sample.domain;
+package org.synyx.hades.sample.auditing;
+
+import javax.persistence.Entity;
 
 import org.synyx.hades.domain.support.AbstractAuditable;
 
 
 /**
+ * User domain class that uses auditing functionality of Hades that can either
+ * be aquired implementing {@link org.synyx.hades.domain.Auditable} or extend
+ * {@link AbstractAuditable}.
+ * 
  * @author Oliver Gierke - gierke@synyx.de
  */
+@Entity
 public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
 
     private static final long serialVersionUID = 1L;
@@ -14,6 +21,8 @@ public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
 
 
     /**
+     * Set's the user's name.
+     * 
      * @param username the username to set
      */
     public void setUsername(String username) {
@@ -23,11 +32,12 @@ public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
 
 
     /**
+     * Returns the user's name.
+     * 
      * @return the username
      */
     public String getUsername() {
 
         return username;
     }
-
 }
