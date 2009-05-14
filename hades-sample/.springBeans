@@ -5,10 +5,13 @@
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
-	<enableImports><![CDATA[false]]></enableImports>
+	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
 		<config>src/main/resources/META-INF/spring/osgi-context.xml</config>
 		<config>src/main/resources/dao-context.xml</config>
+		<config>src/main/resources/infrastructure.xml</config>
+		<config>src/main/resources/simple-dao-context.xml</config>
+		<config>src/main/resources/auditing-context.xml</config>
 	</configs>
 	<configSets>
 	</configSets>
