@@ -17,5 +17,5 @@ public interface UserDaoCustom {
      * 
      * @return
      */
-    public List<User> myCustomBatchOperation();
+    List<User> myCustomBatchOperation();
 }
