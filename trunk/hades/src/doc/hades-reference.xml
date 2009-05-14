@@ -29,7 +29,7 @@
 
     <releaseinfo>V0.5</releaseinfo>
 
-    <pubdate>06.12.2008</pubdate>
+    <pubdate>12.05.2009</pubdate>
 
     <copyright>
       <year>2009</year>
@@ -208,7 +208,7 @@
         <para>Spring offers a lot of support for various technologies in data
         access area. It's main benefit regarding JPA is the ease and power of
         configuration along with proper exception translation into Spring's
-        <classname>DataAccessException</classname> hierarchy</para>
+        <classname>DataAccessException</classname> hierarchy.</para>
       </simplesect>
     </section>
   </preface>
@@ -252,8 +252,8 @@
       contract for persistent domain classes that a
       <interfacename>GenericDao</interfacename> can handle.
       <interfacename>GenericDao</interfacename> itself provides sophisticated
-      support for <glossterm>CRUD</glossterm> operations. Beyond that the base
-      implementation of that interface provides even more sophisticated
+      support for <glossterm>CRUD</glossterm> operations. Beyond that, the
+      base implementation of that interface provides even more sophisticated
       features. Read more on that below.</para>
 
       <example>
@@ -383,18 +383,18 @@
       <para>Hades provides a <classname>GenericDaoFactoryBean</classname> that
       allows setting up instances for this interface in declarative manner. So
       all you need to do is declaring an interface extending and thus typing
-      the generic interface accordingly. To create DAO instances Hades
-      provides a <classname>GenericDaoFactoryBean</classname>. Read more on
-      configuration in <xref linkend="sample-app.configuration" />.</para>
+      the generic interface accordingly. To create DAO instances
+      programatically Hades provides <classname>GenericDaoFactory</classname>.
+      Read more on configuration in <xref
+      linkend="sample-app.configuration" />.</para>
 
       <para>For more sophisticated DAO operations Hades provides
       <interfacename>ExtendedGenericDao</interfacename>. It contains
       functionality that can not be implemented with standard JPA features in
       the version 1.0. So implementations will have to rely on persistence
       providers proprietary API. Extending this interface with your concrete
-      DAO interface will require to configure a custom DAO implementation to
-      <classname>GenericDaoFactoryBean</classname>. Hades currently offers an
-      implementation based on Hibernate as well as EclipseLink.</para>
+      DAO interface will require to use either Hibernate or
+      EclipseLink.</para>
 
       <example>
         <title>ExtendedGenericDao interface</title>
@@ -493,7 +493,7 @@
         <classname>AbstractAuditable</classname> base classes that implement
         and preconfigure entities. Thus you can decide to only implement the
         interface or enjoy more sophisticated support by extending the base
-        class. Hades will never force you to use inheritance!</para>
+        class.</para>
       </note>
 
       <simplesect>
@@ -519,16 +519,13 @@
         your application that tracks the user currently working with the
         system. This component should be
         <interfacename>AuditorAware</interfacename> and thus allow seemless
-        tracking of the auditioner.</para>
+        tracking of the auditor.</para>
 
         <para>To activate transparent creation of auditioning information the
         configuration has to look something like this:</para>
 
         <example>
-          <title>Configuration of
-          <interfacename>AuditingAdvice</interfacename></title>
-
-          <para></para>
+          <title>Configuration of auditing functionality</title>
 
           <programlistingco>
             <areaspec>
@@ -1055,21 +1052,11 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
         <interfacename>ExtendedGenericDao</interfacename>. For each candidate
         found it will set up an DAO instances supposing you've placed the DAO
         interfaces in the configured package and named them as described
-        above.</para>
-
-        <note>
-          <para>You have to be careful to decide for the correct DAO base
-          implementation class. If one of your DAO interfaces extends
-          <interfacename>ExtendedGenericDao</interfacename> (see chapter on
-          using provider specific features for details) you have to define a
-          matching implementation. The default implementation will cause the
-          entire auto configuration to fail as it can not act as base class
-          for <interfacename>ExtendedGenericDao</interfacename>.</para>
-        </note>
+        above</para>
       </simplesect>
     </section>
 
-    <section>
+    <section id="finder-methods">
       <title>Finder methods</title>
 
       <para>Next to standard CRUD functionality
@@ -1101,24 +1088,25 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
         </simplesect>
 
         <simplesect>
-          <title>USE_NAMED_QUERY</title>
+          <title>USE_DECLARED_QUERY</title>
 
-          <para>This strategy tries to find a named query using naming
-          conventions described in <xref
-          linkend="finder-methods.named-queries" />. If no query is found the
-          finder will fail.</para>
+          <para>This strategy tries to find a declared query that can either
+          be defined using JPA @NamedQuery means or Hades @Query annotation
+          (see <xref linkend="finder-methods.named-queries" /> and <xref
+          linkend="finder-methods.at-query" /> for details). If no query is
+          found the finder will fail.</para>
         </simplesect>
 
         <simplesect>
           <title>CREATE_IF_NOT_FOUND</title>
 
           <para>This strategy is actually a combination of the both mentioned
-          above. It will try to lookup a named query first but create a custom
-          method name based query if no named query was found. This is default
-          lookup strategy and thus will be used if you don't configure
+          above. It will try to lookup a declared query first but create a
+          custom method name based query if no named query was found. This is
+          default lookup strategy and thus will be used if you don't configure
           anything explicitly. It allows quick query definition by method
-          names but also custom tuning of these queries by introducing JPA
-          named queries for those who need explicit tuning.</para>
+          names but also custom tuning of these queries by introducing
+          declared queries for those who need explicit tuning.</para>
         </simplesect>
       </section>
 
@@ -1233,10 +1221,32 @@ public class User implements Persistable&lt;Long&gt; {
         </simplesect>
       </section>
 
-      <section>
+      <section id="finder-methods.at-query">
         <title>Using @Query</title>
 
-        <para>TODO</para>
+        <para>Using named queries to declare queries for entities is a valid
+        approach and works fine for a small number amount of queries. As the
+        queries themselves are tied to a Java method to execute them you
+        actually can bind them to the query executing methods using Hades
+        <code>@Query</code> annotation rather than annotating them to the
+        domain class. This will free the domain class from persistence
+        specific information and colocate it to the DAO interface.</para>
+
+        <para>Querys annotated to the finder method will trump queries defined
+        using <code>@NamedQuery</code> or named queries declared in in
+        <filename>orm.xml</filename>.</para>
+
+        <example>
+          <title>Declare query at the finder method using @Query</title>
+
+          <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
+
+  List&lt;User&gt; findByLastname(String lastname);
+
+  @Query("SELECT u FROM User u WHERE u.emailAddress = ?1")
+  User findByEmailAddress(String emailAddress);
+}</programlisting>
+        </example>
       </section>
     </section>
 
@@ -1691,26 +1701,6 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
             </row>
 
             <row>
-              <entry><code>dao-interface-postfix</code></entry>
-
-              <entry>Defines the postfix to autodetect DAO interfaces. In auto
-              configuration mode (no nested <code>&lt;dao /&gt;</code>
-              elements) all classes with the given postfix will be considered
-              as candidates for DAO instances. Defaults to
-              <code>Dao</code>.</entry>
-            </row>
-
-            <row>
-              <entry><code>dao-name-postfix</code></entry>
-
-              <entry>Defines the postfix for the bean name the DAO instances
-              get registered in the
-              <interfacename>ApplicationContext</interfacename> as well as the
-              interface name. This will be appended to the simple domain class
-              name. Defaults to <code>Dao</code>.</entry>
-            </row>
-
-            <row>
               <entry><code>dao-impl-postfix</code></entry>
 
               <entry>Defines the postfix to autodetect custom DAO
@@ -1761,10 +1751,8 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
             <row>
               <entry><code>id</code></entry>
 
-              <entry>Defines the base name DAO interface names will be derived
-              from. The interface will get <code>dao-interface-postfix</code>
-              appended and tried to be looked up in
-              <code>base-package</code>.</entry>
+              <entry>Defines the id of the bean the DAO instance will be
+              registered under as well as the DAO interface name.</entry>
             </row>
 
             <row>
@@ -1881,6 +1869,32 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
     </glossdiv>
 
     <glossdiv>
+      <title>E</title>
+
+      <glossentry>
+        <glossterm>EclipseLink</glossterm>
+
+        <glossdef>
+          <para>Object relational mapper implementing JPA - <ulink
+          url="http://www.eclipselink.org">http://www.eclipselink.org</ulink></para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+
+    <glossdiv>
+      <title>H</title>
+
+      <glossentry>
+        <glossterm>Hibernate</glossterm>
+
+        <glossdef>
+          <para>Object relational mapper implementing JPA - <ulink
+          url="http://www.hibernate.org">http://www.hibernate.org</ulink></para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+
+    <glossdiv>
       <title>J</title>
 
       <glossentry>
@@ -1888,6 +1902,19 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 
         <glossdef>
           <para>Java Persistence Api</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+
+    <glossdiv>
+      <title>S</title>
+
+      <glossentry>
+        <glossterm>Spring</glossterm>
+
+        <glossdef>
+          <para>Java application framework - <ulink
+          url="http://www.springframework.org">http://www.springframework.org</ulink></para>
         </glossdef>
       </glossentry>
     </glossdiv>
