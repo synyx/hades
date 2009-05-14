@@ -50,7 +50,7 @@ public class DaoConfigContext {
     protected static final String DAO_BASE_CLASS_NAME = "dao-base-class";
     protected static final String FINDER_PREFIX = "finder-prefix";
 
-    protected Element element;
+    private Element element;
 
     private Set<DaoContext> daoContexts;
 
