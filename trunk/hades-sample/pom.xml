@@ -1,21 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.synyx.hades</groupId>
 	<artifactId>org.synyx.hades.sample</artifactId>
-	<name>Hades Sample</name>
-	<version>0.5-SNAPSHOT</version>
 	
+	<name>Hades Sample</name>
 	<description>
 		Small sample project showing the usage of Hades.
 	</description>
 	
-	<organization>
-		<name>Synyx GmbH &amp; Co. KG</name>
-		<url>http://www.synyx.de</url>
-	</organization>
-	
-	<inceptionYear>2009</inceptionYear>
+	<parent>
+		<artifactId>hades-parent</artifactId>
+		<groupId>org.synyx.hades</groupId>
+		<version>0.5.0-SNAPSHOT</version>
+	</parent>
 
 	<dependencies>
 	
@@ -23,7 +20,7 @@
 		<dependency>
 			<groupId>org.synyx.hades</groupId>
 			<artifactId>org.synyx.hades</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -67,7 +64,7 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>aspectj</groupId>
+			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.5.4</version>
 			<scope>runtime</scope>
@@ -77,32 +74,18 @@
 	
 	<build>
 		<plugins>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.4.3</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
 				</configuration>
 			</plugin>
 			
-			<plugin>
-				<groupId>com.springsource.bundlor</groupId>
-				<artifactId>com.springsource.bundlor.maven</artifactId>
-				<version>1.0.0.M2</version>
-				<executions>
-					<execution>
-						<id>bundlor</id>
-						<goals>
-							<goal>transform</goal>
-						</goals>
-						<phase>package</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<failOnWarnings>false</failOnWarnings>
-				</configuration>
-     		</plugin>
 		</plugins>
 	</build>
 

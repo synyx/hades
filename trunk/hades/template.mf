@@ -1,11 +1,11 @@
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.synyx.hades
-Bundle-Name: Hades
+Bundle-SymbolicName: ${project.artifactId}
+Bundle-Name: ${project.name}
 Bundle-Vendor: Synyx GmbH & Co. KG
-Bundle-Version: 0.5
+Bundle-Version: ${osgi.version}
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Template: 
- org.synyx.hades.dao.*;version="0.5"
+ org.synyx.hades.dao.*;version="${osgi.version}"
 Excluded-Exports: 
  org.synyx.hades.util
 Import-Template: 
@@ -16,4 +16,5 @@ Import-Template:
  org.eclipse.persistence.*;version="[1.0.0,1.1.0)";resolution:=optional,
  org.hibernate.*;version="[3.2.0,3.4.0)";resolution:=optional, 
  org.joda.time.*;version="[1.5.0,1.6.0)",
- org.springframework.*;version="[2.5.0,3.0.0)"
+ org.springframework.*;version="[2.5.0,3.0.0)",
+ org.w3c.dom.*;version="0.0.0"
