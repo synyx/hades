@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.synyx.hades.dao.GenericDao;
@@ -35,6 +36,15 @@ public class BasicSample {
         em = factory.createEntityManager();
 
         userDao = GenericJpaDao.create(em, User.class);
+
+        em.getTransaction().begin();
+    }
+
+
+    @After
+    public void tearDown() {
+
+        em.getTransaction().rollback();
     }
 
 
@@ -46,14 +56,10 @@ public class BasicSample {
     @Test
     public void savingUsers() {
 
-        em.getTransaction().begin();
-
         User user = new User();
         user.setUsername("username");
 
         user = userDao.save(user);
-
-        em.getTransaction().commit();
 
         assertEquals(user, userDao.readByPrimaryKey(user.getId()));
     }
