@@ -219,17 +219,19 @@
 					</targetDirectory>
 
 					<foCustomization>
-						src/doc/layout/pdf/fo-pdf.xsl
+						${basedir}/src/doc/layout/pdf/fo-pdf.xsl
 					</foCustomization>
 					
 					<htmlCustomization>
-						src/doc/layout/html/fo-html.xsl
+						${basedir}/src/doc/layout/html/fo-html.xsl
 					</htmlCustomization>
 					
-					<imgSrcPath>target/doc/</imgSrcPath>
+					<imgSrcPath>
+						${basedir}/target/doc/
+					</imgSrcPath>
 					
 					<htmlStylesheet>
-						resources/styles.css
+						${basedir}/resources/styles.css
 					</htmlStylesheet>
 					<chunkedOutput>true</chunkedOutput>
 
