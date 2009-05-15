@@ -27,6 +27,7 @@
 	<properties>
 		<osgi.version>0.5.0</osgi.version>
 		<springVersion>[2.5.0,3.0.0)</springVersion>
+		<plugin.version>0.1.0</plugin.version>
 	</properties>
 
 	<build>
