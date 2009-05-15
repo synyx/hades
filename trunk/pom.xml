@@ -137,7 +137,26 @@
 		
 	</pluginRepositories>
 	
+	<ciManagement>
+		<system>Hudson</system>
+	</ciManagement>
+
+	<issueManagement>
+		<system>Redmine</system>
+		<url>http://hades.synyx.org/</url>
+	</issueManagement>
+	
+	<scm>
+		<url>http://svn.synyx.org/synyx/opensource/hades</url>
+		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades</connection>
+		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades</developerConnection>
+	</scm>
+	
 	<distributionManagement>
+		<site>
+			<id>trac.synyx.de</id>
+			<url>scp://trac.synyx.de/home/trac/opensource/hades/htdocs/mvn</url>
+		</site>
 		<repository>
 			<id>nexus.synyx.de</id>
 			<url>http://nexus.synyx.de/content/repositories/public-release</url>

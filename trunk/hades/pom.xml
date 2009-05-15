@@ -366,40 +366,5 @@
 					
 		</plugins>
 	</reporting>
-	
-	<scm>
-		<url>http://svn.synyx.org/synyx/opensource/hades</url>
-		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades</connection>
-		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades</developerConnection>
-	</scm>
-	
-	<ciManagement>
-		<system>Hudson</system>
-	</ciManagement>
-	
-
-	<issueManagement>
-		<system>redmine</system>
-		<url>http://hades.synyx.org/</url>
-	</issueManagement>
-
-	<distributionManagement>
-
-		<site>
-			<id>trac.synyx.de</id>
-			<url>scp://trac.synyx.de/home/trac/opensource/hades/htdocs/mvn</url>
-		</site>
-
-		<repository>
-			<id>nexus.synyx.de</id>
-			<url>http://nexus.synyx.de/nexus/content/repositories/public-release</url>
-		</repository>
-
-		<snapshotRepository>
-			<id>nexus.synyx.de</id>
-			<url>http://nexus.synyx.de/nexus/content/repositories/public-snapshots</url>
-		</snapshotRepository>
-
-	</distributionManagement>
 
 </project>
