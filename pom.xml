@@ -27,7 +27,6 @@
 	<properties>
 		<osgi.version>0.5.0</osgi.version>
 		<springVersion>[2.5.0,3.0.0)</springVersion>
-		<plugin.version>0.1.0</plugin.version>
 	</properties>
 
 	<build>
@@ -158,7 +157,7 @@
 		</site>
 		<repository>
 			<id>nexus.synyx.de</id>
-			<url>http://nexus.synyx.de/content/repositories/public-release</url>
+			<url>http://nexus.synyx.de/content/repositories/public-releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>nexus.synyx.de</id>
