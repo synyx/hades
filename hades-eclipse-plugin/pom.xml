@@ -7,12 +7,13 @@
 	<name>Hades Eclipse plugin</name>
 	<version>0.2</version>
 	
-	
+	<!-- 
 	<dependencies>
 		<dependency>
 			<groupId>org.synyx.hades</groupId>
-			<artifactId>hades</artifactId>
-			<version>0.4</version>
+			<artifactId>org.synyx.hades</artifactId>
+			<version>0.5.0</version>
 		</dependency>
 	</dependencies>
+	 -->
 </project>
