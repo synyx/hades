@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<article>
+  <title>Generic DAOs with Hades</title>
+
+  <subtitle>Developing persistence layers with Spring and JPA</subtitle>
+
+  <articleinfo>
+    <date>13.04.2009</date>
+
+    <author>
+      <firstname>Oliver</firstname>
+
+      <surname>Gierke</surname>
+
+      <email>gierke@synyx.de</email>
+    </author>
+
+    <copyright>
+      <year>2009</year>
+
+      <holder>Synyx GmbH &amp; Co. KG</holder>
+    </copyright>
+  </articleinfo>
+
+  <abstract>
+    <para>The Java Persistence API (JPA) is a standard to implement
+    persistence in Java. Nevertheless data access code is 90% boilerplate. The
+    open source project Hades aims to ease solving this issue and supports
+    developers to implement slick data access layers.</para>
+  </abstract>
+
+  <para>A very key concept of JPA is the
+  <interfacename>EntityManager</interfacename>. It can be used to execute all
+  the usual persistence operations directly by a method call without writing
+  SQL. More detailled queries to the data are placed using JPA QL.
+  Nevertheless EntityManager is missing a lot of functionality developers need
+  in everyday work: pagination (distributing query results into multiple
+  sets), simple sort operations, auditing of entities and so on. These
+  features can be implemented with JPA of course. That's why you find a lot of
+  code in almost every project that solves exactly those issues.</para>
+
+  <para>To separate business logic from persistence logic the Data Access
+  Object (DAO) pattern is widely used. It especially serves separation of
+  concerns principle as well as testability of business code. The open source
+  project Hades is especially dedicated on these topics: lowering
+  implementation effort implenting persistence layers based on the DAO pattern
+  as well as easing solving every-day tasks of a persistence layer.</para>
+
+  <para>Core of the framework is the abstraction of a GenericDao that offers
+  create, read, update and delete (CRUD) functionality per entity type freeing
+  the developer of the need to implement this manually. In contrast to the
+  pure EntityManager it allows additional read operations like
+  readAll(Pageable pageable, Sort sort), to aply simple pagination and
+  sorting. With GenericJpaDao there is an implementation of this interface
+  that can be used with all JPA persistence providers.</para>
+
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/DAO Implementations.png" width="100%" />
+    </imageobject>
+
+    <caption><para>Class and interface hierarchy of Extended- and
+    GenericDao</para></caption>
+  </mediaobject>
+
+  <simplesect>
+    <title>Finder methods</title>
+
+    <para>A very large part of data access code consists of so-called finder
+    methods that retrieve entities based on certain restrictions. JPA provides
+    <code>NamedQuery</code>s that allow to define queries in JPA QL and
+    reference them by name later on. For each query you mostly code the lookup
+    as well as the execution. To execute the finder methods with Hades you
+    simply define an interface extending
+    <interfacename>GenericDao</interfacename> (see <xref
+    linkend="examples.finder-methods" /> for example). It declares the
+    necessary methods and equips them with a special prefix to get them
+    executed as query. A manual implementation is not necessary. To create the
+    instance for the interface you leverage the
+    <classname>GenericDaoFactory</classname> and hand her the DAO interface.
+    The method prefix that triggers execution as query is configurable, too.
+    It is <code>findBy</code> by default. The factory is able to distinguish
+    methods that return single entities from methods that probably return
+    multiple entities. Thus, <classname>User</classname> and
+    <interfacename>List&lt;User&gt;</interfacename> are valid return
+    types.</para>
+
+    <example id="examples.finder-methods">
+      <title>Declaration of finder methods in an interface</title>
+
+      <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
+
+  List&lt;User&gt; findByLastname(String lastname);
+
+  User findByUsername(String username);
+}</programlisting>
+    </example>
+  </simplesect>
+
+  <simplesect>
+    <title>From the method to the query</title>
+
+    <para></para>
+  </simplesect>
+
+  <simplesect>
+    <title>Integrating custom code</title>
+
+    <para></para>
+  </simplesect>
+
+  <simplesect>
+    <title>Spring</title>
+
+    <para></para>
+  </simplesect>
+
+  <simplesect>
+    <title>The Spring Namespace</title>
+
+    <para></para>
+  </simplesect>
+
+  <simplesect>
+    <title>Eclipse integration</title>
+
+    <para></para>
+  </simplesect>
+
+  <simplesect>
+    <title>Domain base classes and auditing</title>
+
+    <para></para>
+  </simplesect>
+
+  <bibliography>
+    <biblioentry>
+      <abbrev>WikiDAO</abbrev>
+
+      <title><ulink
+      url="http://en.wikipedia.org/wiki/Data_Access_Object">http://en.wikipedia.org/wiki/Data_Access_Object</ulink></title>
+    </biblioentry>
+  </bibliography>
+
+  <glossary>
+    <glossdiv>
+      <title>J</title>
+
+      <glossentry>
+        <glossterm>JPA</glossterm>
+
+        <glossdef>
+          <para>Java Persistence API</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+  </glossary>
+</article>
