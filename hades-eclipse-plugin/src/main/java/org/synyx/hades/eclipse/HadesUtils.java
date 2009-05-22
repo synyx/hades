@@ -24,7 +24,6 @@ import org.springframework.ide.eclipse.beans.core.model.IBean;
 import org.springframework.ide.eclipse.beans.core.model.IBeansConfig;
 import org.springframework.ide.eclipse.beans.core.model.IBeansTypedString;
 import org.springframework.ide.eclipse.beans.ui.editor.namespaces.NamespaceUtils;
-import org.springframework.util.Assert;
 import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -179,7 +178,9 @@ public abstract class HadesUtils {
      */
     private static boolean hasDaoInterface(IBean bean, String daoInterface) {
 
-        Assert.notNull(daoInterface);
+        if (null == daoInterface) {
+            throw new IllegalArgumentException("daoInterface must not be null!");
+        }
 
         if (!isFactoryBean(bean)) {
             return false;
