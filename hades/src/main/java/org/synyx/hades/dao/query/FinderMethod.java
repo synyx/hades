@@ -85,6 +85,15 @@ public class FinderMethod {
     }
 
 
+    /**
+     * Creates a new {@link FinderMethod}. Assumes applying default
+     * {@link QueryLookupStrategy} by handing {@code null}.
+     * 
+     * @param method
+     * @param prefix
+     * @param domainClass
+     * @param em
+     */
     public FinderMethod(Method method, String prefix, Class<?> domainClass,
             EntityManager em) {
 
