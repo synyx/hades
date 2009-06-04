@@ -388,7 +388,7 @@ public class GenericDaoFactory {
                     FinderMethod finder =
                             new FinderMethod(method, finderPrefix, ClassUtils
                                     .getDomainClass(daoInterface),
-                                    queryLookupStrategy, entityManager);
+                                    entityManager, queryLookupStrategy);
 
                     queries.put(method, finder);
                 }
