@@ -47,6 +47,23 @@ public abstract class QueryUtils {
             throw new IllegalArgumentException("Class must not be null!");
         }
 
-        return String.format(template, clazz.getSimpleName());
+        return getQueryString(template, clazz.getSimpleName());
+    }
+
+
+    /**
+     * Returns the query string for the given class name.
+     * 
+     * @param template
+     * @param clazzName
+     * @return
+     */
+    public static String getQueryString(String template, String clazzName) {
+
+        if (null == clazzName || "".equals(clazzName.trim())) {
+            throw new IllegalArgumentException("Classname must not be null!");
+        }
+
+        return String.format(template, clazzName);
     }
 }

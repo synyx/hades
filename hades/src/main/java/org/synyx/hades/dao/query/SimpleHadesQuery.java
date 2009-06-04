@@ -15,8 +15,6 @@
  */
 package org.synyx.hades.dao.query;
 
-import java.lang.reflect.Method;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -49,6 +47,19 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     }
 
 
+    /**
+     * Creates a new {@link SimpleHadesQuery} that constructs the query from the
+     * given {@link FinderMethod}.
+     * 
+     * @param method
+     */
+    private SimpleHadesQuery(FinderMethod method) {
+
+        super(method);
+        this.queryString = new QueryCreator(method).constructQuery();
+    }
+
+
     /*
      * (non-Javadoc)
      * 
@@ -72,15 +83,13 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      */
     public static HadesQuery fromHadesAnnotation(FinderMethod finderMethod) {
 
-        Method method = finderMethod.getMethod();
-
         if (LOG.isDebugEnabled()) {
             LOG.debug(String.format("Looking up Hades query for method %s",
-                    method.getName()));
+                    finderMethod.getName()));
         }
 
         org.synyx.hades.dao.Query annotation =
-                method.getAnnotation(org.synyx.hades.dao.Query.class);
+                finderMethod.getQueryAnnotation();
 
         return null == annotation ? null : new SimpleHadesQuery(finderMethod,
                 annotation.value());
@@ -95,6 +104,6 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      */
     public static HadesQuery construct(FinderMethod finderMethod) {
 
-        return new SimpleHadesQuery(finderMethod, finderMethod.constructQuery());
+        return new SimpleHadesQuery(finderMethod);
     }
 }

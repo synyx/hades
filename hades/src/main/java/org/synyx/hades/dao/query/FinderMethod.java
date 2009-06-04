@@ -15,10 +15,7 @@
  */
 package org.synyx.hades.dao.query;
 
-import static org.synyx.hades.dao.query.QueryUtils.*;
-
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 
@@ -58,11 +56,11 @@ public class FinderMethod {
      * @param method
      * @param prefix
      * @param domainClass
-     * @param strategy
      * @param em
+     * @param strategy
      */
     public FinderMethod(Method method, String prefix, Class<?> domainClass,
-            QueryLookupStrategy strategy, EntityManager em) {
+            EntityManager em, QueryLookupStrategy strategy) {
 
         Assert.notNull(method, "Method must not be null!");
         Assert.hasText(prefix, "Prefix must not be emtpy!");
@@ -87,14 +85,77 @@ public class FinderMethod {
     }
 
 
+    public FinderMethod(Method method, String prefix, Class<?> domainClass,
+            EntityManager em) {
+
+        this(method, prefix, domainClass, em, null);
+    }
+
+
+    public String getName() {
+
+        return method.getName();
+    }
+
+
+    public String getUnprefixedMethodName() {
+
+        String methodName = method.getName();
+
+        return methodName.substring(prefix.length(), methodName.length());
+    }
+
+
     /**
-     * Returns the method this {@link FinderMethod} was created for.
+     * Returns whether the given
+     * 
+     * @param number
+     * @return
+     */
+    public boolean isCorrectNumberOfParameters(int number) {
+
+        return number == method.getParameterTypes().length;
+    }
+
+
+    /**
+     * Returns whether the given field is valid field name and thus a persistent
+     * field to the underlying domain class.
+     * 
+     * @param fieldName
+     * @return
+     */
+    public boolean isValidField(String fieldName) {
+
+        if (null != ReflectionUtils.findMethod(domainClass, "get" + fieldName)) {
+            return true;
+        }
+
+        return null != ReflectionUtils.findField(domainClass, StringUtils
+                .uncapitalize(fieldName));
+    }
+
+
+    /**
+     * Returns the name of the domain class the finder belongs to.
      * 
      * @return
      */
-    Method getMethod() {
+    public String getDomainClassName() {
 
-        return method;
+        return domainClass.getSimpleName();
+    }
+
+
+    /**
+     * Returns the {@link org.synyx.hades.dao.Query} annotation that is applied
+     * to the method or {@code null} if none available.
+     * 
+     * @return
+     */
+    public org.synyx.hades.dao.Query getQueryAnnotation() {
+
+        return method.getAnnotation(org.synyx.hades.dao.Query.class);
     }
 
 
@@ -145,75 +206,6 @@ public class FinderMethod {
     public Object executeQuery(Object... parameters) {
 
         return hadesQuery.execute(parameters);
-    }
-
-
-    /**
-     * Constructs a query from the given method. The method has to start with
-     * {@code #FINDER_PREFIX}.
-     * 
-     * @return the query string
-     */
-    String constructQuery() {
-
-        final String and = "And";
-        final String or = "Or";
-
-        String methodName = method.getName();
-        int numberOfBlocks = 0;
-
-        // Remove prefix
-        methodName = methodName.substring(prefix.length(), methodName.length());
-
-        StringBuilder queryBuilder =
-                new StringBuilder(getQueryString(READ_ALL_QUERY, domainClass)
-                        + " where ");
-
-        // Split OR
-        String[] orParts =
-                StringUtils.delimitedListToStringArray(methodName, or);
-
-        for (String orPart : Arrays.asList(orParts)) {
-
-            // Split AND
-            String[] andParts =
-                    StringUtils.delimitedListToStringArray(orPart, and);
-
-            StringBuilder andBuilder = new StringBuilder();
-
-            for (String andPart : Arrays.asList(andParts)) {
-
-                andBuilder.append("x.");
-                andBuilder.append(StringUtils.uncapitalize(andPart));
-                andBuilder.append(" = ?");
-                andBuilder.append(" and ");
-
-                numberOfBlocks++;
-            }
-
-            andBuilder.delete(andBuilder.length() - 5, andBuilder.length());
-
-            queryBuilder.append(andBuilder);
-            queryBuilder.append(" or ");
-        }
-
-        // Assert correct number of parameters
-        if (numberOfBlocks != method.getParameterTypes().length) {
-            throw new IllegalArgumentException(
-                    "You have to provide method arguments for each query "
-                            + "criteria to construct the query correctly!");
-        }
-
-        queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
-
-        String query = queryBuilder.toString();
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(String.format("Created query '%s' from method %s", query,
-                    method.getName()));
-        }
-
-        return query;
     }
 
 
