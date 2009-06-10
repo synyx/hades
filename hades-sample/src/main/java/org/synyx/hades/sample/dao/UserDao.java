@@ -9,7 +9,7 @@ import org.synyx.hades.sample.domain.User;
 
 /**
  * DAO interface for {@link User} instances. Provides basic CRUD operations due
- * to the extension of {@link GenericDao}. Includes custom implented
+ * to the extension of {@link GenericDao}. Includes custom implemented
  * functionality by extending {@link UserDaoCustom}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
