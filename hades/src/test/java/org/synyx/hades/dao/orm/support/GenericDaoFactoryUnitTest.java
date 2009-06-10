@@ -69,6 +69,17 @@ public class GenericDaoFactoryUnitTest {
     }
 
 
+    @Test
+    public void allowsCallingOfObjectMethods() {
+
+        SampleDao userDao = factory.getDao(SampleDao.class);
+
+        userDao.hashCode();
+        userDao.toString();
+        userDao.equals(userDao);
+    }
+
+
     /**
      * Asserts that the factory recognized configured DAO classes that contain
      * custom method but no custom implementation could be found. Furthremore

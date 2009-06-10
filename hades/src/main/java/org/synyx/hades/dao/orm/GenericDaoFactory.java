@@ -408,19 +408,50 @@ public class GenericDaoFactory {
 
             Method method = invocation.getMethod();
 
-            if (isCustomMethod(method, daoInterface)) {
+            if (isCustomMethodInvocation(invocation)) {
 
                 return method.invoke(customDaoImplementation, invocation
                         .getArguments());
             }
 
-            if (queries.containsKey(method)) {
+            if (hasQueryFor(method)) {
 
                 return queries.get(method).executeQuery(
                         invocation.getArguments());
             }
 
             return invocation.proceed();
+        }
+
+
+        /**
+         * Returns whether we know of a query to execute for the given
+         * {@link Method};
+         * 
+         * @param method
+         * @return
+         */
+        private boolean hasQueryFor(final Method method) {
+
+            return queries.containsKey(method);
+        }
+
+
+        /**
+         * Returns whether the given {@link MethodInvocation} is considered to
+         * be targeted as an invocation of a custom method.
+         * 
+         * @param method
+         * @return
+         */
+        private boolean isCustomMethodInvocation(
+                final MethodInvocation invocation) {
+
+            if (null == customDaoImplementation) {
+                return false;
+            }
+
+            return isCustomMethod(invocation.getMethod(), daoInterface);
         }
     }
 }
