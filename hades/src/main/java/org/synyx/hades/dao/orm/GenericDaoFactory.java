@@ -195,9 +195,10 @@ public class GenericDaoFactory {
                     customDaoImplementation));
 
             return (T) result.getProxy();
-
-        } catch (Exception e) {
-            throw new IllegalStateException("Error creating DAO instance!", e);
+        } catch (InstantiationException e) {
+            throw new IllegalStateException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
         }
     }
 
