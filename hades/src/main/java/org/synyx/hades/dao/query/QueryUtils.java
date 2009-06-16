@@ -15,6 +15,9 @@
  */
 package org.synyx.hades.dao.query;
 
+import org.synyx.hades.domain.Sort;
+
+
 /**
  * Simple utility class to create JPA queries.
  * 
@@ -65,5 +68,36 @@ public abstract class QueryUtils {
         }
 
         return String.format(template, clazzName);
+    }
+
+
+    /**
+     * Adds {@literal order by} clause to the JPQL query.
+     * 
+     * @param query
+     * @param sort
+     * @return
+     */
+    public static String applySorting(String query, Sort sort) {
+
+        if (null == sort) {
+            return query;
+        }
+
+        StringBuilder builder = new StringBuilder(query);
+        builder.append(" order by");
+
+        for (String property : sort.getProperties()) {
+            builder.append(" x.");
+            builder.append(property);
+            builder.append(",");
+        }
+
+        builder.deleteCharAt(builder.length() - 1);
+
+        builder.append(" ");
+        builder.append(sort.getOrder().getJpaValue());
+
+        return builder.toString();
     }
 }

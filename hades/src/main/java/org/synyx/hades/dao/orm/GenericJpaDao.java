@@ -26,6 +26,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.query.QueryUtils;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
@@ -137,9 +138,9 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public List<T> readAll(final Sort sort) {
 
-        Query query =
-                getEntityManager().createQuery(
-                        applySorting(getReadAllQueryString(), sort));
+        String queryString =
+                QueryUtils.applySorting(getReadAllQueryString(), sort);
+        Query query = getEntityManager().createQuery(queryString);
 
         return (null == sort) ? readAll() : query.getResultList();
     }
@@ -246,46 +247,12 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     @SuppressWarnings("unchecked")
     protected Page<T> readPage(final Pageable pageable, final String query) {
 
-        applySorting(query, pageable.getSort());
-
-        Query jpaQuery =
-                getEntityManager().createQuery(
-                        applySorting(query, pageable.getSort()));
+        String queryString = QueryUtils.applySorting(query, pageable.getSort());
+        Query jpaQuery = getEntityManager().createQuery(queryString);
 
         jpaQuery.setFirstResult(pageable.getFirstItem());
         jpaQuery.setMaxResults(pageable.getPageSize());
 
         return new PageImpl<T>(jpaQuery.getResultList(), pageable, count());
-    }
-
-
-    /**
-     * Adds {@literal order by} clause to the JPQL query.
-     * 
-     * @param query
-     * @param sort
-     * @return
-     */
-    private String applySorting(String query, Sort sort) {
-
-        if (null == sort) {
-            return query;
-        }
-
-        StringBuilder builder = new StringBuilder(query);
-        builder.append(" order by");
-
-        for (String property : sort.getProperties()) {
-            builder.append(" x.");
-            builder.append(property);
-            builder.append(",");
-        }
-
-        builder.deleteCharAt(builder.length() - 1);
-
-        builder.append(" ");
-        builder.append(sort.getOrder().getJpaValue());
-
-        return builder.toString();
     }
 }
