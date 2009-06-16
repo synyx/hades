@@ -65,7 +65,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private static final String FACTORY_CLASS =
             "org.synyx.hades.dao.orm.GenericDaoFactoryBean";
 
-    private static final Log log =
+    private static final Log LOG =
             LogFactory.getLog(DaoConfigDefinitionParser.class);
 
     private static final Class<?> PAB_POST_PROCESSOR =
@@ -116,8 +116,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private void doAutoConfiguration(final DaoConfigContext configContext,
             final ParserContext parserContext) {
 
-        if (log.isDebugEnabled()) {
-            log.debug("Triggering auto DAO detection");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Triggering auto DAO detection");
         }
 
         ResourceLoader resourceLoader =
@@ -165,8 +165,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private void doManualConfiguration(final DaoConfigContext context,
             final ParserContext parserContext) {
 
-        if (log.isDebugEnabled()) {
-            log.debug("Triggering manual DAO detection");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Triggering manual DAO detection");
         }
 
         // Add dao declarations
@@ -208,7 +208,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         beanDefinition.setSource(parserContext.extractSource(context
                 .getElement()));
 
-        if (log.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
 
             StringBuilder builder =
                     new StringBuilder("Registering Hades DAO: ");
@@ -218,7 +218,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             builder.append(" - Custom implementation: ");
             builder.append(customImplementationBeanName);
 
-            log.debug(builder.toString());
+            LOG.debug(builder.toString());
         }
 
         BeanComponentDefinition definition =
@@ -264,8 +264,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 return null;
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("Registering custom DAO implementation: "
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Registering custom DAO implementation: "
                         + context.getImplementationBeanName() + " "
                         + beanDefinition.getBeanClassName());
             }
