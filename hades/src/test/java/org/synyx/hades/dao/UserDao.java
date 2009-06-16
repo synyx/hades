@@ -18,6 +18,8 @@ package org.synyx.hades.dao;
 
 import java.util.List;
 
+import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.User;
 
 
@@ -84,4 +86,27 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      */
     @Query("select u from User u where u.emailAddress = ?1")
     User findByHadesQuery(final String emailAddress);
+
+
+    /**
+     * Method to directly create query from and adding a {@link Pageable}
+     * parameter to be regarded on query execution.
+     * 
+     * @param pageable
+     * @param firstname
+     * @return
+     */
+    Page<User> findByFirstname(Pageable pageable, String firstname);
+
+
+    /**
+     * Method to directly create query from and adding a {@link Pageable}
+     * parameter to be regarded on query execution. Just returns the queried
+     * {@link Page}'s contents.
+     * 
+     * @param firstname
+     * @param pageable
+     * @return
+     */
+    List<User> findByFirstname(String firstname, Pageable pageable);
 }
