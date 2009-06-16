@@ -17,6 +17,7 @@
 package org.synyx.hades.dao.orm;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -40,7 +41,7 @@ import org.synyx.hades.domain.support.PageImpl;
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serializable>
-        extends GenericJpaDao<T, PK> implements ExtendedGenericDao<T, PK> {
+        extends AbstractExtendedGenericJpaDao<T, PK> {
 
     /**
      * Factory method to create {@link GenericHibernateJpaDao} instances.
@@ -67,10 +68,10 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.hades.dao.ExtendedGenericDao#readByExample(org.synyx.
-     * hades.hades.domain.Identifyable)
+     * org.synyx.hades.dao.ExtendedGenericDao#readByExample(java.util.Collection
+     * )
      */
-    public List<T> readByExample(final T... examples) {
+    public List<T> readByExample(final Collection<T> examples) {
 
         return readByExample((Sort) null, examples);
     }
@@ -81,10 +82,10 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * 
      * @see
      * org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.
-     * domain.Sort, T[])
+     * domain.Sort, java.util.Collection)
      */
     @SuppressWarnings("unchecked")
-    public List<T> readByExample(final Sort sort, final T... examples) {
+    public List<T> readByExample(final Sort sort, final Collection<T> examples) {
 
         Criteria criteria = applyExamples(examples);
         applySorting(criteria, sort);
@@ -97,14 +98,15 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.hades.dao.ExtendedGenericDao#readbyExample(java.awt.print
-     * .Pageable, T[])
+     * org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.
+     * domain.Pageable, java.util.Collection)
      */
     @SuppressWarnings("unchecked")
-    public Page<T> readByExample(final Pageable pageable, final T... examples) {
+    public Page<T> readByExample(final Pageable pageable,
+            final Collection<T> examples) {
 
         // Prevent null examples to cause trouble
-        if (null == examples || examples.length == 0) {
+        if (null == examples || examples.isEmpty()) {
             return readAll(pageable);
         }
 
@@ -124,9 +126,11 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.ExtendedGenericDao#deleteByExample(T[])
+     * @see
+     * org.synyx.hades.dao.ExtendedGenericDao#deleteByExample(java.util.Collection
+     * )
      */
-    public void deleteByExample(final T... examples) {
+    public void deleteByExample(final Collection<T> examples) {
 
         for (T entity : readByExample(examples)) {
             delete(entity);
@@ -140,7 +144,7 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
      * @param examples
      * @return
      */
-    private Criteria applyExamples(final T... examples) {
+    private Criteria applyExamples(final Collection<T> examples) {
 
         Criteria criteria =
                 getEntityManager().getSession()

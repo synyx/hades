@@ -17,6 +17,7 @@
 package org.synyx.hades.dao.orm;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,7 +45,7 @@ import org.synyx.hades.domain.support.PageImpl;
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Serializable>
-        extends GenericJpaDao<T, PK> implements ExtendedGenericDao<T, PK> {
+        extends AbstractExtendedGenericJpaDao<T, PK> {
 
     /**
      * Factory method to create {@link GenericEclipseLinkJpaDao} instances.
@@ -71,9 +72,11 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.ExtendedGenericDao#readByExample(T[])
+     * @see
+     * org.synyx.hades.dao.ExtendedGenericDao#readByExample(java.util.Collection
+     * )
      */
-    public List<T> readByExample(T... examples) {
+    public List<T> readByExample(Collection<T> examples) {
 
         return readByExample((Sort) null, examples);
     }
@@ -84,10 +87,10 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
      * 
      * @see
      * org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.
-     * domain.Sort, T[])
+     * domain.Sort, java.util.Collection)
      */
     @SuppressWarnings("unchecked")
-    public List<T> readByExample(Sort sort, T... examples) {
+    public List<T> readByExample(Sort sort, Collection<T> examples) {
 
         ReadAllQuery query = new ReadAllQuery();
 
@@ -103,13 +106,13 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
      * 
      * @see
      * org.synyx.hades.dao.ExtendedGenericDao#readByExample(org.synyx.hades.
-     * domain.page.Pageable, T[])
+     * domain.Pageable, java.util.Collection)
      */
     @SuppressWarnings("unchecked")
-    public Page<T> readByExample(Pageable pageable, T... examples) {
+    public Page<T> readByExample(Pageable pageable, Collection<T> examples) {
 
         // Prevent null examples to cause trouble
-        if (null == examples || examples.length == 0) {
+        if (null == examples || examples.isEmpty()) {
             return readAll(pageable);
         }
 
@@ -135,9 +138,11 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.ExtendedGenericDao#deleteByExample(T[])
+     * @see
+     * org.synyx.hades.dao.ExtendedGenericDao#deleteByExample(java.util.Collection
+     * )
      */
-    public void deleteByExample(T... examples) {
+    public void deleteByExample(Collection<T> examples) {
 
         // For EclipseLink entities have to be merged manually before removing
         // them
@@ -197,7 +202,7 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
      * @param query
      * @param examples
      */
-    private void applyExamples(ReadAllQuery query, T... examples) {
+    private void applyExamples(ReadAllQuery query, Collection<T> examples) {
 
         if (null == examples) {
             return;

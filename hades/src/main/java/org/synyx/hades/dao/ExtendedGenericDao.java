@@ -17,6 +17,7 @@
 package org.synyx.hades.dao;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.synyx.hades.domain.Page;
@@ -57,7 +58,33 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
      * @return all entites matching the given criteria sorted by the given sort
      *         options
      */
+    List<T> readByExample(final Collection<T> examples);
+
+
+    /**
+     * Returns all entites matching the given criteria sorted by the given sort
+     * options.
+     * 
+     * @see ExtendedGenericDao#readByExample(Persistable...)
+     * @param sort
+     * @param examples
+     * @return all entites matching the given criteria sorted by the given sort
+     *         options
+     */
     List<T> readByExample(final Sort sort, final T... examples);
+
+
+    /**
+     * Returns all entites matching the given criteria sorted by the given sort
+     * options.
+     * 
+     * @see ExtendedGenericDao#readByExample(Persistable...)
+     * @param sort
+     * @param examples
+     * @return all entites matching the given criteria sorted by the given sort
+     *         options
+     */
+    List<T> readByExample(final Sort sort, final Collection<T> examples);
 
 
     /**
@@ -73,9 +100,29 @@ public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serial
 
 
     /**
+     * Allows pageable access to all entities matching the given examples. If
+     * you provide {@code null} for the pageable, the call is identical to
+     * {@code ExtendedGenericDao#readByExample(T...)}.
+     * 
+     * @param pageable
+     * @param examples
+     * @return the page of objects meeting the example's criterias
+     */
+    Page<T> readByExample(final Pageable pageable, final Collection<T> examples);
+
+
+    /**
      * Deletes all entities mathing the given examples.
      * 
      * @param examples
      */
     void deleteByExample(final T... examples);
+
+
+    /**
+     * Deletes all entities mathing the given examples.
+     * 
+     * @param examples
+     */
+    void deleteByExample(final Collection<T> examples);
 }
