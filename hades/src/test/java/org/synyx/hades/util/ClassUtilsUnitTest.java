@@ -7,6 +7,8 @@ import java.io.Serializable;
 import org.junit.Test;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.User;
 
 
@@ -24,6 +26,13 @@ public class ClassUtilsUnitTest {
         assertEquals(User.class, ClassUtils.getDomainClass(SomeDao.class));
     }
 
+
+    @Test(expected = IllegalStateException.class)
+    public void rejectsInvalidReturnType() throws Exception {
+
+        ClassUtils.assertReturnType(SomeDao.class.getMethods()[0], User.class);
+    }
+
     /**
      * Sample interface to serve two purposes:
      * <ol>
@@ -37,5 +46,6 @@ public class ClassUtilsUnitTest {
      */
     private interface SomeDao extends Serializable, UserDao {
 
+        Page<User> findByFirstname(Pageable pageable, String firstname);
     }
 }
