@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.annotation.ExpectedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,9 +51,9 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext.xml" })
+@Transactional()
 public class UserDaoIntegrationTest {
 
     @PersistenceContext
@@ -69,7 +70,7 @@ public class UserDaoIntegrationTest {
 
 
     @Before
-    public void onSetUpInTransaction() throws Exception {
+    public void setUp() {
 
         firstUser = new User("Oliver", "Gierke", "gierke@synyx.de");
         secondUser = new User("Joachim", "Arrasz", "arrasz@synyx.de");
@@ -241,17 +242,12 @@ public class UserDaoIntegrationTest {
      * Tests, that persisting a relationsship without cascade attributes throws
      * a {@code DataAccessException}.
      */
-    @Test
+    @Test(expected = DataAccessException.class)
     public void testPreventsCascadingRolePersisting() {
 
         firstUser.addRole(new Role("USER"));
 
-        try {
-            flushTestUsers();
-            fail("Expected DataAccessException!");
-        } catch (DataAccessException e) {
-
-        }
+        flushTestUsers();
     }
 
 
@@ -279,19 +275,15 @@ public class UserDaoIntegrationTest {
      * Tests that an exception is being thrown if you try to persist some
      * relation that is not configured to be cascaded.
      */
-    @Test
+    @Test(expected = DataAccessException.class)
     public void testMergingDoesNotCascadeRoles() {
 
         flushTestUsers();
 
         firstUser.addRole(new Role("USER"));
 
-        try {
-            userDao.saveAndFlush(firstUser);
-            fail("Expected DataAccessException!");
-        } catch (DataAccessException e) {
+        userDao.save(firstUser);
 
-        }
     }
 
 
