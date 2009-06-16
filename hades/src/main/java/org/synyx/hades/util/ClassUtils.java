@@ -15,9 +15,11 @@
  */
 package org.synyx.hades.util;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -165,5 +167,76 @@ public abstract class ClassUtils {
     public static boolean isExtendedDaoInterface(Class<?> daoInterface) {
 
         return ExtendedGenericDao.class.isAssignableFrom(daoInterface);
+    }
+
+
+    /**
+     * Returns the number of occurences of the given type in the given
+     * {@link Method}s parameters.
+     * 
+     * @param method
+     * @param type
+     * @return
+     */
+    public static int getNumberOfOccurences(Method method, Class<?> type) {
+
+        int result = 0;
+        for (Class<?> clazz : method.getParameterTypes()) {
+            if (type.equals(clazz)) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Asserts the given {@link Method}'s return type to be one of the given
+     * types.
+     * 
+     * @param method
+     * @param types
+     */
+    public static void assertReturnType(Method method, Class<?>... types) {
+
+        if (!Arrays.asList(types).contains(method.getReturnType())) {
+            throw new IllegalStateException(
+                    "Method has to have one of the following return types! "
+                            + Arrays.toString(types));
+        }
+    }
+
+
+    /**
+     * Returns whether the given object is of one of the given types.
+     * 
+     * @param object
+     * @param types
+     * @return
+     */
+    public static boolean isOfType(Object object, Collection<Class<?>> types) {
+
+        for (Class<?> type : types) {
+            if (type.isAssignableFrom(object.getClass())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Returns whether the given {@link Method} has a parameter of the given
+     * type.
+     * 
+     * @param method
+     * @param type
+     * @return
+     */
+    public static boolean hasParameterOfType(Method method, Class<?> type) {
+
+        return Arrays.asList(method.getParameterTypes()).contains(type);
     }
 }

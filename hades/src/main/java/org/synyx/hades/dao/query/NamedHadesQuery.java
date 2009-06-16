@@ -50,19 +50,43 @@ final class NamedHadesQuery extends AbstractHadesQuery {
     /**
      * Looks up a named query for the given {@link FinderMethod}.
      * 
-     * @param finderMethod
+     * @param method
      * @return
      */
-    public static HadesQuery lookupFrom(FinderMethod finderMethod) {
+    public static HadesQuery lookupFrom(FinderMethod method) {
 
-        final String queryName = finderMethod.getNamedQueryName();
+        final String queryName = method.getNamedQueryName();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(String.format("Looking up named query %s", queryName));
         }
 
         try {
-            return new NamedHadesQuery(finderMethod);
+
+            HadesQuery query = new NamedHadesQuery(method);
+
+            if (method.hasSortParameter()) {
+                throw new IllegalStateException(
+                        String
+                                .format(
+                                        "Finder method %s is backed "
+                                                + "by a NamedQuery and must "
+                                                + "not contain a sort parameter as we "
+                                                + "cannot modify the query! Use @Query instead!",
+                                        method));
+            }
+
+            if (method.hasPageableParameter()) {
+                LOG
+                        .info(String
+                                .format(
+                                        "Finder method %s is backed by a NamedQuery"
+                                                + " but contains a Pageble parameter! Sorting deliviered "
+                                                + "via this Pageable will not be applied!",
+                                        method));
+            }
+
+            return query;
         } catch (IllegalArgumentException e) {
             return null;
         }
@@ -76,7 +100,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
      * javax.persistence.EntityManager)
      */
     @Override
-    protected Query getQuery(EntityManager em) {
+    protected Query createQuery(EntityManager em, Parameters binder) {
 
         return em.createNamedQuery(queryName);
     }

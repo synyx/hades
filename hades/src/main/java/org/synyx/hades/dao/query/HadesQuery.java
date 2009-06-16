@@ -28,5 +28,5 @@ public interface HadesQuery {
      * @param parameters
      * @return
      */
-    Object execute(Object... parameters);
+    Object execute(Parameters parameters);
 }

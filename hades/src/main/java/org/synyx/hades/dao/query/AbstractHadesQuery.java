@@ -19,10 +19,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.synyx.hades.domain.support.PageImpl;
+
 
 /**
  * Abstract base class to implement {@link HadesQuery}s. Simply looks up a JPA
- * {@link Query} through {@link #getQuery(EntityManager)} and executes it.
+ * {@link Query} through {@link #createQuery(EntityManager, Parameters)} and
+ * executes it.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -45,17 +48,35 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.dao.orm.FinderMethod.HadesQuery#execute(javax.persistence
-     * .EntityManager, java.lang.Object[])
+     * org.synyx.hades.dao.query.HadesQuery#execute(org.synyx.hades.dao.query
+     * .Parameters)
      */
-    public Object execute(Object... parameters) {
-
-        Query query = getQuery(method.getEntityManager());
-        query = method.prepareQuery(query, parameters);
+    @SuppressWarnings("unchecked")
+    public Object execute(Parameters parameters) {
 
         try {
-            return method.isCollectionFinder() ? query.getResultList() : query
-                    .getSingleResult();
+
+            if (method.isPageFinder()) {
+
+                // Execute query to compute total
+                Query projection = parameters.bind(createQuery(parameters));
+                int total = projection.getResultList().size();
+
+                Query query =
+                        parameters.bindAndPrepare(createQuery(parameters));
+
+                return new PageImpl(query.getResultList(), parameters
+                        .getPageable(), total);
+
+            }
+
+            if (method.isCollectionFinder()) {
+                return parameters.bindAndPrepare(createQuery(parameters))
+                        .getResultList();
+            }
+
+            return parameters.bind(createQuery(parameters)).getSingleResult();
+
         } catch (NoResultException e) {
             return null;
         }
@@ -63,10 +84,25 @@ abstract class AbstractHadesQuery implements HadesQuery {
 
 
     /**
-     * Returns the actual JPA {@link Query} to be executed.
+     * Creates a new {@link Query} for the given {@link Parameters}.
      * 
-     * @param em
+     * @param parameters
      * @return
      */
-    protected abstract Query getQuery(EntityManager em);
+    private Query createQuery(Parameters parameters) {
+
+        return createQuery(method.getEntityManager(), parameters);
+    }
+
+
+    /**
+     * Returns the actual JPA {@link Query} to be executed. Has to return a
+     * fresh instance on each call.
+     * 
+     * @param em
+     * @param parameters TODO
+     * @return
+     */
+    protected abstract Query createQuery(EntityManager em, Parameters parameters);
+
 }

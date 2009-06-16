@@ -16,17 +16,19 @@
 package org.synyx.hades.dao.query;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.Sort;
+import org.synyx.hades.util.ClassUtils;
 
 
 /**
@@ -39,7 +41,7 @@ import org.springframework.util.StringUtils;
  */
 public class FinderMethod {
 
-    static final Log LOG = LogFactory.getLog(FinderMethod.class);
+    // private static final Log LOG = LogFactory.getLog(FinderMethod.class);
 
     private Method method;
     private String prefix;
@@ -73,6 +75,23 @@ public class FinderMethod {
                             + "Make sure the method starts with '%s'", prefix));
         }
 
+        for (Class<?> type : Parameters.TYPES) {
+            if (ClassUtils.getNumberOfOccurences(method, type) > 1) {
+                throw new IllegalStateException(String.format(
+                        "Method must only one argument of type %s!", type
+                                .getSimpleName()));
+            }
+        }
+
+        if (ClassUtils.hasParameterOfType(method, Pageable.class)) {
+            ClassUtils.assertReturnType(method, Page.class, List.class);
+            if (ClassUtils.hasParameterOfType(method, Sort.class)) {
+                throw new IllegalStateException(
+                        "Method must not have Pageable *and* Sort parameter. "
+                                + "Use sorting capabilities on Pageble instead!");
+            }
+        }
+
         this.method = method;
         this.prefix = prefix;
         this.domainClass = domainClass;
@@ -101,13 +120,23 @@ public class FinderMethod {
     }
 
 
-    public String getName() {
+    /**
+     * Returns the method's name.
+     * 
+     * @return
+     */
+    String getName() {
 
         return method.getName();
     }
 
 
-    public String getUnprefixedMethodName() {
+    /**
+     * Returns the methdo name without its finder prefix.
+     * 
+     * @return
+     */
+    String getUnprefixedMethodName() {
 
         String methodName = method.getName();
 
@@ -121,9 +150,29 @@ public class FinderMethod {
      * @param number
      * @return
      */
-    public boolean isCorrectNumberOfParameters(int number) {
+    boolean isCorrectNumberOfParameters(int number) {
 
-        return number == method.getParameterTypes().length;
+        return number == getParameterTypes().size();
+    }
+
+
+    /**
+     * Returns all actual parameter types. Thus, leaves out types declared in
+     * {@link Parameters#TYPES}.
+     * 
+     * @return
+     */
+    private List<Class<?>> getParameterTypes() {
+
+        List<Class<?>> result = new ArrayList<Class<?>>();
+
+        for (Class<?> type : method.getParameterTypes()) {
+            if (!Parameters.TYPES.contains(type)) {
+                result.add(type);
+            }
+        }
+
+        return result;
     }
 
 
@@ -134,7 +183,7 @@ public class FinderMethod {
      * @param fieldName
      * @return
      */
-    public boolean isValidField(String fieldName) {
+    boolean isValidField(String fieldName) {
 
         if (null != ReflectionUtils.findMethod(domainClass, "get" + fieldName)) {
             return true;
@@ -150,7 +199,7 @@ public class FinderMethod {
      * 
      * @return
      */
-    public String getDomainClassName() {
+    String getDomainClassName() {
 
         return domainClass.getSimpleName();
     }
@@ -162,7 +211,7 @@ public class FinderMethod {
      * 
      * @return
      */
-    public org.synyx.hades.dao.Query getQueryAnnotation() {
+    org.synyx.hades.dao.Query getQueryAnnotation() {
 
         return method.getAnnotation(org.synyx.hades.dao.Query.class);
     }
@@ -188,7 +237,44 @@ public class FinderMethod {
     boolean isCollectionFinder() {
 
         Class<?> returnType = method.getReturnType();
-        return ClassUtils.isAssignable(List.class, returnType);
+        return org.springframework.util.ClassUtils.isAssignable(List.class,
+                returnType);
+    }
+
+
+    /**
+     * Returns whether the finder will return a {@link Page} of results.
+     * 
+     * @return
+     */
+    boolean isPageFinder() {
+
+        Class<?> returnType = method.getReturnType();
+        return org.springframework.util.ClassUtils.isAssignable(Page.class,
+                returnType);
+    }
+
+
+    /**
+     * Returns whether the finder contains a Sort parameter.
+     * 
+     * @return
+     */
+    boolean hasSortParameter() {
+
+        return Arrays.asList(method.getParameterTypes()).contains(Sort.class);
+    }
+
+
+    /**
+     * Returns whether the finder contains a pageable parameter.
+     * 
+     * @return
+     */
+    boolean hasPageableParameter() {
+
+        return Arrays.asList(method.getParameterTypes()).contains(
+                Pageable.class);
     }
 
 
@@ -205,8 +291,8 @@ public class FinderMethod {
 
 
     /**
-     * Executes the {@link Query} backing the {@link FinderMethod} with the
-     * given parameters.
+     * Executes the {@link javax.persistence.Query} backing the
+     * {@link FinderMethod} with the given parameters.
      * 
      * @param em
      * @param parameters
@@ -214,28 +300,18 @@ public class FinderMethod {
      */
     public Object executeQuery(Object... parameters) {
 
-        return hadesQuery.execute(parameters);
+        return hadesQuery.execute(new Parameters(method, parameters));
     }
 
 
-    /**
-     * Prepares a named query by resolving it against entity mapping queries.
-     * Queries have to be named as follows: T.methodName where methodName has to
-     * start with find.
+    /*
+     * (non-Javadoc)
      * 
-     * @param method
-     * @param parameters
-     * @return
+     * @see java.lang.Object#toString()
      */
-    Query prepareQuery(final Query query, final Object... parameters) {
+    @Override
+    public String toString() {
 
-        if (parameters != null) {
-
-            for (int i = 0; i < parameters.length; i++) {
-                query.setParameter(i + 1, parameters[i]);
-            }
-        }
-
-        return query;
+        return method.toString();
     }
 }

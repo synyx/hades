@@ -43,7 +43,7 @@ public class QueryCreator {
      * @return the query string
      * @throws QueryCreationException
      */
-    String constructQuery() throws QueryCreationException {
+    String constructQuery() {
 
         StringBuilder queryBuilder =
                 new StringBuilder(getQueryString(READ_ALL_QUERY, method

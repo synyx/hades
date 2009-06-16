@@ -67,9 +67,9 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * javax.persistence.EntityManager)
      */
     @Override
-    protected Query getQuery(EntityManager em) {
+    protected Query createQuery(EntityManager em, Parameters binder) {
 
-        return em.createQuery(queryString);
+        return em.createQuery(binder.applySorting(queryString));
     }
 
 
