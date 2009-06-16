@@ -49,7 +49,7 @@ public class UserDaoJdbcImpl extends SimpleJdbcDaoSupport implements
                 new UserRowMapper());
     }
 
-    private class UserRowMapper implements ParameterizedRowMapper<User> {
+    private static class UserRowMapper implements ParameterizedRowMapper<User> {
 
         /*
          * (non-Javadoc)
