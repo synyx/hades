@@ -16,9 +16,10 @@
 
 package org.synyx.hades.dao.test;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
+import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.User;
+import org.synyx.hades.domain.support.PageRequest;
 
 
 /**
@@ -77,8 +80,7 @@ public class UserDaoFinderIntegrationTest {
     public void testSimpleCustomCreatedFinder() {
 
         User user = userDao.findByEmailAddressAndLastname("foo", "bar");
-
-        Assert.assertEquals(firstUser, user);
+        assertEquals(firstUser, user);
     }
 
 
@@ -90,8 +92,7 @@ public class UserDaoFinderIntegrationTest {
     public void returnsNullIfNothingFound() {
 
         User user = userDao.findByEmailAddress("foobar");
-
-        Assert.assertEquals(null, user);
+        assertEquals(null, user);
     }
 
 
@@ -106,9 +107,18 @@ public class UserDaoFinderIntegrationTest {
                 userDao.findByEmailAddressAndLastnameOrFirstname("bar", "foo",
                         "foobar");
 
-        Assert.assertNotNull(users);
-        Assert.assertEquals(2, users.size());
-        Assert.assertTrue(users.contains(firstUser));
-        Assert.assertTrue(users.contains(secondUser));
+        assertNotNull(users);
+        assertEquals(2, users.size());
+        assertTrue(users.contains(firstUser));
+        assertTrue(users.contains(secondUser));
+    }
+
+
+    @Test
+    public void testname() throws Exception {
+
+        Page<User> page =
+                userDao.findByFirstname(new PageRequest(0, 20), "foobar");
+        assertEquals(1, page.getNumberOfElements());
     }
 }
