@@ -11,6 +11,9 @@ import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.User;
 
 
@@ -29,6 +32,12 @@ public class FinderMethodUnitTest {
 
     private FinderMethod method;
 
+    private static final String METHOD_NAME = "findByFirstname";
+    private Method invalidReturnType;
+    private Method pageableAndSort;
+    private Method pageableTwice;
+    private Method sortableTwice;
+
 
     /**
      * @throws Exception
@@ -40,6 +49,19 @@ public class FinderMethodUnitTest {
         em = createNiceMock(EntityManager.class);
 
         method = new FinderMethod(daoMethod, PREFIX, DOMAIN_CLASS, em, CREATE);
+        invalidReturnType =
+                InvalidDao.class.getMethod(METHOD_NAME, String.class,
+                        Pageable.class);
+        pageableAndSort =
+                InvalidDao.class.getMethod(METHOD_NAME, String.class,
+                        Pageable.class, Sort.class);
+        pageableTwice =
+                InvalidDao.class.getMethod(METHOD_NAME, String.class,
+                        Pageable.class, Pageable.class);
+
+        sortableTwice =
+                InvalidDao.class.getMethod(METHOD_NAME, String.class,
+                        Sort.class, Sort.class);
     }
 
 
@@ -136,5 +158,58 @@ public class FinderMethodUnitTest {
 
         assertTrue(method.isCorrectNumberOfParameters(daoMethod
                 .getParameterTypes().length));
+    }
+
+
+    @Test(expected = IllegalStateException.class)
+    public void rejectsInvalidReturntypeOnPagebleFinder() throws Exception {
+
+        new FinderMethod(invalidReturnType, PREFIX, DOMAIN_CLASS, em);
+    }
+
+
+    @Test(expected = IllegalStateException.class)
+    public void rejectsPageableAndSortInFinderMethod() throws Exception {
+
+        new FinderMethod(pageableAndSort, PREFIX, DOMAIN_CLASS, em);
+    }
+
+
+    @Test(expected = IllegalStateException.class)
+    public void rejectsTwoPageableParameters() throws Exception {
+
+        new FinderMethod(pageableTwice, PREFIX, DOMAIN_CLASS, em);
+    }
+
+
+    @Test(expected = IllegalStateException.class)
+    public void rejectsTwoSortableParameters() throws Exception {
+
+        new FinderMethod(sortableTwice, PREFIX, DOMAIN_CLASS, em);
+    }
+
+    /**
+     * Interface to define invalid DAO methods for testing.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    private static interface InvalidDao {
+
+        // Invalid return type
+        User findByFirstname(String firstname, Pageable pageable);
+
+
+        // Should not use Pageable *and* Sort
+        Page<User> findByFirstname(String firstname, Pageable pageable,
+                Sort sort);
+
+
+        // Must not use two Pageables
+        Page<User> findByFirstname(String firstname, Pageable first,
+                Pageable second);
+
+
+        // Must not use two Pageables
+        Page<User> findByFirstname(String firstname, Sort first, Sort second);
     }
 }
