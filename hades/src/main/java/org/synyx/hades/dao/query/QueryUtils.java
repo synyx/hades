@@ -15,6 +15,14 @@
  */
 package org.synyx.hades.dao.query;
 
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.springframework.util.Assert;
+import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
 
 
@@ -99,5 +107,51 @@ public abstract class QueryUtils {
         builder.append(sort.getOrder().getJpaValue());
 
         return builder.toString();
+    }
+
+
+    /**
+     * Creates a where-clause referencing the given entities and appends it to
+     * the given query string. Binds the given entities to the query.
+     * 
+     * @param <T>
+     * @param queryString
+     * @param entities
+     * @param entityManager
+     * @return
+     */
+    public static <T extends Persistable<?>> Query applyAndBind(
+            String queryString, Collection<T> entities,
+            EntityManager entityManager) {
+
+        Assert.notNull(queryString);
+        Assert.notNull(entities);
+        Assert.notNull(entityManager);
+
+        Iterator<T> iterator = entities.iterator();
+
+        if (!iterator.hasNext()) {
+            return entityManager.createQuery(queryString);
+        }
+
+        StringBuilder builder = new StringBuilder(queryString);
+        builder.append(" where");
+
+        for (int i = 0; i < entities.size(); i++) {
+
+            builder.append(" x = ?");
+
+            if (i < entities.size() - 1) {
+                builder.append(" or");
+            }
+        }
+
+        Query query = entityManager.createQuery(builder.toString());
+
+        for (int i = 0; i < entities.size(); i++) {
+            query.setParameter(i + 1, iterator.next());
+        }
+
+        return query;
     }
 }

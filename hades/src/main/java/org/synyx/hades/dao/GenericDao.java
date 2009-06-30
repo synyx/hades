@@ -124,6 +124,14 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable> 
 
 
     /**
+     * Deletes the given entities.
+     * 
+     * @param entities
+     */
+    void delete(final List<T> entities);
+
+
+    /**
      * Deletes all entities managed by the DAO.
      */
     void deleteAll();

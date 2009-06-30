@@ -82,6 +82,18 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
     /*
      * (non-Javadoc)
      * 
+     * @see org.synyx.hades.dao.GenericDao#delete(java.util.List)
+     */
+    public void delete(final List<T> entities) {
+
+        QueryUtils.applyAndBind(getDeleteAllQueryString(), entities,
+                getEntityManager()).executeUpdate();
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.synyx.hades.dao.GenericDao#deleteAll()
      */
     public void deleteAll() {
