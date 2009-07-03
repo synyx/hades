@@ -1264,6 +1264,7 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private User createdUser;
   private Date createdDate;
