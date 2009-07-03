@@ -2,7 +2,6 @@ package org.synyx.hades.dao.query;
 
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -57,14 +56,14 @@ public class QueryCreator {
 
         int numberOfBlocks = 0;
 
-        for (String orPart : Arrays.asList(orParts)) {
+        for (String orPart : orParts) {
 
             // Split AND
             String[] andParts = split(orPart, AND);
 
             StringBuilder andBuilder = new StringBuilder();
 
-            for (String andPart : Arrays.asList(andParts)) {
+            for (String andPart : andParts) {
 
                 if (!method.isValidField(andPart)) {
                     throw new QueryCreationException(method, andPart);
