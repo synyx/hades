@@ -3,6 +3,7 @@ package org.synyx.hades.dao.query;
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +23,7 @@ public class QueryCreator {
     private static final String OR = "Or";
 
     private static final String AND_TEMPLATE = "x.%s = ? and ";
+    private static final String REGEX_TEMPLATE = "(%s)(?=[A-Z])";
 
     private FinderMethod method;
 
@@ -51,17 +53,14 @@ public class QueryCreator {
         queryBuilder.append(" where ");
 
         // Split OR
-        String[] orParts =
-                StringUtils.delimitedListToStringArray(method
-                        .getUnprefixedMethodName(), OR);
+        String[] orParts = split(method.getUnprefixedMethodName(), OR);
 
         int numberOfBlocks = 0;
 
         for (String orPart : Arrays.asList(orParts)) {
 
             // Split AND
-            String[] andParts =
-                    StringUtils.delimitedListToStringArray(orPart, AND);
+            String[] andParts = split(orPart, AND);
 
             StringBuilder andBuilder = new StringBuilder();
 
@@ -100,5 +99,22 @@ public class QueryCreator {
         }
 
         return query;
+    }
+
+
+    /**
+     * Splits the given text at the given keywords. Expects camelcase style to
+     * only match concrete keywords and not derivatives of it.
+     * 
+     * @param text
+     * @param keyword
+     * @return
+     */
+    private String[] split(String text, String keyword) {
+
+        String regex = String.format(REGEX_TEMPLATE, keyword);
+
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.split(text);
     }
 }

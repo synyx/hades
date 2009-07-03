@@ -1,6 +1,7 @@
 package org.synyx.hades.dao.query;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
@@ -44,6 +45,23 @@ public class QueryCreatorUnitTest {
     }
 
 
+    @Test
+    public void splitsKeywordsCorrectly() throws SecurityException,
+            NoSuchMethodException {
+
+        method =
+                QueryCreatorUnitTest.class.getMethod(
+                        "findByNameOrOrganization", String.class, String.class);
+
+        FinderMethod finderMethod =
+                new FinderMethod(method, "findBy", SampleEntity.class, em,
+                        QueryLookupStrategy.CREATE_IF_NOT_FOUND);
+
+        String query = new QueryCreator(finderMethod).constructQuery();
+        assertTrue(query.endsWith("where x.name = ? or x.organization = ?"));
+    }
+
+
     /**
      * Sample method to test failing query creation.
      * 
@@ -53,5 +71,33 @@ public class QueryCreatorUnitTest {
     public User findByFirstnameAndMethod(String firstname) {
 
         return null;
+    }
+
+
+    /**
+     * A method to check that query keyowrds are considered correctly. The
+     * {@link QueryCreator} must not detect the {@code Or} in {@code
+     * Organization} as keyword.
+     * 
+     * @param name
+     * @param organization
+     * @return
+     */
+    public SampleEntity findByNameOrOrganization(String name,
+            String organization) {
+
+        return null;
+    }
+
+    /**
+     * Sample class for keyword split check.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    @SuppressWarnings("unused")
+    private class SampleEntity {
+
+        private String organization;
+        private String name;
     }
 }
