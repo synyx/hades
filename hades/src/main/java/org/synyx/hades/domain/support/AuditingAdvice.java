@@ -55,6 +55,8 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
     private static final Log LOG = LogFactory.getLog(AuditingAdvice.class);
 
     private AuditorAware<T> auditorAware;
+
+    private boolean dateTimeForNow = true;
     private boolean modifyOnCreation = true;
 
 
@@ -67,6 +69,20 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
     public void setAuditorAware(final AuditorAware<T> auditorAware) {
 
         this.auditorAware = auditorAware;
+    }
+
+
+    /**
+     * Setter do determine if {@link Auditable#setCreated(DateTime)} and
+     * {@link Auditable#setLastModified(DateTime)} shall be filled with the
+     * current Java time. Defaults to {@code true}. One might set this to
+     * {@code false} to use database features to set entity time.
+     * 
+     * @param dateTimeForNow the dateTimeForNow to set
+     */
+    public void setDateTimeForNow(boolean dateTimeForNow) {
+
+        this.dateTimeForNow = dateTimeForNow;
     }
 
 
@@ -97,22 +113,24 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
         }
 
         T auditor = touchAuditor(auditable);
-        DateTime now = touchDate(auditable);
+        DateTime now = dateTimeForNow ? touchDate(auditable) : null;
 
         // Log touching
         if (LOG.isDebugEnabled()) {
 
-            StringBuffer buffer =
-                    new StringBuffer(String.format(
-                            "Touched %s - Last modification: %s", auditable
-                                    .toString(), now));
+            StringBuilder builder = new StringBuilder("Touched ");
+            builder.append(auditable);
 
-            if (null != auditor) {
-                buffer.append(" by ");
-                buffer.append(auditor.toString());
+            if (null != now) {
+                builder.append("Last modification: ").append(now);
             }
 
-            LOG.debug(buffer.toString());
+            if (null != auditor) {
+                builder.append(" by ");
+                builder.append(auditor.toString());
+            }
+
+            LOG.debug(builder.toString());
         }
     }
 

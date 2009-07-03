@@ -13,12 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package org.synyx.hades.domain.support;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 import org.synyx.hades.domain.AuditableUser;
 import org.synyx.hades.domain.AuditorAware;
 
@@ -29,7 +30,7 @@ import org.synyx.hades.domain.AuditorAware;
  * @author Oliver Gierke - gierke@synyx.de
  */
 @SuppressWarnings("unchecked")
-public class AuditingAdviceUnitTest extends TestCase {
+public class AuditingAdviceUnitTest {
 
     private AuditingAdvice auditionAdvice;
     private AuditorAware<AuditableUser> auditorAware;
@@ -37,13 +38,8 @@ public class AuditingAdviceUnitTest extends TestCase {
     private AuditableUser user;
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() {
 
         auditionAdvice = new AuditingAdvice();
 
@@ -58,10 +54,9 @@ public class AuditingAdviceUnitTest extends TestCase {
     /**
      * Checks that the advice does not set auditor on the target entity if no
      * {@code AuditorAware} was configured.
-     * 
-     * @throws Exception
      */
-    public void testDoesNotSetAuditorIfNotConfigured() throws Exception {
+    @Test
+    public void doesNotSetAuditorIfNotConfigured() {
 
         auditionAdvice.touch(user);
 
@@ -76,10 +71,9 @@ public class AuditingAdviceUnitTest extends TestCase {
     /**
      * Checks that the advice sets the auditor on the target entity if an
      * {@code AuditorAware} was configured.
-     * 
-     * @throws Exception
      */
-    public void testSetsAuditorIfConfigured() {
+    @Test
+    public void setsAuditorIfConfigured() {
 
         auditionAdvice.setAuditorAware(auditorAware);
         EasyMock.replay(auditorAware);
@@ -99,10 +93,9 @@ public class AuditingAdviceUnitTest extends TestCase {
     /**
      * Checks that the advice does not set modification information on creation
      * if the falg is set to {@code false}.
-     * 
-     * @throws Exception
      */
-    public void testHonoursModifiedOnCreationFlag() throws Exception {
+    @Test
+    public void honoursModifiedOnCreationFlag() {
 
         auditionAdvice.setAuditorAware(auditorAware);
         EasyMock.replay(auditorAware);
@@ -124,7 +117,8 @@ public class AuditingAdviceUnitTest extends TestCase {
      * Tests that the advice only sets modification data if a not-new entity is
      * handled.
      */
-    public void testOnlySetsModificationDataOnNotNewEntities() {
+    @Test
+    public void onlySetsModificationDataOnNotNewEntities() {
 
         user.setId(1L);
 
@@ -140,5 +134,22 @@ public class AuditingAdviceUnitTest extends TestCase {
         assertNotNull(user.getLastModifiedDate());
 
         EasyMock.verify(auditorAware);
+    }
+
+
+    @Test
+    public void doesNotSetTimeIfConfigured() throws Exception {
+
+        auditionAdvice.setDateTimeForNow(false);
+        auditionAdvice.setAuditorAware(auditorAware);
+        EasyMock.replay(auditorAware);
+
+        auditionAdvice.touch(user);
+
+        assertNotNull(user.getCreatedBy());
+        assertNull(user.getCreatedDate());
+
+        assertNotNull(user.getLastModifiedBy());
+        assertNull(user.getLastModifiedDate());
     }
 }
