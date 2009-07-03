@@ -44,19 +44,19 @@ public interface GenericDao<T extends Persistable<PK>, PK extends Serializable> 
 
 
     /**
+     * @param entities
+     * @return
+     */
+    List<T> save(final List<T> entities);
+
+
+    /**
      * Saves an entity and flushes changes instantly to the database.
      * 
      * @param entity
      * @return the saved entity
      */
     T saveAndFlush(final T entity);
-
-
-    /**
-     * @param entities
-     * @return
-     */
-    List<T> saveAll(final List<T> entities);
 
 
     /**

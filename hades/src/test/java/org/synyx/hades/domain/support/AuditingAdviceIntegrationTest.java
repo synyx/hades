@@ -58,13 +58,13 @@ public class AuditingAdviceIntegrationTest {
 
     /**
      * Checks that the advice intercepts calls to
-     * {@link GenericDao#saveAll(List)} correctly.
+     * {@link GenericDao#save(List)} correctly.
      */
     @Test
     public void touchesManyEntitiesOnSave() {
 
         List<AuditableUser> users =
-                userDao.saveAll(Arrays.asList(firstUser, secondUser));
+                userDao.save(Arrays.asList(firstUser, secondUser));
 
         for (AuditableUser user : users) {
 

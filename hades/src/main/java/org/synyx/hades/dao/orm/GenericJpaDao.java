@@ -226,7 +226,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      * 
      * @see org.synyx.hades.dao.GenericDao#saveAll(java.util.List)
      */
-    public List<T> saveAll(List<T> entities) {
+    public List<T> save(List<T> entities) {
 
         List<T> result = new ArrayList<T>();
 
