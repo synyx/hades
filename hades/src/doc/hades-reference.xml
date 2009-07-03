@@ -975,8 +975,8 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
   &lt;import resource="infrastructure.xml" /&gt;
 
   &lt;hades:dao-config base-package="org.synyx.hades.dao"&gt;
-    &lt;hades:dao id="user" /&gt;
-    &lt;hades:dao id="role" /&gt;
+    &lt;hades:dao id="userDao" /&gt;
+    &lt;hades:dao id="roleDao" /&gt;
   &lt;/hades:dao-config&gt;
 
 &lt;/beans&gt;</programlisting>
@@ -1002,11 +1002,10 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
               single declaration of a
               <classname>GenericDaoFactoryBean</classname> with a DAO
               interface set to
-              <code>${dao-config.base-package}.${dao.id}.${dao-config.dao-name-postfix}</code>
-              where <code>dao-name-postfix</code> defaults to
-              <code>Dao</code>. Given this example this will result in a DAO
-              interface of
-              <interfacename>org.synyx.hades.dao.UserDao</interfacename>.</para>
+              <code>${dao-config.base-package}.${dao.id}</code>. Given this
+              example this will result in a DAO interface of
+              <interfacename>org.synyx.hades.dao.UserDao</interfacename>
+              registered under <code>userDao</code>.</para>
             </callout>
           </calloutlist>
         </programlistingco>
