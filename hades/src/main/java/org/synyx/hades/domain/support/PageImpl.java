@@ -214,7 +214,7 @@ public class PageImpl<T> implements Page<T> {
             return true;
         }
 
-        if (!(obj instanceof PageImpl)) {
+        if (!(obj instanceof PageImpl<?>)) {
             return false;
         }
 
