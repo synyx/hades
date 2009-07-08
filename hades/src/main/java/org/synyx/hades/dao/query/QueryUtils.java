@@ -24,6 +24,7 @@ import javax.persistence.Query;
 import org.springframework.util.Assert;
 import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
+import org.synyx.hades.util.ClassUtils;
 
 
 /**
@@ -58,7 +59,7 @@ public abstract class QueryUtils {
             throw new IllegalArgumentException("Class must not be null!");
         }
 
-        return getQueryString(template, clazz.getSimpleName());
+        return getQueryString(template, ClassUtils.getEntityName(clazz));
     }
 
 
@@ -71,9 +72,7 @@ public abstract class QueryUtils {
      */
     public static String getQueryString(String template, String clazzName) {
 
-        if (null == clazzName || "".equals(clazzName.trim())) {
-            throw new IllegalArgumentException("Classname must not be null!");
-        }
+        Assert.hasText(clazzName, "Classname must not be null or empty!");
 
         return String.format(template, clazzName);
     }

@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+
 import org.junit.Test;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
@@ -33,6 +35,15 @@ public class ClassUtilsUnitTest {
         ClassUtils.assertReturnType(SomeDao.class.getMethods()[0], User.class);
     }
 
+
+    @Test
+    public void usesSimpleClassNameIfNoEntityNameGiven() throws Exception {
+
+        assertEquals("User", ClassUtils.getEntityName(User.class));
+        assertEquals("AnotherNamedUser", ClassUtils
+                .getEntityName(NamedUser.class));
+    }
+
     /**
      * Sample interface to serve two purposes:
      * <ol>
@@ -47,5 +58,15 @@ public class ClassUtilsUnitTest {
     private interface SomeDao extends Serializable, UserDao {
 
         Page<User> findByFirstname(Pageable pageable, String firstname);
+    }
+
+    /**
+     * Sample entity with a custom name.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    @Entity(name = "AnotherNamedUser")
+    private class NamedUser {
+
     }
 }

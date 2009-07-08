@@ -22,8 +22,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 
+import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Persistable;
@@ -238,5 +240,21 @@ public abstract class ClassUtils {
     public static boolean hasParameterOfType(Method method, Class<?> type) {
 
         return Arrays.asList(method.getParameterTypes()).contains(type);
+    }
+
+
+    /**
+     * Returns the name ot the entity represented by this class. Used to build
+     * queries for that class.
+     * 
+     * @param domainClass
+     * @return
+     */
+    public static String getEntityName(Class<?> domainClass) {
+
+        Entity entity = domainClass.getAnnotation(Entity.class);
+        boolean hasName = null != entity && StringUtils.hasText(entity.name());
+
+        return hasName ? entity.name() : domainClass.getSimpleName();
     }
 }
