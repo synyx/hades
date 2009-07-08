@@ -103,7 +103,7 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      */
     public Class<?> getObjectType() {
 
-        return daoInterface;
+        return null == daoInterface ? GenericDao.class : daoInterface;
     }
 
 
