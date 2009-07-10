@@ -86,6 +86,10 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public void delete(final List<T> entities) {
 
+        if (null == entities || entities.isEmpty()) {
+            return;
+        }
+
         QueryUtils.applyAndBind(getDeleteAllQueryString(), entities,
                 getEntityManager()).executeUpdate();
     }

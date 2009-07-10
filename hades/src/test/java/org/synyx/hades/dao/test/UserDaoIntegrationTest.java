@@ -18,6 +18,7 @@ package org.synyx.hades.dao.test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -155,6 +156,17 @@ public class UserDaoIntegrationTest {
 
         userDao.delete(Arrays.asList(firstUser, secondUser));
         assertEquals((Long) 0L, userDao.count());
+    }
+
+
+    @Test
+    public void deleteEmptyCollectionDoesNotDeleteAnything() {
+
+        flushTestUsers();
+        Long count = userDao.count();
+
+        userDao.delete(new ArrayList<User>());
+        assertEquals(count, userDao.count());
     }
 
 
