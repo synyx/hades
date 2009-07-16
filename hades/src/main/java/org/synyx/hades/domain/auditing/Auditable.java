@@ -14,11 +14,12 @@
  * the License.
  */
 
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.auditing;
 
 import java.io.Serializable;
 
 import org.joda.time.DateTime;
+import org.synyx.hades.domain.Persistable;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.synyx.hades.domain.support;
+package org.synyx.hades.domain.auditing;
 
 import static org.junit.Assert.*;
 
@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.synyx.hades.dao.AuditableUserDao;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.domain.AuditableUser;
+import org.synyx.hades.domain.auditing.AuditingAdvice;
 
 
 /**

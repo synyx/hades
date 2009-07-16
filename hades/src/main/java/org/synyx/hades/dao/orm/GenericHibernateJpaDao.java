@@ -29,10 +29,10 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
-import org.synyx.hades.domain.support.PageImpl;
 
 
 /**

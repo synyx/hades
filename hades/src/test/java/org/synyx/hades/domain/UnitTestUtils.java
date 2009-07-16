@@ -1,4 +1,4 @@
-package org.synyx.hades.domain.support;
+package org.synyx.hades.domain;
 
 import static org.junit.Assert.*;
 

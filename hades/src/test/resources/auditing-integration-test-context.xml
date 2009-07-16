@@ -9,6 +9,6 @@
 	
 	<aop:aspectj-autoproxy />
 	
-	<bean class="org.synyx.hades.domain.support.AuditingAdvice" />
+	<bean class="org.synyx.hades.domain.auditing.AuditingAdvice" />
 
 </beans>

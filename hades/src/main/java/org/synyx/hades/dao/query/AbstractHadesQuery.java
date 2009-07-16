@@ -19,7 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.synyx.hades.domain.support.PageImpl;
+import org.synyx.hades.domain.PageImpl;
 
 
 /**

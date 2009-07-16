@@ -14,12 +14,12 @@
  * the License.
  */
 
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.auditing;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 
-import org.synyx.hades.domain.support.AbstractAuditable;
+import org.synyx.hades.domain.auditing.AbstractAuditable;
 
 
 /**

@@ -33,10 +33,10 @@ import org.eclipse.persistence.queries.ReportQueryResult;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.domain.Order;
 import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
-import org.synyx.hades.domain.support.PageImpl;
 
 
 /**

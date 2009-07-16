@@ -14,15 +14,12 @@
  * the License.
  */
 
-package org.synyx.hades.domain.support;
+package org.synyx.hades.domain;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.synyx.hades.domain.Page;
-import org.synyx.hades.domain.Pageable;
-import org.synyx.hades.domain.Sort;
 
 
 /**

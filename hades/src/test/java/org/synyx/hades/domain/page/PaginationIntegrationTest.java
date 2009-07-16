@@ -27,8 +27,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.PageRequest;
 import org.synyx.hades.domain.User;
-import org.synyx.hades.domain.support.PageRequest;
 
 
 /**

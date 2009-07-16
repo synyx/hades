@@ -14,14 +14,16 @@
  * the License.
  */
 
-package org.synyx.hades.domain.support;
+package org.synyx.hades.domain;
 
-import static org.synyx.hades.domain.support.UnitTestUtils.*;
+import static org.synyx.hades.domain.UnitTestUtils.*;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.synyx.hades.domain.PageImpl;
+import org.synyx.hades.domain.PageRequest;
 import org.synyx.hades.domain.Pageable;
 
 

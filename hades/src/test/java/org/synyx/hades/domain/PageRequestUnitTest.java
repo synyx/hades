@@ -14,12 +14,13 @@
  * the License.
  */
 
-package org.synyx.hades.domain.support;
+package org.synyx.hades.domain;
 
-import static org.synyx.hades.domain.support.UnitTestUtils.*;
+import static org.synyx.hades.domain.UnitTestUtils.*;
 
 import org.junit.Test;
 import org.synyx.hades.domain.Order;
+import org.synyx.hades.domain.PageRequest;
 import org.synyx.hades.domain.Sort;
 
 

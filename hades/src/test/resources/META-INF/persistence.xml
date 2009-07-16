@@ -3,7 +3,7 @@
 	<persistence-unit name="hades">
 		<class>org.synyx.hades.domain.User</class>
 		<class>org.synyx.hades.domain.Role</class>
-		<class>org.synyx.hades.domain.AuditableUser</class>
+		<class>org.synyx.hades.domain.auditing.AuditableUser</class>
 		<class>org.synyx.hades.domain.Account</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 	</persistence-unit>

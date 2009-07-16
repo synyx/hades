@@ -14,7 +14,9 @@
  * the License.
  */
 
-package org.synyx.hades.domain;
+package org.synyx.hades.domain.auditing;
+
+import org.synyx.hades.domain.Persistable;
 
 /**
  * Interface for components that are aware of the application's current auditor.

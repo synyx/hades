@@ -18,7 +18,7 @@ package org.synyx.hades.dao;
 
 import java.util.List;
 
-import org.synyx.hades.domain.AuditableUser;
+import org.synyx.hades.domain.auditing.AuditableUser;
 
 
 /**

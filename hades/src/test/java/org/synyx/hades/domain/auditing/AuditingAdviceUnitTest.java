@@ -13,15 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.synyx.hades.domain.support;
+package org.synyx.hades.domain.auditing;
 
 import static org.junit.Assert.*;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.synyx.hades.domain.AuditableUser;
-import org.synyx.hades.domain.AuditorAware;
+import org.synyx.hades.domain.auditing.AuditingAdvice;
+import org.synyx.hades.domain.auditing.AuditorAware;
 
 
 /**

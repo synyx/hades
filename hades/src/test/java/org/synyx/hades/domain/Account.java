@@ -2,7 +2,6 @@ package org.synyx.hades.domain;
 
 import javax.persistence.Entity;
 
-import org.synyx.hades.domain.support.AbstractPersistable;
 
 
 /**

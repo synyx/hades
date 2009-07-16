@@ -28,10 +28,10 @@ import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.query.QueryUtils;
 import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
-import org.synyx.hades.domain.support.PageImpl;
 
 
 /**

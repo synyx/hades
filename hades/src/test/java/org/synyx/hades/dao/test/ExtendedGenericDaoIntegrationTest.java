@@ -33,9 +33,9 @@ import org.synyx.hades.dao.UserExtendedDao;
 import org.synyx.hades.dao.orm.GenericHibernateJpaDao;
 import org.synyx.hades.domain.Order;
 import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.PageRequest;
 import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.User;
-import org.synyx.hades.domain.support.PageRequest;
 
 
 /**

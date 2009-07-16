@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.synyx.hades.domain.support;
+package org.synyx.hades.domain.auditing;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,8 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.joda.time.DateTime;
-import org.synyx.hades.domain.Auditable;
-import org.synyx.hades.domain.AuditorAware;
 import org.synyx.hades.domain.Persistable;
 
 
