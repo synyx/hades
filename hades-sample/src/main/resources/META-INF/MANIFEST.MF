@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Export-Package: org.synyx.hades.sample.auditing;version="0.6.0";uses:=
+ "javax.persistence,org.synyx.hades.domain,org.synyx.hades.domain.audi
+ ting",org.synyx.hades.sample.dao;version="0.6.0";uses:="org.synyx.had
+ es.dao,org.synyx.hades.sample.domain",org.synyx.hades.sample.dao.simp
+ le;version="0.6.0";uses:="org.synyx.hades.dao,org.synyx.hades.sample.
+ domain",org.synyx.hades.sample.domain;version="0.6.0";uses:="javax.pe
+ rsistence,org.synyx.hades.domain"
+Bundle-Classpath: .
+Built-By: olivergierke
+Import-Library: org.springframework.spring;version="[2.5.6.A,2.5.6.A]"
+ ,org.hibernate.ejb;version="[3.3.2.GA,3.3.2.GA]"
+Bundle-Name: org.synyx.hades.sample
+Created-By: Apache Maven
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: Synyx GmbH & Co. KG
+Bundle-Version: 0.6.0
+Build-Jdk: 1.6.0_13
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.synyx.hades.sample
+Import-Package: javax.persistence;version="[1.0.0,2.0.0)",javax.sql;ve
+ rsion="0.0.0",org.hsqldb;version="[1.8.0,1.9.0)",org.springframework.
+ jdbc.core.simple;version="[2.5.0,3.0.0)",org.synyx.hades.dao;version=
+ "0.6.0",org.synyx.hades.dao.orm;version="0.6.0",org.synyx.hades.domai
+ n;version="0.6.0",org.synyx.hades.domain.auditing;version="0.6.0"

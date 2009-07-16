@@ -5,7 +5,7 @@ Bundle-Vendor: Synyx GmbH & Co. KG
 Bundle-Version: ${osgi.version}
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Template: 
- org.synyx.hades.dao.*;version="${osgi.version}"
+ org.synyx.hades.*;version="${osgi.version}"
 Excluded-Exports: 
  org.synyx.hades.util
 Import-Template: 
