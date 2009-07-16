@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 
-import org.synyx.hades.domain.support.AbstractPersistable;
+import org.synyx.hades.domain.AbstractPersistable;
 
 
 /**

@@ -1,6 +1,6 @@
 package org.synyx.hades.sample.auditing;
 
-import org.synyx.hades.domain.AuditorAware;
+import org.synyx.hades.domain.auditing.AuditorAware;
 
 
 /**

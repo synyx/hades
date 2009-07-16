@@ -13,7 +13,7 @@
 	 - Declare advice to enable auditing 
 	 - Reference AuditorAware to also keep track of WHO changed entities 
 	-->
-	<bean class="org.synyx.hades.domain.support.AuditingAdvice">
+	<bean class="org.synyx.hades.domain.auditing.AuditingAdvice">
 		<property name="auditorAware" ref="auditorAware" />
 	</bean>
 	

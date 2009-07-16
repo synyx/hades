@@ -2,7 +2,7 @@ package org.synyx.hades.sample.auditing;
 
 import javax.persistence.Entity;
 
-import org.synyx.hades.domain.support.AbstractAuditable;
+import org.synyx.hades.domain.auditing.AbstractAuditable;
 
 
 /**
