@@ -18,8 +18,6 @@ package org.synyx.hades.dao.orm.support;
 
 import static org.junit.Assert.*;
 
-import java.io.Serializable;
-
 import javax.persistence.EntityManager;
 
 import org.easymock.EasyMock;
@@ -32,12 +30,15 @@ import org.synyx.hades.domain.User;
 
 /**
  * Unit test for {@code GenericDaoFactoryBean}.
+ * <p>
+ * TODO: Check if test methods double the ones in
+ * {@link GenericDaoFactoryUnitTest}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class GenericDaoFactoryBeanUnitTest {
 
-    private GenericDaoFactoryBean<SampleDao> factory;
+    private GenericDaoFactoryBean<SimpleSampleDao> factory;
 
     private EntityManager entityManager;
 
@@ -50,7 +51,9 @@ public class GenericDaoFactoryBeanUnitTest {
         EasyMock.replay(entityManager);
 
         // Setup standard factory configuration
-        factory = GenericDaoFactoryBean.create(SampleDao.class, entityManager);
+        factory =
+                GenericDaoFactoryBean.create(SimpleSampleDao.class,
+                        entityManager);
         factory.setEntityManager(entityManager);
     }
 
@@ -66,9 +69,7 @@ public class GenericDaoFactoryBeanUnitTest {
 
         factory.afterPropertiesSet();
 
-        SampleDao sampleDao = (SampleDao) factory.getObject();
-
-        assertNotNull(sampleDao);
+        assertNotNull(factory.getObject());
     }
 
 
@@ -91,7 +92,7 @@ public class GenericDaoFactoryBeanUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsUnsetDaoInterface() throws Exception {
 
-        factory = new GenericDaoFactoryBean<SampleDao>();
+        factory = new GenericDaoFactoryBean<SimpleSampleDao>();
         factory.afterPropertiesSet();
     }
 
@@ -108,14 +109,19 @@ public class GenericDaoFactoryBeanUnitTest {
     public void capturesMissingCustomImplementationAndProvidesInterfacename()
             throws Exception {
 
-        factory.setDaoInterface(SampleCustomDao.class);
+        GenericDaoFactoryBean<SampleDao> factory =
+                GenericDaoFactoryBean.create(SampleDao.class, entityManager);
 
         try {
             factory.afterPropertiesSet();
-            fail("Expected BeanCreationException");
+            fail("Expected IllegalArgumentException!");
         } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains(SampleCustomDao.class.getName()));
+            assertTrue(e.getMessage().contains(SampleDao.class.getName()));
         }
+    }
+
+    private interface SimpleSampleDao extends GenericDao<User, Integer> {
+
     }
 
     /**
@@ -123,12 +129,13 @@ public class GenericDaoFactoryBeanUnitTest {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    private interface SampleCustomDao extends Serializable, SampleDao {
+    private interface SampleCustomDao {
 
         void someSampleMethod();
     }
 
-    private interface SampleDao extends GenericDao<User, Integer> {
+    private interface SampleDao extends GenericDao<User, Integer>,
+            SampleCustomDao {
 
     }
 }

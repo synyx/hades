@@ -41,10 +41,7 @@ import org.synyx.hades.util.ClassUtils;
  */
 public class FinderMethod {
 
-    // private static final Log LOG = LogFactory.getLog(FinderMethod.class);
-
     private Method method;
-    private String prefix;
     private Class<?> domainClass;
 
     private HadesQuery hadesQuery;
@@ -56,24 +53,16 @@ public class FinderMethod {
      * the correct query to use for following invocations of the method given.
      * 
      * @param method
-     * @param prefix
      * @param domainClass
      * @param em
      * @param strategy
      */
-    public FinderMethod(Method method, String prefix, Class<?> domainClass,
-            EntityManager em, QueryLookupStrategy strategy) {
+    public FinderMethod(Method method, Class<?> domainClass, EntityManager em,
+            QueryLookupStrategy strategy) {
 
         Assert.notNull(method, "Method must not be null!");
-        Assert.hasText(prefix, "Prefix must not be emtpy!");
         Assert.notNull(domainClass, "Domain class must not be null!");
         Assert.notNull(em, "EntityManager must not be null!");
-
-        if (!method.getName().startsWith(prefix)) {
-            throw new IllegalArgumentException(String.format(
-                    "Cannot construct query for non finder method! "
-                            + "Make sure the method starts with '%s'", prefix));
-        }
 
         for (Class<?> type : Parameters.TYPES) {
             if (ClassUtils.getNumberOfOccurences(method, type) > 1) {
@@ -93,7 +82,6 @@ public class FinderMethod {
         }
 
         this.method = method;
-        this.prefix = prefix;
         this.domainClass = domainClass;
         this.em = em;
 
@@ -109,14 +97,12 @@ public class FinderMethod {
      * {@link QueryLookupStrategy} by handing {@code null}.
      * 
      * @param method
-     * @param prefix
      * @param domainClass
      * @param em
      */
-    public FinderMethod(Method method, String prefix, Class<?> domainClass,
-            EntityManager em) {
+    public FinderMethod(Method method, Class<?> domainClass, EntityManager em) {
 
-        this(method, prefix, domainClass, em, null);
+        this(method, domainClass, em, null);
     }
 
 
@@ -128,19 +114,6 @@ public class FinderMethod {
     String getName() {
 
         return method.getName();
-    }
-
-
-    /**
-     * Returns the methdo name without its finder prefix.
-     * 
-     * @return
-     */
-    String getUnprefixedMethodName() {
-
-        String methodName = method.getName();
-
-        return methodName.substring(prefix.length(), methodName.length());
     }
 
 

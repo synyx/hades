@@ -196,8 +196,6 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 .getInterfaceName());
         beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
                 .getFinderLookupStrategy());
-        beanDefinitionBuilder.addPropertyValue("finderPrefix", context
-                .getFinderPrefix());
 
         String customImplementationBeanName =
                 registerCustomImplementation(context, parserContext,

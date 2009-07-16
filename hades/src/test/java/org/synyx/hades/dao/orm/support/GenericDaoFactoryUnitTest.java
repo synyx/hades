@@ -18,8 +18,6 @@ package org.synyx.hades.dao.orm.support;
 
 import static junit.framework.Assert.*;
 
-import java.io.Serializable;
-
 import javax.persistence.EntityManager;
 
 import org.easymock.EasyMock;
@@ -63,16 +61,14 @@ public class GenericDaoFactoryUnitTest {
     @Test
     public void setsUpBasicInstanceCorrectly() throws Exception {
 
-        SampleDao userDao = factory.getDao(SampleDao.class);
-
-        assertNotNull(userDao);
+        assertNotNull(factory.getDao(SimpleSampleDao.class));
     }
 
 
     @Test
     public void allowsCallingOfObjectMethods() {
 
-        SampleDao userDao = factory.getDao(SampleDao.class);
+        SimpleSampleDao userDao = factory.getDao(SimpleSampleDao.class);
 
         userDao.hashCode();
         userDao.toString();
@@ -93,10 +89,14 @@ public class GenericDaoFactoryUnitTest {
             throws Exception {
 
         try {
-            factory.getDao(SampleCustomDao.class);
+            factory.getDao(SampleDao.class);
         } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains(SampleCustomDao.class.getName()));
+            assertTrue(e.getMessage().contains(SampleDao.class.getName()));
         }
+    }
+
+    private interface SimpleSampleDao extends GenericDao<User, Integer> {
+
     }
 
     /**
@@ -104,12 +104,13 @@ public class GenericDaoFactoryUnitTest {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    private interface SampleCustomDao extends Serializable, SampleDao {
+    private interface SampleCustomDao {
 
         void someSampleMethod();
     }
 
-    private interface SampleDao extends GenericDao<User, Integer> {
+    private interface SampleDao extends GenericDao<User, Integer>,
+            SampleCustomDao {
 
     }
 }

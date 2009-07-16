@@ -54,8 +54,6 @@ public class GenericDaoFactory {
     private EntityManager entityManager;
     private QueryLookupStrategy queryLookupStrategy =
             QueryLookupStrategy.getDefault();
-    private String finderPrefix =
-            FinderExecuterMethodInterceptor.DEFAULT_FINDER_PREFIX;
 
 
     /**
@@ -133,21 +131,6 @@ public class GenericDaoFactory {
         this.queryLookupStrategy =
                 null == queryLookupStrategy ? QueryLookupStrategy.getDefault()
                         : queryLookupStrategy;
-    }
-
-
-    /**
-     * Configures the method name prefix that triggers automatic finder
-     * execution.
-     * 
-     * @see GenericDaoSupport#setFinderPrefix(String)
-     * @param finderPrefix
-     */
-    public void setFinderPrefix(final String finderPrefix) {
-
-        this.finderPrefix =
-                null == finderPrefix ? FinderExecuterMethodInterceptor.DEFAULT_FINDER_PREFIX
-                        : finderPrefix;
     }
 
 
@@ -271,16 +254,7 @@ public class GenericDaoFactory {
             return false;
         }
 
-        if (!declaringClass.equals(daoInterface)) {
-            return true;
-        }
-
-        // Skip finder methods
-        if (method.getName().startsWith(finderPrefix)) {
-            return false;
-        }
-
-        return true;
+        return !isFinderMethod(method, daoInterface);
     }
 
 
@@ -293,12 +267,7 @@ public class GenericDaoFactory {
      */
     private boolean isFinderMethod(Method method, Class<?> daoInterface) {
 
-        boolean declaredInInterface =
-                daoInterface.equals(method.getDeclaringClass());
-        boolean startsWithFinderPrefix =
-                method.getName().startsWith(finderPrefix);
-
-        return declaredInInterface && startsWithFinderPrefix;
+        return daoInterface.equals(method.getDeclaringClass());
     }
 
 
@@ -362,8 +331,6 @@ public class GenericDaoFactory {
      */
     public class FinderExecuterMethodInterceptor implements MethodInterceptor {
 
-        public static final String DEFAULT_FINDER_PREFIX = "findBy";
-
         private Map<Method, FinderMethod> queries =
                 new ConcurrentHashMap<Method, FinderMethod>();
 
@@ -387,7 +354,7 @@ public class GenericDaoFactory {
                 if (isFinderMethod(method, daoInterface)) {
 
                     FinderMethod finder =
-                            new FinderMethod(method, finderPrefix, ClassUtils
+                            new FinderMethod(method, ClassUtils
                                     .getDomainClass(daoInterface),
                                     entityManager, queryLookupStrategy);
 

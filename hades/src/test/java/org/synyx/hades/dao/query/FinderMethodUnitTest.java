@@ -24,13 +24,10 @@ import org.synyx.hades.domain.User;
  */
 public class FinderMethodUnitTest {
 
-    private static final String PREFIX = "findBy";
     private static final Class<?> DOMAIN_CLASS = User.class;
 
     private Method daoMethod;
     private EntityManager em;
-
-    private FinderMethod method;
 
     private static final String METHOD_NAME = "findByFirstname";
     private Method invalidReturnType;
@@ -48,7 +45,6 @@ public class FinderMethodUnitTest {
         daoMethod = UserDao.class.getMethod("findByLastname", String.class);
         em = createNiceMock(EntityManager.class);
 
-        method = new FinderMethod(daoMethod, PREFIX, DOMAIN_CLASS, em, CREATE);
         invalidReturnType =
                 InvalidDao.class.getMethod(METHOD_NAME, String.class,
                         Pageable.class);
@@ -68,6 +64,9 @@ public class FinderMethodUnitTest {
     @Test
     public void testname() throws Exception {
 
+        FinderMethod method =
+                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+
         assertEquals("User.findByLastname", method.getNamedQueryName());
         assertTrue(method.isCollectionFinder());
         assertEquals("select x from User x where x.lastname = ?",
@@ -78,47 +77,29 @@ public class FinderMethodUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullDaoMethod() throws Exception {
 
-        new FinderMethod(null, PREFIX, DOMAIN_CLASS, em);
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsNullPrefix() throws Exception {
-
-        new FinderMethod(daoMethod, null, DOMAIN_CLASS, em);
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsEmptyPrefix() throws Exception {
-
-        new FinderMethod(daoMethod, "", DOMAIN_CLASS, em);
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsWrongPrefix() throws Exception {
-
-        new FinderMethod(daoMethod, "readBy", DOMAIN_CLASS, em);
+        new FinderMethod(null, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullDomainClass() throws Exception {
 
-        new FinderMethod(daoMethod, PREFIX, null, em, null);
+        new FinderMethod(daoMethod, null, em, null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullEntityManager() throws Exception {
 
-        new FinderMethod(daoMethod, PREFIX, DOMAIN_CLASS, null);
+        new FinderMethod(daoMethod, DOMAIN_CLASS, null);
     }
 
 
     @Test
     public void returnsCorrectName() throws Exception {
+
+        FinderMethod method =
+                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertEquals(daoMethod.getName(), method.getName());
     }
@@ -126,6 +107,9 @@ public class FinderMethodUnitTest {
 
     @Test
     public void determinesValidFieldsCorrectly() throws Exception {
+
+        FinderMethod method =
+                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertTrue(method.isValidField("firstname"));
         assertTrue(method.isValidField("Firstname"));
@@ -136,12 +120,15 @@ public class FinderMethodUnitTest {
     @Test
     public void returnsQueryAnnotationIfAvailable() throws Exception {
 
+        FinderMethod method =
+                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+
         assertNull(method.getQueryAnnotation());
 
         Method daoMethod =
                 UserDao.class.getMethod("findByHadesQuery", String.class);
 
-        assertNotNull(new FinderMethod(daoMethod, PREFIX, DOMAIN_CLASS, em)
+        assertNotNull(new FinderMethod(daoMethod, DOMAIN_CLASS, em)
                 .getQueryAnnotation());
     }
 
@@ -149,12 +136,18 @@ public class FinderMethodUnitTest {
     @Test
     public void returnsCorrectDomainClassName() throws Exception {
 
+        FinderMethod method =
+                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+
         assertEquals(DOMAIN_CLASS.getSimpleName(), method.getDomainClassName());
     }
 
 
     @Test
     public void returnsCorrectNumberOfParameters() throws Exception {
+
+        FinderMethod method =
+                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertTrue(method.isCorrectNumberOfParameters(daoMethod
                 .getParameterTypes().length));
@@ -164,28 +157,28 @@ public class FinderMethodUnitTest {
     @Test(expected = IllegalStateException.class)
     public void rejectsInvalidReturntypeOnPagebleFinder() throws Exception {
 
-        new FinderMethod(invalidReturnType, PREFIX, DOMAIN_CLASS, em);
+        new FinderMethod(invalidReturnType, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsPageableAndSortInFinderMethod() throws Exception {
 
-        new FinderMethod(pageableAndSort, PREFIX, DOMAIN_CLASS, em);
+        new FinderMethod(pageableAndSort, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsTwoPageableParameters() throws Exception {
 
-        new FinderMethod(pageableTwice, PREFIX, DOMAIN_CLASS, em);
+        new FinderMethod(pageableTwice, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsTwoSortableParameters() throws Exception {
 
-        new FinderMethod(sortableTwice, PREFIX, DOMAIN_CLASS, em);
+        new FinderMethod(sortableTwice, DOMAIN_CLASS, em);
     }
 
     /**

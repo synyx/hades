@@ -17,12 +17,15 @@ import org.springframework.util.StringUtils;
 public class QueryCreator {
 
     private static final Log LOG = LogFactory.getLog(QueryCreator.class);
+    private static final String[] PREFIXES =
+            new String[] { "findBy", "find", "readBy", "read", "getBy", "get" };
 
     private static final String AND = "And";
     private static final String OR = "Or";
 
     private static final String AND_TEMPLATE = "x.%s = ? and ";
-    private static final String REGEX_TEMPLATE = "(%s)(?=[A-Z])";
+    private static final String KEYWORD_TEMPLATE = "(%s)(?=[A-Z])";
+    private static final String PREFIX_TEMPLATE = "^%s(?=[A-Z]).*";
 
     private FinderMethod method;
 
@@ -52,7 +55,7 @@ public class QueryCreator {
         queryBuilder.append(" where ");
 
         // Split OR
-        String[] orParts = split(method.getUnprefixedMethodName(), OR);
+        String[] orParts = split(strip(method.getName()), OR);
 
         int numberOfBlocks = 0;
 
@@ -111,9 +114,30 @@ public class QueryCreator {
      */
     private String[] split(String text, String keyword) {
 
-        String regex = String.format(REGEX_TEMPLATE, keyword);
+        String regex = String.format(KEYWORD_TEMPLATE, keyword);
 
         Pattern pattern = Pattern.compile(regex);
         return pattern.split(text);
+    }
+
+
+    /**
+     * Strips a prefix from the given method name if it starts with one of
+     * {@value #PREFIXES}.
+     * 
+     * @param methodName
+     * @return
+     */
+    private String strip(String methodName) {
+
+        for (String prefix : PREFIXES) {
+
+            String regex = String.format(PREFIX_TEMPLATE, prefix);
+            if (methodName.matches(regex)) {
+                return methodName.substring(prefix.length());
+            }
+        }
+
+        return methodName;
     }
 }

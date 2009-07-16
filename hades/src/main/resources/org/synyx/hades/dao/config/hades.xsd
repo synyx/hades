@@ -43,14 +43,6 @@
 	<xsd:attributeGroup name="dao-attributes">
 		<xsd:attribute name="dao-impl-postfix" type="xsd:string" />
 		<xsd:attribute name="finder-lookup-strategy" type="finder-strategy" />
-		<xsd:attribute name="finder-prefix" type="xsd:string">
-			<xsd:annotation>
-				<xsd:documentation><![CDATA[
-				Defines the method name prefix that will trigger special finder 
-				execution. Defaults to "findBy".
-				]]></xsd:documentation>
-			</xsd:annotation>
-		</xsd:attribute>
 	</xsd:attributeGroup>
 
 	<xsd:simpleType name="finder-strategy">

@@ -36,8 +36,6 @@ import org.w3c.dom.NodeList;
  */
 public class DaoConfigContext {
 
-    // protected static final String DEFAULT_DAO_BEAN_POSTFIX = "Dao";
-    // protected static final String DEFAULT_DAO_INTERFACE_POSTFIX = "Dao";
     protected static final String DEFAULT_DAO_IMPL_POSTFIX = "Impl";
 
     protected static final String FINDER_LOOKUP_STRATEGY =
@@ -48,7 +46,6 @@ public class DaoConfigContext {
     protected static final String DAO_INTERFACE_POSTFIX =
             "dao-interface-postfix";
     protected static final String DAO_BASE_CLASS_NAME = "dao-base-class";
-    protected static final String FINDER_PREFIX = "finder-prefix";
 
     private Element element;
 
@@ -141,20 +138,6 @@ public class DaoConfigContext {
 
         return StringUtils.hasText(createFinderQueries) ? QueryLookupStrategy
                 .fromXml(createFinderQueries) : null;
-    }
-
-
-    /**
-     * Returns the method name prefix that triggers finder resolution and
-     * execution.
-     * 
-     * @return the finder prefix if one configured or {@code null} if not.
-     */
-    public String getFinderPrefix() {
-
-        String finderPrefix = element.getAttribute(FINDER_PREFIX);
-
-        return StringUtils.hasText(finderPrefix) ? finderPrefix : null;
     }
 
 

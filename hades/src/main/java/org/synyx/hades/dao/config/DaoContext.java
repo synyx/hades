@@ -196,20 +196,6 @@ public class DaoContext extends DaoConfigContext {
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.config.DaoConfigContext#getFinderPrefix()
-     */
-    @Override
-    public String getFinderPrefix() {
-
-        String finderPrefix = getElement().getAttribute(FINDER_PREFIX);
-        return StringUtils.hasText(finderPrefix) ? finderPrefix : parent
-                .getFinderPrefix();
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoPackageName()
      */
     @Override
