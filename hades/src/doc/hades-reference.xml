@@ -1255,6 +1255,28 @@ public class User implements Persistable&lt;Long&gt; {
 }</programlisting>
         </example>
       </section>
+
+      <section>
+        <title>Parameter handling</title>
+
+        <para>To hand parameters to your query you simply define method
+        parameters as already seen in in examples above. Besides that Hades
+        recognizes certain Hades specific types to apply pagination and
+        sorting to your queries dynamically.</para>
+
+        <example>
+          <title>Using Pageable and Sort in finder methods</title>
+
+          <para><programlisting>Page&lt;User&gt; findByLastname(String lastname, Pageable pageable);
+
+List&lt;User&gt; findByLastname(String lastname, Sort sort);</programlisting>The
+          first method allows you to pass a <code>Pageable</code> instance to
+          the finder method to dynamically add paging to your statically
+          defined query. <code>Sorting</code> options are handed via the
+          Pageable instance, too. If you only need sorting, simply add a
+          <code>Sort</code> parameter to your method.</para>
+        </example>
+      </section>
     </section>
 
     <section>
