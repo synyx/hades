@@ -546,7 +546,7 @@
 
   &lt;aop:aspectj-autoproxy /&gt;
 
-  &lt;bean class="org.synyx.hades.domain.support.AuditingAdvice"&gt;
+  &lt;bean class="org.synyx.hades.domain.auditing.AuditingAdvice"&gt;
     &lt;property name="auditorAware" ref="auditorAware" /&gt;
   &lt;/bean&gt;
 
