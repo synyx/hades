@@ -1060,10 +1060,9 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
       <para>Next to standard CRUD functionality
       <classname>GenericJpaDao</classname> allows sophisticated execution of
-      NamedQueries by declaring methods in the DAO interface. NamedQueries can
-      be defined in either XML or JPA annotations to the domain class. Let's
-      see how configuration of a query to lookup users by their email address
-      can be realized.</para>
+      queries by declaring methods in the DAO interface. Let's see how
+      configuration of a query to lookup users by their email address can be
+      realized.</para>
 
       <section id="sample-app.finders.strategies">
         <title>Query lookup strategies</title>
@@ -1090,8 +1089,9 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           <title>USE_DECLARED_QUERY</title>
 
           <para>This strategy tries to find a declared query that can either
-          be defined using JPA @NamedQuery means or Hades @Query annotation
-          (see <xref linkend="finder-methods.named-queries" /> and <xref
+          be defined using JPA <code>@NamedQuery</code> means or Hades
+          <code>@Query</code> annotation (see <xref
+          linkend="finder-methods.named-queries" /> and <xref
           linkend="finder-methods.at-query" /> for details). If no query is
           found the finder will fail.</para>
         </simplesect>
@@ -1113,9 +1113,10 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
         <title>Query creation</title>
 
         <para>The hades query builder mechanism is useful to build basic
-        <code>WHERE</code> clauses queries. Basically you can define
-        conditions on direct entity properties and concatenate them with
-        <code>AND</code> and <code>OR</code>.<example>
+        <code>WHERE</code> clauses queries. Hades will directly translate the
+        method name into a where clause. Basically you can define conditions
+        on direct entity properties and concatenate them with <code>AND</code>
+        and <code>OR</code>.<example>
             <title>Query creation from method names</title>
 
             <para><programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
@@ -1125,10 +1126,17 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
             <programlisting>from User u where u.emailAddress = ? and u.lastname = ?</programlisting>
 
-            <para>Besides <code>AND</code> you can use <code>OR</code> to
-            concatenate property constraints. Note, that due to the lack of
-            parenthesis natural binding order (<code>AND</code> binds more
-            than <code>OR</code>) is used for the query.</para>
+            <para>Hades will check the query against the domain class to
+            validate the properties exist. So you either have a property of
+            the appropriate name or a getter method. Furthermore Hades will
+            strip a list of prefixes from the method name before translating
+            it into a query. The prefixes are: <code>findBy</code>,
+            <code>find</code>, <code>readBy</code>, <code>read</code>,
+            <code>getBy</code> as well as <code>get</code>. Besides
+            <code>AND</code> you can use <code>OR</code> to concatenate
+            property constraints. Note, that due to the lack of parenthesis
+            natural binding order (<code>AND</code> binds more than
+            <code>OR</code>) is used for the query.</para>
           </example></para>
       </section>
 
@@ -1207,7 +1215,7 @@ public class User implements Persistable&lt;Long&gt; {
           </example>
 
           <para>Declaring this method <classname>GenericJpaDao</classname>
-          will try to resolve a call to this method to a named query startig
+          will try to resolve a call to this method to a named query starting
           with the simple name of the configured domain class followed by the
           method name separated by a dot. Note, that the
           <interfacename>GenericJpaDao</interfacename> implementation
@@ -1716,14 +1724,6 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
               queries. See <xref linkend="sample-app.finders.strategies" />
               for details. Defaults to
               <code>create-if-not-found</code>.</entry>
-            </row>
-
-            <row>
-              <entry><code>finder-prefix</code></entry>
-
-              <entry>Define the method prefixes to detect finder methods, the
-              DAO shall execute finders for. Defaults to
-              <code>findBy</code>.</entry>
             </row>
           </tbody>
         </tgroup>
