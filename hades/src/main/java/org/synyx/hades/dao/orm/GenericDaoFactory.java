@@ -194,7 +194,7 @@ public class GenericDaoFactory {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private Class<? extends GenericJpaDao> getDaoClass() {
+    protected Class<? extends GenericJpaDao> getDaoClass() {
 
         if (ClassUtils.isEntityManagerOfType(entityManager,
                 "org.hibernate.ejb.HibernateEntityManager")) {
