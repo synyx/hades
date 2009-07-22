@@ -14,7 +14,8 @@ Export-Package: org.synyx.hades.dao;version="0.6.0";uses:="org.synyx.h
  persistence,org.synyx.hades.dao,org.synyx.hades.domain",org.synyx.had
  es.domain;version="0.6.0";uses:="javax.persistence",org.synyx.hades.d
  omain.auditing;version="0.6.0";uses:="javax.persistence,org.aspectj.l
- ang.annotation,org.joda.time,org.synyx.hades.domain"
+ ang.annotation,org.joda.time,org.synyx.hades.domain",org.synyx.hades.
+ util;version="0.6.0";uses:="javax.persistence"
 Bundle-Classpath: .
 Built-By: olivergierke
 Bundle-Name: org.synyx.hades
@@ -52,3 +53,4 @@ Import-Package: javax.persistence;version="[1.0.0,1.1.0)",org.aopallia
  ,org.springframework.stereotype;version="[2.5.0,3.0.0)",org.springfra
  mework.util;version="[2.5.0,3.0.0)",org.w3c.dom;version="0.0.0"
 Bundle-SymbolicName: org.synyx.hades
+Archiver-Version: Plexus Archiver
