@@ -571,6 +571,13 @@
             </calloutlist>
           </programlistingco>
         </example>
+
+        <note>
+          <para>By default the <classname>AuditingAdvice</classname> will use
+          the current Java date as creation or modification date. If you
+          prefer to use your database's capabilities to determine modification
+          and creation date use <code>setDateTimeForNow(false)</code>.</para>
+        </note>
       </simplesect>
     </section>
   </chapter>
@@ -1794,6 +1801,8 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 
     <qandaset>
       <qandadiv>
+        <title>Infrastructure</title>
+
         <qandaentry>
           <question>
             <para>Currently I have implemented a DAO layer based on
@@ -1824,6 +1833,25 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
   &lt;/property&gt;
 &lt;/bean&gt;</programlisting>
             </example>
+          </answer>
+        </qandaentry>
+      </qandadiv>
+
+      <qandadiv>
+        <title>Auditing</title>
+
+        <qandaentry>
+          <question>
+            <para>I want to use Hades auditing capabilities but have my
+            database already set up to set modification and creation date on
+            entities. How to preven Hades to set the date
+            programmatically.</para>
+          </question>
+
+          <answer>
+            <para>Just configure <classname>AuditingAdvice</classname>
+            accordingly. The property you might want to look for is
+            <code>dateTimeForNow</code>.</para>
           </answer>
         </qandaentry>
       </qandadiv>
