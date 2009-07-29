@@ -25,7 +25,7 @@
 	</modules>
 	
 	<properties>
-		<osgi.version>0.6.0</osgi.version>
+		<osgi.version>1.0.0</osgi.version>
 	</properties>
 	
 	<profiles>
@@ -102,7 +102,7 @@
 			<plugin>
 				<groupId>com.springsource.bundlor</groupId>
 				<artifactId>com.springsource.bundlor.maven</artifactId>
-				<version>1.0.0.M2</version>
+				<version>1.0.0.M5</version>
 				<executions>
 					<execution>
 						<id>bundlor</id>
