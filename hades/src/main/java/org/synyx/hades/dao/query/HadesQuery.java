@@ -15,6 +15,9 @@
  */
 package org.synyx.hades.dao.query;
 
+import javax.persistence.Query;
+
+
 /**
  * Interface for a query abstraction.
  * 
@@ -23,10 +26,11 @@ package org.synyx.hades.dao.query;
 public interface HadesQuery {
 
     /**
-     * Executes the query.
+     * Creates a JPA {@link Query} with the given {@link Parameters} from the
+     * {@link HadesQuery}.
      * 
      * @param parameters
      * @return
      */
-    Object execute(Parameters parameters);
+    Query createJpaQuery(Parameters parameters);
 }

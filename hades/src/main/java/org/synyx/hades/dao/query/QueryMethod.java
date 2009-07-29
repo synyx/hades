@@ -15,9 +15,12 @@
  */
 package org.synyx.hades.dao.query;
 
+import static org.synyx.hades.dao.query.QueryExecution.*;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -39,7 +42,12 @@ import org.synyx.hades.util.ClassUtils;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class FinderMethod {
+
+public class QueryMethod {
+
+    @SuppressWarnings("unchecked")
+    private static final Collection<Class<?>> MODIFY_TYPES =
+            Arrays.asList(Void.class, void.class, Integer.class, int.class);
 
     private Method method;
     private Class<?> domainClass;
@@ -49,15 +57,15 @@ public class FinderMethod {
 
 
     /**
-     * Creates a new {@link FinderMethod} from the given parameters. Looks up
-     * the correct query to use for following invocations of the method given.
+     * Creates a new {@link QueryMethod} from the given parameters. Looks up the
+     * correct query to use for following invocations of the method given.
      * 
      * @param method
      * @param domainClass
      * @param em
      * @param strategy
      */
-    public FinderMethod(Method method, Class<?> domainClass, EntityManager em,
+    public QueryMethod(Method method, Class<?> domainClass, EntityManager em,
             QueryLookupStrategy strategy) {
 
         Assert.notNull(method, "Method must not be null!");
@@ -93,14 +101,14 @@ public class FinderMethod {
 
 
     /**
-     * Creates a new {@link FinderMethod}. Assumes applying default
+     * Creates a new {@link QueryMethod}. Assumes applying default
      * {@link QueryLookupStrategy} by handing {@code null}.
      * 
      * @param method
      * @param domainClass
      * @param em
      */
-    public FinderMethod(Method method, Class<?> domainClass, EntityManager em) {
+    public QueryMethod(Method method, Class<?> domainClass, EntityManager em) {
 
         this(method, domainClass, em, null);
     }
@@ -207,7 +215,7 @@ public class FinderMethod {
      * 
      * @return
      */
-    boolean isCollectionFinder() {
+    boolean isCollectionQuery() {
 
         Class<?> returnType = method.getReturnType();
         return org.springframework.util.ClassUtils.isAssignable(List.class,
@@ -220,11 +228,22 @@ public class FinderMethod {
      * 
      * @return
      */
-    boolean isPageFinder() {
+    boolean isPageQuery() {
 
         Class<?> returnType = method.getReturnType();
         return org.springframework.util.ClassUtils.isAssignable(Page.class,
                 returnType);
+    }
+
+
+    /**
+     * Returns whether the finder is a modifying one.
+     * 
+     * @return
+     */
+    boolean isModifyingQuery() {
+
+        return MODIFY_TYPES.contains(method.getReturnType());
     }
 
 
@@ -265,15 +284,29 @@ public class FinderMethod {
 
     /**
      * Executes the {@link javax.persistence.Query} backing the
-     * {@link FinderMethod} with the given parameters.
+     * {@link QueryMethod} with the given parameters.
      * 
      * @param em
      * @param parameters
      * @return
      */
-    public Object executeQuery(Object... parameters) {
+    public Object executeQuery(Object... methodParameters) {
 
-        return hadesQuery.execute(new Parameters(method, parameters));
+        Parameters parameters = new Parameters(method, methodParameters);
+
+        if (isCollectionQuery()) {
+            return COLLECTION.execute(hadesQuery, parameters);
+        }
+
+        if (isPageQuery()) {
+            return PAGE.execute(hadesQuery, parameters);
+        }
+
+        if (isModifyingQuery()) {
+            return MODIFY.execute(hadesQuery, parameters);
+        }
+
+        return SINGLE_ENTITY.execute(hadesQuery, parameters);
     }
 
 

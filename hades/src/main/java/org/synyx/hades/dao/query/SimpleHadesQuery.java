@@ -23,9 +23,9 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * {@link HadesQuery} implementation that inspects a {@link FinderMethod} for
- * the existanve of an {@link org.synyx.hades.dao.Query} annotation and creates
- * a JPA {@link Query} from it.
+ * {@link HadesQuery} implementation that inspects a {@link QueryMethod} for the
+ * existanve of an {@link org.synyx.hades.dao.Query} annotation and creates a
+ * JPA {@link Query} from it.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -40,7 +40,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * Creates a new {@link SimpleHadesQuery} that encapsulates a simple query
      * string.
      */
-    private SimpleHadesQuery(FinderMethod method, String queryString) {
+    private SimpleHadesQuery(QueryMethod method, String queryString) {
 
         super(method);
         this.queryString = queryString;
@@ -49,11 +49,11 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
 
     /**
      * Creates a new {@link SimpleHadesQuery} that constructs the query from the
-     * given {@link FinderMethod}.
+     * given {@link QueryMethod}.
      * 
      * @param method
      */
-    private SimpleHadesQuery(FinderMethod method) {
+    private SimpleHadesQuery(QueryMethod method) {
 
         super(method);
         this.queryString = new QueryCreator(method).constructQuery();
@@ -74,14 +74,14 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
 
 
     /**
-     * Creates a {@link HadesQuery} from the given {@link FinderMethod} that is
+     * Creates a {@link HadesQuery} from the given {@link QueryMethod} that is
      * potentially annotated with {@link org.synyx.hades.dao.Query}.
      * 
      * @param finderMethod
      * @return the {@link HadesQuery} derived from the annotation or {@code
      *         null} if no annotation found.
      */
-    public static HadesQuery fromHadesAnnotation(FinderMethod finderMethod) {
+    public static HadesQuery fromHadesAnnotation(QueryMethod finderMethod) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(String.format("Looking up Hades query for method %s",
@@ -97,12 +97,20 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
 
 
     /**
-     * Constructs a {@link HadesQuery} from the given {@link FinderMethod}.
+     * Constructs a {@link HadesQuery} from the given {@link QueryMethod}.
      * 
      * @param finderMethod
      * @return
      */
-    public static HadesQuery construct(FinderMethod finderMethod) {
+    public static HadesQuery construct(QueryMethod finderMethod) {
+
+        if (finderMethod.isModifyingQuery()) {
+            throw new IllegalArgumentException(
+                    "Cannot create query from method name "
+                            + "for modifying query. Use @Query or @NamedQuery to "
+                            + "declare the query to execute. Do not use CREATE as "
+                            + "strategy to lookup queries!");
+        }
 
         return new SimpleHadesQuery(finderMethod);
     }

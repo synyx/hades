@@ -38,7 +38,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
     /**
      * Creates a new {@link NamedHadesQuery}.
      */
-    private NamedHadesQuery(FinderMethod method) {
+    private NamedHadesQuery(QueryMethod method) {
 
         super(method);
 
@@ -48,12 +48,12 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
 
     /**
-     * Looks up a named query for the given {@link FinderMethod}.
+     * Looks up a named query for the given {@link QueryMethod}.
      * 
      * @param method
      * @return
      */
-    public static HadesQuery lookupFrom(FinderMethod method) {
+    public static HadesQuery lookupFrom(QueryMethod method) {
 
         final String queryName = method.getNamedQueryName();
 

@@ -37,8 +37,8 @@ public class QueryCreatorUnitTest {
     @Test(expected = QueryCreationException.class)
     public void rejectsInvalidProperty() throws Exception {
 
-        FinderMethod finderMethod =
-                new FinderMethod(method, User.class, em, QueryLookupStrategy.CREATE_IF_NOT_FOUND);
+        QueryMethod finderMethod =
+                new QueryMethod(method, User.class, em, QueryLookupStrategy.CREATE_IF_NOT_FOUND);
 
         new QueryCreator(finderMethod).constructQuery();
     }
@@ -52,8 +52,8 @@ public class QueryCreatorUnitTest {
                 QueryCreatorUnitTest.class.getMethod(
                         "findByNameOrOrganization", String.class, String.class);
 
-        FinderMethod finderMethod =
-                new FinderMethod(method, SampleEntity.class, em, QueryLookupStrategy.CREATE_IF_NOT_FOUND);
+        QueryMethod finderMethod =
+                new QueryMethod(method, SampleEntity.class, em, QueryLookupStrategy.CREATE_IF_NOT_FOUND);
 
         String query = new QueryCreator(finderMethod).constructQuery();
         assertTrue(query.endsWith("where x.name = ? or x.organization = ?"));

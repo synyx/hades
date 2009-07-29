@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 
 
 /**
- * Class to encapsulate query creation logic for {@link FinderMethod}s.
+ * Class to encapsulate query creation logic for {@link QueryMethod}s.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -27,22 +27,22 @@ public class QueryCreator {
     private static final String KEYWORD_TEMPLATE = "(%s)(?=[A-Z])";
     private static final String PREFIX_TEMPLATE = "^%s(?=[A-Z]).*";
 
-    private FinderMethod method;
+    private QueryMethod method;
 
 
     /**
-     * Creates a new {@link QueryCreator} for the given {@link FinderMethod}.
+     * Creates a new {@link QueryCreator} for the given {@link QueryMethod}.
      * 
      * @param finderMethod
      */
-    public QueryCreator(FinderMethod finderMethod) {
+    public QueryCreator(QueryMethod finderMethod) {
 
         this.method = finderMethod;
     }
 
 
     /**
-     * Constructs a query from the underlying {@link FinderMethod}.
+     * Constructs a query from the underlying {@link QueryMethod}.
      * 
      * @return the query string
      * @throws QueryCreationException

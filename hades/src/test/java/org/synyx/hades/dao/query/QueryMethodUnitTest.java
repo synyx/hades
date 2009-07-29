@@ -18,11 +18,11 @@ import org.synyx.hades.domain.User;
 
 
 /**
- * Unit test for {@link FinderMethod}.
+ * Unit test for {@link QueryMethod}.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class FinderMethodUnitTest {
+public class QueryMethodUnitTest {
 
     private static final Class<?> DOMAIN_CLASS = User.class;
 
@@ -34,6 +34,7 @@ public class FinderMethodUnitTest {
     private Method pageableAndSort;
     private Method pageableTwice;
     private Method sortableTwice;
+    private Method modifyingMethod;
 
 
     /**
@@ -58,17 +59,19 @@ public class FinderMethodUnitTest {
         sortableTwice =
                 InvalidDao.class.getMethod(METHOD_NAME, String.class,
                         Sort.class, Sort.class);
+        modifyingMethod =
+                UserDao.class.getMethod("renameAllUsersTo", String.class);
     }
 
 
     @Test
     public void testname() throws Exception {
 
-        FinderMethod method =
-                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+        QueryMethod method =
+                new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertEquals("User.findByLastname", method.getNamedQueryName());
-        assertTrue(method.isCollectionFinder());
+        assertTrue(method.isCollectionQuery());
         assertEquals("select x from User x where x.lastname = ?",
                 new QueryCreator(method).constructQuery());
     }
@@ -77,29 +80,29 @@ public class FinderMethodUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullDaoMethod() throws Exception {
 
-        new FinderMethod(null, DOMAIN_CLASS, em);
+        new QueryMethod(null, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullDomainClass() throws Exception {
 
-        new FinderMethod(daoMethod, null, em, null);
+        new QueryMethod(daoMethod, null, em, null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullEntityManager() throws Exception {
 
-        new FinderMethod(daoMethod, DOMAIN_CLASS, null);
+        new QueryMethod(daoMethod, DOMAIN_CLASS, null);
     }
 
 
     @Test
     public void returnsCorrectName() throws Exception {
 
-        FinderMethod method =
-                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+        QueryMethod method =
+                new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertEquals(daoMethod.getName(), method.getName());
     }
@@ -108,8 +111,8 @@ public class FinderMethodUnitTest {
     @Test
     public void determinesValidFieldsCorrectly() throws Exception {
 
-        FinderMethod method =
-                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+        QueryMethod method =
+                new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertTrue(method.isValidField("firstname"));
         assertTrue(method.isValidField("Firstname"));
@@ -120,15 +123,15 @@ public class FinderMethodUnitTest {
     @Test
     public void returnsQueryAnnotationIfAvailable() throws Exception {
 
-        FinderMethod method =
-                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+        QueryMethod method =
+                new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertNull(method.getQueryAnnotation());
 
         Method daoMethod =
                 UserDao.class.getMethod("findByHadesQuery", String.class);
 
-        assertNotNull(new FinderMethod(daoMethod, DOMAIN_CLASS, em)
+        assertNotNull(new QueryMethod(daoMethod, DOMAIN_CLASS, em)
                 .getQueryAnnotation());
     }
 
@@ -136,8 +139,8 @@ public class FinderMethodUnitTest {
     @Test
     public void returnsCorrectDomainClassName() throws Exception {
 
-        FinderMethod method =
-                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+        QueryMethod method =
+                new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertEquals(DOMAIN_CLASS.getSimpleName(), method.getDomainClassName());
     }
@@ -146,8 +149,8 @@ public class FinderMethodUnitTest {
     @Test
     public void returnsCorrectNumberOfParameters() throws Exception {
 
-        FinderMethod method =
-                new FinderMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
+        QueryMethod method =
+                new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
 
         assertTrue(method.isCorrectNumberOfParameters(daoMethod
                 .getParameterTypes().length));
@@ -157,28 +160,36 @@ public class FinderMethodUnitTest {
     @Test(expected = IllegalStateException.class)
     public void rejectsInvalidReturntypeOnPagebleFinder() throws Exception {
 
-        new FinderMethod(invalidReturnType, DOMAIN_CLASS, em);
+        new QueryMethod(invalidReturnType, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsPageableAndSortInFinderMethod() throws Exception {
 
-        new FinderMethod(pageableAndSort, DOMAIN_CLASS, em);
+        new QueryMethod(pageableAndSort, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsTwoPageableParameters() throws Exception {
 
-        new FinderMethod(pageableTwice, DOMAIN_CLASS, em);
+        new QueryMethod(pageableTwice, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsTwoSortableParameters() throws Exception {
 
-        new FinderMethod(sortableTwice, DOMAIN_CLASS, em);
+        new QueryMethod(sortableTwice, DOMAIN_CLASS, em);
+    }
+
+
+    @Test
+    public void recognizesModifyingMethod() throws Exception {
+
+        QueryMethod method = new QueryMethod(modifyingMethod, DOMAIN_CLASS, em);
+        assertTrue(method.isModifyingQuery());
     }
 
     /**

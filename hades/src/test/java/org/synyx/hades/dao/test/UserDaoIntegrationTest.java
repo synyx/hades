@@ -170,6 +170,17 @@ public class UserDaoIntegrationTest {
     }
 
 
+    @Test
+    public void executesManipulatingQuery() throws Exception {
+
+        flushTestUsers();
+        userDao.renameAllUsersTo("newLastname");
+
+        assertEquals(userDao.count().intValue(), userDao.findByLastname(
+                "newLastname").size());
+    }
+
+
     /**
      * Tests, that searching by the lastname of the reference user returns
      * exactly that instance.

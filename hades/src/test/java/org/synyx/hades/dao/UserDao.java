@@ -109,4 +109,13 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      * @return
      */
     List<User> findByFirstname(String firstname, Pageable pageable);
+
+
+    /**
+     * Manipulating query to set all {@link User}'s names to the given one.
+     * 
+     * @param lastname
+     */
+    @Query("update User u set u.lastname = ?")
+    void renameAllUsersTo(String lastname);
 }

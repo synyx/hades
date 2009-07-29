@@ -11,7 +11,7 @@ public class QueryCreationException extends RuntimeException {
             "Could not create query for method %s! Could not find property %s on domain class %s.";
 
 
-    public QueryCreationException(FinderMethod method, String propertyName) {
+    public QueryCreationException(QueryMethod method, String propertyName) {
 
         super(String.format(MESSAGE_TEMPLATE, method, propertyName, method
                 .getDomainClassName()));

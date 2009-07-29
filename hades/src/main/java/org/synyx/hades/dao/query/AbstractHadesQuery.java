@@ -16,10 +16,7 @@
 package org.synyx.hades.dao.query;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
-
-import org.synyx.hades.domain.PageImpl;
 
 
 /**
@@ -31,14 +28,14 @@ import org.synyx.hades.domain.PageImpl;
  */
 abstract class AbstractHadesQuery implements HadesQuery {
 
-    private FinderMethod method;
+    private QueryMethod method;
 
 
     /**
      * Creates a new {@link AbstractHadesQuery} from the given
-     * {@link FinderMethod}.
+     * {@link QueryMethod}.
      */
-    public AbstractHadesQuery(FinderMethod method) {
+    public AbstractHadesQuery(QueryMethod method) {
 
         this.method = method;
     }
@@ -48,48 +45,10 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.dao.query.HadesQuery#execute(org.synyx.hades.dao.query
-     * .Parameters)
+     * org.synyx.hades.dao.query.HadesQuery#createJpaQuery(org.synyx.hades.dao
+     * .query.Parameters)
      */
-    @SuppressWarnings("unchecked")
-    public Object execute(Parameters parameters) {
-
-        try {
-
-            if (method.isPageFinder()) {
-
-                // Execute query to compute total
-                Query projection = parameters.bind(createQuery(parameters));
-                int total = projection.getResultList().size();
-
-                Query query =
-                        parameters.bindAndPrepare(createQuery(parameters));
-
-                return new PageImpl(query.getResultList(), parameters
-                        .getPageable(), total);
-
-            }
-
-            if (method.isCollectionFinder()) {
-                return parameters.bindAndPrepare(createQuery(parameters))
-                        .getResultList();
-            }
-
-            return parameters.bind(createQuery(parameters)).getSingleResult();
-
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-
-    /**
-     * Creates a new {@link Query} for the given {@link Parameters}.
-     * 
-     * @param parameters
-     * @return
-     */
-    private Query createQuery(Parameters parameters) {
+    public Query createJpaQuery(Parameters parameters) {
 
         return createQuery(method.getEntityManager(), parameters);
     }
@@ -100,7 +59,7 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * fresh instance on each call.
      * 
      * @param em
-     * @param parameters TODO
+     * @param parameters
      * @return
      */
     protected abstract Query createQuery(EntityManager em, Parameters parameters);

@@ -29,7 +29,7 @@ public enum QueryLookupStrategy {
     CREATE {
 
         @Override
-        public HadesQuery resolveQuery(FinderMethod method) {
+        public HadesQuery resolveQuery(QueryMethod method) {
 
             return SimpleHadesQuery.construct(method);
         }
@@ -42,7 +42,7 @@ public enum QueryLookupStrategy {
     USE_DECLARED_QUERY {
 
         @Override
-        public HadesQuery resolveQuery(FinderMethod method) {
+        public HadesQuery resolveQuery(QueryMethod method) {
 
             return NamedHadesQuery.lookupFrom(method);
         }
@@ -56,7 +56,7 @@ public enum QueryLookupStrategy {
     CREATE_IF_NOT_FOUND {
 
         @Override
-        public HadesQuery resolveQuery(FinderMethod method) {
+        public HadesQuery resolveQuery(QueryMethod method) {
 
             HadesQuery query = SimpleHadesQuery.fromHadesAnnotation(method);
 
@@ -102,11 +102,11 @@ public enum QueryLookupStrategy {
 
 
     /**
-     * Resolves a {@link HadesQuery} from the given {@link FinderMethod} that
+     * Resolves a {@link HadesQuery} from the given {@link QueryMethod} that
      * can be executed afterwards.
      * 
      * @param method
      * @return
      */
-    public abstract HadesQuery resolveQuery(FinderMethod method);
+    public abstract HadesQuery resolveQuery(QueryMethod method);
 }

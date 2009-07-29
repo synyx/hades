@@ -29,7 +29,7 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.dao.query.FinderMethod;
+import org.synyx.hades.dao.query.QueryMethod;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.synyx.hades.util.ClassUtils;
 
@@ -331,8 +331,8 @@ public class GenericDaoFactory {
      */
     public class FinderExecuterMethodInterceptor implements MethodInterceptor {
 
-        private Map<Method, FinderMethod> queries =
-                new ConcurrentHashMap<Method, FinderMethod>();
+        private Map<Method, QueryMethod> queries =
+                new ConcurrentHashMap<Method, QueryMethod>();
 
         private Object customDaoImplementation;
         private Class<?> daoInterface;
@@ -340,7 +340,7 @@ public class GenericDaoFactory {
 
         /**
          * Creates a new {@link FinderExecuterMethodInterceptor}. Builds a model
-         * of {@link FinderMethod}s to be invoked on execution of DAO interface
+         * of {@link QueryMethod}s to be invoked on execution of DAO interface
          * methods.
          */
         public FinderExecuterMethodInterceptor(Class<?> daoInterface,
@@ -353,8 +353,8 @@ public class GenericDaoFactory {
 
                 if (isFinderMethod(method, daoInterface)) {
 
-                    FinderMethod finder =
-                            new FinderMethod(method, ClassUtils
+                    QueryMethod finder =
+                            new QueryMethod(method, ClassUtils
                                     .getDomainClass(daoInterface),
                                     entityManager, queryLookupStrategy);
 
