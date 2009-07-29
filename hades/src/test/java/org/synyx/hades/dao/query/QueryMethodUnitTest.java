@@ -35,6 +35,7 @@ public class QueryMethodUnitTest {
     private Method pageableTwice;
     private Method sortableTwice;
     private Method modifyingMethod;
+    private Method invalidModifyingMethod;
 
 
     /**
@@ -61,6 +62,8 @@ public class QueryMethodUnitTest {
                         Sort.class, Sort.class);
         modifyingMethod =
                 UserDao.class.getMethod("renameAllUsersTo", String.class);
+        invalidModifyingMethod =
+                InvalidDao.class.getMethod("updateMethod", String.class);
     }
 
 
@@ -99,7 +102,7 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void returnsCorrectName() throws Exception {
+    public void returnsCorrectName() {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
@@ -109,7 +112,7 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void determinesValidFieldsCorrectly() throws Exception {
+    public void determinesValidFieldsCorrectly() {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
@@ -121,7 +124,8 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void returnsQueryAnnotationIfAvailable() throws Exception {
+    public void returnsQueryAnnotationIfAvailable() throws SecurityException,
+            NoSuchMethodException {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
@@ -137,7 +141,7 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void returnsCorrectDomainClassName() throws Exception {
+    public void returnsCorrectDomainClassName() {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
@@ -147,7 +151,7 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void returnsCorrectNumberOfParameters() throws Exception {
+    public void returnsCorrectNumberOfParameters() {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, em, CREATE);
@@ -158,30 +162,38 @@ public class QueryMethodUnitTest {
 
 
     @Test(expected = IllegalStateException.class)
-    public void rejectsInvalidReturntypeOnPagebleFinder() throws Exception {
+    public void rejectsInvalidReturntypeOnPagebleFinder() {
 
         new QueryMethod(invalidReturnType, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
-    public void rejectsPageableAndSortInFinderMethod() throws Exception {
+    public void rejectsPageableAndSortInFinderMethod() {
 
         new QueryMethod(pageableAndSort, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
-    public void rejectsTwoPageableParameters() throws Exception {
+    public void rejectsTwoPageableParameters() {
 
         new QueryMethod(pageableTwice, DOMAIN_CLASS, em);
     }
 
 
     @Test(expected = IllegalStateException.class)
-    public void rejectsTwoSortableParameters() throws Exception {
+    public void rejectsTwoSortableParameters() {
 
         new QueryMethod(sortableTwice, DOMAIN_CLASS, em);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsModifyingMethodWithoutBacking() {
+
+        new QueryMethod(invalidModifyingMethod, DOMAIN_CLASS, em,
+                QueryLookupStrategy.CREATE);
     }
 
 
@@ -215,5 +227,9 @@ public class QueryMethodUnitTest {
 
         // Must not use two Pageables
         Page<User> findByFirstname(String firstname, Sort first, Sort second);
+
+
+        // Not backed by a named query or @Query annotation
+        void updateMethod(String firstname);
     }
 }
