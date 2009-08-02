@@ -1,21 +1,21 @@
 Manifest-Version: 1.0
-Export-Package: org.synyx.hades.dao;version="1.0.0";uses:="org.synyx.h
- ades.domain",org.synyx.hades.dao.config;version="1.0.0";uses:="org.sp
+Export-Package: org.synyx.hades.dao;version="0.7.0";uses:="org.synyx.h
+ ades.domain",org.synyx.hades.dao.config;version="0.7.0";uses:="org.sp
  ringframework.beans.factory.annotation,org.springframework.beans.fact
  ory.config,org.springframework.beans.factory.xml,org.springframework.
  context.annotation,org.springframework.core.type.classreading,org.spr
  ingframework.core.type.filter,org.synyx.hades.dao.query,org.w3c.dom",
- org.synyx.hades.dao.orm;version="1.0.0";uses:="javax.persistence,org.
+ org.synyx.hades.dao.orm;version="0.7.0";uses:="javax.persistence,org.
  aopalliance.intercept,org.eclipse.persistence.jpa,org.eclipse.persist
  ence.platform.database,org.hibernate.ejb,org.springframework.beans.fa
  ctory,org.springframework.beans.factory.annotation,org.springframewor
  k.stereotype,org.synyx.hades.dao,org.synyx.hades.dao.query,org.synyx.
- hades.domain",org.synyx.hades.dao.query;version="1.0.0";uses:="javax.
+ hades.domain",org.synyx.hades.dao.query;version="0.7.0";uses:="javax.
  persistence,org.synyx.hades.dao,org.synyx.hades.domain",org.synyx.had
- es.domain;version="1.0.0";uses:="javax.persistence",org.synyx.hades.d
- omain.auditing;version="1.0.0";uses:="javax.persistence,org.aspectj.l
+ es.domain;version="0.7.0";uses:="javax.persistence",org.synyx.hades.d
+ omain.auditing;version="0.7.0";uses:="javax.persistence,org.aspectj.l
  ang.annotation,org.joda.time,org.synyx.hades.domain",org.synyx.hades.
- util;version="1.0.0";uses:="javax.persistence"
+ util;version="0.7.0";uses:="javax.persistence"
 Bundle-Classpath: .
 Built-By: olivergierke
 Tool: Bundlor 1.0.0.M5
@@ -23,7 +23,7 @@ Bundle-Name: org.synyx.hades
 Created-By: Apache Maven
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Synyx GmbH & Co. KG
-Bundle-Version: 1.0.0
+Bundle-Version: 0.7.0
 Build-Jdk: 1.6.0_13
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.synyx.hades
