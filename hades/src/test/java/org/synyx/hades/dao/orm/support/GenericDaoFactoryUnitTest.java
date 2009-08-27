@@ -18,6 +18,8 @@ package org.synyx.hades.dao.orm.support;
 
 import static junit.framework.Assert.*;
 
+import java.io.IOException;
+
 import javax.persistence.EntityManager;
 
 import org.easymock.EasyMock;
@@ -95,6 +97,24 @@ public class GenericDaoFactoryUnitTest {
         }
     }
 
+
+    @Test(expected = IllegalArgumentException.class)
+    public void handlesRuntimeExceptionsCorrectly() {
+
+        SampleDao dao =
+                factory.getDao(SampleDao.class, new SampleCustomDaoImpl());
+        dao.throwingRuntimeException();
+    }
+
+
+    @Test(expected = IOException.class)
+    public void handlesCheckedExceptionsCorrectly() throws Exception {
+
+        SampleDao dao =
+                factory.getDao(SampleDao.class, new SampleCustomDaoImpl());
+        dao.throwingCheckedException();
+    }
+
     private interface SimpleSampleDao extends GenericDao<User, Integer> {
 
     }
@@ -104,9 +124,31 @@ public class GenericDaoFactoryUnitTest {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    private interface SampleCustomDao {
+    public interface SampleCustomDao {
 
-        void someSampleMethod();
+        void throwingRuntimeException();
+
+
+        void throwingCheckedException() throws IOException;
+    }
+
+    /**
+     * Implementation of the custom DAO interface.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    private class SampleCustomDaoImpl implements SampleCustomDao {
+
+        public void throwingRuntimeException() {
+
+            throw new IllegalArgumentException("You lose!");
+        }
+
+
+        public void throwingCheckedException() throws IOException {
+
+            throw new IOException("You lose!");
+        }
     }
 
     private interface SampleDao extends GenericDao<User, Integer>,
