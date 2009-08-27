@@ -212,13 +212,18 @@ public abstract class ClassUtils {
 
 
     /**
-     * Returns whether the given object is of one of the given types.
+     * Returns whether the given object is of one of the given types. Will
+     * return {@literal false} for {@literal null}.
      * 
      * @param object
      * @param types
      * @return
      */
     public static boolean isOfType(Object object, Collection<Class<?>> types) {
+
+        if (null == object) {
+            return false;
+        }
 
         for (Class<?> type : types) {
             if (type.isAssignableFrom(object.getClass())) {

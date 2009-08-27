@@ -182,6 +182,20 @@ public class UserDaoIntegrationTest {
 
 
     /**
+     * Make sure no {@link NullPointerException} is being thrown.
+     * 
+     * @see Ticket #110
+     */
+    @Test
+    public void testFinderInvocationWithNullParameter() {
+
+        flushTestUsers();
+
+        userDao.findByLastname(null);
+    }
+
+
+    /**
      * Tests, that searching by the lastname of the reference user returns
      * exactly that instance.
      * 
