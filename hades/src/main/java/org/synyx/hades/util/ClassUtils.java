@@ -15,6 +15,7 @@
  */
 package org.synyx.hades.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -256,5 +257,22 @@ public abstract class ClassUtils {
         boolean hasName = null != entity && StringUtils.hasText(entity.name());
 
         return hasName ? entity.name() : domainClass.getSimpleName();
+    }
+
+
+    /**
+     * Helper method to extract the original exception that can possibly occur
+     * during a reflection call.
+     * 
+     * @param ex
+     * @throws Throwable
+     */
+    public static void unwrapReflectionException(Exception ex) throws Throwable {
+
+        if (ex instanceof InvocationTargetException) {
+            throw ((InvocationTargetException) ex).getTargetException();
+        }
+
+        throw ex;
     }
 }

@@ -29,8 +29,8 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.dao.query.QueryMethod;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
+import org.synyx.hades.dao.query.QueryMethod;
 import org.synyx.hades.util.ClassUtils;
 
 
@@ -174,7 +174,7 @@ public class GenericDaoFactory {
             ProxyFactory result = new ProxyFactory();
             result.setTarget(genericJpaDao);
             result.setInterfaces(new Class[] { daoInterface });
-            result.addAdvice(new FinderExecuterMethodInterceptor(daoInterface,
+            result.addAdvice(new QueryExecuterMethodInterceptor(daoInterface,
                     customDaoImplementation));
 
             return (T) result.getProxy();
@@ -329,7 +329,7 @@ public class GenericDaoFactory {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    public class FinderExecuterMethodInterceptor implements MethodInterceptor {
+    private class QueryExecuterMethodInterceptor implements MethodInterceptor {
 
         private Map<Method, QueryMethod> queries =
                 new ConcurrentHashMap<Method, QueryMethod>();
@@ -339,11 +339,11 @@ public class GenericDaoFactory {
 
 
         /**
-         * Creates a new {@link FinderExecuterMethodInterceptor}. Builds a model
+         * Creates a new {@link QueryExecuterMethodInterceptor}. Builds a model
          * of {@link QueryMethod}s to be invoked on execution of DAO interface
          * methods.
          */
-        public FinderExecuterMethodInterceptor(Class<?> daoInterface,
+        public QueryExecuterMethodInterceptor(Class<?> daoInterface,
                 Object customDaoImplementation) {
 
             this.daoInterface = daoInterface;
@@ -378,8 +378,12 @@ public class GenericDaoFactory {
 
             if (isCustomMethodInvocation(invocation)) {
 
-                return method.invoke(customDaoImplementation, invocation
-                        .getArguments());
+                try {
+                    return method.invoke(customDaoImplementation, invocation
+                            .getArguments());
+                } catch (Exception e) {
+                    ClassUtils.unwrapReflectionException(e);
+                }
             }
 
             if (hasQueryFor(method)) {
