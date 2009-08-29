@@ -36,7 +36,7 @@
 	      		<activeByDefault>true</activeByDefault>
 	      	</activation>   
 			<properties>
-				<spring.version>[2.5.0.A,4.0.0)</spring.version>
+				<spring.version>2.5.6.SEC01</spring.version>
 				<spring.artifactPrefix>org.springframework.</spring.artifactPrefix>
 				<spring.agent.name>spring-agent</spring.agent.name>
 				<spring.agent.version>2.5.6.SEC01</spring.agent.version>
@@ -47,11 +47,11 @@
 	    <profile>
 	    	<id>spring3</id>
 			<properties>
-				<spring.version>3.0.0.M3</spring.version>
+				<spring.version>3.0.0.M4</spring.version>
 				<spring.artifactPrefix>org.springframework.</spring.artifactPrefix>
 				<spring.agent.name>org.springframework.instrument</spring.agent.name>
 				<spring.agent.version>3.0.0.M3</spring.agent.version>
-				<junit.version>4.5</junit.version>
+				<junit.version>4.6</junit.version>
 			</properties>
 	    </profile>
 	    
@@ -165,6 +165,14 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+        
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - Milestone Bundles</id>
+            <url>http://repository.springsource.com/maven/bundles/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 		
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
@@ -201,6 +209,7 @@
 	
 	<ciManagement>
 		<system>Hudson</system>
+        <url>http://ci.synyx.org</url>
 	</ciManagement>
 
 	<issueManagement>
