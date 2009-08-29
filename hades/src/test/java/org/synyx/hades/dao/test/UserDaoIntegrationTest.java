@@ -378,6 +378,14 @@ public class UserDaoIntegrationTest {
     }
 
 
+    @Test
+    public void testExecutionOfProjectingMethod() {
+
+        flushTestUsers();
+        assertEquals(1, userDao.countWithFirstname("Oliver").longValue());
+    }
+
+
     /**
      * Flushes test users to the database.
      */

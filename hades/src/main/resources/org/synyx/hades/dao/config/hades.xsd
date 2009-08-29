@@ -42,13 +42,13 @@
 
 	<xsd:attributeGroup name="dao-attributes">
 		<xsd:attribute name="dao-impl-postfix" type="xsd:string" />
-		<xsd:attribute name="finder-lookup-strategy" type="finder-strategy" />
+		<xsd:attribute name="query-lookup-strategy" type="query-strategy" />
 	</xsd:attributeGroup>
 
-	<xsd:simpleType name="finder-strategy">
+	<xsd:simpleType name="query-strategy">
 		<xsd:annotation>
 			<xsd:documentation><![CDATA[
-			Determines the way finder methods are being executed.
+			Determines the way query methods are being executed.
 			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:restriction base="xsd:string">
@@ -63,14 +63,14 @@
 			<xsd:enumeration value="create">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
-					Creates a query from the finder method's name.
+					Creates a query from the query method's name.
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:enumeration>
 			<xsd:enumeration value="use-declared-query">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
-					Uses a declared query to execute the finder. Fails if no 
+					Uses a declared query to execute. Fails if no 
 					declared query (either through named query or through @Query) 
 					is defined.
 					]]></xsd:documentation>

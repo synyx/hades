@@ -116,6 +116,11 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      * 
      * @param lastname
      */
+    @Modifying
     @Query("update User u set u.lastname = ?")
     void renameAllUsersTo(String lastname);
+
+
+    @Query("select count(u) from User u where u.firstname = ?")
+    Long countWithFirstname(String firstname);
 }

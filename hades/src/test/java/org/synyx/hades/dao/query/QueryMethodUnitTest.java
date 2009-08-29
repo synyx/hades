@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.synyx.hades.dao.Modifying;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
@@ -189,16 +190,20 @@ public class QueryMethodUnitTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public void rejectsModifyingMethodWithoutBacking() {
 
+        expect(em.createNamedQuery((String) anyObject())).andThrow(
+                new IllegalArgumentException());
+        replay(em);
+
         new QueryMethod(invalidModifyingMethod, DOMAIN_CLASS, em,
-                QueryLookupStrategy.CREATE);
+                QueryLookupStrategy.USE_DECLARED_QUERY);
     }
 
 
     @Test
-    public void recognizesModifyingMethod() throws Exception {
+    public void recognizesModifyingMettod() throws Exception {
 
         QueryMethod method = new QueryMethod(modifyingMethod, DOMAIN_CLASS, em);
         assertTrue(method.isModifyingQuery());
@@ -230,6 +235,7 @@ public class QueryMethodUnitTest {
 
 
         // Not backed by a named query or @Query annotation
+        @Modifying
         void updateMethod(String firstname);
     }
 }

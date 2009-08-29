@@ -8,7 +8,7 @@
 	<import resource="../infrastructure.xml" />
 	
 	<hades:dao-config base-package="org.synyx.hades.dao">
-		<hades:dao id="userDao" finder-lookup-strategy="use-declared-query" />
+		<hades:dao id="userDao" query-lookup-strategy="use-declared-query" />
 	</hades:dao-config>
 
 

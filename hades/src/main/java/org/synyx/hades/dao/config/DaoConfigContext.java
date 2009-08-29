@@ -38,8 +38,8 @@ public class DaoConfigContext {
 
     protected static final String DEFAULT_DAO_IMPL_POSTFIX = "Impl";
 
-    protected static final String FINDER_LOOKUP_STRATEGY =
-            "finder-lookup-strategy";
+    protected static final String QUERY_LOOKUP_STRATEGY =
+            "query-lookup-strategy";
     protected static final String DAO_PACKAGE_NAME = "base-package";
     protected static final String DAO_NAME_POSTFIX = "dao-name-postfix";
     protected static final String DAO_IMPL_POSTFIX = "dao-impl-postfix";
@@ -131,10 +131,10 @@ public class DaoConfigContext {
      * 
      * @return
      */
-    public QueryLookupStrategy getFinderLookupStrategy() {
+    public QueryLookupStrategy getQueryLookupStrategy() {
 
         String createFinderQueries =
-                element.getAttribute(FINDER_LOOKUP_STRATEGY);
+                element.getAttribute(QUERY_LOOKUP_STRATEGY);
 
         return StringUtils.hasText(createFinderQueries) ? QueryLookupStrategy
                 .fromXml(createFinderQueries) : null;

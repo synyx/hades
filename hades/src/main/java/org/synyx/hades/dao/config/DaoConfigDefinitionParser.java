@@ -195,7 +195,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         beanDefinitionBuilder.addPropertyValue("daoInterface", context
                 .getInterfaceName());
         beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
-                .getFinderLookupStrategy());
+                .getQueryLookupStrategy());
 
         String customImplementationBeanName =
                 registerCustomImplementation(context, parserContext,

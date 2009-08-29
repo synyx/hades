@@ -162,6 +162,32 @@
 
         <revremark>Preare version 0.5</revremark>
       </revision>
+
+      <revision>
+        <date>28.08.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Cleaned up "finder" against "query" - relates to
+        #104</revremark>
+      </revision>
+
+      <revision>
+        <date>29.08.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of execution of manipulating
+        queries</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -1063,7 +1089,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
     </section>
 
     <section id="finder-methods">
-      <title>Finder methods</title>
+      <title>Query methods</title>
 
       <para>Next to standard CRUD functionality
       <classname>GenericJpaDao</classname> allows sophisticated execution of
@@ -1074,17 +1100,17 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       <section id="sample-app.finders.strategies">
         <title>Query lookup strategies</title>
 
-        <para>Finders can be executed with 3 different strategies. These
-        strategies define how the query for the finder is constructed at
-        runtime. These strategies can either be configured at the
+        <para>Queries can be executed with 3 different strategies. These
+        strategies define how the JPA query is constructed at runtime. These
+        strategies can either be configured at the
         <interfacename>GenericDaoFactoryBean</interfacename> directly or used
         via XML namespace configuration.</para>
 
         <simplesect>
           <title>CREATE</title>
 
-          <para>This strategy will try to construct a JPA query from the
-          finder method's name. Thus you don't need to declare a named query
+          <para>This strategy will try to construct a JPA query from the query
+          method's name. Thus you don't need to declare a named query
           explicitly. This is quite useful if the queries are simple and no
           special JPA QL is required. <code>CREATE</code> strategy ties your
           mehod names to the query, what might be unwanted. Read more about
@@ -1099,8 +1125,8 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           be defined using JPA <code>@NamedQuery</code> means or Hades
           <code>@Query</code> annotation (see <xref
           linkend="finder-methods.named-queries" /> and <xref
-          linkend="finder-methods.at-query" /> for details). If no query is
-          found the finder will fail.</para>
+          linkend="finder-methods.at-query" /> for details). If no declared
+          query is found execution of the query will fail.</para>
         </simplesect>
 
         <simplesect>
@@ -1211,7 +1237,7 @@ public class User implements Persistable&lt;Long&gt; {
           follows:</para>
 
           <example>
-            <title>Finder method declaration in UserDao</title>
+            <title>Query method declaration in UserDao</title>
 
             <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
@@ -1226,7 +1252,7 @@ public class User implements Persistable&lt;Long&gt; {
           with the simple name of the configured domain class followed by the
           method name separated by a dot. Note, that the
           <interfacename>GenericJpaDao</interfacename> implementation
-          distinguishes between finder methods for a single object or lists of
+          distinguishes between query methods for a single object or lists of
           object. It will try to retrieve a single result if you provide a
           return value assignable from the configured domain class. Otherwise
           i will try to call a named query to return a list. Be sure your
@@ -1246,12 +1272,12 @@ public class User implements Persistable&lt;Long&gt; {
         domain class. This will free the domain class from persistence
         specific information and colocate it to the DAO interface.</para>
 
-        <para>Querys annotated to the finder method will trump queries defined
+        <para>Querys annotated to the query method will trump queries defined
         using <code>@NamedQuery</code> or named queries declared in in
         <filename>orm.xml</filename>.</para>
 
         <example>
-          <title>Declare query at the finder method using @Query</title>
+          <title>Declare query at the query method using @Query</title>
 
           <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
@@ -1272,13 +1298,13 @@ public class User implements Persistable&lt;Long&gt; {
         sorting to your queries dynamically.</para>
 
         <example>
-          <title>Using Pageable and Sort in finder methods</title>
+          <title>Using Pageable and Sort in query methods</title>
 
           <para><programlisting>Page&lt;User&gt; findByLastname(String lastname, Pageable pageable);
 
 List&lt;User&gt; findByLastname(String lastname, Sort sort);</programlisting>The
           first method allows you to pass a <code>Pageable</code> instance to
-          the finder method to dynamically add paging to your statically
+          the query method to dynamically add paging to your statically
           defined query. <code>Sorting</code> options are handed via the
           Pageable instance, too. If you only need sorting, simply add a
           <code>Sort</code> parameter to your method.</para>
@@ -1555,10 +1581,11 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 
       <para>Often it is necessary to provide a custom implementation for a few
       DAO methods. Hades eases custom DAO functionality development a lot and
-      allows easy integration with hades generic DAO and finder functionality.
-      To enrich a generic DAO with custom functionality you have to define an
-      interface and an implementation for that functionality first and let the
-      DAO interface you provide by now extend that custom interface.</para>
+      allows easy integration with hades generic DAO and query method
+      functionality. To enrich a generic DAO with custom functionality you
+      have to define an interface and an implementation for that functionality
+      first and let the DAO interface you provide by now extend that custom
+      interface.</para>
 
       <example>
         <title>Interface for custom DAO functionality</title>
@@ -1588,7 +1615,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 
         <para><programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt;, UserDaoCustom {
 
-  // Declare finder methods here
+  // Declare query methods here
 }</programlisting>Let your standard DAO interface extend the custom one. This
         makes generic DAO and custom functionality available to
         clients.</para>
@@ -1663,8 +1690,8 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <para>If you use the automatic DAO detection mode as shown in <xref
         linkend="hades-xml-editor" /> you will get all discovered DAO beans
         correctly listed in the Spring Elements section of your Project
-        Explorer. The beans also lists property values like the finder prefix
-        or the query lookup strategy including implicit defaults.</para>
+        Explorer. The beans also lists property values like the query lookup
+        strategy including implicit defaults.</para>
       </simplesect>
 
       <simplesect>
@@ -1747,7 +1774,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
             </row>
 
             <row>
-              <entry><code>finder-lookup-strategy</code></entry>
+              <entry><code>query-lookup-strategy</code></entry>
 
               <entry>Determines the strategy to be used to create finder
               queries. See <xref linkend="sample-app.finders.strategies" />

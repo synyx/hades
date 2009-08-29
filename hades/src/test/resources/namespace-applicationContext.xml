@@ -28,7 +28,7 @@
 
 		<hades:dao id="userDao" />
 		<hades:dao id="roleDao" />
-		<hades:dao id="auditableUserDao" finder-lookup-strategy="create" />
+		<hades:dao id="auditableUserDao" query-lookup-strategy="create" />
 	</hades:dao-config>
 	
 	<!-- Register custom DAO implementation explicitly -->

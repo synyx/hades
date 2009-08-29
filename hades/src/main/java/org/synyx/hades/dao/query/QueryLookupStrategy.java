@@ -44,7 +44,23 @@ public enum QueryLookupStrategy {
         @Override
         public HadesQuery resolveQuery(QueryMethod method) {
 
-            return NamedHadesQuery.lookupFrom(method);
+            HadesQuery query = SimpleHadesQuery.fromHadesAnnotation(method);
+
+            if (null != query) {
+                return query;
+            }
+
+            query = NamedHadesQuery.lookupFrom(method);
+
+            if (null != query) {
+                return query;
+            }
+
+            throw new IllegalStateException(
+                    String
+                            .format(
+                                    "Did neither find a NamedQuery nor a Hades Query for method %s!",
+                                    method));
         }
     },
 
@@ -58,19 +74,11 @@ public enum QueryLookupStrategy {
         @Override
         public HadesQuery resolveQuery(QueryMethod method) {
 
-            HadesQuery query = SimpleHadesQuery.fromHadesAnnotation(method);
-
-            if (null != query) {
-                return query;
+            try {
+                return USE_DECLARED_QUERY.resolveQuery(method);
+            } catch (IllegalStateException e) {
+                return SimpleHadesQuery.construct(method);
             }
-
-            query = NamedHadesQuery.lookupFrom(method);
-
-            if (null != query) {
-                return query;
-            }
-
-            return SimpleHadesQuery.construct(method);
         }
     };
 
@@ -102,8 +110,8 @@ public enum QueryLookupStrategy {
 
 
     /**
-     * Resolves a {@link HadesQuery} from the given {@link QueryMethod} that
-     * can be executed afterwards.
+     * Resolves a {@link HadesQuery} from the given {@link QueryMethod} that can
+     * be executed afterwards.
      * 
      * @param method
      * @return

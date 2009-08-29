@@ -20,14 +20,15 @@ import static org.synyx.hades.dao.query.QueryExecution.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+import org.synyx.hades.dao.Modifying;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
@@ -44,10 +45,6 @@ import org.synyx.hades.util.ClassUtils;
  */
 
 public class QueryMethod {
-
-    @SuppressWarnings("unchecked")
-    private static final Collection<Class<?>> MODIFY_TYPES =
-            Arrays.asList(Void.class, void.class, Integer.class, int.class);
 
     private Method method;
     private Class<?> domainClass;
@@ -243,7 +240,8 @@ public class QueryMethod {
      */
     boolean isModifyingQuery() {
 
-        return MODIFY_TYPES.contains(method.getReturnType());
+        return null != AnnotationUtils.findAnnotation(method,
+                Modifying.class);
     }
 
 
