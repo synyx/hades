@@ -11,7 +11,7 @@
 	<parent>
 		<artifactId>hades-parent</artifactId>
 		<groupId>org.synyx.hades</groupId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.7.0</version>
 	</parent>
 
 	<developers>
