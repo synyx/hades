@@ -1310,6 +1310,29 @@ List&lt;User&gt; findByLastname(String lastname, Sort sort);</programlisting>The
           <code>Sort</code> parameter to your method.</para>
         </example>
       </section>
+
+      <section>
+        <title>Modifying queries</title>
+
+        <para>All the sections before described how to declare queries to
+        access a given entity or collection of entitites. Of course you can
+        add custom modifying behaviour by using facilities described in <xref
+        linkend="custom-implementations" />. As this approach is feasible for
+        comprehensive custom functionality, you can achieve the execution of
+        modifying queries that actually only need parameter binding by
+        annotating the query method with <code>@Modifying</code>:</para>
+
+        <example>
+          <title>Declaring manipulating queries</title>
+
+          <programlisting>@Modifying
+@Query("update User u set u.firstname = ?1 where u.lastname = ?2")
+Long setFixedFirstnameFor(String firstname, String lastname);</programlisting>
+        </example>
+
+        <para>This will trigger the query annotated to the method as updating
+        query instead of a selecting one.</para>
+      </section>
     </section>
 
     <section>
@@ -1576,7 +1599,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
       </note>
     </section>
 
-    <section>
+    <section id="custom-implementations">
       <title>Custom implementations</title>
 
       <para>Often it is necessary to provide a custom implementation for a few
