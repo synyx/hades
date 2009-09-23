@@ -190,6 +190,8 @@ public class GenericDaoFactory {
      * Determines the base class for the DAO to be created by checking the
      * {@link EntityManager}'s concrete type. If no well known type can be
      * detected {@link #DEFAULT_DAO_CLASS} will be returned.
+     * <p>
+     * Protected to eventually customize base class - see #102 for details.
      * 
      * @return
      */
