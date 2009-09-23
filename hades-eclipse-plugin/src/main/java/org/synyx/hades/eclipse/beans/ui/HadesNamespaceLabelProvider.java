@@ -8,7 +8,6 @@ import org.springframework.ide.eclipse.beans.core.model.IBeansTypedString;
 import org.springframework.ide.eclipse.beans.ui.namespaces.DefaultNamespaceLabelProvider;
 import org.springframework.ide.eclipse.core.model.IModelElement;
 import org.springframework.ide.eclipse.core.model.ISourceModelElement;
-import org.synyx.hades.dao.orm.GenericDaoFactory;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.synyx.hades.eclipse.HadesUtils;
 
@@ -26,10 +25,6 @@ public class HadesNamespaceLabelProvider extends DefaultNamespaceLabelProvider {
 
     static {
         DEFAULTS = new HashMap<String, Object>();
-        DEFAULTS
-                .put(
-                        "finderPrefix",
-                        GenericDaoFactory.FinderExecuterMethodInterceptor.DEFAULT_FINDER_PREFIX);
         DEFAULTS.put("queryLookupStrategy", QueryLookupStrategy.getDefault());
     }
 
