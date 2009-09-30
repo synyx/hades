@@ -18,14 +18,13 @@ package org.synyx.hades.dao.query;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.PageImpl;
 
 
 /**
  * Enum to contain query execution strategies. Depending (mostly) on the return
- * type of a {@link QueryMethod} a {@link HadesQuery} can be executed in
- * various flavours.
+ * type of a {@link QueryMethod} a {@link HadesQuery} can be executed in various
+ * flavours.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
@@ -46,7 +45,8 @@ enum QueryExecution {
     },
 
     /**
-     * Executes the {@link HadesQuery} to return a {@link Page} of entities.
+     * Executes the {@link HadesQuery} to return a
+     * {@link org.synyx.hades.domain.Page} of entities.
      */
     PAGE {
 

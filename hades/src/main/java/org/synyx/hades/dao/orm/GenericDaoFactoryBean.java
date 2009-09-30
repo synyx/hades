@@ -90,7 +90,7 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      * 
      * @see org.springframework.beans.factory.FactoryBean#getObject()
      */
-    public Object getObject() throws Exception {
+    public Object getObject() {
 
         return getDao(daoInterface, customDaoImplementation);
     }
@@ -124,7 +124,7 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      * @see
      * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
 
         Assert.notNull(getEntityManager(), "EntityManager must not be null!");
 
