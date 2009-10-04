@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<context>
+<context version="5.0.1.439">
     <scope name="hades" type="Project">
+        <element name="Filter" type="TypeFilterReferenceOverridden">
+            <element name="org.synyx.hades.**" type="IncludeTypePattern"/>
+        </element>
         <architecture>
             <element name="DAO Interface" type="Layer">
                 <element name="Assignment" type="TypeFilter">
                     <element name="org.synyx.hades.dao.*" type="IncludeTypePattern"/>
                 </element>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain Interface"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain"/>
             </element>
             <element name="DAO Implementation" type="Layer">
                 <element name="Assignment" type="TypeFilter">
@@ -17,54 +20,66 @@
                         <element name="**.*Hibernate*" type="IncludeTypePattern"/>
                     </element>
                     <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Implementation::Subsystem|JPA"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Persistence::Subsystem|Hibernate"/>
                 </element>
                 <element name="EclipseLink" type="Subsystem">
                     <element name="Assignment" type="TypeFilter">
                         <element name="**.*EclipseLink*" type="IncludeTypePattern"/>
                     </element>
                     <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Implementation::Subsystem|JPA"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Persistence::Subsystem|EclipseLink"/>
                 </element>
                 <element name="JPA" type="Subsystem">
                     <element name="Assignment" type="TypeFilter">
                         <element name="**.*Jpa*" type="IncludeTypePattern"/>
                     </element>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Spring Framework"/>
+                    <dependency type="AllowedDependency" toName="External|External::Subsystem|JPA"/>
                 </element>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|Core"/>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Interface"/>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain Implementation"/>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain Interface"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Query"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|Utility"/>
             </element>
             <element name="Spring Namespace Configuration" type="Layer">
                 <element name="Assignment" type="TypeFilter">
                     <element name="org.synyx.hades.dao.config.*" type="IncludeTypePattern"/>
                 </element>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|Core"/>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Implementation"/>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Interface"/>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain Interface"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Query"/>
+                <dependency type="AllowedDependency" toName="External|External::Layer|Spring Framework"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|Utility"/>
+                <dependency type="AllowedDependency" toName="External|External::Subsystem|Commons Logging"/>
+                <dependency type="AllowedDependency" toName="External|External::Subsystem|XML"/>
             </element>
-            <element name="Domain Interface" type="Layer">
+            <element name="Domain" type="Layer">
                 <element name="Assignment" type="TypeFilter">
-                    <element name="org.synyx.hades.domain.*" type="IncludeTypePattern"/>
+                    <element name="org.synyx.hades.domain.**" type="IncludeTypePattern"/>
                 </element>
-                <stereotype name="Bottom"/>
-            </element>
-            <element name="Domain Implementation" type="Layer">
-                <element name="Assignment" type="TypeFilter">
-                    <element name="org.synyx.hades.domain.support.*" type="IncludeTypePattern"/>
-                </element>
-                <element name="Audition support" type="Subsystem">
+                <element name="Auditing" type="Subsystem">
                     <element name="Assignment" type="TypeFilter">
-                        <element name="**.*Audit*" type="IncludeTypePattern"/>
+                        <element name="**.auditing.*" type="IncludeTypePattern"/>
                     </element>
+                    <dependency type="AllowedDependency" toName="External|External::Subsystem|AspectJ"/>
+                    <dependency type="AllowedDependency" toName="External|External::Subsystem|Commons Logging"/>
+                    <dependency type="AllowedDependency" toName="External|External::Subsystem|JPA"/>
+                    <dependency type="AllowedDependency" toName="External|External::Subsystem|JodaTime"/>
                 </element>
-                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain Interface"/>
+                <dependency type="AllowedDependency" toName="External|External::Subsystem|JPA"/>
+                <dependency type="AllowedDependency" toName="External|External::Subsystem|JodaTime"/>
             </element>
-            <element name="Core" type="Layer">
+            <element name="DAO Query" type="Layer">
                 <element name="Assignment" type="TypeFilter">
-                    <element name="org.synyx.hades.core.*" type="IncludeTypePattern"/>
+                    <element name="org.synyx.hades.dao.query.*" type="IncludeTypePattern"/>
                 </element>
-                <stereotype name="Bottom"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Interface"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain"/>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|Utility"/>
+            </element>
+            <element name="Utility" type="Layer">
+                <element name="Assignment" type="TypeFilter">
+                    <element name="**.util.**" type="IncludeTypePattern"/>
+                </element>
             </element>
         </architecture>
         <workspace>
@@ -79,6 +94,7 @@
                 <property name="Date" value="2009-01-25 14:09:46"/>
                 <property name="Priority" value="Medium"/>
                 <property name="TargetNamespace" value="org.synyx.hades.domain"/>
+                <property name="TargetScope" value="hades"/>
                 <property name="Type" value="org.synyx.hades.domain.support.Order"/>
             </item>
         </itemDefinition>
@@ -142,7 +158,7 @@
             </element>
             <element name="XML" type="Subsystem">
                 <element name="Assignment" type="TypeFilter">
-                    <element name="org.w3c.dom.*" type="IncludeTypePattern"/>
+                    <element name="org.w3c.dom.**" type="IncludeTypePattern"/>
                 </element>
             </element>
             <element name="JodaTime" type="Subsystem">
@@ -153,10 +169,7 @@
         </architecture>
     </scope>
     <scope name="Global" type="Global">
-        <element name="Configuration" type="Configuration">
-            <element name="CycleAnalysisAsymmetrical" type="ConfigurationSwitchDisabled"/>
-            <element name="CycleAnalysisDepthSourceFile" type="ConfigurationSwitchDisabled"/>
-        </element>
+        <element name="Configuration" type="Configuration"/>
         <element name="Filter" type="TypeFilter">
             <element name="**" type="IncludeTypePattern"/>
         </element>
