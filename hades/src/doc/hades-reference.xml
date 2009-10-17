@@ -1602,8 +1602,8 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
           </areaspec>
 
           <programlisting language="xml">&lt;dao-config base-package="org.synyx.hades.dao"&gt;
-  &lt;dao name="user" /&gt;
-  &lt;dao name="role" /&gt;
+  &lt;dao name="userDao" /&gt;
+  &lt;dao name="roleDao" /&gt;
 &lt;/dao-config&gt;</programlisting>
 
           <calloutlist>
@@ -1690,19 +1690,19 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
           <title>Configuration example</title>
 
           <para><programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
-  &lt;dao id="user" /&gt;
+  &lt;dao id="userDao" /&gt;
 &lt;/dao-config&gt;
 
 &lt;dao-config base-package="foo.bar.dao"
   dao-impl-postfix="FooBar"&gt;
-  &lt;dao id="user" /&gt;
+  &lt;dao id="userDao" /&gt;
 &lt;/dao-config&gt;</programlisting></para>
         </example>
 
         <para>The first configuration example will try to lookup a class
         <classname>foo.bar.dao.UserDaoImpl</classname> to act as custom DAO
         implementation, where the second example will try to lookup
-        <classname>foo.bar.dao.UserFooBar</classname>.</para>
+        <classname>foo.bar.dao.UserDaoFooBar</classname>.</para>
 
         <para>TODO: Document manual wiring</para>
       </simplesect>
@@ -1826,7 +1826,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
               <entry>Defines the postfix to autodetect custom DAO
               implementations. Classes whose names end with the configured
               postfix will be considered as candidates. Defaults to
-              <code>DaoImpl</code>.</entry>
+              <code>Impl</code>.</entry>
             </row>
 
             <row>
