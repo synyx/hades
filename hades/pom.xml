@@ -350,7 +350,10 @@
 		    	<artifactId>findbugs-maven-plugin</artifactId>
 		    	<version>1.2</version>
 		    </plugin>
-					
+            <plugin>
+                <groupId>org.codehaus.sonar</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+            </plugin>
 		</plugins>
 	</reporting>
 
