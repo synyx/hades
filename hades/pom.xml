@@ -226,11 +226,10 @@
 					<imgSrcPath>
 						${basedir}/target/doc/
 					</imgSrcPath>
-					
-					<htmlStylesheet>
-						${basedir}/resources/styles.css
-					</htmlStylesheet>
+                    
+                    <!-- 
 					<chunkedOutput>true</chunkedOutput>
+                    -->
 
 					<fonts>
 						<font>

@@ -11,13 +11,14 @@
                     HTML Settings
    ################################################### -->
 
-    <xsl:param name="html.stylesheet">html.css</xsl:param>
+    <xsl:param name="html.stylesheet">resources/styles.css</xsl:param>
 
     <!-- These extensions are required for table printing and other stuff -->
     <xsl:param name="use.extensions">1</xsl:param>
     <xsl:param name="tablecolumns.extension">0</xsl:param>
     <xsl:param name="callout.extensions">1</xsl:param>
     <xsl:param name="graphicsize.extension">0</xsl:param>
+    <xsl:param name="highlight.source" select="1" />
 
     <!--###################################################
                      Table Of Contents
