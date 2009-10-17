@@ -103,10 +103,9 @@
         <xsl:param name="gentext-key" select="''"/>
 		<xsl:variable name="Version">
 			<xsl:value-of select="//bookinfo/title" />
-			<!-- 
 			<xsl:if test="//releaseinfo">
-				<xsl:text>Product Oriented Import (</xsl:text><xsl:value-of select="//releaseinfo"/><xsl:text>)</xsl:text>
-			</xsl:if>-->
+				<xsl:text> </xsl:text><xsl:value-of select="//releaseinfo"/>
+			</xsl:if>
 		</xsl:variable>
         <xsl:choose>
             <xsl:when test="$sequence='blank'">
@@ -419,19 +418,5 @@
             </xsl:choose>
         </fo:basic-link>
     </xsl:template>
-    
-    <!--
-    <xsl:template match="xref">
-        <fo:basic-link internal-destination="{@linkend}" xsl:use-attribute-sets="xref.properties" text-decoration="underline" color="blue">
-            <xsl:choose>
-                <xsl:when test="count(child::node())=0">
-                    <xsl:value-of select="@linkend"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </fo:basic-link>
-    </xsl:template>-->
 	
 </xsl:stylesheet>
