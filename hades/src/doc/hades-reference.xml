@@ -16,7 +16,7 @@
         <surname>Gierke</surname>
 
         <affiliation>
-          <jobtitle>Software architect</jobtitle>
+          <jobtitle>Software Architect</jobtitle>
 
           <orgname>Synyx GmbH &amp; Co. KG</orgname>
         </affiliation>
@@ -27,12 +27,12 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>V0.5</releaseinfo>
+    <releaseinfo>V1.0</releaseinfo>
 
-    <pubdate>12.05.2009</pubdate>
+    <pubdate>17.10.2009</pubdate>
 
     <copyright>
-      <year>2009</year>
+      <year>2008-2009</year>
 
       <holder>Synyx GmbH &amp; Co. KG</holder>
     </copyright>
@@ -451,8 +451,8 @@
                   id="extended-generic-dao.read-by-example-pageable-sorted" />
           </areaspec>
 
-          <programlisting language="java">public interface ExtendedGenericDao&lt;T extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
-        extends GenericDao&lt;T, PK&gt; {
+          <programlisting language="java">public interface ExtendedGenericDao&lt;T extends Persistable&lt;PK&gt;, 
+        PK extends Serializable&gt; extends GenericDao&lt;T, PK&gt; {
 
     List&lt;T&gt; readByExample(T... examples);
 
@@ -901,14 +901,14 @@ public class Role implements Persistable&lt;Integer&gt; {
 
           <programlisting language="java">public interface RoleDao extends GenericDao&lt;Role, Integer&gt; {
 }</programlisting>
-        </example>
 
-        <para>As you can see the interfaces serve typing purposes only for
-        now. We will add further functionality to them later.
-        <interfacename>GenericDao</interfacename> provides most of the
-        required persistence operations. Hades provides various
-        implementations of this interface so that you don't need to code one
-        on your own.</para>
+          <para>As you can see the interfaces serve typing purposes only for
+          now. We will add further functionality to them later.
+          <interfacename>GenericDao</interfacename> provides most of the
+          required persistence operations. Hades provides various
+          implementations of this interface so that you don't need to code one
+          on your own.</para>
+        </example>
       </section>
 
       <section id="sample-app.configuration">
@@ -1419,8 +1419,8 @@ public class AuditableUser implements Auditable&lt;User, Long&gt; {
           </areaspec>
 
           <programlisting language="java">@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(location = { "infrastructure.xml", "audition-context.xml", 
-  "dao-context.xml" })
+@ContextConfiguration(location = { "infrastructure.xml", 
+  "audition-context.xml", "dao-context.xml" })
 @Transactional
 public class AuditionAdviceTest extends AbstractJpaTests {
 
@@ -1693,8 +1693,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
   &lt;dao id="userDao" /&gt;
 &lt;/dao-config&gt;
 
-&lt;dao-config base-package="foo.bar.dao"
-  dao-impl-postfix="FooBar"&gt;
+&lt;dao-config base-package="foo.bar.dao" dao-impl-postfix="FooBar"&gt;
   &lt;dao id="userDao" /&gt;
 &lt;/dao-config&gt;</programlisting></para>
         </example>
@@ -1703,8 +1702,51 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <classname>foo.bar.dao.UserDaoImpl</classname> to act as custom DAO
         implementation, where the second example will try to lookup
         <classname>foo.bar.dao.UserDaoFooBar</classname>.</para>
+      </simplesect>
 
-        <para>TODO: Document manual wiring</para>
+      <simplesect>
+        <title>Manual wiring</title>
+
+        <para>The approach above works perfectly well if your custom
+        implementation uses annotation based configuration and autowring
+        entirely as will be trated as any other Spring bean. If your customly
+        implemented bean needs some special wiring you simply declare the bean
+        and name it after the conventions just descibed. Hades will the pick
+        up the custom bean by name rather than creating an own
+        instance.</para>
+
+        <example>
+          <title>Manual wiring of custom implementations (I)</title>
+
+          <programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
+  &lt;dao id="userDao" /&gt;
+&lt;/dao-config&gt;
+
+&lt;bean id="userDaoImpl" class="..."&gt;
+  &lt;!-- further configuration --&gt;
+&lt;/bean&gt;</programlisting>
+
+          <para>This also works if you use automatic DAO lookup without
+          defining single <code>&lt;dao /&gt;</code> elements.</para>
+        </example>
+
+        <para>In case you are not in control of the implementation bean name
+        (e.g. if you wrap a generic dao facade around an existing DAO
+        implementation) you can explicitly tell the <code>&lt;dao /&gt;</code>
+        element which bean to use as custom implementation by using the
+        dao-impl-ref attribute.</para>
+
+        <example>
+          <title>Manual wiring of custom implementations (II)</title>
+
+          <para><programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
+  &lt;dao id="userDao" dao-impl-ref="customDaoImplementation" /&gt;
+&lt;/dao-config&gt;
+
+&lt;bean id="customDaoImplementation" class="..."&gt;
+  &lt;!-- further configuration --&gt;
+&lt;/bean&gt;</programlisting></para>
+        </example>
       </simplesect>
     </section>
   </chapter>
