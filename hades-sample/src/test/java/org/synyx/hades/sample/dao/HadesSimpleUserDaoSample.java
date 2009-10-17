@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,24 @@ public class HadesSimpleUserDaoSample {
     @Autowired
     private SimpleUserDao userDao;
 
+    private User user;
+
+
+    @Before
+    public void setUp() {
+
+        user = new User();
+        user.setUsername("foobar");
+        user.setFirstname("firstname");
+        user.setLastname("lastname");
+    }
+
 
     /**
      * Tests inserting a user and asserts it can be loaded again.
      */
     @Test
     public void testInsert() {
-
-        User user = new User();
-        user.setUsername("username");
 
         user = userDao.save(user);
 
@@ -46,15 +56,22 @@ public class HadesSimpleUserDaoSample {
     @Test
     public void foo() throws Exception {
 
-        User user = new User();
-        user.setUsername("foobar");
-        user.setLastname("lastname");
-
         user = userDao.save(user);
 
         List<User> users = userDao.findByLastname("lastname");
 
         assertNotNull(users);
+        assertTrue(users.contains(user));
+    }
+
+
+    @Test
+    public void testname() throws Exception {
+
+        user = userDao.save(user);
+
+        List<User> users = userDao.findByFirstnameOrLastname("lastname");
+
         assertTrue(users.contains(user));
     }
 }

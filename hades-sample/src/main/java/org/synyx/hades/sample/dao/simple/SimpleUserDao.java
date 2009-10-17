@@ -3,6 +3,7 @@ package org.synyx.hades.sample.dao.simple;
 import java.util.List;
 
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.Param;
 import org.synyx.hades.dao.Query;
 import org.synyx.hades.sample.domain.User;
 
@@ -48,4 +49,17 @@ public interface SimpleUserDao extends GenericDao<User, Long> {
      */
     @Query("from User u where u.firstname = ?")
     List<User> findByFirstname(String firstname);
+
+
+    /**
+     * Returns all users with the given name as first- or lastname. Makes use of
+     * the {@link Param} annotation to use named parameters in queries. This
+     * makes the query to method relation much more refactoring safe as the
+     * order of the method parameters is completely irrelevant.
+     * 
+     * @param name
+     * @return
+     */
+    @Query("from User u where u.firstname = :name or u.lastname = :name")
+    List<User> findByFirstnameOrLastname(@Param("name") String name);
 }
