@@ -188,6 +188,19 @@
         <revremark>Added documentation of execution of manipulating
         queries</revremark>
       </revision>
+
+      <revision>
+        <date>17.10.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of how to use named
+        parameters</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -1200,7 +1213,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
             <title>XML named query configuration</title>
 
             <programlisting language="xml">&lt;named-query name="User.findByLastname"&gt;
-  &lt;query&gt;SELECT u FROM User u WHERE u.lastname = ?1&lt;/query&gt;
+  &lt;query&gt;FROM User u WHERE u.lastname = ?1&lt;/query&gt;
 &lt;/named-query&gt;</programlisting>
           </example>
 
@@ -1222,7 +1235,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
             <programlisting language="java">@Entity
 @NamedQuery(name = "User.findByEmailAddress", 
-  query = "SELECT u FROM User u WHERE u.emailAddress = ?1")
+  query = "FROM User u WHERE u.emailAddress = ?1")
 public class User implements Persistable&lt;Long&gt; {
 
 }</programlisting>
@@ -1250,14 +1263,12 @@ public class User implements Persistable&lt;Long&gt; {
           <para>Declaring this method <classname>GenericJpaDao</classname>
           will try to resolve a call to this method to a named query starting
           with the simple name of the configured domain class followed by the
-          method name separated by a dot. Note, that the
-          <interfacename>GenericJpaDao</interfacename> implementation
-          distinguishes between query methods for a single object or lists of
-          object. It will try to retrieve a single result if you provide a
-          return value assignable from the configured domain class. Otherwise
-          i will try to call a named query to return a list. Be sure your
-          named query for a single instance truely returns only one
-          instance.</para>
+          method name separated by a dot. Note, that Hadesdistinguishes
+          between query methods for a single object or lists of object. It
+          will try to retrieve a single result if you provide a return value
+          assignable from the configured domain class. Otherwise i will try to
+          call a named query to return a list. Be sure your named query for a
+          single instance truely returns only one instance.</para>
         </simplesect>
       </section>
 
@@ -1281,16 +1292,38 @@ public class User implements Persistable&lt;Long&gt; {
 
           <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
-  List&lt;User&gt; findByLastname(String lastname);
-
-  @Query("SELECT u FROM User u WHERE u.emailAddress = ?1")
+  @Query("FROM User u WHERE u.emailAddress = ?1")
   User findByEmailAddress(String emailAddress);
 }</programlisting>
         </example>
       </section>
 
       <section>
-        <title>Parameter handling</title>
+        <title>Using named parameters</title>
+
+        <para>By default Hades will use position based parameter binding as
+        described in all the samples above. This makes query methods a little
+        error prone to refactorngs regarding the parameter position. To solve
+        this issue you can use <code>@Param</code> annotation to give a method
+        parameter a cncrete name and bind the name in the query:</para>
+
+        <example>
+          <title>Using named parameters</title>
+
+          <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
+
+  @Query("FROM User u WHERE u.firstname = :firstname or u.lastname = :lastname")
+  User findByLastnameOrFirstname(@Param("lastname") String lastname
+                                 @Param("firstname") String firstname;
+}</programlisting>
+
+          <para>Note that the method parameters are switched according to the
+          occurrence in the query defined.</para>
+        </example>
+      </section>
+
+      <section>
+        <title>Special parameter handling</title>
 
         <para>To hand parameters to your query you simply define method
         parameters as already seen in in examples above. Besides that Hades
