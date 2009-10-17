@@ -38,7 +38,8 @@ public class QueryCreatorUnitTest {
     public void rejectsInvalidProperty() throws Exception {
 
         QueryMethod finderMethod =
-                new QueryMethod(method, User.class, em, QueryLookupStrategy.CREATE_IF_NOT_FOUND);
+                new QueryMethod(method, User.class, em,
+                        QueryLookupStrategy.CREATE_IF_NOT_FOUND);
 
         new QueryCreator(finderMethod).constructQuery();
     }
@@ -53,10 +54,17 @@ public class QueryCreatorUnitTest {
                         "findByNameOrOrganization", String.class, String.class);
 
         QueryMethod finderMethod =
-                new QueryMethod(method, SampleEntity.class, em, QueryLookupStrategy.CREATE_IF_NOT_FOUND);
+                new QueryMethod(method, SampleEntity.class, em,
+                        QueryLookupStrategy.CREATE_IF_NOT_FOUND);
 
         String query = new QueryCreator(finderMethod).constructQuery();
         assertTrue(query.endsWith("where x.name = ? or x.organization = ?"));
+    }
+
+
+    @Test
+    public void usesNamedParametersIfParamAnnotationUsed() throws Exception {
+
     }
 
 

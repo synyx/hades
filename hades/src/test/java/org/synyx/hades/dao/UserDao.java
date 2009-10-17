@@ -123,4 +123,29 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
 
     @Query("select count(u) from User u where u.firstname = ?")
     Long countWithFirstname(String firstname);
+
+
+    /**
+     * Method where parameters will be applied by name. Note that the order of
+     * the parameters is then not crucial anymore.
+     * 
+     * @param firstname
+     * @param lastname
+     * @return
+     */
+    @Query("select u from User u where u.lastname = :lastname or u.firstname = :firstname")
+    List<User> findByLastnameOrFirstname(@Param("firstname") String firstname,
+            @Param("lastname") String lastname);
+
+
+    /**
+     * Method to check query creation and named parameter usage go well hand in
+     * hand.
+     * @param lastname
+     * @param firstname
+     * 
+     * @return
+     */
+    List<User> findByFirstnameOrLastname(@Param("lastname") String lastname,
+            @Param("firstname") String firstname);
 }

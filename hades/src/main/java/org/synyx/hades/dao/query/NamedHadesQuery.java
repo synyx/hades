@@ -65,7 +65,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
             HadesQuery query = new NamedHadesQuery(method);
 
-            if (method.hasSortParameter()) {
+            if (method.getParameters().hasSortParameter()) {
                 throw new IllegalStateException(
                         String
                                 .format(
@@ -76,7 +76,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
                                         method));
             }
 
-            if (method.hasPageableParameter()) {
+            if (method.getParameters().hasPageableParameter()) {
                 LOG
                         .info(String
                                 .format(

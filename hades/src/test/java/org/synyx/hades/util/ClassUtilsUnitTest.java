@@ -32,7 +32,8 @@ public class ClassUtilsUnitTest {
     @Test(expected = IllegalStateException.class)
     public void rejectsInvalidReturnType() throws Exception {
 
-        ClassUtils.assertReturnType(SomeDao.class.getMethods()[0], User.class);
+        ClassUtils.assertReturnType(SomeDao.class.getMethod("findByFirstname",
+                Pageable.class, String.class), User.class);
     }
 
 
@@ -42,6 +43,16 @@ public class ClassUtilsUnitTest {
         assertEquals("User", ClassUtils.getEntityName(User.class));
         assertEquals("AnotherNamedUser", ClassUtils
                 .getEntityName(NamedUser.class));
+    }
+
+    /**
+     * Sample entity with a custom name.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    @Entity(name = "AnotherNamedUser")
+    private class NamedUser {
+
     }
 
     /**
@@ -58,15 +69,5 @@ public class ClassUtilsUnitTest {
     private interface SomeDao extends Serializable, UserDao {
 
         Page<User> findByFirstname(Pageable pageable, String firstname);
-    }
-
-    /**
-     * Sample entity with a custom name.
-     * 
-     * @author Oliver Gierke - gierke@synyx.de
-     */
-    @Entity(name = "AnotherNamedUser")
-    private class NamedUser {
-
     }
 }

@@ -19,7 +19,6 @@ import static org.synyx.hades.dao.query.QueryExecution.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -43,10 +42,10 @@ import org.synyx.hades.util.ClassUtils;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-
 public class QueryMethod {
 
     private Method method;
+    private Parameters parameters;
     private Class<?> domainClass;
 
     private HadesQuery hadesQuery;
@@ -87,6 +86,7 @@ public class QueryMethod {
         }
 
         this.method = method;
+        this.parameters = new Parameters(method);
         this.domainClass = domainClass;
         this.em = em;
 
@@ -240,31 +240,19 @@ public class QueryMethod {
      */
     boolean isModifyingQuery() {
 
-        return null != AnnotationUtils.findAnnotation(method,
-                Modifying.class);
+        return null != AnnotationUtils.findAnnotation(method, Modifying.class);
     }
 
 
     /**
-     * Returns whether the finder contains a Sort parameter.
+     * Returns the {@link Parameters} wrapper to gain additional information
+     * about {@link Method} parameters.
      * 
      * @return
      */
-    boolean hasSortParameter() {
+    Parameters getParameters() {
 
-        return Arrays.asList(method.getParameterTypes()).contains(Sort.class);
-    }
-
-
-    /**
-     * Returns whether the finder contains a pageable parameter.
-     * 
-     * @return
-     */
-    boolean hasPageableParameter() {
-
-        return Arrays.asList(method.getParameterTypes()).contains(
-                Pageable.class);
+        return parameters;
     }
 
 

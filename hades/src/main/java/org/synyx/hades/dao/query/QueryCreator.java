@@ -24,6 +24,7 @@ public class QueryCreator {
     private static final String OR = "Or";
 
     private static final String AND_TEMPLATE = "x.%s = ? and ";
+    private static final String NAMED_AND_TEMPLATE = "x.%s = :%s and ";
     private static final String KEYWORD_TEMPLATE = "(%s)(?=[A-Z])";
     private static final String PREFIX_TEMPLATE = "^%s(?=[A-Z]).*";
 
@@ -67,14 +68,7 @@ public class QueryCreator {
             StringBuilder andBuilder = new StringBuilder();
 
             for (String andPart : andParts) {
-
-                if (!method.isValidField(andPart)) {
-                    throw new QueryCreationException(method, andPart);
-                }
-
-                andBuilder.append(String.format(AND_TEMPLATE, StringUtils
-                        .uncapitalize(andPart)));
-
+                andBuilder.append(buildAndPart(andPart, numberOfBlocks));
                 numberOfBlocks++;
             }
 
@@ -101,6 +95,37 @@ public class QueryCreator {
         }
 
         return query;
+    }
+
+
+    /**
+     * Build the JPQL string to add a constraint on a property. It will create a
+     * named parameter constraint if the method parameter is a named one, too.
+     * 
+     * @param property
+     * @param index
+     * @return
+     */
+    private String buildAndPart(String property, int index) {
+
+        if (!method.isValidField(property)) {
+            throw new QueryCreationException(method, property);
+        }
+
+        Parameters parameters = method.getParameters();
+        String propertyName = StringUtils.uncapitalize(property);
+
+        if (parameters.isNamedParameter(index)) {
+
+            String parameterName = parameters.getParameterName(index);
+
+            return String.format(NAMED_AND_TEMPLATE, propertyName,
+                    parameterName);
+        } else {
+
+            return String.format(AND_TEMPLATE, StringUtils
+                    .uncapitalize(property));
+        }
     }
 
 

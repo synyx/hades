@@ -404,4 +404,27 @@ public class UserDaoIntegrationTest {
         Assert.assertTrue(userDao.exists(id));
         Assert.assertTrue(userDao.exists(secondUser.getId()));
     }
+
+
+    @Test
+    public void executesMethodWithNamedParametersCorrectly() throws Exception {
+
+        firstUser = userDao.save(firstUser);
+        secondUser = userDao.save(secondUser);
+
+        assertTrue(userDao.findByLastnameOrFirstname("Oliver", "Arrasz")
+                .containsAll(Arrays.asList(firstUser, secondUser)));
+    }
+
+
+    @Test
+    public void executesMethodWithNamedParametersCorrectlyOnMethodsWithQueryCreation()
+            throws Exception {
+
+        firstUser = userDao.save(firstUser);
+        secondUser = userDao.save(secondUser);
+
+        assertTrue(userDao.findByFirstnameOrLastname("Oliver", "Arrasz")
+                .containsAll(Arrays.asList(firstUser, secondUser)));
+    }
 }
