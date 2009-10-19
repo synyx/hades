@@ -278,21 +278,21 @@ public class QueryMethod {
      */
     public Object executeQuery(Object... methodParameters) {
 
-        Parameters parameters = new Parameters(method, methodParameters);
+        Parameters executionParameters = new Parameters(method, methodParameters);
 
         if (isCollectionQuery()) {
-            return COLLECTION.execute(hadesQuery, parameters);
+            return COLLECTION.execute(hadesQuery, executionParameters);
         }
 
         if (isPageQuery()) {
-            return PAGE.execute(hadesQuery, parameters);
+            return PAGE.execute(hadesQuery, executionParameters);
         }
 
         if (isModifyingQuery()) {
-            return MODIFY.execute(hadesQuery, parameters);
+            return MODIFY.execute(hadesQuery, executionParameters);
         }
 
-        return SINGLE_ENTITY.execute(hadesQuery, parameters);
+        return SINGLE_ENTITY.execute(hadesQuery, executionParameters);
     }
 
 

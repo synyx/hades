@@ -227,7 +227,7 @@ class Parameters {
      * @param index
      * @return
      */
-    public boolean isSpecialParameter(int index) {
+    public final boolean isSpecialParameter(int index) {
 
         return TYPES.contains(method.getParameterTypes()[index]);
     }
