@@ -1,30 +1,28 @@
 Manifest-Version: 1.0
-Export-Package: org.synyx.hades.dao;version="0.7.0";uses:="org.synyx.h
- ades.domain",org.synyx.hades.dao.config;version="0.7.0";uses:="org.sp
+Export-Package: org.synyx.hades.dao;version="1.0.0";uses:="org.synyx.h
+ ades.domain",org.synyx.hades.dao.config;version="1.0.0";uses:="org.sp
  ringframework.beans.factory.annotation,org.springframework.beans.fact
  ory.config,org.springframework.beans.factory.xml,org.springframework.
  context.annotation,org.springframework.core.type.classreading,org.spr
  ingframework.core.type.filter,org.synyx.hades.dao.query,org.w3c.dom",
- org.synyx.hades.dao.orm;version="0.7.0";uses:="javax.persistence,org.
+ org.synyx.hades.dao.orm;version="1.0.0";uses:="javax.persistence,org.
  aopalliance.intercept,org.eclipse.persistence.jpa,org.eclipse.persist
  ence.platform.database,org.hibernate.ejb,org.springframework.beans.fa
  ctory,org.springframework.beans.factory.annotation,org.springframewor
  k.stereotype,org.synyx.hades.dao,org.synyx.hades.dao.query,org.synyx.
- hades.domain",org.synyx.hades.dao.query;version="0.7.0";uses:="javax.
- persistence,org.synyx.hades.dao,org.synyx.hades.domain",org.synyx.had
- es.domain;version="0.7.0";uses:="javax.persistence",org.synyx.hades.d
- omain.auditing;version="0.7.0";uses:="javax.persistence,org.aspectj.l
- ang.annotation,org.joda.time,org.synyx.hades.domain",org.synyx.hades.
- util;version="0.7.0";uses:="javax.persistence"
-Bundle-Classpath: .
+ hades.domain",org.synyx.hades.domain;version="1.0.0";uses:="javax.per
+ sistence",org.synyx.hades.domain.auditing;version="1.0.0";uses:="java
+ x.persistence,org.aspectj.lang.annotation,org.joda.time,org.synyx.had
+ es.domain",org.synyx.hades.util;version="1.0.0";uses:="javax.persiste
+ nce"
 Built-By: olivergierke
 Tool: Bundlor 1.0.0.M5
 Bundle-Name: org.synyx.hades
 Created-By: Apache Maven
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Synyx GmbH & Co. KG
-Bundle-Version: 0.7.0
-Build-Jdk: 1.6.0_13
+Bundle-Version: 1.0.0
+Build-Jdk: 1.6.0_15
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.synyx.hades
 Import-Package: javax.persistence;version="[1.0.0,1.1.0)",org.aopallia
@@ -40,19 +38,21 @@ Import-Package: javax.persistence;version="[1.0.0,1.1.0)",org.aopallia
  [3.2.0,3.4.0)";resolution:="optional",org.hibernate.criterion;version
  ="[3.2.0,3.4.0)";resolution:="optional",org.hibernate.ejb;version="[3
  .2.0,3.4.0)";resolution:="optional",org.joda.time;version="[1.5.0,2.0
- .0)",org.springframework.aop.framework;version="[2.5.0,3.0.0)",org.sp
- ringframework.beans.factory;version="[2.5.0,3.0.0)",org.springframewo
- rk.beans.factory.annotation;version="[2.5.0,3.0.0)",org.springframewo
- rk.beans.factory.config;version="[2.5.0,3.0.0)",org.springframework.b
- eans.factory.parsing;version="[2.5.0,3.0.0)",org.springframework.bean
- s.factory.support;version="[2.5.0,3.0.0)",org.springframework.beans.f
- actory.xml;version="[2.5.0,3.0.0)",org.springframework.context.annota
- tion;version="[2.5.0,3.0.0)",org.springframework.core.io;version="[2.
- 5.0,3.0.0)",org.springframework.core.type;version="[2.5.0,3.0.0)",org
- .springframework.core.type.classreading;version="[2.5.0,3.0.0)",org.s
- pringframework.core.type.filter;version="[2.5.0,3.0.0)",org.springfra
- mework.dao.annotation;version="[2.5.0,3.0.0)",org.springframework.orm
- .jpa.support;version="[2.5.0,3.0.0)",org.springframework.stereotype;v
- ersion="[2.5.0,3.0.0)",org.springframework.util;version="[2.5.0,3.0.0
- )",org.w3c.dom;version="0.0.0"
+ .0)",org.springframework.aop.framework;version="[2.5.0,4.0.0)",org.sp
+ ringframework.beans.factory;version="[2.5.0,4.0.0)",org.springframewo
+ rk.beans.factory.annotation;version="[2.5.0,4.0.0)",org.springframewo
+ rk.beans.factory.config;version="[2.5.0,4.0.0)",org.springframework.b
+ eans.factory.parsing;version="[2.5.0,4.0.0)",org.springframework.bean
+ s.factory.support;version="[2.5.0,4.0.0)",org.springframework.beans.f
+ actory.xml;version="[2.5.0,4.0.0)",org.springframework.context.annota
+ tion;version="[2.5.0,4.0.0)",org.springframework.core.annotation;vers
+ ion="[2.5.0,4.0.0)",org.springframework.core.io;version="[2.5.0,4.0.0
+ )",org.springframework.core.type;version="[2.5.0,4.0.0)",org.springfr
+ amework.core.type.classreading;version="[2.5.0,4.0.0)",org.springfram
+ ework.core.type.filter;version="[2.5.0,4.0.0)",org.springframework.da
+ o.annotation;version="[2.5.0,4.0.0)",org.springframework.orm.jpa.supp
+ ort;version="[2.5.0,4.0.0)",org.springframework.stereotype;version="[
+ 2.5.0,4.0.0)",org.springframework.util;version="[2.5.0,4.0.0)",org.w3
+ c.dom;version="0.0.0"
 Archiver-Version: Plexus Archiver
+

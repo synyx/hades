@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-Export-Package: org.synyx.hades.sample.auditing;version="0.7.0";uses:=
+Export-Package: org.synyx.hades.sample.auditing;version="1.0.0";uses:=
  "javax.persistence,org.synyx.hades.domain,org.synyx.hades.domain.audi
- ting",org.synyx.hades.sample.dao;version="0.7.0";uses:="org.synyx.had
+ ting",org.synyx.hades.sample.dao;version="1.0.0";uses:="org.synyx.had
  es.dao,org.synyx.hades.sample.domain",org.synyx.hades.sample.dao.simp
- le;version="0.7.0";uses:="org.synyx.hades.dao,org.synyx.hades.sample.
- domain",org.synyx.hades.sample.domain;version="0.7.0";uses:="javax.pe
+ le;version="1.0.0";uses:="org.synyx.hades.dao,org.synyx.hades.sample.
+ domain",org.synyx.hades.sample.domain;version="1.0.0";uses:="javax.pe
  rsistence,org.synyx.hades.domain"
 Built-By: olivergierke
 Tool: Bundlor 1.0.0.M5
@@ -14,14 +14,15 @@ Bundle-Name: org.synyx.hades.sample
 Created-By: Apache Maven
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Synyx GmbH & Co. KG
-Bundle-Version: 0.7.0
-Build-Jdk: 1.6.0_13
+Bundle-Version: 1.0.0
+Build-Jdk: 1.6.0_15
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.synyx.hades.sample
 Import-Package: javax.persistence;version="[1.0.0,2.0.0)",javax.sql;ve
  rsion="0.0.0",org.hsqldb;version="[1.8.0,1.9.0)",org.springframework.
  jdbc.core.simple;version="[2.5.0,3.0.0)",org.synyx.hades.dao;version=
- "[0.7.0,1.0.0)",org.synyx.hades.dao.orm;version="[0.7.0,1.0.0)",org.s
- ynyx.hades.domain;version="[0.7.0,1.0.0)",org.synyx.hades.domain.audi
- ting;version="[0.7.0,1.0.0)"
+ "[1.0.0,2.0.0)",org.synyx.hades.dao.orm;version="[1.0.0,2.0.0)",org.s
+ ynyx.hades.domain;version="[1.0.0,2.0.0)",org.synyx.hades.domain.audi
+ ting;version="[1.0.0,2.0.0)"
 Archiver-Version: Plexus Archiver
+
