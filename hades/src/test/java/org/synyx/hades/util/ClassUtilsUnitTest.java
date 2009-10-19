@@ -22,10 +22,19 @@ import org.synyx.hades.domain.User;
 public class ClassUtilsUnitTest {
 
     @Test
-    public void testname() throws Exception {
+    public void looksUpDomainClassCorrectly() throws Exception {
 
         assertEquals(User.class, ClassUtils.getDomainClass(UserDao.class));
         assertEquals(User.class, ClassUtils.getDomainClass(SomeDao.class));
+        assertNull(ClassUtils.getDomainClass(Serializable.class));
+    }
+
+
+    @Test
+    public void looksUpIdClassCorrectly() throws Exception {
+
+        assertEquals(Integer.class, ClassUtils.getIdClass(UserDao.class));
+        assertNull(ClassUtils.getIdClass(Serializable.class));
     }
 
 

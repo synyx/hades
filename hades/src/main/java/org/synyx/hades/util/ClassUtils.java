@@ -15,6 +15,7 @@
  */
 package org.synyx.hades.util;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -68,6 +69,38 @@ public abstract class ClassUtils {
     @SuppressWarnings("unchecked")
     public static Class<? extends Persistable<?>> getDomainClass(Class<?> clazz) {
 
+        return (Class<? extends Persistable<?>>) getGenericType(clazz, 0);
+    }
+
+
+    /**
+     * Returns the id class the given class is declared for. Will introspect the
+     * given class for extensions of {@link GenericDao} or
+     * {@link ExtendedGenericDao} and retrieve the {@link Serializable} type
+     * from its generics declaration.
+     * 
+     * @param clazz
+     * @return the id class the given class is DAO for or {@code null} if none
+     *         found.
+     */
+    @SuppressWarnings("unchecked")
+    public static Class<? extends Serializable> getIdClass(Class<?> clazz) {
+
+        return (Class<? extends Serializable>) getGenericType(clazz, 1);
+    }
+
+
+    /**
+     * Returns the generic type with the given index from the given
+     * {@link Class} if it implements {@link GenericDao} or
+     * {@link ExtendedGenericDao}.
+     * 
+     * @param clazz
+     * @param index
+     * @return the domain class for index 0, the id class for index 1.
+     */
+    private static Class<?> getGenericType(Class<?> clazz, int index) {
+
         for (Type type : clazz.getGenericInterfaces()) {
 
             if (type instanceof ParameterizedType) {
@@ -76,8 +109,8 @@ public abstract class ClassUtils {
 
                 if (isGenericDao(parammeterizedType)) {
 
-                    return (Class<? extends Persistable<?>>) parammeterizedType
-                            .getActualTypeArguments()[0];
+                    return (Class<?>) parammeterizedType
+                            .getActualTypeArguments()[index];
                 }
             }
 
