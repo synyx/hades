@@ -25,7 +25,7 @@
 	</modules>
 	
 	<properties>
-		<osgi.version>0.7.0</osgi.version>
+		<osgi.version>1.0.0</osgi.version>
 	</properties>
 	
 	<profiles>
