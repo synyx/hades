@@ -6,6 +6,8 @@ Bundle-Version: ${osgi.version}
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Template: 
  org.synyx.hades.*;version="${osgi.version}"
+Excluded-Exports: 
+ org.synyx.hades.dao.query
 Import-Template: 
  javax.persistence.*;version="[1.0.0,1.1.0)", 
  org.aopalliance.*;version="[1.0.0,2.0.0)", 
