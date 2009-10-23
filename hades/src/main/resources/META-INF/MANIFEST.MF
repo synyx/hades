@@ -16,8 +16,8 @@ Export-Package: org.synyx.hades.dao;version="1.0.0";uses:="org.synyx.h
  es.domain",org.synyx.hades.util;version="1.0.0";uses:="javax.persiste
  nce"
 Built-By: olivergierke
-Tool: Bundlor 1.0.0.M5
-Bundle-Name: org.synyx.hades
+Tool: Bundlor 1.0.0.M6
+Bundle-Name: Hades Library
 Created-By: Apache Maven
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Synyx GmbH & Co. KG
