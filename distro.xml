@@ -12,21 +12,34 @@
 		<moduleSet>
 			<includes>
 				<include>org.synyx.hades:org.synyx.hades</include>
-				<include>org.synyx.hades:org.synyx.hades.sample</include>
 			</includes>
 			<binaries>
-				<outputDirectory>dist</outputDirectory>
+				<outputDirectory>hades</outputDirectory>
 				<unpack>false</unpack>
 				<dependencySets>
 					<dependencySet>
-						<outputDirectory>lib/required</outputDirectory>
+						<outputDirectory>hades/lib/required</outputDirectory>
 					</dependencySet>
 					<dependencySet>
 						<scope>provided</scope>
-						<outputDirectory>lib/optional</outputDirectory>
+						<outputDirectory>hades/lib/optional</outputDirectory>
 					</dependencySet>
 				</dependencySets>
 			</binaries>
 		</moduleSet>
+        <moduleSet>
+            <includes>
+                <include>org.synyx.hades:org.synyx.hades.sample</include>
+            </includes>
+            <binaries>
+                <outputDirectory>hades-sample</outputDirectory>
+                <unpack>false</unpack>
+                <dependencySets>
+                    <dependencySet>
+                        <outputDirectory>hades-sample/lib</outputDirectory>
+                    </dependencySet>
+                </dependencySets>
+            </binaries>
+        </moduleSet>
 	</moduleSets>
 </assembly>
