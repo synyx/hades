@@ -27,9 +27,9 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>V1.0</releaseinfo>
+    <releaseinfo>1.0</releaseinfo>
 
-    <pubdate>17.10.2009</pubdate>
+    <pubdate>23.10.2009</pubdate>
 
     <copyright>
       <year>2008-2009</year>
@@ -200,6 +200,17 @@
 
         <revremark>Added documentation of how to use named
         parameters</revremark>
+      </revision>
+      <revision>
+        <date>23.10.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Final polishes for 1.0 release</revremark>
       </revision>
     </revhistory>
   </bookinfo>
