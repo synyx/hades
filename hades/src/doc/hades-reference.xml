@@ -259,9 +259,9 @@
       <title>Introduction</title>
 
       <para>Implementing a data access layer of an application has been
-      cumbersome for quite a while. To much bilerplate code had to be written.
-      Domain classes were anemic and havent been designed in a real object
-      oriented or domain driven manner.</para>
+      cumbersome for quite a while. To much boilerplate code had to be
+      written. Domain classes were anemic and havent been designed in a real
+      object oriented or domain driven manner.</para>
 
       <para>The last few years have brought a lot of evolution regarding those
       topics. JPA brought annotation driven persistence into Java, Spring
