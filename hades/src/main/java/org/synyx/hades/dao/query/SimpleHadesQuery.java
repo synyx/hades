@@ -113,12 +113,12 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     /**
      * Constructs a {@link HadesQuery} from the given {@link QueryMethod}.
      * 
-     * @param finderMethod
+     * @param queryMethod
      * @return
      */
-    public static HadesQuery construct(QueryMethod finderMethod) {
+    public static HadesQuery construct(QueryMethod queryMethod) {
 
-        if (finderMethod.isModifyingQuery()) {
+        if (queryMethod.isModifyingQuery()) {
             throw new IllegalArgumentException(
                     "Cannot create query from method name "
                             + "for modifying query. Use @Query or @NamedQuery to "
@@ -126,6 +126,6 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
                             + "strategy to lookup queries!");
         }
 
-        return new SimpleHadesQuery(finderMethod);
+        return new SimpleHadesQuery(queryMethod);
     }
 }
