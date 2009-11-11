@@ -109,7 +109,7 @@ public class QueryCreator {
     private String buildAndPart(String property, int index) {
 
         if (!method.isValidField(property)) {
-            throw new QueryCreationException(method, property);
+            throw QueryCreationException.invalidProperty(method, property);
         }
 
         Parameters parameters = method.getParameters();

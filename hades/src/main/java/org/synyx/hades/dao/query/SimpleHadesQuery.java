@@ -119,11 +119,13 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     public static HadesQuery construct(QueryMethod queryMethod) {
 
         if (queryMethod.isModifyingQuery()) {
-            throw new IllegalArgumentException(
-                    "Cannot create query from method name "
-                            + "for modifying query. Use @Query or @NamedQuery to "
-                            + "declare the query to execute. Do not use CREATE as "
-                            + "strategy to lookup queries!");
+            throw QueryCreationException
+                    .create(
+                            queryMethod,
+                            "Cannot create query from method name "
+                                    + "for modifying query. Use @Query or @NamedQuery to "
+                                    + "declare the query to execute. Do not use CREATE as "
+                                    + "strategy to lookup queries!");
         }
 
         return new SimpleHadesQuery(queryMethod);
