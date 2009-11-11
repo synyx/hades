@@ -56,7 +56,7 @@ enum QueryExecution {
 
             // Execute query to compute total
             Query projection =
-                    parameters.bind(query.createJpaQuery(parameters));
+                    parameters.bind(query.createCountQuery(parameters));
             int total = projection.getResultList().size();
 
             Query jpaQuery =
