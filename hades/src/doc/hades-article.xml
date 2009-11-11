@@ -51,10 +51,10 @@
   <para>Core of the framework is the abstraction of a GenericDao that offers
   create, read, update and delete (CRUD) functionality per entity type freeing
   the developer of the need to implement this manually. In contrast to the
-  pure EntityManager it allows additional read operations like
-  readAll(Pageable pageable, Sort sort), to aply simple pagination and
-  sorting. With GenericJpaDao there is an implementation of this interface
-  that can be used with all JPA persistence providers.</para>
+  pure <interfacename>EntityManager</interfacename> it allows additional read
+  operations like readAll(Pageable pageable, Sort sort), to aply simple
+  pagination and sorting. With GenericJpaDao there is an implementation of
+  this interface that can be used with all JPA persistence providers.</para>
 
   <simplesect>
     <title>Finder methods</title>
