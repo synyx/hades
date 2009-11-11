@@ -134,13 +134,7 @@ public abstract class ClassUtils {
      */
     private static boolean isGenericDao(ParameterizedType type) {
 
-        boolean isExtendedGenericDao =
-                ExtendedGenericDao.class.isAssignableFrom((Class<?>) type
-                        .getRawType());
-        boolean isGenericDao =
-                GenericDao.class.isAssignableFrom((Class<?>) type.getRawType());
-
-        return isGenericDao || isExtendedGenericDao;
+        return GenericDao.class.isAssignableFrom((Class<?>) type.getRawType());
     }
 
 
