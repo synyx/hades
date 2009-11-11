@@ -24,6 +24,7 @@ import javax.persistence.Query;
 import org.springframework.util.Assert;
 import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
+import org.synyx.hades.domain.Sort.Property;
 import org.synyx.hades.util.ClassUtils;
 
 
@@ -97,16 +98,15 @@ public abstract class QueryUtils {
         StringBuilder builder = new StringBuilder(query);
         builder.append(" order by");
 
-        for (String property : sort.getProperties()) {
+        for (Property property : sort) {
             builder.append(" x.");
-            builder.append(property);
+            builder.append(property.getName());
+            builder.append(" ");
+            builder.append(property.getOrder().getJpaValue());
             builder.append(",");
         }
 
         builder.deleteCharAt(builder.length() - 1);
-
-        builder.append(" ");
-        builder.append(sort.getOrder().getJpaValue());
 
         return builder.toString();
     }

@@ -36,6 +36,7 @@ import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.PageRequest;
 import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.User;
+import org.synyx.hades.domain.Sort.Property;
 
 
 /**
@@ -115,6 +116,28 @@ public class ExtendedGenericDaoIntegrationTest {
         List<User> users =
                 userExtendedDao.readAll(new Sort(Order.ASCENDING,
                         "emailAddress"));
+
+        assertNotNull(users);
+        assertEquals(NUMBER_OF_INSTANCES, users.size());
+
+        assertEquals(referenceUsers.get(NUMBER_OF_INSTANCES - 1), users.get(0));
+    }
+
+
+    /**
+     * Tests, that the {@link ExtendedGenericDao} implementation applies sorting
+     * with 1.1 API correctly.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void readAllSorted11() throws Exception {
+
+        List<Property> sortProperties = new ArrayList<Property>(2);
+        sortProperties.add(new Sort.Property(Order.ASCENDING, "lastname"));
+        sortProperties.add(new Sort.Property(Order.DESCENDING, "firstname"));
+
+        List<User> users = userExtendedDao.readAll(new Sort(sortProperties));
 
         assertNotNull(users);
         assertEquals(NUMBER_OF_INSTANCES, users.size());

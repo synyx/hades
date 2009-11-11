@@ -35,6 +35,7 @@ public class SortUnitTest {
      * @throws Exception
      */
     @Test
+    @SuppressWarnings("deprecation")
     public void appliesDefaultForOrder() throws Exception {
 
         assertEquals(Sort.DEFAULT_ORDER, new Sort("foo").getOrder());

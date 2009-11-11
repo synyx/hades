@@ -16,7 +16,9 @@
 
 package org.synyx.hades.domain;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -26,20 +28,37 @@ import java.util.Arrays;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class Sort {
+public class Sort implements Iterable<org.synyx.hades.domain.Sort.Property> {
 
     public static final Order DEFAULT_ORDER = Order.ASCENDING;
 
-    private String[] properties;
+    private List<Property> properties;
     private Order order;
+
+
+    /**
+     * Creates a new {@link Sort} instance. Takes a List of {@link Property}
+     * 
+     * @param properties must not be {@literal null} or contain {@literal null}
+     *            or empty strings
+     */
+    public Sort(List<Property> properties) {
+
+        if (null == properties || properties.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "You have to provide at least one sort property to sort by!");
+        }
+
+        this.properties = properties;
+    }
 
 
     /**
      * Creates a new {@link Sort} instance. Order defaults to
      * {@value Order#ASCENDING}.
      * 
-     * @param properties must not be {@code null} or contain {@code null} or
-     *            empty strings
+     * @param properties must not be {@literal null} or contain {@literal null}
+     *            or empty strings
      */
     public Sort(String... properties) {
 
@@ -50,10 +69,10 @@ public class Sort {
     /**
      * Creates a new {@link Sort} instance.
      * 
-     * @param order defaults to {@value Order#ASCENDING} (for {@code null}
+     * @param order defaults to {@value Order#ASCENDING} (for {@literal null}
      *            cases, too)
-     * @param properties must not be {@code null} or contain {@code null} or
-     *            empty strings
+     * @param properties must not be {@literal null} or contain {@literal null}
+     *            or empty strings
      */
     public Sort(Order order, String... properties) {
 
@@ -62,27 +81,32 @@ public class Sort {
                     "You have to provide at least one property to sort by!");
         }
 
-        for (String property : properties) {
-
-            if (null == property || "".equals(property.trim())) {
-                throw new IllegalArgumentException(
-                        "Properies must not contain empty or null values");
-            }
-        }
-
-        this.properties = properties.clone();
+        this.properties = new ArrayList<Property>(properties.length);
         this.order = null == order ? DEFAULT_ORDER : order;
+
+        for (String propertyName : properties) {
+
+            this.properties.add(new Property(order, propertyName));
+        }
     }
 
 
     /**
      * Returns sort properties.
      * 
+     * @deprecated prefer iterating over the {@link Sort} instance
      * @return the property
      */
+    @Deprecated
     public String[] getProperties() {
 
-        return properties.clone();
+        String[] result = new String[properties.size()];
+
+        for (int i = 0; i < properties.size(); i++) {
+            result[i] = (properties.get(i)).getName();
+        }
+
+        return result;
     }
 
 
@@ -90,7 +114,10 @@ public class Sort {
      * Returns the sort order.
      * 
      * @return the order
+     * @deprecated use {@link Property#getOrder()} while iterating over all
+     *             properties
      */
+    @Deprecated
     public Order getOrder() {
 
         return order;
@@ -101,7 +128,10 @@ public class Sort {
      * Returns whether the sorting should be ascending.
      * 
      * @return whether the sorting should be ascending
+     * @deprecated use {@link Property#isAscending()} while iterating over all
+     *             properties
      */
+    @Deprecated
     public boolean isAscending() {
 
         return Order.ASCENDING.equals(order);
@@ -113,8 +143,10 @@ public class Sort {
      * properties.
      * 
      * @param order
+     * @deprecated user {@link Property#with(Order)} instead
      * @return
      */
+    @Deprecated
     public Sort with(Order order) {
 
         return new Sort(order, getProperties());
@@ -126,11 +158,24 @@ public class Sort {
      * same order.
      * 
      * @param properties
+     * @deprecated use {@link Property#withProperties(String...)} instead
      * @return
      */
+    @Deprecated
     public Sort withProperties(String... properties) {
 
         return new Sort(getOrder(), properties);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Iterable#iterator()
+     */
+    public Iterator<Property> iterator() {
+
+        return this.properties.iterator();
     }
 
 
@@ -153,8 +198,7 @@ public class Sort {
         Sort that = (Sort) obj;
 
         boolean orderEqual = this.order.equals(that.order);
-        boolean propertiesEqual =
-                Arrays.equals(this.properties, that.properties);
+        boolean propertiesEqual = this.properties.equals(that.properties);
 
         return orderEqual && propertiesEqual;
     }
@@ -171,8 +215,144 @@ public class Sort {
         int result = 17;
 
         result = 31 * result + order.hashCode();
-        result = 31 * result + Arrays.hashCode(properties);
+        result = 31 * result + properties.hashCode();
 
         return result;
+    }
+
+    /**
+     * Property implements the pairing of an {@code Order} and a property. It is
+     * used to provide input for {@link Sort}
+     * 
+     * @author Joachim Uhrlaß - ecapot@gmail.com
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    public static class Property {
+
+        private Order order;
+        private String property;
+
+
+        /**
+         * Creates a new {@link Property} instance. if order is {@code null}
+         * then order defaults to {@value Sort.DEFAULT_ORDER}
+         * 
+         * @param order can be {@code null}
+         * @param property must not be {@code null} or empty
+         */
+        public Property(Order order, String property) {
+
+            if (property == null || "".equals(property.trim())) {
+                throw new IllegalArgumentException(
+                        "Property must not null or empty!");
+            }
+
+            this.order = order == null ? DEFAULT_ORDER : order;
+            this.property = property;
+        }
+
+
+        /**
+         * Creates a new {@link Property} instance. Takes a single property.
+         * Order defaults to {@value Sort.DEFAULT_ORDER}
+         * 
+         * @param property - must not be {@code null} or empty
+         */
+        public Property(String property) {
+
+            this(DEFAULT_ORDER, property);
+        }
+
+
+        /**
+         * Returns the order the property shall be sorted for.
+         * 
+         * @return
+         */
+        public Order getOrder() {
+
+            return order;
+        }
+
+
+        public String getName() {
+
+            return property;
+        }
+
+
+        /**
+         * Returns whether sorting for this property shall be ascending.
+         * 
+         * @return
+         */
+        public boolean isAscending() {
+
+            return this.order.equals(Order.ASCENDING);
+        }
+
+
+        /**
+         * Returns a new {@link Property} with the given {@link Order}.
+         * 
+         * @param order
+         * @return
+         */
+        public Property with(Order order) {
+
+            return new Property(order, this.property);
+        }
+
+
+        /**
+         * Returns a new {@link Sort} instance for the given properties.
+         * 
+         * @param properties
+         * @return
+         */
+        public Sort withProperties(String... properties) {
+
+            return new Sort(this.order, properties);
+        }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+
+            int result = 17;
+
+            result = 31 * result + order.hashCode();
+            result = 31 * result + property.hashCode();
+
+            return result;
+        }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj) {
+
+            if (this == obj) {
+                return true;
+            }
+
+            if (!(obj instanceof Property)) {
+                return false;
+            }
+
+            Property that = (Property) obj;
+
+            return this.order.equals(that.order)
+                    && this.property.equals(that.property);
+        }
     }
 }

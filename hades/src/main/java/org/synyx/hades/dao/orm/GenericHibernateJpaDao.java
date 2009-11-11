@@ -33,6 +33,7 @@ import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
+import org.synyx.hades.domain.Sort.Property;
 
 
 /**
@@ -173,11 +174,11 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
             return;
         }
 
-        for (String property : sort.getProperties()) {
+        for (Property property : sort) {
 
             Order order =
-                    (sort.isAscending() ? Order.asc(property) : Order
-                            .desc(property));
+                    (property.isAscending() ? Order.asc(property.getName())
+                            : Order.desc(property.getName()));
 
             criteria.addOrder(order);
         }

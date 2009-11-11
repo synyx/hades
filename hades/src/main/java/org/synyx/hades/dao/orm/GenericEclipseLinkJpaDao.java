@@ -37,6 +37,7 @@ import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
+import org.synyx.hades.domain.Sort.Property;
 
 
 /**
@@ -180,11 +181,12 @@ public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Seri
             return;
         }
 
-        for (String property : sort.getProperties()) {
+        for (Property property : sort) {
 
-            Expression expression = new ExpressionBuilder().get(property);
+            Expression expression =
+                    new ExpressionBuilder().get(property.getName());
 
-            if (Order.ASCENDING.equals(sort.getOrder())) {
+            if (Order.ASCENDING.equals(property.getOrder())) {
                 expression.ascending();
             } else {
                 expression.descending();
