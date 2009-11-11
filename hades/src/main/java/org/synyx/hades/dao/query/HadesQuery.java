@@ -33,4 +33,14 @@ public interface HadesQuery {
      * @return
      */
     Query createJpaQuery(Parameters parameters);
+
+
+    /**
+     * Creates a JPA {@link Query} to count the instances of the
+     * {@link HadesQuery} to be returned.
+     * 
+     * @param parameters
+     * @return
+     */
+    Query createCountQuery(Parameters parameters);
 }

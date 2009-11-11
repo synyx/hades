@@ -73,6 +73,20 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     }
 
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
+     * persistence.EntityManager, org.synyx.hades.dao.query.Parameters)
+     */
+    @Override
+    protected Query createCountQuery(EntityManager em, Parameters parameters) {
+
+        return em.createQuery(parameters.applySorting(QueryUtils
+                .createCountQueryFor(queryString)));
+    }
+
+
     /**
      * Creates a {@link HadesQuery} from the given {@link QueryMethod} that is
      * potentially annotated with {@link org.synyx.hades.dao.Query}.

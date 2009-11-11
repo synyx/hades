@@ -33,6 +33,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
     private static final Log LOG = LogFactory.getLog(NamedHadesQuery.class);
 
     private String queryName;
+    private QueryExtractor extractor;
 
 
     /**
@@ -43,6 +44,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
         super(method);
 
         this.queryName = method.getNamedQueryName();
+        this.extractor = method.getQueryExtractor();
         method.getEntityManager().createNamedQuery(queryName);
     }
 
@@ -103,5 +105,21 @@ final class NamedHadesQuery extends AbstractHadesQuery {
     protected Query createQuery(EntityManager em, Parameters binder) {
 
         return em.createNamedQuery(queryName);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
+     * persistence.EntityManager, org.synyx.hades.dao.query.Parameters)
+     */
+    @Override
+    protected Query createCountQuery(EntityManager em, Parameters parameters) {
+
+        Query query = createQuery(em, parameters);
+        String queryString = extractor.extractQueryString(query);
+
+        return em.createQuery(QueryUtils.createCountQueryFor(queryString));
     }
 }

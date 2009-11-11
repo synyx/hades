@@ -54,6 +54,19 @@ abstract class AbstractHadesQuery implements HadesQuery {
     }
 
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.synyx.hades.dao.query.HadesQuery#createCountQuery(org.synyx.hades
+     * .dao.query.Parameters)
+     */
+    public Query createCountQuery(Parameters parameters) {
+
+        return createCountQuery(method.getEntityManager(), parameters);
+    }
+
+
     /**
      * Returns the actual JPA {@link Query} to be executed. Has to return a
      * fresh instance on each call.
@@ -64,4 +77,15 @@ abstract class AbstractHadesQuery implements HadesQuery {
      */
     protected abstract Query createQuery(EntityManager em, Parameters parameters);
 
+
+    /**
+     * Returns the projecting count JPA {@link Query} to be executed. Has to
+     * return a fresh instance on each call.
+     * 
+     * @param em
+     * @param parameters
+     * @return
+     */
+    protected abstract Query createCountQuery(EntityManager em,
+            Parameters parameters);
 }

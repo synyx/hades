@@ -50,6 +50,7 @@ public class QueryMethod {
 
     private HadesQuery hadesQuery;
     private EntityManager em;
+    private QueryExtractor extractor;
 
 
     /**
@@ -62,10 +63,11 @@ public class QueryMethod {
      * @param strategy
      */
     public QueryMethod(Method method, Class<?> domainClass, EntityManager em,
-            QueryLookupStrategy strategy) {
+            QueryExtractor extractor, QueryLookupStrategy strategy) {
 
         Assert.notNull(method, "Method must not be null!");
         Assert.notNull(domainClass, "Domain class must not be null!");
+        Assert.notNull(extractor, "Query extractor must not be null!");
         Assert.notNull(em, "EntityManager must not be null!");
 
         for (Class<?> type : Parameters.TYPES) {
@@ -89,6 +91,7 @@ public class QueryMethod {
         this.parameters = new Parameters(method);
         this.domainClass = domainClass;
         this.em = em;
+        this.extractor = extractor;
 
         QueryLookupStrategy strategyToUse =
                 null == strategy ? QueryLookupStrategy.getDefault() : strategy;
@@ -104,10 +107,12 @@ public class QueryMethod {
      * @param method
      * @param domainClass
      * @param em
+     * @param extractor
      */
-    public QueryMethod(Method method, Class<?> domainClass, EntityManager em) {
+    public QueryMethod(Method method, Class<?> domainClass, EntityManager em,
+            QueryExtractor extractor) {
 
-        this(method, domainClass, em, null);
+        this(method, domainClass, em, extractor, null);
     }
 
 
@@ -269,6 +274,17 @@ public class QueryMethod {
 
 
     /**
+     * Returns the {@link QueryExtractor}.
+     * 
+     * @return
+     */
+    QueryExtractor getQueryExtractor() {
+
+        return extractor;
+    }
+
+
+    /**
      * Executes the {@link javax.persistence.Query} backing the
      * {@link QueryMethod} with the given parameters.
      * 
@@ -278,7 +294,8 @@ public class QueryMethod {
      */
     public Object executeQuery(Object... methodParameters) {
 
-        Parameters executionParameters = new Parameters(method, methodParameters);
+        Parameters executionParameters =
+                new Parameters(method, methodParameters);
 
         if (isCollectionQuery()) {
             return COLLECTION.execute(hadesQuery, executionParameters);

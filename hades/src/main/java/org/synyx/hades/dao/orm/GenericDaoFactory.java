@@ -29,8 +29,10 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.query.QueryExtractor;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.synyx.hades.dao.query.QueryMethod;
+import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.util.ClassUtils;
 
 
@@ -46,10 +48,6 @@ import org.synyx.hades.util.ClassUtils;
  * @author Oliver Gierke - gierke@synyx.de
  */
 public class GenericDaoFactory {
-
-    @SuppressWarnings("unchecked")
-    private static final Class<GenericJpaDao> DEFAULT_DAO_CLASS =
-            GenericJpaDao.class;
 
     private EntityManager entityManager;
     private QueryLookupStrategy queryLookupStrategy =
@@ -198,17 +196,8 @@ public class GenericDaoFactory {
     @SuppressWarnings("unchecked")
     protected Class<? extends GenericJpaDao> getDaoClass() {
 
-        if (ClassUtils.isEntityManagerOfType(entityManager,
-                "org.hibernate.ejb.HibernateEntityManager")) {
-            return GenericHibernateJpaDao.class;
-        }
-
-        if (ClassUtils.isEntityManagerOfType(entityManager,
-                "org.eclipse.persistence.jpa.JpaEntityManager")) {
-            return GenericEclipseLinkJpaDao.class;
-        }
-
-        return DEFAULT_DAO_CLASS;
+        return PersistenceProvider.fromEntityManager(entityManager)
+                .getDaoBaseClass();
     }
 
 
@@ -355,10 +344,15 @@ public class GenericDaoFactory {
 
                 if (isFinderMethod(method, daoInterface)) {
 
+                    Class<? extends Persistable<?>> domainClass =
+                            ClassUtils.getDomainClass(daoInterface);
+                    QueryExtractor extractor =
+                            PersistenceProvider
+                                    .fromEntityManager(entityManager);
+
                     QueryMethod finder =
-                            new QueryMethod(method, ClassUtils
-                                    .getDomainClass(daoInterface),
-                                    entityManager, queryLookupStrategy);
+                            new QueryMethod(method, domainClass, entityManager,
+                                    extractor, queryLookupStrategy);
 
                     queries.put(method, finder);
                 }

@@ -21,6 +21,7 @@ public class QueryCreatorUnitTest {
 
     private Method method;
     private EntityManager em;
+    private QueryExtractor extractor;
 
 
     @Before
@@ -31,6 +32,7 @@ public class QueryCreatorUnitTest {
                         "findByFirstnameAndMethod", String.class);
 
         em = createNiceMock(EntityManager.class);
+        extractor = createNiceMock(QueryExtractor.class);
     }
 
 
@@ -38,7 +40,7 @@ public class QueryCreatorUnitTest {
     public void rejectsInvalidProperty() throws Exception {
 
         QueryMethod finderMethod =
-                new QueryMethod(method, User.class, em,
+                new QueryMethod(method, User.class, em, extractor,
                         QueryLookupStrategy.CREATE_IF_NOT_FOUND);
 
         new QueryCreator(finderMethod).constructQuery();
@@ -54,7 +56,7 @@ public class QueryCreatorUnitTest {
                         "findByNameOrOrganization", String.class, String.class);
 
         QueryMethod finderMethod =
-                new QueryMethod(method, SampleEntity.class, em,
+                new QueryMethod(method, SampleEntity.class, em, extractor,
                         QueryLookupStrategy.CREATE_IF_NOT_FOUND);
 
         String query = new QueryCreator(finderMethod).constructQuery();
