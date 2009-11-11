@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import org.junit.Test;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.daocustom.UserCustomExtendedDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.User;
@@ -54,6 +55,14 @@ public class ClassUtilsUnitTest {
                 .getEntityName(NamedUser.class));
     }
 
+
+    @Test
+    public void findsDomainClassOnExtensionOfDaoInterface() throws Exception {
+
+        assertEquals(User.class, ClassUtils
+                .getDomainClass(ExtensionOfUserCustomExtendedDao.class));
+    }
+
     /**
      * Sample entity with a custom name.
      * 
@@ -78,5 +87,15 @@ public class ClassUtilsUnitTest {
     private interface SomeDao extends Serializable, UserDao {
 
         Page<User> findByFirstname(Pageable pageable, String firstname);
+    }
+
+    /**
+     * Sample interface to test recursive lookup of domain class.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    private interface ExtensionOfUserCustomExtendedDao extends
+            UserCustomExtendedDao {
+
     }
 }

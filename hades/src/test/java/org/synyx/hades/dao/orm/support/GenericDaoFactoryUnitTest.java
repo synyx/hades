@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.GenericDaoFactory;
+import org.synyx.hades.daocustom.CustomGenericDaoFactory;
+import org.synyx.hades.daocustom.UserCustomExtendedDao;
 import org.synyx.hades.domain.User;
 
 
@@ -113,6 +115,17 @@ public class GenericDaoFactoryUnitTest {
         SampleDao dao =
                 factory.getDao(SampleDao.class, new SampleCustomDaoImpl());
         dao.throwingCheckedException();
+    }
+
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void createsProxyWithCustomBaseClass() throws Exception {
+
+        GenericDaoFactory factory =
+                CustomGenericDaoFactory.create(entityManager);
+        UserCustomExtendedDao dao = factory.getDao(UserCustomExtendedDao.class);
+
+        dao.customMethod(1);
     }
 
     private interface SimpleSampleDao extends GenericDao<User, Integer> {

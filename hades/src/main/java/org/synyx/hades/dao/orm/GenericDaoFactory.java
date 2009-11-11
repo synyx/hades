@@ -220,7 +220,12 @@ public class GenericDaoFactory {
 
         for (Method method : daoInterface.getMethods()) {
 
-            if (isCustomMethod(method, daoInterface)) {
+            boolean customMethodCandidate =
+                    isCustomMethod(method, daoInterface);
+            boolean implementedByBaseClass =
+                    method.getDeclaringClass().isAssignableFrom(getDaoClass());
+
+            if (customMethodCandidate && !implementedByBaseClass) {
                 return true;
             }
         }
