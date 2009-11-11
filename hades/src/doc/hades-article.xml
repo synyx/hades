@@ -7,7 +7,7 @@
   <subtitle>Developing persistence layers with Spring and JPA</subtitle>
 
   <articleinfo>
-    <date>13.04.2009</date>
+    <date>24.10.2009</date>
 
     <author>
       <firstname>Oliver</firstname>
@@ -56,39 +56,17 @@
   sorting. With GenericJpaDao there is an implementation of this interface
   that can be used with all JPA persistence providers.</para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/DAO Implementations.png" width="100%" />
-    </imageobject>
-
-    <caption><para>Class and interface hierarchy of Extended- and
-    GenericDao</para></caption>
-  </mediaobject>
-
   <simplesect>
     <title>Finder methods</title>
 
-    <para>A very large part of data access code consists of so-called finder
-    methods that retrieve entities based on certain restrictions. JPA provides
-    <code>NamedQuery</code>s that allow to define queries in JPA QL and
-    reference them by name later on. For each query you mostly code the lookup
-    as well as the execution. To execute the finder methods with Hades you
-    simply define an interface extending
-    <interfacename>GenericDao</interfacename> (see <xref
-    linkend="examples.finder-methods" /> for example). It declares the
-    necessary methods and equips them with a special prefix to get them
-    executed as query. A manual implementation is not necessary. To create the
-    instance for the interface you leverage the
-    <classname>GenericDaoFactory</classname> and hand her the DAO interface.
-    The method prefix that triggers execution as query is configurable, too.
-    It is <code>findBy</code> by default. The factory is able to distinguish
-    methods that return single entities from methods that probably return
-    multiple entities. Thus, <classname>User</classname> and
-    <interfacename>List&lt;User&gt;</interfacename> are valid return
-    types.</para>
+    <para>A very large part of data access code consists of so-called query
+    methods that retrieve entities based on certain restrictions. With Hades
+    it is enough to define these methods on an interface extending GenericDao
+    to execute the appropriate query. For example a rudimentary DAO interface
+    to manage User entities could look something like this:</para>
 
     <example id="examples.finder-methods">
-      <title>Declaration of finder methods in an interface</title>
+      <title>Declaration of query methods in an interface</title>
 
       <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
@@ -97,36 +75,285 @@
   User findByUsername(String username);
 }</programlisting>
     </example>
+
+    <para>This of course raises two questions: how to create an instance of
+    this DAO and what query is actually executed when invoking the query
+    methods. Let's take a look at the query resolution strategies
+    first.</para>
   </simplesect>
 
   <simplesect>
     <title>From the method to the query</title>
 
-    <para></para>
+    <para>Hades supports a variety of query resolution strategies to allow
+    quick start on the one hand but empowering users with full control on the
+    other one.</para>
+
+    <para>The first resolution strategy is to directly resolve queries
+    directly from the method name. Hades will strip a set of known prefixes
+    such as get, findBy a.s.o. from the method before splitting the rest of
+    the method name into properties and operators. Applied to the example
+    above this would result in the following queries: from User u where
+    u.lastname = ? as well as from User u where u.username = ?. In version 1.0
+    Hades supports And and Or as operators to concatenate restrictions.</para>
+
+    <para>While this strategy enables developers to get something up and
+    running quickly, this of course fails for more complex queries. With Hades
+    you can leverage JPA named queries to be executed declaring interface
+    methods by following a certain naming convention. Thus the example above
+    would pick up the following named queries for execution if defined:
+    User.findByLastname as well as User.findByUsername. Using this technique
+    you perfectly stick to standard JPA concepts but separate the method from
+    the query definition.</para>
+
+    <para>If you prefer centralizing data access logic as well as query
+    definition you can use Hades @Query annotation directly at the interface
+    method to declare the query. So you could easily add a method to retrieve
+    adults like this:</para>
+
+    <example floatstyle="" id="examples.at-query">
+      <title>Using Hades @Query annotation</title>
+
+      <programlisting language="java">@Query("from User u where u.age &gt;= 18")
+List&lt;User&gt; findMatures();</programlisting>
+    </example>
+
+    <para>The 3 offered strageties are hierarchical by default, so that @Query
+    defined queries would override defined named queries. If no declared query
+    at all is found, Hades will try to derive the query from the method. This
+    offers a lot of flexibility in general but if you like to be more
+    constraining you can configure Hades to insist on using declared
+    queries.</para>
+  </simplesect>
+
+  <simplesect>
+    <title>Advanced queries</title>
+
+    <para>A very key advantage of Hades query methods is its parameter
+    handling. In the examples shown above we always used position based
+    paramter binding. This technique is a little brittle regarding
+    refactorings as the binding depends on the order of the parameters. You
+    can workaround this issue by using named parameters inside the query
+    definition as well as @Param annotation at the method parameters:</para>
+
+    <example id="examples.named-parameters">
+      <title>Using named parameters</title>
+
+      <programlisting language="java">@Query("from User u where u.department = :dept and u.lastname = :lastname")
+List&lt;User&gt; findByDepartmentAndLastname(
+  @Param("dept") String department, 
+  @Param("lastname") String lastname)</programlisting>
+    </example>
+
+    <para>Besides that Hades is able to detect certain special types
+    (Pageable, Sort) already mentioned above when discussing GenericDao
+    interface and applying the according behaviour to the query defined. This
+    allows you to transparently add pagination and dynamic sorting to already
+    declared queries.</para>
+
+    <example floatstyle="" id="examples.pageable-sortable">
+      <title>Using Pageable and Sort in query methods</title>
+
+      <programlisting language="java">@Query("from User u where u.lastname = ?")
+Page&lt;User&gt; findByLastname(String lastname, Pageable pageable);
+
+@Query("from User u where u.lastname = ?")
+List&lt;User&gt; findByLastname(String lastname, Sort pageable);
+</programlisting>
+    </example>
+
+    <para>As you can see, you need to use Page as return type for methods
+    containing a Pageable argument. Generally Hades will check your method
+    definition for validity on instance creation as far as possible so that
+    you won't be surprised unpleasantly on method execution. A last cool
+    feature regarding queries is the ability to execute modifying queries.
+    </para>
+
+    <example id="examples.modifying-queries">
+      <title>Modifying queries</title>
+
+      <programlisting language="java">@Modifying
+@Query("update User u set u.active = false where u != ?")
+int deactivateAllBut(User user);</programlisting>
+    </example>
+  </simplesect>
+
+  <simplesect>
+    <title>Instance creation</title>
+
+    <para>Now as the DAO interface is the central concept to deal with
+    queries, this raises the question on how to create instances of it. Spring
+    users are served the most comfortable way as Hades ships with an XML
+    namespace that allows to setup Spring beans for DAO interfaces with 1 line
+    of code:</para>
+
+    <example id="examples.spring-namespace">
+      <title>Spring namespace</title>
+
+      <programlisting language="xml">&lt;hades:dao-config base-package="com.acme.**.dao" /&gt;</programlisting>
+    </example>
+
+    <para>This will cause Hades to scan all packages named <code>dao</code>
+    below <code>com.acme</code> for interfaces extending
+    <interfacename>GenericDao</interfacename> and declaring DAO instances for
+    it. The beans will be named after the simple name of the DAO interface. If
+    you want to have more control over what beans are declared, Hades supports
+    manual configuration by defining <code>&lt;dao /&gt;</code> elements below
+    <code>&lt;dao-config /&gt;</code> whereas the <code>id</code> attribute
+    serves as bean id as well as simple class name to lookup.</para>
+
+    <example id="examples.spring-namespace.manual-configuration">
+      <title>Spring namespace</title>
+
+      <programlisting language="xml">&lt;hades:dao-config base-package="com.acme.**.dao"&gt;
+  &lt;hades:dao id="userDao" /&gt;
+&lt;/hades:dao-config&gt;</programlisting>
+    </example>
+
+    <para>For a detailed desicussion on configuration options via the
+    namespace please consult the reference documentation. If you don't use
+    Spring to wire up your dependencies you can use GenericDaoFactory to setup
+    DAO instances programatically:</para>
+
+    <example id="examples.instance-creation-programatically">
+      <title>Creating DAO instances programatically</title>
+
+      <programlisting language="java">EntityManager em = // ... obtain EntityManager
+GenericDaoFactory factory = GenericDaoFactory.create(em);
+
+UserDao userDao = factory.getDao(UserDao.class);
+AccountDao accountDao = factory.getDao(AccountDoa.class);</programlisting>
+    </example>
   </simplesect>
 
   <simplesect>
     <title>Integrating custom code</title>
 
-    <para></para>
-  </simplesect>
+    <para>Although CRUD operations and executing queries via interface methods
+    make up a huge part of data access operations, one might face issues when
+    it becomes a necessity to execute custom data acces code. E.g. one might
+    consider using plain JDBC for certain batch operations over JPA for
+    performance reasons. To achive this, you need to create an interface
+    explicitly declaring the operations you want to implement manually as well
+    as an implementation of it.</para>
 
-  <simplesect>
-    <title>Spring</title>
+    <example id="examples.custom-implementation">
+      <title>Custom DAO implementation with Hades</title>
 
-    <para></para>
-  </simplesect>
+      <programlisting language="java">public interface UserDaoCustom {
 
-  <simplesect>
-    <title>The Spring Namespace</title>
+  void myCustomBatchOperation();
+}
 
-    <para></para>
+
+public class UserDaoImpl implements UserDaoCustom {
+
+  private SimpleJdbcTemplate template;
+
+  @Autowired
+  public UserDaoImpl(SimpleJdbcTemplate template) {
+    this.template = template;
+  }
+
+  void myCustomBatchOperation() {
+    // custom implementation goes here
+  }
+}</programlisting>
+    </example>
+
+    <para>Note that neither the interface nor the implementation need to know
+    anything about Hades. To integrate this implementation into the generic
+    CRUD operations and query methods you need to let you query method
+    interface extend the custom one:</para>
+
+    <example id="examples.custom-implementation.interface">
+      <title>Extending the custom DAO interface</title>
+
+      <programlisting language="java">public interface UserDao extends UserDaoCustom, GenericDao&lt;User, Long&gt; {
+
+  // Declare query methods here
+}</programlisting>
+    </example>
+
+    <para>Yet again this raises the question of how to integrate custom
+    implementation and Hades DAO instance. If you setup Hades programatically
+    you can hand an instance of the custom implementation on Hades DAO
+    creation. Hades will the delegate the calls to the methods
+    appropriately.</para>
+
+    <example id="examples.custom-implementation.setup">
+      <title>Setup DAO instances with custom implementation</title>
+
+      <programlisting language="java">EntityManager em = // ... obtain EntityManager
+SimpleJdbcTemplate template = // ... obtain template
+
+GenericDaoFactory factory = GenericDaoFactory.create(em);
+UserDaoCustom customImpl = new UserDaoCustom(template);
+
+UserDao userDao = factory.getDao(UserDao.class, customImpl);</programlisting>
+    </example>
+
+    <para>On instance creation Hades will perform various checks to the
+    instance being created, e.g. if all methods declared in the DAO interface
+    are either backed by a query or implemented manually.</para>
+
+    <para>For Spring users things a lot simpler. Suppose the XML configuration
+    presented above. This will let Hades pick up Spring beans or custom
+    implementation classes prefixed with <code>Impl</code>
+    automatically:</para>
+
+    <example id="examples.custom-implementation.setup.xml">
+      <title>Using Spring and custom implementations</title>
+
+      <programlisting language="java">&lt;hades:dao-config base-package="com.acme.**.dao" /&gt;
+
+&lt;!-- Autowring deactivated --&gt;
+&lt;bean id="userDaoImpl" class="com.acme.dao.UserDaoImpl&gt;
+  &lt;constructor-arg ref="template" /&gt;
+&lt;/bean&gt;</programlisting>
+    </example>
+
+    <para>This probably needs some elaboration. As you might have noticed the
+    constructor in <classname>UserDaoImpl</classname> is annotated with
+    <interfacename>@Autowired</interfacename>. Supposed the declaration of the
+    custom bean is not present Hades would then find the custom implementation
+    class (by name matching) and programatically declare a Spring bean for it.
+    Instantiation would be possible as Spring then automatically wires
+    dependencies to the constructor. In case you do not use autowiring this
+    would fail as no constructor arguments are configured. Thus you explicitly
+    need to declare the custom bean yourself, also following the naming
+    convention of appending <code>Impl</code>. Generally Hades will favour
+    declared beans over detecting the implementation class and declaring the
+    bean itself. You can gain more flexibility regarding naming by defining
+    the custom-impl-postfix attribute in the &lt;dao-config /&gt; or &lt;dao
+    /&gt; element. Check out the reference documentation for more information
+    on that.</para>
   </simplesect>
 
   <simplesect>
     <title>Eclipse integration</title>
 
-    <para></para>
+    <para>Most Spring users use Eclipse and Spring IDE for development.
+    Declaring <classname>GenericDaoFactoryBean</classname>s manually, the
+    beans can be picked up easyily. Leveraging the namespace reduces
+    configuration effort a lot but raises the issue of Spring IDE not knowing
+    about the beans being created by the namespace. This can be solved by
+    installing the Spring IDE extension for Hades from our updatesite.</para>
+
+    <figure id="hades-xml-editor">
+      <title>Hades integration into Spring IDE</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/hades-xml-editor.png" width="100%" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>As you can see all DAO interfaces are marked as Spring beans in the
+    project explorer and appear inside the Beans element. Furthermore Spring
+    IDE will propose references to the beans picked up when triggering code
+    completion on bean references.</para>
   </simplesect>
 
   <simplesect>
