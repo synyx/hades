@@ -7,6 +7,7 @@ import static org.synyx.hades.dao.query.QueryLookupStrategy.*;
 import java.lang.reflect.Method;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -208,6 +209,25 @@ public class QueryMethodUnitTest {
 
         new QueryMethod(invalidModifyingMethod, DOMAIN_CLASS, em, extractor,
                 QueryLookupStrategy.USE_DECLARED_QUERY);
+    }
+
+
+    @Test(expected = QueryCreationException.class)
+    public void rejectsPageablesOnPersistenceProvidersNotExtractingQueries()
+            throws Exception {
+
+        Method method =
+                UserDao.class.getMethod("findByFirstname", Pageable.class,
+                        String.class);
+
+        Query query = createNiceMock(Query.class);
+
+        expect(em.createNamedQuery((String) anyObject())).andReturn(query)
+                .anyTimes();
+        expect(extractor.canExtractQuery()).andReturn(false).anyTimes();
+        replay(em, extractor, query);
+
+        new QueryMethod(method, DOMAIN_CLASS, em, extractor);
     }
 
 

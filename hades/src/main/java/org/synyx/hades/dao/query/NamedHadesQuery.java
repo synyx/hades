@@ -66,8 +66,9 @@ final class NamedHadesQuery extends AbstractHadesQuery {
         try {
 
             HadesQuery query = new NamedHadesQuery(method);
+            Parameters parameters = method.getParameters();
 
-            if (method.getParameters().hasSortParameter()) {
+            if (parameters.hasSortParameter()) {
                 throw new IllegalStateException(
                         String
                                 .format(
@@ -78,7 +79,18 @@ final class NamedHadesQuery extends AbstractHadesQuery {
                                         method));
             }
 
-            if (method.getParameters().hasPageableParameter()) {
+            boolean isPaging = parameters.hasPageableParameter();
+            boolean cannotExtractQuery =
+                    !method.getQueryExtractor().canExtractQuery();
+
+            if (isPaging && cannotExtractQuery) {
+                throw QueryCreationException
+                        .create(
+                                method,
+                                "Cannot use Pageable parameter in query methods with your persistence provider!");
+            }
+
+            if (parameters.hasPageableParameter()) {
                 LOG
                         .info(String
                                 .format(
@@ -86,6 +98,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
                                                 + " but contains a Pageble parameter! Sorting deliviered "
                                                 + "via this Pageable will not be applied!",
                                         method));
+
             }
 
             return query;
