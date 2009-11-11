@@ -16,6 +16,7 @@
 
 package org.synyx.hades.dao.test;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -115,10 +116,19 @@ public class UserDaoFinderIntegrationTest {
 
 
     @Test
-    public void testname() throws Exception {
+    public void executesPagingMethodToPageCorrectly() throws Exception {
 
         Page<User> page =
                 userDao.findByFirstname(new PageRequest(0, 20), "foobar");
         assertEquals(1, page.getNumberOfElements());
+    }
+
+
+    @Test
+    public void executesPagingMethodToListCorrectly() throws Exception {
+
+        List<User> list =
+                userDao.findByFirstname("foobar", new PageRequest(0, 20));
+        assertThat(list.size(), is(1));
     }
 }
