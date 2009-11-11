@@ -39,6 +39,9 @@ public abstract class QueryUtils {
     public static final String DELETE_ALL_QUERY_STRING = "delete from %s x";
     public static final String READ_ALL_QUERY = "select x from %s x";
 
+    private static final String ALIAS_MATCH = "(?<=select )(.*)(?= from)";
+    private static final String COUNT_REPLACEMENT = "count(*)";
+
 
     /**
      * Private constructor to prevent instantiation.
@@ -152,5 +155,19 @@ public abstract class QueryUtils {
         }
 
         return query;
+    }
+
+
+    /**
+     * Creates a count projected query from the given orginal query.
+     * 
+     * @param originalQuery must not be {@literal null} or empty
+     * @return
+     */
+    public static String createCountQueryFor(String originalQuery) {
+
+        Assert.hasText(originalQuery);
+
+        return originalQuery.replaceFirst(ALIAS_MATCH, COUNT_REPLACEMENT);
     }
 }
