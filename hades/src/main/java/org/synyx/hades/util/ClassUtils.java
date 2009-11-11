@@ -114,8 +114,7 @@ public abstract class ClassUtils {
                 }
             }
 
-            Class<? extends Persistable<?>> result =
-                    getDomainClass((Class<?>) type);
+            Class<?> result = getGenericType((Class<?>) type, index);
 
             if (null != result) {
                 return result;
