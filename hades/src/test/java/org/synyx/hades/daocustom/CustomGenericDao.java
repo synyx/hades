@@ -19,6 +19,7 @@ package org.synyx.hades.daocustom;
 import java.io.Serializable;
 
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.NoDaoBean;
 import org.synyx.hades.domain.Persistable;
 
 
@@ -30,6 +31,7 @@ import org.synyx.hades.domain.Persistable;
  * @author Gil Markham
  * @author Oliver Gierke - gierke@synyx.de
  */
+@NoDaoBean
 public interface CustomGenericDao<T extends Persistable<PK>, PK extends Serializable>
         extends GenericDao<T, PK> {
 

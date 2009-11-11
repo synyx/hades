@@ -20,8 +20,10 @@ import org.synyx.hades.domain.User;
 
 
 /**
- * Custom Extended DAO interface for a {@code User}.
- *
+ * Custom Extended DAO interface for a {@code User}. This relies on the custom
+ * intermediate DAO interface {@link CustomGenericDao}.
+ * 
+ * @author Oliver Gierke - gierke@synyx.de
  */
 public interface UserCustomExtendedDao extends CustomGenericDao<User, Integer> {
 
