@@ -41,11 +41,8 @@ public class DaoConfigContext {
     protected static final String QUERY_LOOKUP_STRATEGY =
             "query-lookup-strategy";
     protected static final String DAO_PACKAGE_NAME = "base-package";
-    protected static final String DAO_NAME_POSTFIX = "dao-name-postfix";
     protected static final String DAO_IMPL_POSTFIX = "dao-impl-postfix";
-    protected static final String DAO_INTERFACE_POSTFIX =
-            "dao-interface-postfix";
-    protected static final String DAO_BASE_CLASS_NAME = "dao-base-class";
+    protected static final String DAO_FACTORY_CLASS_NAME = "factory-class";
 
     private Element element;
 
@@ -149,6 +146,18 @@ public class DaoConfigContext {
     protected String getDaoBasePackageName() {
 
         return element.getAttribute(DAO_PACKAGE_NAME);
+    }
+
+
+    /**
+     * Returns the DAO factory class name.
+     * 
+     * @return the daoFactoryClassName
+     */
+    protected String getDaoFactoryClassName() {
+
+        String factoryClassName = element.getAttribute(DAO_FACTORY_CLASS_NAME);
+        return StringUtils.hasText(factoryClassName) ? factoryClassName : null;
     }
 
 

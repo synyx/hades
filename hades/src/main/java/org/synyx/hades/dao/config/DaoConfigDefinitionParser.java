@@ -61,6 +61,7 @@ import org.w3c.dom.Element;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @author Eberhard Wolff
+ * @author Gil Markham
  */
 public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
@@ -128,11 +129,15 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
         // Detect available DAO interfaces
         Set<String> daoInterfaces =
                 getDaoInterfacesForAutoConfig(configContext, resourceLoader);
+        String factoryClass =
+                configContext.getDaoFactoryClassName() == null ? FACTORY_CLASS
+                        : configContext.getDaoFactoryClassName();
 
         for (String daoInterface : daoInterfaces) {
 
             registerGenericDaoFactoryBean(parserContext, DaoContext
-                    .fromInterfaceName(daoInterface, configContext));
+                    .fromInterfaceName(daoInterface, configContext),
+                    factoryClass);
         }
     }
 
@@ -170,10 +175,15 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             LOG.debug("Triggering manual DAO detection");
         }
 
+        String factoryClass =
+                context.getDaoFactoryClassName() == null ? FACTORY_CLASS
+                        : context.getDaoFactoryClassName();
+
         // Add dao declarations
         for (DaoContext daoContext : context.getDaoContexts()) {
 
-            registerGenericDaoFactoryBean(parserContext, daoContext);
+            registerGenericDaoFactoryBean(parserContext, daoContext,
+                    factoryClass);
         }
     }
 
@@ -188,10 +198,11 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * @param context
      */
     private void registerGenericDaoFactoryBean(
-            final ParserContext parserContext, final DaoContext context) {
+            final ParserContext parserContext, final DaoContext context,
+            String factoryClass) {
 
         BeanDefinitionBuilder beanDefinitionBuilder =
-                BeanDefinitionBuilder.rootBeanDefinition(FACTORY_CLASS);
+                BeanDefinitionBuilder.rootBeanDefinition(factoryClass);
 
         beanDefinitionBuilder.addPropertyValue("daoInterface", context
                 .getInterfaceName());
@@ -214,6 +225,8 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             builder.append(context.getBeanName());
             builder.append(" - DAO interface: ");
             builder.append(context.getInterfaceName());
+            builder.append(" - Factory: ");
+            builder.append(factoryClass);
             builder.append(" - Custom implementation: ");
             builder.append(customImplementationBeanName);
 

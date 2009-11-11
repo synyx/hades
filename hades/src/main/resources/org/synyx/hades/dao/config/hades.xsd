@@ -43,6 +43,7 @@
 	<xsd:attributeGroup name="dao-attributes">
 		<xsd:attribute name="dao-impl-postfix" type="xsd:string" />
 		<xsd:attribute name="query-lookup-strategy" type="query-strategy" />
+        <xsd:attribute name="factory-class" type="classType" />
 	</xsd:attributeGroup>
 
 	<xsd:simpleType name="query-strategy">

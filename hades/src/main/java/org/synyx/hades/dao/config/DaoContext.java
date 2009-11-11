@@ -219,4 +219,19 @@ public class DaoContext extends DaoConfigContext {
         return StringUtils.hasLength(daoImplPostfix) ? daoImplPostfix : parent
                 .getDaoImplPostfix();
     }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.config.DaoConfigContext#getDaoFactoryClassName()
+     */
+    @Override
+    protected String getDaoFactoryClassName() {
+
+        String factoryClassName =
+                getElement().getAttribute(DAO_FACTORY_CLASS_NAME);
+        return StringUtils.hasText(factoryClassName) ? factoryClassName
+                : parent.getDaoFactoryClassName();
+    }
 }
