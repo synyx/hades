@@ -18,6 +18,7 @@ package org.synyx.hades.dao.orm;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.openjpa.persistence.OpenJPAQuery;
 import org.eclipse.persistence.jpa.JpaQuery;
 import org.hibernate.ejb.HibernateQuery;
 import org.synyx.hades.dao.query.QueryExtractor;
@@ -42,6 +43,12 @@ public enum PersistenceProvider implements QueryExtractor {
             return ((HibernateQuery) query).getHibernateQuery()
                     .getQueryString();
         }
+
+
+        public boolean canExtractQuery() {
+
+            return true;
+        }
     },
 
     /**
@@ -54,16 +61,46 @@ public enum PersistenceProvider implements QueryExtractor {
 
             return ((JpaQuery) query).getDatabaseQuery().getJPQLString();
         }
+
+
+        public boolean canExtractQuery() {
+
+            return true;
+        }
     },
 
     /**
-     * 
+     * OpenJpa persistence provider.
+     */
+    OPEN_JPA(GenericJpaDao.class,
+            "org.apache.openjpa.persistence.EntityManagerImpl") {
+
+        public String extractQueryString(Query query) {
+
+            return ((OpenJPAQuery) query).getQueryString();
+        }
+
+
+        public boolean canExtractQuery() {
+
+            return true;
+        }
+    },
+
+    /**
+     * Unknown special provider. Use standard JPA.
      */
     GENERIC_JPA(GenericJpaDao.class, "javax.persistence.EntityManager") {
 
         public String extractQueryString(Query query) {
 
             return null;
+        }
+
+
+        public boolean canExtractQuery() {
+
+            return false;
         }
     };
 

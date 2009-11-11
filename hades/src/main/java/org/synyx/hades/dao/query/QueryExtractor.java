@@ -38,4 +38,13 @@ public interface QueryExtractor {
      *         resolving is not possible.
      */
     String extractQueryString(Query query);
+
+
+    /**
+     * Returns whether the extractor is able to extract the original query
+     * string from a given {@link Query}.
+     * 
+     * @return
+     */
+    boolean canExtractQuery();
 }
