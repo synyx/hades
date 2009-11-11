@@ -37,12 +37,14 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.NoDaoBean;
 import org.w3c.dom.Element;
 
 
@@ -139,8 +141,7 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
             final DaoConfigContext configContext, final ResourceLoader loader) {
 
         ClassPathScanningCandidateComponentProvider scanner =
-                new AbstractClassesAwareComponentProvider(
-                        new InterfaceTypeFilter(GenericDao.class));
+                new GenericDaoComponentProvider();
         scanner.setResourceLoader(loader);
 
         Set<BeanDefinition> findCandidateComponents =
@@ -345,23 +346,23 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
     }
 
     /**
-     * Custom {@link ClassPathScanningCandidateComponentProvider} that does not
-     * skip abstract classes or interfaces.
+     * Custom {@link ClassPathScanningCandidateComponentProvider} scanning for
+     * interfaces extending {@link GenericDao}. Skips interfaces annotated with
+     * {@link NoDaoBean}.
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    static class AbstractClassesAwareComponentProvider extends
+    static class GenericDaoComponentProvider extends
             ClassPathScanningCandidateComponentProvider {
 
         /**
-         * Creates a new {@link AbstractClassesAwareComponentProvider}.
-         * 
-         * @param filter to be added as include filter
+         * Creates a new {@link GenericDaoComponentProvider}.
          */
-        public AbstractClassesAwareComponentProvider(TypeFilter filter) {
+        public GenericDaoComponentProvider() {
 
             super(false);
-            addIncludeFilter(filter);
+            addIncludeFilter(new InterfaceTypeFilter(GenericDao.class));
+            addExcludeFilter(new AnnotationTypeFilter(NoDaoBean.class));
         }
 
 
@@ -384,41 +385,42 @@ public class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
             return isNonHadesInterfaces && isTopLevelType;
         }
-    }
-
-    /**
-     * {@link TypeFilter} that only matches interfaces. Thus setting this up
-     * makes only sense providing an interface type as {@code targetType}.
-     * 
-     * @author Oliver Gierke - gierke@synyx.de
-     */
-    static class InterfaceTypeFilter extends AssignableTypeFilter {
 
         /**
-         * Creates a new {@link InterfaceTypeFilter}.
+         * {@link TypeFilter} that only matches interfaces. Thus setting this up
+         * makes only sense providing an interface type as {@code targetType}.
          * 
-         * @param targetType
+         * @author Oliver Gierke - gierke@synyx.de
          */
-        public InterfaceTypeFilter(Class<?> targetType) {
+        private static class InterfaceTypeFilter extends AssignableTypeFilter {
 
-            super(targetType);
-        }
+            /**
+             * Creates a new {@link InterfaceTypeFilter}.
+             * 
+             * @param targetType
+             */
+            public InterfaceTypeFilter(Class<?> targetType) {
+
+                super(targetType);
+            }
 
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @seeorg.springframework.core.type.filter.
-         * AbstractTypeHierarchyTraversingFilter
-         * #match(org.springframework.core.type.classreading.MetadataReader,
-         * org.springframework.core.type.classreading.MetadataReaderFactory)
-         */
-        @Override
-        public boolean match(MetadataReader metadataReader,
-                MetadataReaderFactory metadataReaderFactory) throws IOException {
+            /*
+             * (non-Javadoc)
+             * 
+             * @seeorg.springframework.core.type.filter.
+             * AbstractTypeHierarchyTraversingFilter
+             * #match(org.springframework.core.type.classreading.MetadataReader,
+             * org.springframework.core.type.classreading.MetadataReaderFactory)
+             */
+            @Override
+            public boolean match(MetadataReader metadataReader,
+                    MetadataReaderFactory metadataReaderFactory)
+                    throws IOException {
 
-            return metadataReader.getClassMetadata().isInterface()
-                    && super.match(metadataReader, metadataReaderFactory);
+                return metadataReader.getClassMetadata().isInterface()
+                        && super.match(metadataReader, metadataReaderFactory);
+            }
         }
     }
 }
