@@ -201,11 +201,10 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
 
         if (entity.isNew()) {
             getEntityManager().persist(entity);
+            return entity;
         } else {
-            getEntityManager().merge(entity);
+            return getEntityManager().merge(entity);
         }
-
-        return entity;
     }
 
 
