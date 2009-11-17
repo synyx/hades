@@ -168,6 +168,11 @@ public abstract class QueryUtils {
 
         Assert.hasText(originalQuery);
 
+        if (originalQuery.startsWith("from")) {
+            return String.format("select %s %s", COUNT_REPLACEMENT,
+                    originalQuery);
+        }
+
         return originalQuery.replaceFirst(ALIAS_MATCH, COUNT_REPLACEMENT);
     }
 }

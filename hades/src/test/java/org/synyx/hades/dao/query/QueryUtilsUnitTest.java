@@ -14,6 +14,7 @@ import org.junit.Test;
 public class QueryUtilsUnitTest {
 
     private static final String QUERY = "select u from User u";
+    private static final String SIMPLE_QUERY = "from User u";
     private static final String COUNT_QUERY = "select count(*) from User u";
 
 
@@ -21,5 +22,13 @@ public class QueryUtilsUnitTest {
     public void createsCountQueryCorrectly() throws Exception {
 
         assertThat(QueryUtils.createCountQueryFor(QUERY), is(COUNT_QUERY));
+    }
+
+
+    @Test
+    public void allowsShortJpaSyntax() throws Exception {
+
+        assertThat(QueryUtils.createCountQueryFor(SIMPLE_QUERY),
+                is(COUNT_QUERY));
     }
 }
