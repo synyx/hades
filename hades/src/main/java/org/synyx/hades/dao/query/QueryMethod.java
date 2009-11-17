@@ -168,11 +168,13 @@ public class QueryMethod {
      */
     boolean isValidField(String fieldName) {
 
-        if (null != ReflectionUtils.findMethod(domainClass, "get" + fieldName)) {
+        Class<?> returnType = ClassUtils.getReturnedDomainClass(method);
+
+        if (null != ReflectionUtils.findMethod(returnType, "get" + fieldName)) {
             return true;
         }
 
-        return null != ReflectionUtils.findField(domainClass, StringUtils
+        return null != ReflectionUtils.findField(returnType, StringUtils
                 .uncapitalize(fieldName));
     }
 
@@ -184,7 +186,7 @@ public class QueryMethod {
      */
     String getDomainClassName() {
 
-        return domainClass.getSimpleName();
+        return ClassUtils.getReturnedDomainClass(method).getSimpleName();
     }
 
 

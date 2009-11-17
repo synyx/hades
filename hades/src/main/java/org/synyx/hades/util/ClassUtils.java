@@ -30,6 +30,7 @@ import javax.persistence.EntityManager;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Persistable;
 
 
@@ -122,6 +123,27 @@ public abstract class ClassUtils {
         }
 
         return null;
+    }
+
+
+    /**
+     * Returns the domain class returned by the given {@link Method}. Will
+     * extract the type from {@link Collection}s and {@link Page} as well.
+     * 
+     * @param method
+     * @return
+     */
+    public static Class<?> getReturnedDomainClass(Method method) {
+
+        Type type = method.getGenericReturnType();
+
+        if (type instanceof ParameterizedType) {
+            return (Class<?>) ((ParameterizedType) type)
+                    .getActualTypeArguments()[0];
+
+        } else {
+            return method.getReturnType();
+        }
     }
 
 

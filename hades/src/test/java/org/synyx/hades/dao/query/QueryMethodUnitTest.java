@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.Modifying;
 import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.domain.Page;
@@ -239,6 +240,17 @@ public class QueryMethodUnitTest {
         assertTrue(method.isModifyingQuery());
     }
 
+
+    @Test
+    public void allowsPropertiesOfSubclasses() throws Exception {
+
+        Method method =
+                SubUserDao.class.getMethod("findByProperty", String.class);
+        QueryMethod queryMethod =
+                new QueryMethod(method, DOMAIN_CLASS, em, extractor);
+        assertTrue(queryMethod.isValidField("property"));
+    }
+
     /**
      * Interface to define invalid DAO methods for testing.
      * 
@@ -267,5 +279,27 @@ public class QueryMethodUnitTest {
         // Not backed by a named query or @Query annotation
         @Modifying
         void updateMethod(String firstname);
+    }
+
+    /**
+     * Sample domain class to simulate inheritance.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    @SuppressWarnings( { "unused", "serial" })
+    private static class SubUser extends User {
+
+        private String property;
+    }
+
+    /**
+     * Interface handling the common superclass but allow queries for derived
+     * entities.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    private static interface SubUserDao extends GenericDao<User, Integer> {
+
+        SubUser findByProperty(String property);
     }
 }
