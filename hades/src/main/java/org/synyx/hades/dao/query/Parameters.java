@@ -151,7 +151,7 @@ class Parameters {
 
         Query result = bind(query);
 
-        if (!hasPageableParameter()) {
+        if (!hasPageableParameter() || getPageable() == null) {
             return result;
         }
 
@@ -191,7 +191,10 @@ class Parameters {
 
 
     /**
-     * Returns whether the parameters contain a {@link Pageable}.
+     * Returns whether the method the {@link Parameters} was created for
+     * contains a {@link Pageable} argument. This does not include a check if an
+     * actual parameter was provided, so {@link #getPageable()} might return
+     * {@literal null} even in case this method returns {@literal true}.
      * 
      * @return
      */
@@ -202,7 +205,10 @@ class Parameters {
 
 
     /**
-     * Returns whether the parameters contain a {@link Sort}.
+     * Returns whether the method the {@link Parameters} was created for
+     * contains a {@link Sort} argument. This does not include a check if an
+     * actual parameter was provided, so {@link #getSort()} might return
+     * {@literal null} even in case this method returns {@literal true}.
      * 
      * @return
      */
@@ -220,13 +226,13 @@ class Parameters {
      * 
      * @return
      */
-    private Sort getSort() {
+    Sort getSort() {
 
         if (hasSortParameter()) {
             return (Sort) parameters[sortIndex];
         }
 
-        if (hasPageableParameter()) {
+        if (hasPageableParameter() && getPageable() != null) {
             return getPageable().getSort();
         }
 

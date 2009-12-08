@@ -1,6 +1,8 @@
 package org.synyx.hades.dao.query;
 
 import static org.easymock.EasyMock.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
@@ -36,6 +38,20 @@ public class ParametersUnitTest {
                 SampleDao.class.getMethod("useIndexedParameters", String.class);
 
         query = createNiceMock(Query.class);
+    }
+
+
+    @Test
+    public void returnsNullIfNoPageableWasProvided() throws SecurityException,
+            NoSuchMethodException {
+
+        Method method =
+                SampleDao.class.getMethod("validWithPageable", String.class,
+                        Pageable.class);
+
+        Parameters parameters = new Parameters(method, "foo", null);
+        assertThat(parameters.getSort(), is(nullValue()));
+        assertThat(parameters.getPageable(), is(nullValue()));
     }
 
 
