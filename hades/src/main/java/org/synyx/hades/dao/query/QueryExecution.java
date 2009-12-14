@@ -37,9 +37,9 @@ enum QueryExecution {
     COLLECTION {
 
         @Override
-        protected Object doExecute(HadesQuery query, Parameters parameters) {
+        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
 
-            return parameters.bindAndPrepare(query.createJpaQuery(parameters))
+            return binder.bindAndPrepare(query.createJpaQuery(binder))
                     .getResultList();
         }
     },
@@ -52,18 +52,17 @@ enum QueryExecution {
 
         @Override
         @SuppressWarnings("unchecked")
-        protected Object doExecute(HadesQuery query, Parameters parameters) {
+        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
 
             // Execute query to compute total
-            Query projection =
-                    parameters.bind(query.createCountQuery(parameters));
+            Query projection = binder.bind(query.createCountQuery(binder));
             int total = projection.getResultList().size();
 
             Query jpaQuery =
-                    parameters.bindAndPrepare(query.createJpaQuery(parameters));
+                    binder.bindAndPrepare(query.createJpaQuery(binder));
 
-            return new PageImpl(jpaQuery.getResultList(), parameters
-                    .getPageable(), total);
+            return new PageImpl(jpaQuery.getResultList(), binder.getPageable(),
+                    total);
         }
     },
 
@@ -73,10 +72,9 @@ enum QueryExecution {
     SINGLE_ENTITY {
 
         @Override
-        protected Object doExecute(HadesQuery query, Parameters parameters) {
+        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
 
-            return parameters.bind(query.createJpaQuery(parameters))
-                    .getSingleResult();
+            return binder.bind(query.createJpaQuery(binder)).getSingleResult();
         }
     },
 
@@ -86,10 +84,9 @@ enum QueryExecution {
     MODIFY {
 
         @Override
-        protected Object doExecute(HadesQuery query, Parameters parameters) {
+        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
 
-            return parameters.bind(query.createJpaQuery(parameters))
-                    .executeUpdate();
+            return binder.bind(query.createJpaQuery(binder)).executeUpdate();
         }
     };
 
@@ -97,13 +94,13 @@ enum QueryExecution {
      * Executes the given {@link HadesQuery} with the given {@link Parameters}.
      * 
      * @param query
-     * @param parameters
+     * @param binder
      * @return
      */
-    public Object execute(HadesQuery query, Parameters parameters) {
+    public Object execute(HadesQuery query, ParameterBinder binder) {
 
         try {
-            return doExecute(query, parameters);
+            return doExecute(query, binder);
         } catch (NoResultException e) {
             return null;
         }
@@ -114,8 +111,8 @@ enum QueryExecution {
      * Method to implement {@link HadesQuery} executions by single enum values.
      * 
      * @param query
-     * @param parameters
+     * @param binder
      * @return
      */
-    protected abstract Object doExecute(HadesQuery query, Parameters parameters);
+    protected abstract Object doExecute(HadesQuery query, ParameterBinder binder);
 }

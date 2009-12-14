@@ -46,11 +46,11 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * 
      * @see
      * org.synyx.hades.dao.query.HadesQuery#createJpaQuery(org.synyx.hades.dao
-     * .query.Parameters)
+     * .query.ParameterBinder)
      */
-    public Query createJpaQuery(Parameters parameters) {
+    public Query createJpaQuery(ParameterBinder binder) {
 
-        return createQuery(method.getEntityManager(), parameters);
+        return createQuery(method.getEntityManager(), binder);
     }
 
 
@@ -59,11 +59,11 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * 
      * @see
      * org.synyx.hades.dao.query.HadesQuery#createCountQuery(org.synyx.hades
-     * .dao.query.Parameters)
+     * .dao.query.ParameterBinder)
      */
-    public Query createCountQuery(Parameters parameters) {
+    public Query createCountQuery(ParameterBinder binder) {
 
-        return createCountQuery(method.getEntityManager(), parameters);
+        return createCountQuery(method.getEntityManager(), binder);
     }
 
 
@@ -72,10 +72,11 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * fresh instance on each call.
      * 
      * @param em
-     * @param parameters
+     * @param binder
      * @return
      */
-    protected abstract Query createQuery(EntityManager em, Parameters parameters);
+    protected abstract Query createQuery(EntityManager em,
+            ParameterBinder binder);
 
 
     /**
@@ -83,9 +84,9 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * return a fresh instance on each call.
      * 
      * @param em
-     * @param parameters
+     * @param binder
      * @return
      */
     protected abstract Query createCountQuery(EntityManager em,
-            Parameters parameters);
+            ParameterBinder binder);
 }

@@ -1,12 +1,6 @@
 package org.synyx.hades.dao.query;
 
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Method;
-
-import javax.persistence.Query;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,59 +18,18 @@ import org.synyx.hades.domain.User;
 public class ParametersUnitTest {
 
     private Method valid;
-    private Method useIndexedParameters;
-
-    private Query query;
 
 
     @Before
     public void setUp() throws SecurityException, NoSuchMethodException {
 
         valid = SampleDao.class.getMethod("valid", String.class);
-
-        useIndexedParameters =
-                SampleDao.class.getMethod("useIndexedParameters", String.class);
-
-        query = createNiceMock(Query.class);
-    }
-
-
-    @Test
-    public void returnsNullIfNoPageableWasProvided() throws SecurityException,
-            NoSuchMethodException {
-
-        Method method =
-                SampleDao.class.getMethod("validWithPageable", String.class,
-                        Pageable.class);
-
-        Parameters parameters = new Parameters(method, "foo", null);
-        assertThat(parameters.getSort(), is(nullValue()));
-        assertThat(parameters.getPageable(), is(nullValue()));
-    }
-
-
-    @Test
-    public void usesParameterNameIfAnnotated() throws Exception {
-
-        expect(query.setParameter(eq("username"), anyObject()))
-                .andReturn(query).once();
-        executeAndVerifyMethod(valid);
-    }
-
-
-    @Test
-    public void usesIndexedParametersIfNoParamAnnotationPresent()
-            throws Exception {
-
-        expect(query.setParameter(eq(1), anyObject())).andReturn(query).once();
-        executeAndVerifyMethod(useIndexedParameters);
     }
 
 
     @Test
     public void checksValidMethodCorrectly() throws Exception {
 
-        Method validMethod = SampleDao.class.getMethod("valid", String.class);
         Method validWithPageable =
                 SampleDao.class.getMethod("validWithPageable", String.class,
                         Pageable.class);
@@ -84,7 +37,7 @@ public class ParametersUnitTest {
                 SampleDao.class.getMethod("validWithSort", String.class,
                         Sort.class);
 
-        new Parameters(validMethod);
+        new Parameters(valid);
         new Parameters(validWithPageable);
         new Parameters(validWithSort);
     }
@@ -120,11 +73,10 @@ public class ParametersUnitTest {
     }
 
 
-    private void executeAndVerifyMethod(Method method) {
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsNullMethod() throws Exception {
 
-        replay(query);
-        new Parameters(method, "foo").bind(query);
-        verify(query);
+        new Parameters(null);
     }
 
     static interface SampleDao {

@@ -63,13 +63,16 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.orm.FinderMethod.AbstractHadesQuery#getQuery(
-     * javax.persistence.EntityManager)
+     * @see
+     * org.synyx.hades.dao.query.AbstractHadesQuery#createQuery(javax.persistence
+     * .EntityManager, org.synyx.hades.dao.query.ParameterBinder)
      */
     @Override
-    protected Query createQuery(EntityManager em, Parameters binder) {
+    protected Query createQuery(EntityManager em, ParameterBinder binder) {
 
-        return em.createQuery(binder.applySorting(queryString));
+        String query = QueryUtils.applySorting(queryString, binder.getSort());
+
+        return em.createQuery(query);
     }
 
 
@@ -77,13 +80,15 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * (non-Javadoc)
      * 
      * @seeorg.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
-     * persistence.EntityManager, org.synyx.hades.dao.query.Parameters)
+     * persistence.EntityManager, org.synyx.hades.dao.query.ParameterBinder)
      */
     @Override
-    protected Query createCountQuery(EntityManager em, Parameters parameters) {
+    protected Query createCountQuery(EntityManager em, ParameterBinder binder) {
 
-        return em.createQuery(parameters.applySorting(QueryUtils
-                .createCountQueryFor(queryString)));
+        String query = QueryUtils.createCountQueryFor(queryString);
+        query = QueryUtils.applySorting(query, binder.getSort());
+
+        return em.createQuery(query);
     }
 
 

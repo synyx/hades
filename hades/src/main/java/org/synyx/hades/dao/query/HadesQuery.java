@@ -26,21 +26,21 @@ import javax.persistence.Query;
 public interface HadesQuery {
 
     /**
-     * Creates a JPA {@link Query} with the given {@link Parameters} from the
-     * {@link HadesQuery}.
+     * Creates a JPA {@link Query} with the given {@link ParameterBinder} from
+     * the {@link HadesQuery}.
      * 
-     * @param parameters
+     * @param binder
      * @return
      */
-    Query createJpaQuery(Parameters parameters);
+    Query createJpaQuery(ParameterBinder binder);
 
 
     /**
      * Creates a JPA {@link Query} to count the instances of the
      * {@link HadesQuery} to be returned.
      * 
-     * @param parameters
+     * @param binder
      * @return
      */
-    Query createCountQuery(Parameters parameters);
+    Query createCountQuery(ParameterBinder binder);
 }

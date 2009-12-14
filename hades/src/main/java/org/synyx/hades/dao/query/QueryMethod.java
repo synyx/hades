@@ -296,8 +296,8 @@ public class QueryMethod {
      */
     public Object executeQuery(Object... methodParameters) {
 
-        Parameters executionParameters =
-                new Parameters(method, methodParameters);
+        ParameterBinder executionParameters =
+                new ParameterBinder(parameters, methodParameters);
 
         if (isCollectionQuery()) {
             return COLLECTION.execute(hadesQuery, executionParameters);
