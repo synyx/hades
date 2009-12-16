@@ -533,7 +533,7 @@
 
     void setCreatedBy(U createdBy);
 
-    Date getCreatedDate();
+    DateTime getCreatedDate();
 
     void setCreated(Date creationDate);
 
@@ -541,7 +541,7 @@
 
     void setLastModifiedBy(U lastModifiedBy);
 
-    Date getLastModifiedDate();
+    DateTime getLastModifiedDate();
 
     void setLastModified(Date lastModifiedDate);
 }</programlisting>
@@ -1481,7 +1481,7 @@ public class AuditionAdviceTest extends AbstractJpaTests {
     user = userDao.save(user);
 
     assertEquals(user, user.getCreatedBy());
-    assertNotNull(user.getCreatonDate());
+    assertNotNull(user.getCreationDate());
 
     assertEquals(user, user.getLastModifiedBy());
     assertNotNull(user.getLastModifiedDate());
