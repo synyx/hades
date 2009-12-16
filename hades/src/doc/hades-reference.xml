@@ -201,6 +201,7 @@
         <revremark>Added documentation of how to use named
         parameters</revremark>
       </revision>
+
       <revision>
         <date>23.10.2009</date>
 
@@ -211,6 +212,19 @@
         </author>
 
         <revremark>Final polishes for 1.0 release</revremark>
+      </revision>
+
+      <revision>
+        <date>16.12.2009</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of how to add custom behaviour to all
+        DAOs</revremark>
       </revision>
     </revhistory>
   </bookinfo>
@@ -1759,6 +1773,201 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
 &lt;/bean&gt;</programlisting></para>
         </example>
       </simplesect>
+    </section>
+
+    <section>
+      <title>Custom implementations</title>
+
+      <section id="single-dao-behaviour">
+        <title>Adding behaviour to single DAOs</title>
+
+        <para>Often it is necessary to provide a custom implementation for a
+        few DAO methods. Hades eases custom DAO functionality development a
+        lot and allows easy integration with hades generic DAO and query
+        method functionality. To enrich a generic DAO with custom
+        functionality you have to define an interface and an implementation
+        for that functionality first and let the DAO interface you provide by
+        now extend that custom interface.</para>
+
+        <example>
+          <title>Interface for custom DAO functionality</title>
+
+          <programlisting language="java">public interface UserDaoCustom {
+
+  public void someCustomMethod(User user);
+}</programlisting>
+        </example>
+
+        <example>
+          <title>Implementation of custom DAO functionality</title>
+
+          <para><programlisting language="java">public class UserDaoImpl implements UserDaoCustom {
+
+  public void someCustomMethod(User user) {
+    // Your custom implementation
+  }
+}</programlisting>Note that the implementation itself does not depend on Hades
+          and can be a regular Spring bean. So you can either use standard
+          dependency injection behaviour to inject references to other beans,
+          take part in aspects and so on.</para>
+        </example>
+
+        <example>
+          <title>Changes to the standard DAO interface</title>
+
+          <para><programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt;, UserDaoCustom {
+
+  // Declare query methods here
+}</programlisting>Let your standard DAO interface extend the custom one. This
+          makes generic DAO and custom functionality available to
+          clients.</para>
+        </example>
+
+        <simplesect>
+          <title>Configuration</title>
+
+          <para>If you use namespace configuration Hades tries to autodetect
+          custom implementations by looking up classes in the configured dao
+          package using the naming conventions for the DAO interface but
+          appending the property <code>dao-impl-postfix</code> to the
+          classname. This prefix defaults to <code>DaoImpl</code>.</para>
+
+          <example>
+            <title>Configuration example</title>
+
+            <para><programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
+  &lt;dao id="userDao" /&gt;
+&lt;/dao-config&gt;
+
+&lt;dao-config base-package="foo.bar.dao" dao-impl-postfix="FooBar"&gt;
+  &lt;dao id="userDao" /&gt;
+&lt;/dao-config&gt;</programlisting></para>
+          </example>
+
+          <para>The first configuration example will try to lookup a class
+          <classname>foo.bar.dao.UserDaoImpl</classname> to act as custom DAO
+          implementation, where the second example will try to lookup
+          <classname>foo.bar.dao.UserDaoFooBar</classname>.</para>
+        </simplesect>
+
+        <simplesect>
+          <title>Manual wiring</title>
+
+          <para>The approach above works perfectly well if your custom
+          implementation uses annotation based configuration and autowring
+          entirely as will be trated as any other Spring bean. If your
+          customly implemented bean needs some special wiring you simply
+          declare the bean and name it after the conventions just descibed.
+          Hades will the pick up the custom bean by name rather than creating
+          an own instance.</para>
+
+          <example>
+            <title>Manual wiring of custom implementations (I)</title>
+
+            <programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
+  &lt;dao id="userDao" /&gt;
+&lt;/dao-config&gt;
+
+&lt;bean id="userDaoImpl" class="..."&gt;
+  &lt;!-- further configuration --&gt;
+&lt;/bean&gt;</programlisting>
+
+            <para>This also works if you use automatic DAO lookup without
+            defining single <code>&lt;dao /&gt;</code> elements.</para>
+          </example>
+
+          <para>In case you are not in control of the implementation bean name
+          (e.g. if you wrap a generic dao facade around an existing DAO
+          implementation) you can explicitly tell the <code>&lt;dao
+          /&gt;</code> element which bean to use as custom implementation by
+          using the dao-impl-ref attribute.</para>
+
+          <example>
+            <title>Manual wiring of custom implementations (II)</title>
+
+            <para><programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
+  &lt;dao id="userDao" dao-impl-ref="customDaoImplementation" /&gt;
+&lt;/dao-config&gt;
+
+&lt;bean id="customDaoImplementation" class="..."&gt;
+  &lt;!-- further configuration --&gt;
+&lt;/bean&gt;</programlisting></para>
+          </example>
+        </simplesect>
+      </section>
+
+      <section>
+        <title>Adding custom behaviour to all DAOs</title>
+
+        <para>In other cases you might want to add a single method to all of
+        your DAOs. So the approach just shown is not feasible. The first step
+        to achieve this is adding and intermediate interface to declare the
+        shared behaviour</para>
+
+        <example>
+          <title>An interface declaring custom shared behaviour</title>
+
+          <para><programlisting language="java">public interface MyGenericDao&lt;T extends Persistable&lt;PK&gt;, 
+  PK extends Serializable&gt; extends GenericDao&lt;T, PK&gt; {
+
+  void sharedCustomMethod(PK id);
+}</programlisting></para>
+        </example>
+
+        <para>Now your individual DAO interfaces will extend this intermediate
+        interface to include the functionality declared. The second step is to
+        create an implementation of this interface that extends
+        <classname>GenericJpaDao</classname> and will act as custom base class
+        for the DAO proxies then.</para>
+
+        <example>
+          <title>Custom DAO base class</title>
+
+          <programlisting language="java">public class MyGenericDaoImpl&lt;T extends Persistable&lt;PK&gt;, 
+  PK extends Serializable&gt; extends GenericJpaDao&lt;T, PK&gt; 
+  implements MyGenericDao&lt;T, PK&gt; {
+
+  public void sharedCustomMethod(PK id) {
+    // implementation goes here
+  } 
+}</programlisting>
+        </example>
+
+        <para>In the general case you will extend
+        <classname>GenericJpaDao</classname>. In case you rely on behaviour
+        provided by special JPA providers you might want to extend the
+        appropriate base class (e.g.
+        <classname>GenericHibernateJpaDao</classname>). So you can simply
+        instantiate <classname>MyGenericDaoImpl</classname>. The last step to
+        get this implementation used as base class for Hades DAOs is replacing
+        the standard <classname>GenericDaoFactoryBean</classname> with a
+        custom one overriding <methodname>getDaoClass()</methodname> returning
+        your custom implementation.</para>
+
+        <example>
+          <title>Custom DAO factory bean</title>
+
+          <programlisting language="java">public class MyGenericDaoFactory&lt;T extends GenericDao&lt;?, ?&gt; 
+  extends GenericDaoFactoryBean&lt;T&gt; {
+
+  protected Class&lt;? extends GenericJpaDao&gt; getDaoClass() {
+    return MyGenericDaoImpl.class;
+  }
+}</programlisting>
+        </example>
+
+        <para>Finally you can either declare beans of the custom factory
+        directly or use the <code>factory-class</code> attribute of the Spring
+        namespace to tell Hades to use your custom factory
+        implementation.</para>
+
+        <example>
+          <title>Using the custom factory with the namespace</title>
+
+          <programlisting language="xml">&lt;dao-config base-package="foo.bar.dao" 
+  factory-class="com.acme.MyGenericDaoFactory" /&gt;</programlisting>
+        </example>
+      </section>
     </section>
   </chapter>
 
