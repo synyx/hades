@@ -161,6 +161,18 @@ class Parameters implements Iterable<Class<?>> {
 
 
     /**
+     * Returns whether the method signature contains one of the special
+     * parameters ({@link Pageable}, {@link Sort}).
+     * 
+     * @return
+     */
+    public boolean hasSpecialParameter() {
+
+        return hasSortParameter() || hasPageableParameter();
+    }
+
+
+    /**
      * Returns whether the parameter with the given index is annotated with
      * {@link Param}.
      * 

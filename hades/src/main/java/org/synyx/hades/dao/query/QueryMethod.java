@@ -93,6 +93,11 @@ public class QueryMethod {
         this.em = em;
         this.extractor = extractor;
 
+        Assert.isTrue(
+                !(isModifyingQuery() && parameters.hasSpecialParameter()),
+                String.format("Modifying method must not contain %s!",
+                        Parameters.TYPES));
+
         QueryLookupStrategy strategyToUse =
                 null == strategy ? QueryLookupStrategy.getDefault() : strategy;
 

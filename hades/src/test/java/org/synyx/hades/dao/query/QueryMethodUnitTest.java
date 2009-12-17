@@ -233,11 +233,33 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void recognizesModifyingMettod() throws Exception {
+    public void recognizesModifyingMethod() throws Exception {
 
         QueryMethod method =
                 new QueryMethod(modifyingMethod, DOMAIN_CLASS, em, extractor);
         assertTrue(method.isModifyingQuery());
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsModifyingMethodWithPageable() throws Exception {
+
+        Method method =
+                InvalidDao.class.getMethod("updateMethod", String.class,
+                        Pageable.class);
+
+        new QueryMethod(method, DOMAIN_CLASS, em, extractor);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsModifyingMethodWithSort() throws Exception {
+
+        Method method =
+                InvalidDao.class.getMethod("updateMethod", String.class,
+                        Sort.class);
+
+        new QueryMethod(method, DOMAIN_CLASS, em, extractor);
     }
 
 
@@ -279,6 +301,16 @@ public class QueryMethodUnitTest {
         // Not backed by a named query or @Query annotation
         @Modifying
         void updateMethod(String firstname);
+
+
+        // Modifying and Pageable is not allowed
+        @Modifying
+        Page<String> updateMethod(String firstname, Pageable pageable);
+
+
+        // Modifying and Sort is not allowed
+        @Modifying
+        void updateMethod(String firstname, Sort sort);
     }
 
     /**
