@@ -17,6 +17,8 @@ package org.synyx.hades.dao.query;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -39,8 +41,11 @@ public abstract class QueryUtils {
 
     public static final String DELETE_ALL_QUERY_STRING = "delete from %s x";
     public static final String READ_ALL_QUERY = "select x from %s x";
+    private static final String DEFAULT_ALIAS = "x";
 
-    private static final String ALIAS_MATCH = "(?<=select )(.*)(?= from)";
+    private static final String COUNT_MATCH = "(?<=select )(.*)(?= from)";
+    private static final Pattern ALIAS_MATCH =
+            Pattern.compile("(?<=from )(\\w*) (\\w*)( \\w*)*");
     private static final String COUNT_REPLACEMENT = "count(*)";
 
 
@@ -83,23 +88,41 @@ public abstract class QueryUtils {
 
 
     /**
-     * Adds {@literal order by} clause to the JPQL query.
+     * Adds {@literal order by} clause to the JPQL query. Uses the
+     * {@link #DEFAULT_ALIAS} to bind the sorting property to.
      * 
      * @param query
+     * @param alias
      * @param sort
      * @return
      */
     public static String applySorting(String query, Sort sort) {
 
+        return applySorting(query, sort, DEFAULT_ALIAS);
+    }
+
+
+    /**
+     * Adds {@literal order by} clause to the JPQL query.
+     * 
+     * @param query
+     * @param sort
+     * @param alias
+     * @return
+     */
+    public static String applySorting(String query, Sort sort, String alias) {
+
         if (null == sort) {
             return query;
         }
+
+        Assert.hasText(alias);
 
         StringBuilder builder = new StringBuilder(query);
         builder.append(" order by");
 
         for (Property property : sort) {
-            builder.append(" x.");
+            builder.append(String.format(" %s.", alias));
             builder.append(property.getName());
             builder.append(" ");
             builder.append(property.getOrder().getJpaValue());
@@ -109,6 +132,29 @@ public abstract class QueryUtils {
         builder.deleteCharAt(builder.length() - 1);
 
         return builder.toString();
+    }
+
+
+    /**
+     * Resolves the alias for the entity to be retrieved from the given JPA
+     * query.
+     * 
+     * @param query
+     * @return
+     */
+    public static String detectAlias(String query) {
+
+        Matcher matcher = ALIAS_MATCH.matcher(query);
+
+        if (matcher.find()) {
+
+            String potentialAlias = matcher.group(2);
+
+            return "as".equals(potentialAlias) ? matcher.group(3).trim()
+                    : potentialAlias;
+        }
+
+        return null;
     }
 
 
@@ -136,12 +182,13 @@ public abstract class QueryUtils {
             return entityManager.createQuery(queryString);
         }
 
+        String alias = detectAlias(queryString);
         StringBuilder builder = new StringBuilder(queryString);
         builder.append(" where");
 
         for (int i = 0; i < entities.size(); i++) {
 
-            builder.append(" x = ?");
+            builder.append(String.format(" %s = ?", alias));
 
             if (i < entities.size() - 1) {
                 builder.append(" or");
@@ -173,6 +220,6 @@ public abstract class QueryUtils {
                     originalQuery);
         }
 
-        return originalQuery.replaceFirst(ALIAS_MATCH, COUNT_REPLACEMENT);
+        return originalQuery.replaceFirst(COUNT_MATCH, COUNT_REPLACEMENT);
     }
 }

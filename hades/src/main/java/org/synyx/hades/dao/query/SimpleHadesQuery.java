@@ -34,6 +34,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     private static final Log LOG = LogFactory.getLog(SimpleHadesQuery.class);
 
     private String queryString;
+    private String alias;
 
 
     /**
@@ -44,6 +45,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
 
         super(method);
         this.queryString = queryString;
+        this.alias = QueryUtils.detectAlias(queryString);
     }
 
 
@@ -55,8 +57,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      */
     private SimpleHadesQuery(QueryMethod method) {
 
-        super(method);
-        this.queryString = new QueryCreator(method).constructQuery();
+        this(method, new QueryCreator(method).constructQuery());
     }
 
 
@@ -70,7 +71,8 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     @Override
     protected Query createQuery(EntityManager em, ParameterBinder binder) {
 
-        String query = QueryUtils.applySorting(queryString, binder.getSort());
+        String query =
+                QueryUtils.applySorting(queryString, binder.getSort(), alias);
 
         return em.createQuery(query);
     }
@@ -86,7 +88,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     protected Query createCountQuery(EntityManager em, ParameterBinder binder) {
 
         String query = QueryUtils.createCountQueryFor(queryString);
-        query = QueryUtils.applySorting(query, binder.getSort());
+        query = QueryUtils.applySorting(query, binder.getSort(), alias);
 
         return em.createQuery(query);
     }
