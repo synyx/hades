@@ -2,7 +2,7 @@
 <feature
       id="org.synyx.hades.eclipse.feature"
       label="Hades Namespace Support"
-      version="0.3.0"
+      version="0.4.0"
       provider-name="Synyx GmbH &amp; Co. KG">
 
    <description>
