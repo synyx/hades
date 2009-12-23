@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx.hades</groupId>
 	<artifactId>hades-parent</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>pom</packaging>
 
 	<name>Hades</name>
@@ -218,9 +218,9 @@
 	</issueManagement>
 	
 	<scm>
-		<url>http://svn.synyx.org/synyx/opensource/hades</url>
-		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades</connection>
-		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades</developerConnection>
+		<url>http://svn.synyx.org/synyx/opensource/hades/tags/org.synyx.hades-1.1</url>
+		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades/tags/org.synyx.hades-1.1</connection>
+		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades/tags/org.synyx.hades-1.1</developerConnection>
 	</scm>
 	
 	<distributionManagement>

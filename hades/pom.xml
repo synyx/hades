@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.synyx.hades</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
 
 	<name>Hades Library</name>
 	<description>
@@ -12,7 +12,7 @@
 	<parent>
 		<artifactId>hades-parent</artifactId>
 		<groupId>org.synyx.hades</groupId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<developers>
