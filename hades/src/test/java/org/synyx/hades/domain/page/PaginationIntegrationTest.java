@@ -16,6 +16,7 @@
 
 package org.synyx.hades.domain.page;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -112,5 +113,14 @@ public class PaginationIntegrationTest {
         assertEquals(0, users.getNumberOfElements());
         assertTrue(users.hasPreviousPage());
         assertFalse(users.hasNextPage());
+    }
+
+
+    @Test
+    public void executesPagingFinderCorrectly() throws Exception {
+
+        Page<User> users = userDao.findAllPaged(new PageRequest(0, 5));
+
+        assertThat(users.getNumberOfElements(), is(5));
     }
 }

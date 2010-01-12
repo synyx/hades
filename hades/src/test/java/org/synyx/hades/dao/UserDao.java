@@ -51,6 +51,10 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
     User findByEmailAddress(final String emailAddress);
 
 
+    @Query("select u from User u ")
+    Page<User> findAllPaged(final Pageable pageable);
+
+
     /**
      * Retrieves users by the given email and lastname. Acts as a dummy method
      * declaration to test finder query creation.
@@ -141,9 +145,9 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
     /**
      * Method to check query creation and named parameter usage go well hand in
      * hand.
+     * 
      * @param lastname
      * @param firstname
-     * 
      * @return
      */
     List<User> findByFirstnameOrLastname(@Param("lastname") String lastname,

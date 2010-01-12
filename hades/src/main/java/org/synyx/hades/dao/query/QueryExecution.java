@@ -56,7 +56,7 @@ enum QueryExecution {
 
             // Execute query to compute total
             Query projection = binder.bind(query.createCountQuery(binder));
-            int total = projection.getResultList().size();
+            Long total = (Long) projection.getSingleResult();
 
             Query jpaQuery =
                     binder.bindAndPrepare(query.createJpaQuery(binder));
