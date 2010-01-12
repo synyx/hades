@@ -120,7 +120,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
             builder.append(auditable);
 
             if (null != now) {
-                builder.append("Last modification: ").append(now);
+                builder.append(" Last modification: ").append(now);
             }
 
             if (null != auditor) {
