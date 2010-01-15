@@ -218,9 +218,9 @@
 	</issueManagement>
 	
 	<scm>
-		<url>http://svn.synyx.org/synyx/opensource/hades/tags/hades-parent-1.1.1</url>
-		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades/tags/hades-parent-1.1.1</connection>
-		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades/tags/hades-parent-1.1.1</developerConnection>
+		<url>http://svn.synyx.org/synyx/opensource/hades/tags/org.synyx.hades-1.1.1</url>
+		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades/tags/org.synyx.hades-1.1.1</connection>
+		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades/tags/org.synyx.hades-1.1.1</developerConnection>
 	</scm>
 	
 	<distributionManagement>
