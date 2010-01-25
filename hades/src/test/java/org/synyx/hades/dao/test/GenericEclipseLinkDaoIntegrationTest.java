@@ -16,6 +16,7 @@
 
 package org.synyx.hades.dao.test;
 
+import org.junit.Ignore;
 import org.springframework.test.context.ContextConfiguration;
 
 
@@ -27,6 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Oliver Gierke - gierke@synyx.de
  */
 @ContextConfiguration(locations = { "classpath:eclipselink.xml" })
+@Ignore
 public class GenericEclipseLinkDaoIntegrationTest extends
         ExtendedGenericDaoIntegrationTest {
 
