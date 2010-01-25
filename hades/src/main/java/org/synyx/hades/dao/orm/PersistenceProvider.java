@@ -59,7 +59,7 @@ public enum PersistenceProvider implements QueryExtractor {
 
         public String extractQueryString(Query query) {
 
-            return ((JpaQuery) query).getDatabaseQuery().getJPQLString();
+            return ((JpaQuery<?>) query).getDatabaseQuery().getJPQLString();
         }
 
 
@@ -77,7 +77,7 @@ public enum PersistenceProvider implements QueryExtractor {
 
         public String extractQueryString(Query query) {
 
-            return ((OpenJPAQuery) query).getQueryString();
+            return ((OpenJPAQuery<?>) query).getQueryString();
         }
 
 
