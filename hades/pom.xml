@@ -42,26 +42,19 @@
 	</properties>
 
 	<dependencies>
-	
-	      	<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>${spring.artifactPrefix}context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-	
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>${spring.artifactPrefix}orm</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-	
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>${spring.artifactPrefix}aop</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-		
-		
+    
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+        
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
@@ -83,7 +76,7 @@
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>${spring.artifactPrefix}test</artifactId>
+			<artifactId>org.springframework.test</artifactId>
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -151,14 +144,14 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.4.3</version>
 				<configuration>
-					<argLine>-javaagent:${settings.localRepository}/org/springframework/${spring.agent.name}/${spring.agent.version}/${spring.agent.name}-${spring.agent.version}.jar</argLine>
+					<argLine>-javaagent:${settings.localRepository}/org/springframework/org.springframework.instrument/${spring.version}/org.springframework.instrument-${spring.version}.jar</argLine>
 				</configuration>
 				
 				<dependencies>
 					<dependency>
 		     			<groupId>org.springframework</groupId>
-		     			<artifactId>${spring.agent.name}</artifactId>
-					    <version>${spring.agent.version}</version>
+		     			<artifactId>org.springframework.instrument</artifactId>
+					    <version>${spring.version}</version>
 					    <scope>runtime</scope>
 					</dependency>
 				</dependencies>
