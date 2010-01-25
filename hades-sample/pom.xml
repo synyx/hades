@@ -46,8 +46,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.3.2.GA</version>
-			<scope>runtime</scope>
+			<version>3.5.0-Beta-3</version>
 		</dependency>
 		
 		<!-- HSQL -->
