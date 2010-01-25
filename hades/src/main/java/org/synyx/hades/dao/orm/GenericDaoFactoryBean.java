@@ -34,7 +34,7 @@ import org.synyx.hades.dao.GenericDao;
  * @param <T> the type of the DAO
  */
 public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
-        GenericDaoFactory implements FactoryBean, InitializingBean {
+        GenericDaoFactory implements FactoryBean<T>, InitializingBean {
 
     private Class<? extends T> daoInterface;
     private Object customDaoImplementation;
@@ -66,7 +66,7 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      * @param daoInterface the daoInterface to set
      */
     @Required
-    public void setDaoInterface(final Class<? extends T> daoInterface) {
+    public void setDaoInterface(final Class<T> daoInterface) {
 
         Assert.notNull(daoInterface);
 
@@ -90,7 +90,7 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      * 
      * @see org.springframework.beans.factory.FactoryBean#getObject()
      */
-    public Object getObject() {
+    public T getObject() {
 
         return getDao(daoInterface, customDaoImplementation);
     }
@@ -101,9 +101,11 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      * 
      * @see org.springframework.beans.factory.FactoryBean#getObjectType()
      */
-    public Class<?> getObjectType() {
+    @SuppressWarnings("unchecked")
+    public Class<? extends T> getObjectType() {
 
-        return null == daoInterface ? GenericDao.class : daoInterface;
+        return (Class<? extends T>) (null == daoInterface ? GenericDao.class
+                : daoInterface);
     }
 
 
