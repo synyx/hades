@@ -113,7 +113,7 @@ public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serial
 
         Criteria countCriteria = applyExamples(examples);
         countCriteria.setProjection(Projections.rowCount());
-        Integer count = (Integer) countCriteria.uniqueResult();
+        Long count = (Long) countCriteria.uniqueResult();
 
         Criteria listCriteria = applyExamples(examples);
 
