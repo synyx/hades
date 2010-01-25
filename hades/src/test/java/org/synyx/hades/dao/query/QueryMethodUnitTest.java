@@ -1,7 +1,8 @@
 package org.synyx.hades.dao.query;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.synyx.hades.dao.query.QueryLookupStrategy.*;
 
 import java.lang.reflect.Method;
@@ -11,6 +12,9 @@ import javax.persistence.Query;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.Modifying;
 import org.synyx.hades.dao.UserDao;
@@ -25,12 +29,16 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
+@RunWith(MockitoJUnitRunner.class)
 public class QueryMethodUnitTest {
 
     private static final Class<?> DOMAIN_CLASS = User.class;
 
     private Method daoMethod;
+
+    @Mock
     private EntityManager em;
+    @Mock
     private QueryExtractor extractor;
 
     private static final String METHOD_NAME = "findByFirstname";
@@ -49,8 +57,6 @@ public class QueryMethodUnitTest {
     public void setUp() throws Exception {
 
         daoMethod = UserDao.class.getMethod("findByLastname", String.class);
-        em = createNiceMock(EntityManager.class);
-        extractor = createNiceMock(QueryExtractor.class);
 
         invalidReturnType =
                 InvalidDao.class.getMethod(METHOD_NAME, String.class,
@@ -204,9 +210,8 @@ public class QueryMethodUnitTest {
     @Test(expected = IllegalStateException.class)
     public void rejectsModifyingMethodWithoutBacking() {
 
-        expect(em.createNamedQuery((String) anyObject())).andThrow(
+        when(em.createNamedQuery(anyString())).thenThrow(
                 new IllegalArgumentException());
-        replay(em);
 
         new QueryMethod(invalidModifyingMethod, DOMAIN_CLASS, em, extractor,
                 QueryLookupStrategy.USE_DECLARED_QUERY);
@@ -221,12 +226,10 @@ public class QueryMethodUnitTest {
                 UserDao.class.getMethod("findByFirstname", Pageable.class,
                         String.class);
 
-        Query query = createNiceMock(Query.class);
+        Query query = mock(Query.class);
 
-        expect(em.createNamedQuery((String) anyObject())).andReturn(query)
-                .anyTimes();
-        expect(extractor.canExtractQuery()).andReturn(false).anyTimes();
-        replay(em, extractor, query);
+        when(em.createNamedQuery(anyString())).thenReturn(query);
+        when(extractor.canExtractQuery()).thenReturn(false);
 
         new QueryMethod(method, DOMAIN_CLASS, em, extractor);
     }

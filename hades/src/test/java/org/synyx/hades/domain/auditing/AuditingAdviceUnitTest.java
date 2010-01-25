@@ -16,12 +16,10 @@
 package org.synyx.hades.domain.auditing;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.synyx.hades.domain.auditing.AuditingAdvice;
-import org.synyx.hades.domain.auditing.AuditorAware;
 
 
 /**
@@ -45,9 +43,8 @@ public class AuditingAdviceUnitTest {
 
         user = new AuditableUser();
 
-        auditorAware = EasyMock.createNiceMock(AuditorAware.class);
-        EasyMock.expect(auditorAware.getCurrentAuditor()).andReturn(user)
-                .once();
+        auditorAware = mock(AuditorAware.class);
+        when(auditorAware.getCurrentAuditor()).thenReturn(user);
     }
 
 
@@ -76,7 +73,6 @@ public class AuditingAdviceUnitTest {
     public void setsAuditorIfConfigured() {
 
         auditionAdvice.setAuditorAware(auditorAware);
-        EasyMock.replay(auditorAware);
 
         auditionAdvice.touch(user);
 
@@ -86,7 +82,7 @@ public class AuditingAdviceUnitTest {
         assertNotNull(user.getCreatedBy());
         assertNotNull(user.getLastModifiedBy());
 
-        EasyMock.verify(auditorAware);
+        verify(auditorAware).getCurrentAuditor();
     }
 
 
@@ -98,8 +94,6 @@ public class AuditingAdviceUnitTest {
     public void honoursModifiedOnCreationFlag() {
 
         auditionAdvice.setAuditorAware(auditorAware);
-        EasyMock.replay(auditorAware);
-
         auditionAdvice.setModifyOnCreation(false);
         auditionAdvice.touch(user);
 
@@ -109,7 +103,7 @@ public class AuditingAdviceUnitTest {
         assertNull(user.getLastModifiedBy());
         assertNull(user.getLastModifiedDate());
 
-        EasyMock.verify(auditorAware);
+        verify(auditorAware).getCurrentAuditor();
     }
 
 
@@ -123,8 +117,6 @@ public class AuditingAdviceUnitTest {
         user.setId(1L);
 
         auditionAdvice.setAuditorAware(auditorAware);
-        EasyMock.replay(auditorAware);
-
         auditionAdvice.touch(user);
 
         assertNull(user.getCreatedBy());
@@ -133,7 +125,7 @@ public class AuditingAdviceUnitTest {
         assertNotNull(user.getLastModifiedBy());
         assertNotNull(user.getLastModifiedDate());
 
-        EasyMock.verify(auditorAware);
+        verify(auditorAware).getCurrentAuditor();
     }
 
 
@@ -142,8 +134,6 @@ public class AuditingAdviceUnitTest {
 
         auditionAdvice.setDateTimeForNow(false);
         auditionAdvice.setAuditorAware(auditorAware);
-        EasyMock.replay(auditorAware);
-
         auditionAdvice.touch(user);
 
         assertNotNull(user.getCreatedBy());

@@ -1,6 +1,5 @@
 package org.synyx.hades.dao.query;
 
-import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
@@ -9,6 +8,9 @@ import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.domain.User;
 
 
@@ -17,10 +19,14 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
+@RunWith(MockitoJUnitRunner.class)
 public class QueryCreatorUnitTest {
 
     private Method method;
+
+    @Mock
     private EntityManager em;
+    @Mock
     private QueryExtractor extractor;
 
 
@@ -30,9 +36,6 @@ public class QueryCreatorUnitTest {
         method =
                 QueryCreatorUnitTest.class.getMethod(
                         "findByFirstnameAndMethod", String.class);
-
-        em = createNiceMock(EntityManager.class);
-        extractor = createNiceMock(QueryExtractor.class);
     }
 
 
