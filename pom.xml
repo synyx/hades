@@ -152,7 +152,8 @@
 		</repository>
         
         <repository>
-            <id>SpringSource Enterprise Bundle Repository - Snapshot Bundles</id>
+            <id>com.springsource.repository.bundles.snapshot</id>
+            <name>SpringSource Enterprise Bundle Repository - Snapshot Bundles</name>
             <url>http://repository.springsource.com/maven/bundles/snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
