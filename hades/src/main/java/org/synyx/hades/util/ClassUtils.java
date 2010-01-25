@@ -207,6 +207,8 @@ public abstract class ClassUtils {
             return false;
         } catch (ClassCastException e) {
             return false;
+        } catch (NoClassDefFoundError e) {
+            return false;
         }
     }
 
