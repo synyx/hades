@@ -73,7 +73,7 @@ public enum PersistenceProvider implements QueryExtractor {
      * OpenJpa persistence provider.
      */
     OPEN_JPA(GenericJpaDao.class,
-            "org.apache.openjpa.persistence.EntityManagerImpl") {
+            "org.apache.openjpa.persistence.OpenJPAEntityManager") {
 
         public String extractQueryString(Query query) {
 
