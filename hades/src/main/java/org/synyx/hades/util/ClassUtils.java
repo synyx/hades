@@ -110,8 +110,12 @@ public abstract class ClassUtils {
 
                 if (isGenericDao(parammeterizedType)) {
 
-                    return (Class<?>) parammeterizedType
-                            .getActualTypeArguments()[index];
+                    Type result =
+                            parammeterizedType.getActualTypeArguments()[index];
+
+                    return (Class<?>) (result instanceof ParameterizedType ? ((ParameterizedType) result)
+                            .getRawType()
+                            : result);
                 }
             }
 

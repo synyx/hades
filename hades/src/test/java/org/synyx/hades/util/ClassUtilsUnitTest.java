@@ -1,6 +1,7 @@
 package org.synyx.hades.util;
 
 import static org.junit.Assert.*;
+import static org.synyx.hades.util.ClassUtils.*;
 
 import java.io.Serializable;
 
@@ -12,6 +13,7 @@ import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.daocustom.UserCustomExtendedDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
+import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.User;
 
 
@@ -25,24 +27,24 @@ public class ClassUtilsUnitTest {
     @Test
     public void looksUpDomainClassCorrectly() throws Exception {
 
-        assertEquals(User.class, ClassUtils.getDomainClass(UserDao.class));
-        assertEquals(User.class, ClassUtils.getDomainClass(SomeDao.class));
-        assertNull(ClassUtils.getDomainClass(Serializable.class));
+        assertEquals(User.class, getDomainClass(UserDao.class));
+        assertEquals(User.class, getDomainClass(SomeDao.class));
+        assertNull(getDomainClass(Serializable.class));
     }
 
 
     @Test
     public void looksUpIdClassCorrectly() throws Exception {
 
-        assertEquals(Integer.class, ClassUtils.getIdClass(UserDao.class));
-        assertNull(ClassUtils.getIdClass(Serializable.class));
+        assertEquals(Integer.class, getIdClass(UserDao.class));
+        assertNull(getIdClass(Serializable.class));
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsInvalidReturnType() throws Exception {
 
-        ClassUtils.assertReturnType(SomeDao.class.getMethod("findByFirstname",
+        assertReturnType(SomeDao.class.getMethod("findByFirstname",
                 Pageable.class, String.class), User.class);
     }
 
@@ -50,17 +52,27 @@ public class ClassUtilsUnitTest {
     @Test
     public void usesSimpleClassNameIfNoEntityNameGiven() throws Exception {
 
-        assertEquals("User", ClassUtils.getEntityName(User.class));
-        assertEquals("AnotherNamedUser", ClassUtils
-                .getEntityName(NamedUser.class));
+        assertEquals("User", getEntityName(User.class));
+        assertEquals("AnotherNamedUser", getEntityName(NamedUser.class));
     }
 
 
     @Test
     public void findsDomainClassOnExtensionOfDaoInterface() throws Exception {
 
-        assertEquals(User.class, ClassUtils
-                .getDomainClass(ExtensionOfUserCustomExtendedDao.class));
+        assertEquals(User.class,
+                getDomainClass(ExtensionOfUserCustomExtendedDao.class));
+    }
+
+
+    /**
+     * References #256.
+     */
+    @Test
+    public void detectsParameterizedEntitiesCorrectly() {
+
+        assertEquals(GenericEntity.class,
+                getDomainClass(GenericEntityDao.class));
     }
 
     /**
@@ -96,6 +108,31 @@ public class ClassUtilsUnitTest {
      */
     private interface ExtensionOfUserCustomExtendedDao extends
             UserCustomExtendedDao {
+
+    }
+
+    /**
+     * Helper class to reproduce #256.
+     * 
+     * @author Oliver Gierke - gierke@synyx.de
+     */
+    @SuppressWarnings("serial")
+    private class GenericEntity<T> implements Persistable<Long> {
+
+        public Long getId() {
+
+            throw new UnsupportedOperationException();
+        }
+
+
+        public boolean isNew() {
+
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private interface GenericEntityDao extends
+            GenericDao<GenericEntity<String>, Long> {
 
     }
 }
