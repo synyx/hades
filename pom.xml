@@ -22,8 +22,8 @@
 	
 	<properties>
 		<osgi.version>2.0</osgi.version>
-        <spring.version>3.0.1.BUILD-SNAPSHOT</spring.version>
         <junit.version>4.7</junit.version>
+		<spring.version>3.0.1.RELEASE-A</spring.version>
 	</properties>
     
 	<build>
