@@ -959,12 +959,12 @@ public class Role implements Persistable&lt;Integer&gt; {
             <programlisting language="xml">&lt;import resource="infrastructure.xml" /&gt;
 
 &lt;bean id="userDao" 
-    class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean"&gt;
+    class="org.synyx.hades.dao.orm.GenericDaoFactoryBean"&gt;
   &lt;property name="daoInterface" value="org.synyx.hades.dao.UserDao" /&gt;
 &lt;/bean&gt;
 
 &lt;bean id="roleDao"
-    class="org.synyx.hades.dao.orm.support.GenericDaoFactoryBean"&gt;
+    class="org.synyx.hades.dao.orm.GenericDaoFactoryBean"&gt;
   &lt;property name="daoInterface" value="org.synyx.hades.dao.RoleDao" /&gt;
 &lt;/bean&gt;</programlisting>
 
