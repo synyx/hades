@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.synyx.hades.sample.dao.UserDaoCustom;
 import org.synyx.hades.sample.domain.User;
@@ -58,10 +59,12 @@ public class UserDaoImpl implements UserDaoCustom {
      * 
      * @see org.synyx.hades.sample.dao.UserDaoCustom#myCustomBatchOperation()
      */
-    @SuppressWarnings("unchecked")
     public List<User> myCustomBatchOperation() {
 
-        return em.createQuery("from User u").getResultList();
+        CriteriaQuery<User> criteriaQuery =
+                em.getCriteriaBuilder().createQuery(User.class);
+
+        return em.createQuery(criteriaQuery).getResultList();
     }
 
 }
