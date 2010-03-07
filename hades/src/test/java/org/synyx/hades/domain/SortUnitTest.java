@@ -35,12 +35,12 @@ public class SortUnitTest {
      * @throws Exception
      */
     @Test
-    @SuppressWarnings("deprecation")
     public void appliesDefaultForOrder() throws Exception {
 
-        assertEquals(Sort.DEFAULT_ORDER, new Sort("foo").getOrder());
-        assertEquals(Sort.DEFAULT_ORDER, new Sort((Order) null, "foo")
+        assertEquals(Sort.DEFAULT_ORDER, new Sort("foo").iterator().next()
                 .getOrder());
+        assertEquals(Sort.DEFAULT_ORDER, new Sort((Order) null, "foo")
+                .iterator().next().getOrder());
     }
 
 
