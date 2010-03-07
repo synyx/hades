@@ -30,7 +30,7 @@ import org.synyx.hades.util.ClassUtils;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public enum PersistenceProvider implements QueryExtractor {
+enum PersistenceProvider implements QueryExtractor {
 
     /**
      * Hibernate persistence provider.

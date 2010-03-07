@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class QueryCreator {
+class QueryCreator {
 
     private static final Log LOG = LogFactory.getLog(QueryCreator.class);
     private static final String[] PREFIXES =
