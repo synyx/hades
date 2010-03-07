@@ -38,7 +38,7 @@ import org.synyx.hades.domain.Persistable;
  * @param <PK> the type of the auditing type's idenifier
  */
 @MappedSuperclass
-public abstract class AbstractAuditable<U extends Persistable<PK>, PK extends Serializable>
+public abstract class AbstractAuditable<U extends Persistable<?>, PK extends Serializable>
         extends AbstractPersistable<PK> implements Auditable<U, PK> {
 
     private static final long serialVersionUID = 141481953116476081L;
