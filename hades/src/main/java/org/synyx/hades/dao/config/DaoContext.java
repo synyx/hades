@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class DaoContext extends DaoConfigContext {
+class DaoContext extends DaoConfigContext {
 
     private static final String CUSTOM_IMPL_REF = "custom-impl-ref";
 

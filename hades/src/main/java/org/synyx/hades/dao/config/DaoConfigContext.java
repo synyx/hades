@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class DaoConfigContext {
+class DaoConfigContext {
 
     protected static final String DEFAULT_DAO_IMPL_POSTFIX = "Impl";
 

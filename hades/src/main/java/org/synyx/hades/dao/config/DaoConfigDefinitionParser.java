@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
  * @author Eberhard Wolff
  * @author Gil Markham
  */
-public class DaoConfigDefinitionParser implements BeanDefinitionParser {
+class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
     private static final String FACTORY_CLASS =
             "org.synyx.hades.dao.orm.GenericDaoFactoryBean";
