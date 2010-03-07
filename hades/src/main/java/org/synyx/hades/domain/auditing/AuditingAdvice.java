@@ -104,7 +104,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditable
      */
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditable)")
-    public void touch(final Auditable<Persistable<PK>, PK> auditable) {
+    public void touch(final Auditable<Persistable<PK>, ?> auditable) {
 
         if (null == auditable) {
             return;
@@ -140,9 +140,9 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditables
      */
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditables)")
-    public void touch(final List<Auditable<Persistable<PK>, PK>> auditables) {
+    public void touch(final List<Auditable<Persistable<PK>, ?>> auditables) {
 
-        for (Auditable<Persistable<PK>, PK> auditable : auditables) {
+        for (Auditable<Persistable<PK>, ?> auditable : auditables) {
 
             touch(auditable);
         }
@@ -156,7 +156,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditable
      * @return
      */
-    private T touchAuditor(final Auditable<Persistable<PK>, PK> auditable) {
+    private T touchAuditor(final Auditable<Persistable<PK>, ?> auditable) {
 
         if (null == auditorAware) {
             return null;
@@ -186,7 +186,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditable
      * @return
      */
-    private DateTime touchDate(final Auditable<Persistable<PK>, PK> auditable) {
+    private DateTime touchDate(final Auditable<Persistable<PK>, ?> auditable) {
 
         DateTime now = new DateTime();
 
