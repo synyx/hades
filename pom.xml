@@ -220,7 +220,7 @@
 	<scm>
 		<url>http://svn.synyx.org/synyx/opensource/hades/branches/org.synyx.hades-1.x</url>
 		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades/branches/org.synyx.hades-1.x</connection>
-		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades/branches/org.synyx.hades-1.x</developerConnection>
+		<developerConnection>scm:svn:svn+ssh://synyxsvn/var/svn/synyx/opensource/hades/branches/org.synyx.hades-1.x</developerConnection>
 	</scm>
 	
 	<distributionManagement>
