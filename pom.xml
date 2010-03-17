@@ -124,6 +124,7 @@
 		    	<configuration>
 		    		<preparationGoals>clean verify</preparationGoals>
 		    		<scmCommentPrefix> * [maven-release-plugin] - </scmCommentPrefix>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
 		    	</configuration>
 		    </plugin>
 		    
