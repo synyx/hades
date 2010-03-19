@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.hibernate.ejb.HibernateEntityManager;
 import org.junit.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,8 @@ public class EntityManagerFactoryRefIntegrationTest extends
     @Test
     public void daosGetTheSecondEntityManagerFactoryInjected() throws Exception {
 
-        verify(first.createEntityManager(), never());
-        verify(second.createEntityManager(), atLeastOnce());
+        verify(first, never()).createEntityManager();
+        verify(second, atLeastOnce()).createEntityManager();
     }
 
     /**
@@ -74,11 +74,10 @@ public class EntityManagerFactoryRefIntegrationTest extends
 
             if ("secondEntityManagerFactory".equals(beanName)) {
 
-                HibernateEntityManagerFactory entityManagerFactory =
-                        (HibernateEntityManagerFactory) bean;
-
-                when(entityManagerFactory.createEntityManager()).thenReturn(
-                        mock(EntityManager.class));
+                EntityManagerFactory entityManagerFactory =
+                        (EntityManagerFactory) bean;
+                EntityManager em = mock(HibernateEntityManager.class);
+                when(entityManagerFactory.createEntityManager()).thenReturn(em);
             }
 
             return bean;
