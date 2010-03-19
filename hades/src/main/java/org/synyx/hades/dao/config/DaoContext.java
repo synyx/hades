@@ -234,4 +234,18 @@ class DaoContext extends DaoConfigContext {
         return StringUtils.hasText(factoryClassName) ? factoryClassName
                 : parent.getDaoFactoryClassName();
     }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.config.DaoConfigContext#getEntityManagerRef()
+     */
+    @Override
+    protected String getEntityManagerFactoryRef() {
+
+        String ref = getElement().getAttribute(ENTITY_MANAGER_FACTORY_REF);
+        return StringUtils.hasText(ref) ? ref : parent
+                .getEntityManagerFactoryRef();
+    }
 }
