@@ -27,7 +27,7 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>1.1</releaseinfo>
+    <releaseinfo>1.2</releaseinfo>
 
     <pubdate>23.12.2009</pubdate>
 
@@ -225,6 +225,19 @@
 
         <revremark>Added documentation of how to add custom behaviour to all
         DAOs</revremark>
+      </revision>
+
+      <revision>
+        <date>19.03.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of usage of multiple
+        EntityManagerFactories</revremark>
       </revision>
     </revhistory>
   </bookinfo>
@@ -1122,7 +1135,13 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
         <interfacename>ExtendedGenericDao</interfacename>. For each candidate
         found it will set up an DAO instances supposing you've placed the DAO
         interfaces in the configured package and named them as described
-        above</para>
+        above.<note>
+            <para>In case you need to wire an
+            <interfacename>EntityManagerFactory</interfacename> to a DAO
+            instance or all DAO instances explicitly use
+            <code>entity-manager-factory-ref</code> attribute to point to the
+            desired Spring bean.</para>
+          </note></para>
       </simplesect>
     </section>
 
@@ -2098,6 +2117,14 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
               queries. See <xref linkend="sample-app.finders.strategies" />
               for details. Defaults to
               <code>create-if-not-found</code>.</entry>
+            </row>
+
+            <row>
+              <entry>entity-manager-factory-ref</entry>
+
+              <entry>Possibility to wire an
+              <interfacename>EntityManagerFactory</interfacename> explicitly
+              in case multiple ones could be resolved.</entry>
             </row>
           </tbody>
         </tgroup>
