@@ -201,6 +201,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
             final ParserContext parserContext, final DaoContext context,
             String factoryClass) {
 
+        Object beanSource = parserContext.extractSource(context.getElement());
+
         BeanDefinitionBuilder beanDefinitionBuilder =
                 BeanDefinitionBuilder.rootBeanDefinition(factoryClass);
 
@@ -209,14 +211,21 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
         beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
                 .getQueryLookupStrategy());
 
+        String entityManagerRef = context.getEntityManagerFactoryRef();
+
+        if (null != entityManagerRef) {
+            beanDefinitionBuilder.addPropertyValue("entityManager",
+                    getEntityManagerBeanDefinitionFor(entityManagerRef,
+                            beanSource));
+        }
+
         String customImplementationBeanName =
                 registerCustomImplementation(context, parserContext,
                         beanDefinitionBuilder);
 
         AbstractBeanDefinition beanDefinition =
                 beanDefinitionBuilder.getBeanDefinition();
-        beanDefinition.setSource(parserContext.extractSource(context
-                .getElement()));
+        beanDefinition.setSource(beanSource);
 
         if (LOG.isDebugEnabled()) {
 
@@ -238,6 +247,31 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                         .getBeanName());
 
         parserContext.registerBeanComponent(definition);
+    }
+
+
+    /**
+     * Creates an anonymous factory to extract the actual
+     * {@link javax.persistence.EntityManager} from the
+     * {@link javax.persistence.EntityManagerFactory} bean name reference.
+     * 
+     * @param entityManagerFactoryBeanName
+     * @param source
+     * @return
+     */
+    private BeanDefinition getEntityManagerBeanDefinitionFor(
+            String entityManagerFactoryBeanName, Object source) {
+
+        AbstractBeanDefinition bean =
+                BeanDefinitionBuilder.rootBeanDefinition(
+                        "javax.persistence.EntityManager")
+                        .getRawBeanDefinition();
+
+        bean.setFactoryBeanName(entityManagerFactoryBeanName);
+        bean.setFactoryMethodName("createEntityManager");
+        bean.setSource(source);
+
+        return bean;
     }
 
 
