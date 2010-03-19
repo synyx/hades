@@ -1,11 +1,10 @@
 package org.synyx.hades.dao.orm;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.junit.Test;
 import org.springframework.beans.BeansException;
@@ -40,7 +39,8 @@ public class EntityManagerFactoryRefIntegrationTest extends
     @Test
     public void daosGetTheSecondEntityManagerFactoryInjected() throws Exception {
 
-        verify(first, second);
+        verify(first.createEntityManager(), never());
+        verify(second.createEntityManager(), atLeastOnce());
     }
 
     /**
@@ -69,23 +69,16 @@ public class EntityManagerFactoryRefIntegrationTest extends
      */
     static class MockPreparingBeanPostProcessor implements BeanPostProcessor {
 
-        private EntityManager em = createNiceMock(HibernateEntityManager.class);
-
-
         public Object postProcessAfterInitialization(Object bean,
                 String beanName) throws BeansException {
 
-            if ("entityManagerFactory".equals(beanName)) {
-
-                replay(bean);
-
-            } else if ("secondEntityManagerFactory".equals(beanName)) {
+            if ("secondEntityManagerFactory".equals(beanName)) {
 
                 HibernateEntityManagerFactory entityManagerFactory =
                         (HibernateEntityManagerFactory) bean;
-                expect(entityManagerFactory.createEntityManager())
-                        .andReturn(em).atLeastOnce();
-                replay(entityManagerFactory);
+
+                when(entityManagerFactory.createEntityManager()).thenReturn(
+                        mock(EntityManager.class));
             }
 
             return bean;

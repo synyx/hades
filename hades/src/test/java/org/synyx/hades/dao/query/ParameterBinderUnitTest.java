@@ -15,9 +15,10 @@
  */
 package org.synyx.hades.dao.query;
 
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Method;
 
@@ -25,6 +26,9 @@ import javax.persistence.Query;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.dao.query.ParametersUnitTest.SampleDao;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
@@ -35,10 +39,12 @@ import org.synyx.hades.domain.Sort;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ParameterBinderUnitTest {
 
     private Method valid;
 
+    @Mock
     private Query query;
     private Method useIndexedParameters;
 
@@ -50,8 +56,6 @@ public class ParameterBinderUnitTest {
 
         useIndexedParameters =
                 SampleDao.class.getMethod("useIndexedParameters", String.class);
-
-        query = createMock(Query.class);
     }
 
 
@@ -100,9 +104,10 @@ public class ParameterBinderUnitTest {
                 SampleDao.class.getMethod("validWithSort", String.class,
                         Sort.class);
 
-        expect(query.setParameter(eq("username"), eq("foo"))).andReturn(query)
-                .once();
-        executeAndVerifyMethod(validWithSort, "foo", null);
+        when(query.setParameter(eq("username"), eq("foo"))).thenReturn(query);
+        new ParameterBinder(new Parameters(validWithSort), "foo", null)
+                .bind(query);
+        verify(query).setParameter(eq("username"), eq("foo"));
     }
 
 
@@ -113,9 +118,10 @@ public class ParameterBinderUnitTest {
                 SampleDao.class.getMethod("validWithPageable", String.class,
                         Pageable.class);
 
-        expect(query.setParameter(eq("username"), eq("foo"))).andReturn(query)
-                .once();
-        executeAndVerifyMethod(validWithPageable, "foo", null);
+        when(query.setParameter(eq("username"), eq("foo"))).thenReturn(query);
+        new ParameterBinder(new Parameters(validWithPageable), "foo", null)
+                .bind(query);
+        verify(query).setParameter(eq("username"), eq("foo"));
     }
 
 
@@ -123,24 +129,18 @@ public class ParameterBinderUnitTest {
     public void usesIndexedParametersIfNoParamAnnotationPresent()
             throws Exception {
 
-        expect(query.setParameter(eq(1), anyObject())).andReturn(query).once();
-        executeAndVerifyMethod(useIndexedParameters, "foo");
+        when(query.setParameter(eq(1), anyObject())).thenReturn(query);
+        new ParameterBinder(new Parameters(useIndexedParameters), "foo")
+                .bind(query);
+        verify(query).setParameter(eq(1), anyObject());
     }
 
 
     @Test
     public void usesParameterNameIfAnnotated() throws Exception {
 
-        expect(query.setParameter(eq("username"), anyObject()))
-                .andReturn(query).once();
-        executeAndVerifyMethod(valid, "foo");
-    }
-
-
-    private void executeAndVerifyMethod(Method method, Object... values) {
-
-        replay(query);
-        new ParameterBinder(new Parameters(method), values).bind(query);
-        verify(query);
+        when(query.setParameter(eq("username"), anyObject())).thenReturn(query);
+        new ParameterBinder(new Parameters(valid), "foo").bind(query);
+        verify(query).setParameter(eq("username"), anyObject());
     }
 }

@@ -22,9 +22,11 @@ import java.io.IOException;
 
 import javax.persistence.EntityManager;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.GenericDaoFactory;
 import org.synyx.hades.daocustom.CustomGenericDaoFactory;
@@ -37,19 +39,17 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
+@RunWith(MockitoJUnitRunner.class)
 public class GenericDaoFactoryUnitTest {
 
     private GenericDaoFactory factory;
 
+    @Mock
     private EntityManager entityManager;
 
 
     @Before
     public void setUp() {
-
-        entityManager = EasyMock.createNiceMock(EntityManager.class);
-
-        EasyMock.replay(entityManager);
 
         // Setup standard factory configuration
         factory = GenericDaoFactory.create(entityManager);

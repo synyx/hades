@@ -16,11 +16,10 @@
 
 package org.synyx.hades.dao.orm;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import javax.persistence.EntityManager;
 
-import org.easymock.classextension.EasyMock;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +48,7 @@ public class GenericHibernateJpaDaoUnitTest {
     public void setUp() {
 
         // Setup mocks
-        entityManager = EasyMock.createNiceMock(HibernateEntityManager.class);
+        entityManager = mock(HibernateEntityManager.class);
 
         // Setup DAO
         hibernateDao = new GenericHibernateJpaDao<User, Integer>();
@@ -67,11 +66,7 @@ public class GenericHibernateJpaDaoUnitTest {
     @Test
     public void correctConfiguration() throws Exception {
 
-        EasyMock.replay(entityManager);
-
         hibernateDao.validate();
-
-        EasyMock.verify(entityManager);
     }
 
 
@@ -84,10 +79,8 @@ public class GenericHibernateJpaDaoUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsNonHibernateEntityManager() throws Exception {
 
-        entityManager = createNiceMock(EntityManager.class);
+        entityManager = mock(EntityManager.class);
         hibernateDao.setEntityManager(entityManager);
-
-        replay(entityManager);
 
         hibernateDao.validate();
     }

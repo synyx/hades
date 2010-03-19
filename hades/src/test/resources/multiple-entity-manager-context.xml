@@ -5,11 +5,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 	http://schemas.synyx.org/hades http://schemas.synyx.org/hades/hades.xsd">
 
-    <bean id="entityManagerFactory" class="org.easymock.EasyMock" factory-method="createNiceMock">
+    <bean id="entityManagerFactory" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.hibernate.ejb.HibernateEntityManagerFactory" />
     </bean>
     
-    <bean id="secondEntityManagerFactory" class="org.easymock.EasyMock" factory-method="createNiceMock">
+    <bean id="secondEntityManagerFactory" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.hibernate.ejb.HibernateEntityManagerFactory" />
     </bean>
     

@@ -20,9 +20,11 @@ import static org.junit.Assert.*;
 
 import javax.persistence.EntityManager;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
 import org.synyx.hades.domain.User;
@@ -36,19 +38,17 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
+@RunWith(MockitoJUnitRunner.class)
 public class GenericDaoFactoryBeanUnitTest {
 
     private GenericDaoFactoryBean<SimpleSampleDao> factory;
 
+    @Mock
     private EntityManager entityManager;
 
 
     @Before
     public void setUp() {
-
-        entityManager = EasyMock.createNiceMock(EntityManager.class);
-
-        EasyMock.replay(entityManager);
 
         // Setup standard factory configuration
         factory =
