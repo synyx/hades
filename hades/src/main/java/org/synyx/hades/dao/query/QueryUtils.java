@@ -15,6 +15,8 @@
  */
 package org.synyx.hades.dao.query;
 
+import static java.util.regex.Pattern.*;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -44,9 +46,22 @@ public abstract class QueryUtils {
     private static final String DEFAULT_ALIAS = "x";
 
     private static final String COUNT_MATCH = "(?<=select )(.*)(?= from)";
-    private static final Pattern ALIAS_MATCH =
-            Pattern.compile("(?<=from )(\\w*) (\\w*)( \\w*)*");
     private static final String COUNT_REPLACEMENT = "count(*)";
+
+    private static final Pattern ALIAS_MATCH;
+
+    static {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("(?<=from)"); // from as starting delimiter
+        builder.append("(?: )+"); // at least one space separating
+        builder.append("([\\w.]*)"); // Entity name, can be qualified
+        builder.append("(?: as)*"); // exclude possible "as" keyword
+        builder.append("(?: )+"); // at least one space separating
+        builder.append("(\\w*)"); // the actual alias
+
+        ALIAS_MATCH = compile(builder.toString(), CASE_INSENSITIVE);
+    }
 
 
     /**
@@ -146,15 +161,7 @@ public abstract class QueryUtils {
 
         Matcher matcher = ALIAS_MATCH.matcher(query);
 
-        if (matcher.find()) {
-
-            String potentialAlias = matcher.group(2);
-
-            return "as".equals(potentialAlias) ? matcher.group(3).trim()
-                    : potentialAlias;
-        }
-
-        return null;
+        return matcher.find() ? matcher.group(2) : null;
     }
 
 
