@@ -2,6 +2,7 @@ package org.synyx.hades.dao.query;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.synyx.hades.dao.query.QueryUtils.*;
 
 import org.hamcrest.Matcher;
 import org.junit.Test;
@@ -27,24 +28,26 @@ public class QueryUtilsUnitTest {
     @Test
     public void createsCountQueryCorrectly() throws Exception {
 
-        assertThat(QueryUtils.createCountQueryFor(QUERY), is(COUNT_QUERY));
+        assertThat(createCountQueryFor(QUERY), is(COUNT_QUERY));
     }
 
 
     @Test
     public void allowsShortJpaSyntax() throws Exception {
 
-        assertThat(QueryUtils.createCountQueryFor(SIMPLE_QUERY),
-                is(COUNT_QUERY));
+        assertThat(createCountQueryFor(SIMPLE_QUERY), is(COUNT_QUERY));
     }
 
 
     @Test
     public void detectsAliasCorrectly() throws Exception {
 
-        assertThat(QueryUtils.detectAlias(QUERY), IS_U);
-        assertThat(QueryUtils.detectAlias(SIMPLE_QUERY), IS_U);
-        assertThat(QueryUtils.detectAlias(COUNT_QUERY), IS_U);
-        assertThat(QueryUtils.detectAlias(QUERY_WITH_AS), IS_U);
+        assertThat(detectAlias(QUERY), IS_U);
+        assertThat(detectAlias(SIMPLE_QUERY), IS_U);
+        assertThat(detectAlias(COUNT_QUERY), IS_U);
+        assertThat(detectAlias(QUERY_WITH_AS), IS_U);
+        assertThat(detectAlias("SELECT FROM USER U"), is("U"));
+        assertThat(detectAlias("select u from  User u"), IS_U);
+        assertThat(detectAlias("select u from  com.acme.User u"), IS_U);
     }
 }
