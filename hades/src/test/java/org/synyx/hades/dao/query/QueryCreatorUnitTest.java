@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EntityManager;
@@ -60,12 +61,8 @@ public class QueryCreatorUnitTest {
                 QueryCreatorUnitTest.class.getMethod(
                         "findByNameOrOrganization", String.class, String.class);
 
-        QueryMethod finderMethod =
-                new QueryMethod(method, SampleEntity.class, em, extractor,
-                        QueryLookupStrategy.CREATE_IF_NOT_FOUND);
-
-        String query = new QueryCreator(finderMethod).constructQuery();
-        assertTrue(query.endsWith("where x.name = ? or x.organization = ?"));
+        assertCreatesQueryForMethod("where x.name = ? or x.organization = ?",
+                method);
     }
 
 
@@ -83,13 +80,37 @@ public class QueryCreatorUnitTest {
                 getClass()
                         .getMethod("findByEmbeddable", SampleEmbeddable.class);
 
+        assertCreatesQueryForMethod("where x.embeddable = ?", method);
+    }
+
+
+    @Test
+    public void createsQueryWithBetweenKeywordCorrectly() throws Exception {
+
+        method =
+                getClass().getMethod("findByStartDateBetweenAndName",
+                        Date.class, Date.class, String.class);
+
+        assertCreatesQueryForMethod(
+                "where x.startDate between ? and ? and x.name = ?", method);
+    }
+
+
+    /**
+     * Asserts that the query created for the given {@link Method} results in a
+     * query ending with the given {@link String}.
+     * 
+     * @param queryEnd
+     * @param method
+     */
+    private void assertCreatesQueryForMethod(String queryEnd, Method method) {
+
         QueryMethod queryMethod =
-                new QueryMethod(method, SampleEntity.class, em, extractor,
+                new QueryMethod(method, method.getReturnType(), em, extractor,
                         QueryLookupStrategy.CREATE);
 
-        String query = new QueryCreator(queryMethod).constructQuery();
-        assertThat(query,
-                is("select x from SampleEntity x where x.embeddable = ?"));
+        String result = new QueryCreator(queryMethod).constructQuery();
+        assertThat(result, endsWith(queryEnd));
     }
 
 
@@ -134,6 +155,13 @@ public class QueryCreatorUnitTest {
         return null;
     }
 
+
+    public SampleEntity findByStartDateBetweenAndName(Date first, Date second,
+            String name) {
+
+        return null;
+    }
+
     /**
      * Sample class for keyword split check.
      * 
@@ -144,6 +172,8 @@ public class QueryCreatorUnitTest {
 
         private String organization;
         private String name;
+
+        private Date startDate;
 
         private SampleEmbeddable embeddable;
     }
