@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.dao.query.ParametersUnitTest.SampleDao;
+import org.synyx.hades.dao.query.QueryCreatorUnitTest.SampleEmbeddable;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
 
@@ -142,5 +143,20 @@ public class ParameterBinderUnitTest {
         when(query.setParameter(eq("username"), anyObject())).thenReturn(query);
         new ParameterBinder(new Parameters(valid), "foo").bind(query);
         verify(query).setParameter(eq("username"), anyObject());
+    }
+
+
+    @Test
+    public void bindsEmbeddableCorrectly() throws Exception {
+
+        Method method =
+                QueryCreatorUnitTest.class.getMethod("findByEmbeddable",
+                        SampleEmbeddable.class);
+        Parameters parameters = new Parameters(method);
+        SampleEmbeddable embeddable = new SampleEmbeddable();
+
+        new ParameterBinder(parameters, embeddable).bind(query);
+
+        verify(query).setParameter(1, embeddable);
     }
 }
