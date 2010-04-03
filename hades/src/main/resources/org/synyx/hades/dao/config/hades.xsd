@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsd:schema xmlns="http://schemas.synyx.org/hades" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:tool="http://www.springframework.org/schema/tool"
+    xmlns:context="http://www.springframework.org/schema/context"
 	targetNamespace="http://schemas.synyx.org/hades" elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
+    <xsd:import namespace="http://www.springframework.org/schema/context" 
+        schemaLocation="http://www.springframework.org/schema/context/spring-context.xsd" />
 
 	<xsd:element name="dao-config">
 		<xsd:complexType>
 			<xsd:sequence>
+                <xsd:element name="include-filter" type="context:filterType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+    Controls which eligible types to include for component scanning.
+                            ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="exclude-filter" type="context:filterType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+    Controls which eligible types to exclude for component scanning.
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
 				<xsd:element name="dao" minOccurs="0" maxOccurs="unbounded">
 					<xsd:annotation>
 						<xsd:documentation>

@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
+import org.springframework.beans.factory.parsing.ReaderContext;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -128,7 +129,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
         // Detect available DAO interfaces
         Set<String> daoInterfaces =
-                getDaoInterfacesForAutoConfig(configContext, resourceLoader);
+                getDaoInterfacesForAutoConfig(configContext, resourceLoader,
+                        parserContext.getReaderContext());
         String factoryClass =
                 configContext.getDaoFactoryClassName() == null ? FACTORY_CLASS
                         : configContext.getDaoFactoryClassName();
@@ -143,11 +145,16 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
 
     private Set<String> getDaoInterfacesForAutoConfig(
-            final DaoConfigContext configContext, final ResourceLoader loader) {
+            final DaoConfigContext configContext, final ResourceLoader loader,
+            final ReaderContext readerContext) {
 
         ClassPathScanningCandidateComponentProvider scanner =
                 new GenericDaoComponentProvider();
         scanner.setResourceLoader(loader);
+
+        TypeFilterParser parser =
+                new TypeFilterParser(loader.getClassLoader(), readerContext);
+        parser.parseFilters(configContext.getElement(), scanner);
 
         Set<BeanDefinition> findCandidateComponents =
                 scanner.findCandidateComponents(configContext
