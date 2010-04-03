@@ -39,6 +39,8 @@ class Parameters implements Iterable<Class<?>> {
     static final List<Class<?>> TYPES =
             Arrays.asList(Pageable.class, Sort.class);
 
+    private static final String NAMED_PARAMETER_TEMPLATE = ":%s";
+
     private static final String PARAM_ON_SPECIAL =
             String.format(
                     "You must not user @%s on a parameter typed %s or %s",
@@ -182,6 +184,20 @@ class Parameters implements Iterable<Class<?>> {
     public boolean isNamedParameter(int index) {
 
         return null != getParameterName(index);
+    }
+
+
+    /**
+     * Returns the placeholder to be used for the parameter with the given
+     * index.
+     * 
+     * @param index
+     * @return
+     */
+    public String getPlaceholder(int index) {
+
+        return isNamedParameter(index) ? String.format(
+                NAMED_PARAMETER_TEMPLATE, getParameterName(index)) : "?";
     }
 
 
