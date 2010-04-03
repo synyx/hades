@@ -2,6 +2,7 @@ package org.synyx.hades.dao.query;
 
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -23,8 +24,6 @@ class QueryCreator {
     private static final String AND = "And";
     private static final String OR = "Or";
 
-    private static final String AND_TEMPLATE = "x.%s = ? and ";
-    private static final String NAMED_AND_TEMPLATE = "x.%s = :%s and ";
     private static final String KEYWORD_TEMPLATE = "(%s)(?=[A-Z])";
     private static final String PREFIX_TEMPLATE = "^%s(?=[A-Z]).*";
 
@@ -68,8 +67,11 @@ class QueryCreator {
             StringBuilder andBuilder = new StringBuilder();
 
             for (String andPart : andParts) {
-                andBuilder.append(buildAndPart(andPart, numberOfBlocks));
-                numberOfBlocks++;
+
+                Part part = new Part(andPart, method, numberOfBlocks);
+
+                andBuilder.append(part.getQueryPart()).append(" and ");
+                numberOfBlocks += part.getNumberOfArguments();
             }
 
             andBuilder.delete(andBuilder.length() - 5, andBuilder.length());
@@ -95,37 +97,6 @@ class QueryCreator {
         }
 
         return query;
-    }
-
-
-    /**
-     * Build the JPQL string to add a constraint on a property. It will create a
-     * named parameter constraint if the method parameter is a named one, too.
-     * 
-     * @param property
-     * @param index
-     * @return
-     */
-    private String buildAndPart(String property, int index) {
-
-        if (!method.isValidField(property)) {
-            throw QueryCreationException.invalidProperty(method, property);
-        }
-
-        Parameters parameters = method.getParameters();
-        String propertyName = StringUtils.uncapitalize(property);
-
-        if (parameters.isNamedParameter(index)) {
-
-            String parameterName = parameters.getParameterName(index);
-
-            return String.format(NAMED_AND_TEMPLATE, propertyName,
-                    parameterName);
-        } else {
-
-            return String.format(AND_TEMPLATE, StringUtils
-                    .uncapitalize(property));
-        }
     }
 
 
@@ -164,5 +135,224 @@ class QueryCreator {
         }
 
         return methodName;
+    }
+
+    /**
+     * A single part of a method name that has to be transformed into a query
+     * part. The actual transformation is defined by a {@link Type} that is
+     * determined from inspecting the given part. The query part can then be
+     * looked up via {@link #getQueryPart()}.
+     * 
+     * @author Oliver Gierke
+     */
+    private static class Part {
+
+        private final String part;
+
+        private final Type type;
+        private final int startIndex;
+        private final QueryMethod method;
+
+
+        /**
+         * Creates a new {@link Part} from the given method name part, the
+         * {@link QueryMethod} the part originates from and the start parameter
+         * index.
+         * 
+         * @param part
+         * @param method
+         * @param startIndex
+         */
+        public Part(String part, QueryMethod method, int startIndex) {
+
+            this.part = part;
+            this.type = Type.fromProperty(part, method);
+            this.startIndex = startIndex;
+            this.method = method;
+        }
+
+
+        /**
+         * Returns how many method parameters are bound by this part.
+         * 
+         * @return
+         */
+        public int getNumberOfArguments() {
+
+            return type.getNumberOfArguments();
+        }
+
+
+        /**
+         * Returns the query part.
+         * 
+         * @return
+         */
+        public String getQueryPart() {
+
+            String property = type.extractProperty(part);
+
+            if (!method.isValidField(property)) {
+                throw QueryCreationException.invalidProperty(method, property);
+            }
+
+            return type.createQueryPart(StringUtils.uncapitalize(property),
+                    method.getParameters(), startIndex);
+        }
+
+        /**
+         * The type of a method name part. Used to create query parts in various
+         * ways.
+         * 
+         * @author Oliver Gierke
+         */
+        private static enum Type {
+
+            /**
+             * Property to be bound to a {@code between} statement.
+             */
+            BETWEEN {
+
+                /**
+                 * Supports raw properties that end on 'between' and do not
+                 * reference a field.
+                 */
+                @Override
+                public boolean supports(String property, QueryMethod method) {
+
+                    if (method.isValidField(property)) {
+                        return false;
+                    }
+
+                    return property.endsWith("Between");
+                }
+
+
+                /**
+                 * Binds 2 parameters.
+                 */
+                @Override
+                public int getNumberOfArguments() {
+
+                    return 2;
+                }
+
+
+                /**
+                 * Removes training 'Between'.
+                 */
+                @Override
+                public String extractProperty(String property) {
+
+                    return property.substring(0, property.indexOf("Between"));
+                }
+
+
+                /**
+                 * Creates part in the form of {@code x.$ property} between ?
+                 * and ?} or the named equivalent.
+                 */
+                @Override
+                public String createQueryPart(String property,
+                        Parameters parameters, int index) {
+
+                    String first = parameters.getPlaceholder(index);
+                    String second = parameters.getPlaceholder(index + 1);
+
+                    return String.format("x.%s between %s and %s", property,
+                            first, second);
+                }
+
+            },
+
+            /**
+             * Simple plain property.
+             */
+            SIMPLE_PROPERTY {
+
+                @Override
+                public String createQueryPart(String property,
+                        Parameters parameters, int index) {
+
+                    return String.format("x.%s = %s", property, parameters
+                            .getPlaceholder(index));
+                }
+            };
+
+            /**
+             * Returns the {@link Type} of the {@link Part} for the given raw
+             * property and the given {@link QueryMethod}. This will try to
+             * detect e.g. keywords contained in the raw property that trigger
+             * special query creation. Returns {@link #SIMPLE_PROPERTY} by
+             * default.
+             * 
+             * @param rawProperty
+             * @param method
+             * @return
+             */
+            public static Type fromProperty(String rawProperty,
+                    QueryMethod method) {
+
+                for (Type type : Arrays.asList(BETWEEN, SIMPLE_PROPERTY)) {
+                    if (type.supports(rawProperty, method)) {
+                        return type;
+                    }
+                }
+
+                return SIMPLE_PROPERTY;
+            }
+
+
+            /**
+             * Create the actual query part for the given property.
+             * 
+             * @param property the actual clean property
+             * @param parameters
+             * @param index
+             * @return
+             */
+            public abstract String createQueryPart(String property,
+                    Parameters parameters, int index);
+
+
+            /**
+             * Returns whether the the type supports the given raw property.
+             * Implementations can detect keywords here or abstain from special
+             * handling.
+             * 
+             * @param property
+             * @param method
+             * @return
+             */
+            protected boolean supports(String property, QueryMethod method) {
+
+                return true;
+            }
+
+
+            /**
+             * Returns the number of arguments the property binds. By default
+             * this exactly one argument.
+             * 
+             * @return
+             */
+            public int getNumberOfArguments() {
+
+                return 1;
+            }
+
+
+            /**
+             * Callback method to extract the actual property to be bound from
+             * the given part. Returns the raw part as is by default.
+             * 
+             * @param part
+             * @return
+             */
+            public String extractProperty(String part) {
+
+                return part;
+            }
+        }
     }
 }

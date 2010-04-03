@@ -15,6 +15,9 @@
  */
 package org.synyx.hades.dao.query;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 import java.lang.reflect.Method;
 
 import org.junit.Before;
@@ -92,6 +95,24 @@ public class ParametersUnitTest {
     public void rejectsNullMethod() throws Exception {
 
         new Parameters(null);
+    }
+
+
+    @Test
+    public void detectsNamedParameterCorrectly() throws Exception {
+
+        Method method =
+                SampleDao.class.getMethod("validWithSort", String.class,
+                        Sort.class);
+
+        Parameters parameters = new Parameters(method);
+
+        assertThat(parameters.isNamedParameter(0), is(true));
+        assertThat(parameters.getPlaceholder(0), is(":username"));
+
+        assertThat(parameters.isNamedParameter(1), is(false));
+        assertThat(parameters.isSpecialParameter(1), is(true));
+        assertThat(parameters.getPlaceholder(1), is("?"));
     }
 
     static interface SampleDao {
