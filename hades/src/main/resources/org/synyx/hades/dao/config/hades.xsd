@@ -6,7 +6,8 @@
 	attributeFormDefault="unqualified">
 
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
-    <xsd:import namespace="http://www.springframework.org/schema/context" />
+    <xsd:import namespace="http://www.springframework.org/schema/context" 
+        schemaLocation="http://www.springframework.org/schema/context/spring-context.xsd" />
 
 	<xsd:element name="dao-config">
 		<xsd:complexType>
