@@ -43,6 +43,8 @@ class DaoConfigContext {
     protected static final String DAO_PACKAGE_NAME = "base-package";
     protected static final String DAO_IMPL_POSTFIX = "dao-impl-postfix";
     protected static final String DAO_FACTORY_CLASS_NAME = "factory-class";
+    protected static final String ENTITY_MANAGER_FACTORY_REF =
+            "entity-manager-factory-ref";
 
     private Element element;
 
@@ -172,5 +174,18 @@ class DaoConfigContext {
         String postfix = element.getAttribute(DAO_IMPL_POSTFIX);
         return StringUtils.hasText(postfix) ? postfix
                 : DEFAULT_DAO_IMPL_POSTFIX;
+    }
+
+
+    /**
+     * Returns the {@link javax.persistence.EntityManagerFactory} reference to
+     * be used for all the DAO instances configured.
+     * 
+     * @return
+     */
+    protected String getEntityManagerFactoryRef() {
+
+        String ref = element.getAttribute(ENTITY_MANAGER_FACTORY_REF);
+        return StringUtils.hasText(ref) ? ref : null;
     }
 }
