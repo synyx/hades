@@ -18,7 +18,6 @@ package org.synyx.hades.dao.query;
 import static org.synyx.hades.dao.query.QueryExecution.*;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -140,27 +139,8 @@ public class QueryMethod {
      */
     boolean isCorrectNumberOfParameters(int number) {
 
-        return number == getParameterTypes().size();
-    }
-
-
-    /**
-     * Returns all actual parameter types. Thus, leaves out types declared in
-     * {@link Parameters#TYPES}.
-     * 
-     * @return
-     */
-    private List<Class<?>> getParameterTypes() {
-
-        List<Class<?>> result = new ArrayList<Class<?>>();
-
-        for (Class<?> type : method.getParameterTypes()) {
-            if (!Parameters.TYPES.contains(type)) {
-                result.add(type);
-            }
-        }
-
-        return result;
+        return number == parameters.getBindableParameters()
+                .getNumberOfParameters();
     }
 
 

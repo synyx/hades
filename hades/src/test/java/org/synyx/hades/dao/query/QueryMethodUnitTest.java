@@ -86,7 +86,7 @@ public class QueryMethodUnitTest {
 
         assertEquals("User.findByLastname", method.getNamedQueryName());
         assertTrue(method.isCollectionQuery());
-        assertEquals("select x from User x where x.lastname = ?",
+        assertEquals("select x from User x where x.lastname = ?1",
                 new QueryCreator(method).constructQuery());
     }
 

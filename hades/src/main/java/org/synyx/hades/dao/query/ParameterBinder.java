@@ -100,20 +100,17 @@ class ParameterBinder {
     public Query bind(Query query) {
 
         int methodParameterPosition = 0;
-        int queryParameterPosition = 1;
 
-        for (Class<?> parameterType : parameters) {
+        for (Parameter parameter : parameters) {
 
-            if (Parameters.isBindable(parameterType)) {
+            if (parameter.isBindable()) {
 
-                Object parameter = values[methodParameterPosition];
+                Object value = values[methodParameterPosition];
 
-                if (parameters.isNamedParameter(methodParameterPosition)) {
-                    query.setParameter(parameters
-                            .getParameterName(methodParameterPosition),
-                            parameter);
+                if (parameter.isNamedParameter()) {
+                    query.setParameter(parameter.getParameterName(), value);
                 } else {
-                    query.setParameter(queryParameterPosition++, parameter);
+                    query.setParameter(parameter.getParameterPosition(), value);
                 }
             }
 

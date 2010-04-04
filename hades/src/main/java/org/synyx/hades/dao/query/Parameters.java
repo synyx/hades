@@ -17,6 +17,7 @@ package org.synyx.hades.dao.query;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -33,19 +34,11 @@ import org.synyx.hades.domain.Sort;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-class Parameters implements Iterable<Class<?>> {
+class Parameters implements Iterable<Parameter> {
 
     @SuppressWarnings("unchecked")
     static final List<Class<?>> TYPES =
             Arrays.asList(Pageable.class, Sort.class);
-
-    private static final String NAMED_PARAMETER_TEMPLATE = ":%s";
-
-    private static final String PARAM_ON_SPECIAL =
-            String.format(
-                    "You must not user @%s on a parameter typed %s or %s",
-                    Param.class.getSimpleName(),
-                    Pageable.class.getSimpleName(), Sort.class.getSimpleName());
 
     private static final String ALL_OR_NOTHING =
             String
@@ -56,10 +49,10 @@ class Parameters implements Iterable<Class<?>> {
                                     .getSimpleName(), Sort.class
                                     .getSimpleName());
 
-    private int pageableIndex;
-    private int sortIndex;
+    private final int pageableIndex;
+    private final int sortIndex;
 
-    private Method method;
+    private final List<Parameter> parameters;
 
 
     /**
@@ -70,9 +63,17 @@ class Parameters implements Iterable<Class<?>> {
     public Parameters(Method method) {
 
         Assert.notNull(method);
-        this.method = method;
+
+        this.parameters = new ArrayList<Parameter>();
 
         List<Class<?>> types = Arrays.asList(method.getParameterTypes());
+        Annotation[][] annotations = method.getParameterAnnotations();
+
+        for (int i = 0; i < types.size(); i++) {
+            parameters
+                    .add(new Parameter(types.get(i), annotations[i], this, i));
+        }
+
         this.pageableIndex = types.indexOf(Pageable.class);
         this.sortIndex = types.indexOf(Sort.class);
 
@@ -81,29 +82,30 @@ class Parameters implements Iterable<Class<?>> {
 
 
     /**
-     * Returns the name of the parameter (through {@link Param} annotation) or
-     * null if none can be found.
+     * Creates a new {@link Parameters} instance with the given
+     * {@link Parameter}s put into new context.
      * 
-     * @param position
-     * @return
+     * @param originals
      */
-    public String getParameterName(int position) {
+    private Parameters(List<Parameter> originals) {
 
-        if (position > method.getParameterAnnotations().length - 1) {
-            return null;
+        this.parameters = new ArrayList<Parameter>();
+
+        int pageableIndex = -1;
+        int sortIndex = -1;
+
+        for (int i = 0; i < originals.size(); i++) {
+
+            Parameter original = originals.get(i);
+
+            this.parameters.add(new Parameter(original, this, i));
+
+            pageableIndex = original.isPageable() ? i : -1;
+            sortIndex = original.isSort() ? i : -1;
         }
 
-        Annotation[] parameterAnnotations =
-                method.getParameterAnnotations()[position];
-
-        for (Annotation annotation : parameterAnnotations) {
-
-            if (annotation instanceof Param) {
-                return ((Param) annotation).value();
-            }
-        }
-
-        return null;
+        this.pageableIndex = pageableIndex;
+        this.sortIndex = sortIndex;
     }
 
 
@@ -148,17 +150,13 @@ class Parameters implements Iterable<Class<?>> {
     }
 
 
-    /**
-     * Returns whether the parameter with the given index is a special
-     * parameter.
-     * 
-     * @see #TYPES
-     * @param index
-     * @return
-     */
-    public final boolean isSpecialParameter(int index) {
+    public Parameter getParameter(int index) {
 
-        return TYPES.contains(method.getParameterTypes()[index]);
+        try {
+            return parameters.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new ParameterOutOfBoundsException(e);
+        }
     }
 
 
@@ -175,40 +173,63 @@ class Parameters implements Iterable<Class<?>> {
 
 
     /**
-     * Returns whether the parameter with the given index is annotated with
-     * {@link Param}.
-     * 
-     * @param index
-     * @return
-     */
-    public boolean isNamedParameter(int index) {
-
-        return null != getParameterName(index);
-    }
-
-
-    /**
-     * Returns the placeholder to be used for the parameter with the given
-     * index.
-     * 
-     * @param index
-     * @return
-     */
-    public String getPlaceholder(int index) {
-
-        return isNamedParameter(index) ? String.format(
-                NAMED_PARAMETER_TEMPLATE, getParameterName(index)) : "?";
-    }
-
-
-    /**
      * Returns the number of parameters.
      * 
      * @return
      */
     public int getNumberOfParameters() {
 
-        return method.getParameterTypes().length;
+        return parameters.size();
+    }
+
+
+    /**
+     * Returns a {@link Parameters} instance with effectively all special
+     * parameters removed.
+     * 
+     * @see Parameter#TYPES
+     * @see Parameter#isSpecialParameter()
+     * @return
+     */
+    public Parameters getBindableParameters() {
+
+        List<Parameter> bindables = new ArrayList<Parameter>();
+
+        for (Parameter candidate : this) {
+
+            if (candidate.isBindable()) {
+                bindables.add(candidate);
+            }
+        }
+
+        return new Parameters(bindables);
+    }
+
+
+    /**
+     * Returns the index of the placeholder inside a query for the parameter
+     * with the given index. They might differ from the parameter index as the
+     * method signature can contain special parameters (e.g. {@link Sort},
+     * {@link Pageable}) that are not bound as plain query parameters but rather
+     * handled differently.
+     * 
+     * @param index
+     * @return the placeholder postion for the parameter with the given index.
+     *         Will return 0 for special parameters.
+     */
+    int getPlaceholderPosition(Parameter parameter) {
+
+        return parameter.isSpecialParameter() ? 0
+                : getPlaceholderPositionRecursively(parameter);
+    }
+
+
+    private int getPlaceholderPositionRecursively(Parameter parameter) {
+
+        int result = parameter.isSpecialParameter() ? 0 : 1;
+
+        return parameter.isFirst() ? result : result
+                + getPlaceholderPositionRecursively(parameter.getPrevious());
     }
 
 
@@ -222,15 +243,11 @@ class Parameters implements Iterable<Class<?>> {
 
         boolean annotationFound = false;
 
-        for (int index = 0; index < method.getParameterTypes().length; index++) {
+        for (Parameter parameter : this.getBindableParameters()) {
 
-            if (isSpecialParameter(index)) {
-                Assert.isTrue(!isNamedParameter(index), PARAM_ON_SPECIAL);
-                continue;
-            }
-
-            if (isNamedParameter(index)) {
-                Assert.isTrue(annotationFound || index == 0, ALL_OR_NOTHING);
+            if (parameter.isNamedParameter()) {
+                Assert.isTrue(annotationFound || parameter.isFirst(),
+                        ALL_OR_NOTHING);
                 annotationFound = true;
             } else {
                 Assert.isTrue(!annotationFound, ALL_OR_NOTHING);
@@ -256,8 +273,8 @@ class Parameters implements Iterable<Class<?>> {
      * 
      * @see java.lang.Iterable#iterator()
      */
-    public Iterator<Class<?>> iterator() {
+    public Iterator<Parameter> iterator() {
 
-        return Arrays.asList(method.getParameterTypes()).iterator();
+        return parameters.iterator();
     }
 }
