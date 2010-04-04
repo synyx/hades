@@ -61,7 +61,7 @@ public class QueryCreatorUnitTest {
                 QueryCreatorUnitTest.class.getMethod(
                         "findByNameOrOrganization", String.class, String.class);
 
-        assertCreatesQueryForMethod("where x.name = ? or x.organization = ?",
+        assertCreatesQueryForMethod("where x.name = ?1 or x.organization = ?2",
                 method);
     }
 
@@ -80,7 +80,7 @@ public class QueryCreatorUnitTest {
                 getClass()
                         .getMethod("findByEmbeddable", SampleEmbeddable.class);
 
-        assertCreatesQueryForMethod("where x.embeddable = ?", method);
+        assertCreatesQueryForMethod("where x.embeddable = ?1", method);
     }
 
 
@@ -92,7 +92,7 @@ public class QueryCreatorUnitTest {
                         Date.class, Date.class, String.class);
 
         assertCreatesQueryForMethod(
-                "where x.startDate between ? and ? and x.name = ?", method);
+                "where x.startDate between ?1 and ?2 and x.name = ?3", method);
     }
 
 

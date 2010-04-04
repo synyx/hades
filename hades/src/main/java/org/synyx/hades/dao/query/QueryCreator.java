@@ -18,6 +18,9 @@ import org.springframework.util.StringUtils;
 class QueryCreator {
 
     private static final Log LOG = LogFactory.getLog(QueryCreator.class);
+    private static final String INVALID_PARAMETER_SIZE =
+            "You have to provide method arguments for each query "
+                    + "criteria to construct the query correctly!";
     private static final String[] PREFIXES =
             new String[] { "findBy", "find", "readBy", "read", "getBy", "get" };
 
@@ -57,7 +60,7 @@ class QueryCreator {
         // Split OR
         String[] orParts = split(strip(method.getName()), OR);
 
-        int numberOfBlocks = 0;
+        int parametersBound = 0;
 
         for (String orPart : orParts) {
 
@@ -68,10 +71,21 @@ class QueryCreator {
 
             for (String andPart : andParts) {
 
-                Part part = new Part(andPart, method, numberOfBlocks);
+                Parameters parameters =
+                        method.getParameters().getBindableParameters();
 
-                andBuilder.append(part.getQueryPart()).append(" and ");
-                numberOfBlocks += part.getNumberOfArguments();
+                try {
+                    Part part =
+                            new Part(andPart, method, parameters
+                                    .getParameter(parametersBound));
+
+                    andBuilder.append(part.getQueryPart()).append(" and ");
+                    parametersBound += part.getNumberOfArguments();
+
+                } catch (ParameterOutOfBoundsException e) {
+                    throw QueryCreationException.create(method, e);
+                }
+
             }
 
             andBuilder.delete(andBuilder.length() - 5, andBuilder.length());
@@ -81,10 +95,8 @@ class QueryCreator {
         }
 
         // Assert correct number of parameters
-        if (!method.isCorrectNumberOfParameters(numberOfBlocks)) {
-            throw new IllegalArgumentException(
-                    "You have to provide method arguments for each query "
-                            + "criteria to construct the query correctly!");
+        if (!method.isCorrectNumberOfParameters(parametersBound)) {
+            throw QueryCreationException.create(method, INVALID_PARAMETER_SIZE);
         }
 
         queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
@@ -150,7 +162,7 @@ class QueryCreator {
         private final String part;
 
         private final Type type;
-        private final int startIndex;
+        private final Parameter parameter;
         private final QueryMethod method;
 
 
@@ -161,14 +173,14 @@ class QueryCreator {
          * 
          * @param part
          * @param method
-         * @param startIndex
+         * @param parameter
          */
-        public Part(String part, QueryMethod method, int startIndex) {
+        public Part(String part, QueryMethod method, Parameter parameter) {
 
             this.part = part;
             this.type = Type.fromProperty(part, method);
-            this.startIndex = startIndex;
             this.method = method;
+            this.parameter = parameter;
         }
 
 
@@ -197,7 +209,7 @@ class QueryCreator {
             }
 
             return type.createQueryPart(StringUtils.uncapitalize(property),
-                    method.getParameters(), startIndex);
+                    parameter);
         }
 
         /**
@@ -254,10 +266,10 @@ class QueryCreator {
                  */
                 @Override
                 public String createQueryPart(String property,
-                        Parameters parameters, int index) {
+                        Parameter parameter) {
 
-                    String first = parameters.getPlaceholder(index);
-                    String second = parameters.getPlaceholder(index + 1);
+                    String first = parameter.getPlaceholder();
+                    String second = parameter.getNext().getPlaceholder();
 
                     return String.format("x.%s between %s and %s", property,
                             first, second);
@@ -272,10 +284,10 @@ class QueryCreator {
 
                 @Override
                 public String createQueryPart(String property,
-                        Parameters parameters, int index) {
+                        Parameter parameter) {
 
-                    return String.format("x.%s = %s", property, parameters
-                            .getPlaceholder(index));
+                    return String.format("x.%s = %s", property, parameter
+                            .getPlaceholder());
                 }
             };
 
@@ -312,7 +324,7 @@ class QueryCreator {
              * @return
              */
             public abstract String createQueryPart(String property,
-                    Parameters parameters, int index);
+                    Parameter parameter);
 
 
             /**

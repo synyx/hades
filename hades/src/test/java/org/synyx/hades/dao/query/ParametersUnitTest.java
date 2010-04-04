@@ -101,18 +101,52 @@ public class ParametersUnitTest {
     @Test
     public void detectsNamedParameterCorrectly() throws Exception {
 
+        Parameters parameters =
+                getParametersFor("validWithSort", String.class, Sort.class);
+
+        Parameter parameter = parameters.getParameter(0);
+
+        assertThat(parameter.isNamedParameter(), is(true));
+        assertThat(parameter.getPlaceholder(), is(":username"));
+
+        parameter = parameters.getParameter(1);
+
+        assertThat(parameter.isNamedParameter(), is(false));
+        assertThat(parameter.isSpecialParameter(), is(true));
+    }
+
+
+    @Test
+    public void calculatesPlaceholderPositionCorrectly() throws Exception {
+
         Method method =
-                SampleDao.class.getMethod("validWithSort", String.class,
-                        Sort.class);
+                SampleDao.class.getMethod("validWithSortFirst", Sort.class,
+                        String.class);
 
         Parameters parameters = new Parameters(method);
 
-        assertThat(parameters.isNamedParameter(0), is(true));
-        assertThat(parameters.getPlaceholder(0), is(":username"));
+        assertThat(parameters.getParameter(0).getParameterPosition(), is(0));
+        assertThat(parameters.getParameter(1).getParameterPosition(), is(1));
 
-        assertThat(parameters.isNamedParameter(1), is(false));
-        assertThat(parameters.isSpecialParameter(1), is(true));
-        assertThat(parameters.getPlaceholder(1), is("?"));
+        method =
+                SampleDao.class.getMethod("validWithSortInBetween",
+                        String.class, Sort.class, String.class);
+
+        parameters = new Parameters(method);
+
+        assertThat(parameters.getParameter(0).getParameterPosition(), is(1));
+        assertThat(parameters.getParameter(1).getParameterPosition(), is(0));
+        assertThat(parameters.getParameter(2).getParameterPosition(), is(2));
+    }
+
+
+    private Parameters getParametersFor(String methodName,
+            Class<?>... parameterTypes) throws SecurityException,
+            NoSuchMethodException {
+
+        Method method = SampleDao.class.getMethod(methodName, parameterTypes);
+
+        return new Parameters(method);
     }
 
     static interface SampleDao {
@@ -132,6 +166,12 @@ public class ParametersUnitTest {
 
 
         User validWithSort(@Param("username") String username, Sort sort);
+
+
+        User validWithSortFirst(Sort sort, String username);
+
+
+        User validWithSortInBetween(String firstname, Sort sort, String lastname);
 
 
         User invalidPageable(@Param("username") String username,

@@ -53,4 +53,19 @@ public class QueryCreationException extends RuntimeException {
         return new QueryCreationException(String.format(
                 "Could not create query for %s! Reason: %s", method, message));
     }
+
+
+    /**
+     * Creates a new {@link QueryCreationException} for the given
+     * {@link QueryMethod} and {@link Throwable} as cause.
+     * 
+     * @param method
+     * @param cause
+     * @return
+     */
+    public static QueryCreationException create(QueryMethod method,
+            Throwable cause) {
+
+        return create(method, cause.getMessage());
+    }
 }
