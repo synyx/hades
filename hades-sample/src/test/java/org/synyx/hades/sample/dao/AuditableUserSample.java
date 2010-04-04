@@ -42,6 +42,5 @@ public class AuditableUserSample {
 
         assertEquals(user, user.getCreatedBy());
         assertEquals(user, user.getLastModifiedBy());
-
     }
 }

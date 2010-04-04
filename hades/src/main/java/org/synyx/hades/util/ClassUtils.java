@@ -22,13 +22,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 
 import org.springframework.util.StringUtils;
-import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Persistable;
@@ -40,14 +38,6 @@ import org.synyx.hades.domain.Persistable;
  * @author Oliver Gierke - gierke@synyx.de
  */
 public abstract class ClassUtils {
-
-    /**
-     * Hades own DAO interfaces.
-     */
-    private static final List<String> HADES_DAO_INTERFACE_NAMES =
-            Arrays.asList(GenericDao.class.getName(), ExtendedGenericDao.class
-                    .getName());
-
 
     /**
      * Private constructor to prevent instantiation.
@@ -165,14 +155,14 @@ public abstract class ClassUtils {
 
 
     /**
-     * Returns wthere the given type is a Hades DAO interface.
+     * Returns wthere the given type is the {@link GenericDao} interface.
      * 
      * @param interfaze
      * @return
      */
-    public static boolean isHadesDaoInterface(Class<?> interfaze) {
+    public static boolean isGenericDaoInterface(Class<?> interfaze) {
 
-        return isHadesDaoInterface(interfaze.getName());
+        return GenericDao.class.equals(interfaze);
     }
 
 
@@ -184,7 +174,7 @@ public abstract class ClassUtils {
      */
     public static boolean isHadesDaoInterface(String interfaceName) {
 
-        return HADES_DAO_INTERFACE_NAMES.contains(interfaceName);
+        return GenericDao.class.getName().equals(interfaceName);
     }
 
 
@@ -214,18 +204,6 @@ public abstract class ClassUtils {
         } catch (NoClassDefFoundError e) {
             return false;
         }
-    }
-
-
-    /**
-     * Returns if the DAO bean to be created shall implement
-     * {@link ExtendedGenericDao}.
-     * 
-     * @return
-     */
-    public static boolean isExtendedDaoInterface(Class<?> daoInterface) {
-
-        return ExtendedGenericDao.class.isAssignableFrom(daoInterface);
     }
 
 

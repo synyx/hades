@@ -35,8 +35,7 @@ enum PersistenceProvider implements QueryExtractor {
     /**
      * Hibernate persistence provider.
      */
-    HIBERNATE(GenericHibernateJpaDao.class,
-            "org.hibernate.ejb.HibernateEntityManager") {
+    HIBERNATE("org.hibernate.ejb.HibernateEntityManager") {
 
         public String extractQueryString(Query query) {
 
@@ -54,8 +53,7 @@ enum PersistenceProvider implements QueryExtractor {
     /**
      * EclipseLink persistence provider.
      */
-    ECLIPSELINK(GenericEclipseLinkJpaDao.class,
-            "org.eclipse.persistence.jpa.JpaEntityManager") {
+    ECLIPSELINK("org.eclipse.persistence.jpa.JpaEntityManager") {
 
         public String extractQueryString(Query query) {
 
@@ -72,8 +70,7 @@ enum PersistenceProvider implements QueryExtractor {
     /**
      * OpenJpa persistence provider.
      */
-    OPEN_JPA(GenericJpaDao.class,
-            "org.apache.openjpa.persistence.EntityManagerImpl") {
+    OPEN_JPA("org.apache.openjpa.persistence.EntityManagerImpl") {
 
         public String extractQueryString(Query query) {
 
@@ -90,7 +87,7 @@ enum PersistenceProvider implements QueryExtractor {
     /**
      * Unknown special provider. Use standard JPA.
      */
-    GENERIC_JPA(GenericJpaDao.class, "javax.persistence.EntityManager") {
+    GENERIC_JPA("javax.persistence.EntityManager") {
 
         public String extractQueryString(Query query) {
 
@@ -104,37 +101,18 @@ enum PersistenceProvider implements QueryExtractor {
         }
     };
 
-    @SuppressWarnings("unchecked")
-    private Class<? extends GenericJpaDao> daoBaseClass;
     private String entityManagerClassName;
 
 
     /**
      * Creates a new {@link PersistenceProvider}.
      * 
-     * @param daoBaseClass the DAO base class to be used with the persistence
-     *            provider
      * @param entityManagerClassName the name of the provider specific
      *            {@link EntityManager} implementation
      */
-    @SuppressWarnings("unchecked")
-    private PersistenceProvider(Class<? extends GenericJpaDao> daoBaseClass,
-            String entityManagerClassName) {
+    private PersistenceProvider(String entityManagerClassName) {
 
-        this.daoBaseClass = daoBaseClass;
         this.entityManagerClassName = entityManagerClassName;
-    }
-
-
-    /**
-     * Returns the DAO base class to be used.
-     * 
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public Class<? extends GenericJpaDao> getDaoBaseClass() {
-
-        return daoBaseClass;
     }
 
 

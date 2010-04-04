@@ -27,7 +27,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.Assert;
-import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.query.QueryExtractor;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
@@ -196,8 +195,7 @@ public class GenericDaoFactory {
     @SuppressWarnings("unchecked")
     protected Class<? extends GenericJpaDao> getDaoClass() {
 
-        return PersistenceProvider.fromEntityManager(entityManager)
-                .getDaoBaseClass();
+        return GenericJpaDao.class;
     }
 
 
@@ -214,7 +212,7 @@ public class GenericDaoFactory {
         boolean hasCustomMethod = false;
 
         // No detection required if no typing interface was configured
-        if (ClassUtils.isHadesDaoInterface(daoInterface)) {
+        if (ClassUtils.isGenericDaoInterface(daoInterface)) {
             return false;
         }
 
@@ -246,7 +244,7 @@ public class GenericDaoFactory {
         Class<?> declaringClass = method.getDeclaringClass();
 
         // Skip methods of Hades interfaces
-        if (ClassUtils.isHadesDaoInterface(declaringClass)) {
+        if (ClassUtils.isGenericDaoInterface(declaringClass)) {
             return false;
         }
 
@@ -281,15 +279,6 @@ public class GenericDaoFactory {
         if (null == domainClass) {
             throw new IllegalArgumentException(
                     "Could not retrieve domain class from interface. Make sure it extends GenericDao.");
-        }
-
-        if (ClassUtils.isExtendedDaoInterface(daoInterface)
-                && !ExtendedGenericDao.class.isAssignableFrom(getDaoClass())) {
-
-            throw new IllegalArgumentException(
-                    "If you want to create ExtendedGenericDao instances you "
-                            + "have to provide an implementation base class that "
-                            + "implements this interface!");
         }
     }
 
