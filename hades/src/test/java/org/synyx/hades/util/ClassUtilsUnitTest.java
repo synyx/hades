@@ -28,7 +28,6 @@ import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.daocustom.UserCustomExtendedDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.User;
 
 
@@ -131,19 +130,7 @@ public class ClassUtilsUnitTest {
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */
-    @SuppressWarnings("serial")
-    private class GenericEntity<T> implements Persistable<Long> {
-
-        public Long getId() {
-
-            throw new UnsupportedOperationException();
-        }
-
-
-        public boolean isNew() {
-
-            throw new UnsupportedOperationException();
-        }
+    private class GenericEntity<T> {
     }
 
     private interface GenericEntityDao extends

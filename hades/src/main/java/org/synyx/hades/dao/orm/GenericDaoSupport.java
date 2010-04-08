@@ -18,11 +18,19 @@ package org.synyx.hades.dao.orm;
 
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import javax.persistence.EntityManager;
+import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ReflectionUtils.FieldCallback;
+import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.synyx.hades.domain.Persistable;
 
 
@@ -32,10 +40,11 @@ import org.synyx.hades.domain.Persistable;
  * @author Oliver Gierke - gierke@synyx.de
  * @param <T> the type of entity to be handled
  */
-public abstract class GenericDaoSupport<T extends Persistable<?>> {
+public abstract class GenericDaoSupport<T> {
 
-    private EntityManager entityManager = null;
-    private Class<T> domainClass = null;
+    private EntityManager entityManager;
+    private Class<T> domainClass;
+    private IsNewStrategy isNewStrategy;
 
 
     /**
@@ -82,6 +91,7 @@ public abstract class GenericDaoSupport<T extends Persistable<?>> {
     public void setDomainClass(final Class<T> domainClass) {
 
         this.domainClass = domainClass;
+        createIsNewStrategy(domainClass);
     }
 
 
@@ -154,6 +164,146 @@ public abstract class GenericDaoSupport<T extends Persistable<?>> {
 
         if (null == entityManager) {
             throw new IllegalStateException("EntityManager must not be null!");
+        }
+    }
+
+
+    /**
+     * Return whether the given entity is to be regarded as new. Default
+     * implementation will inspect the given domain class and use either
+     * {@link PersistableIsNewStrategy} if the class implements
+     * {@link Persistable} or {@link ReflectiveIsNewStrategy} otherwise.
+     * 
+     * @param entity
+     * @return
+     */
+    protected void createIsNewStrategy(Class<?> domainClass) {
+
+        if (Persistable.class.isAssignableFrom(domainClass)) {
+            this.isNewStrategy = new PersistableIsNewStrategy();
+        } else {
+            this.isNewStrategy = new ReflectiveIsNewStrategy(domainClass);
+        }
+    }
+
+
+    /**
+     * Returns the strategy how to determine whether an entity is to be regarded
+     * as new.
+     * 
+     * @return the isNewStrategy
+     */
+    protected IsNewStrategy getIsNewStrategy() {
+
+        return isNewStrategy;
+    }
+
+    /**
+     * Interface to abstract the ways to determine if a
+     * 
+     * @author Oliver Gierke
+     */
+    public interface IsNewStrategy {
+
+        public boolean isNew(Object entity);
+    }
+
+    /**
+     * Implementation of {@link IsNewStrategy} that assumes the entity handled
+     * implements {@link Persistable} and uses {@link Persistable#isNew()} for
+     * the {@link #isNew(Object)} check.
+     * 
+     * @author Oliver Gierke
+     */
+    public static class PersistableIsNewStrategy implements IsNewStrategy {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.synyx.hades.dao.orm.GenericJpaDao.IsNewStrategy#isNew(java.lang
+         * .Object)
+         */
+        public boolean isNew(Object entity) {
+
+            return ((Persistable<?>) entity).isNew();
+        }
+    }
+
+    /**
+     * {@link IsNewStrategy} implementation that reflectively checks a
+     * {@link Field} or {@link Method} annotated with {@link Id}.
+     * 
+     * @author Oliver Gierke
+     */
+    public static class ReflectiveIsNewStrategy implements IsNewStrategy {
+
+        private Field field;
+        private Method method;
+
+
+        /**
+         * Creates a new {@link ReflectiveIsNewStrategy} by inspecting the given
+         * class for a {@link Field} or {@link Method} for and {@link Id}
+         * annotation.
+         * 
+         * @param domainClass
+         */
+        public ReflectiveIsNewStrategy(Class<?> domainClass) {
+
+            ReflectionUtils.doWithFields(domainClass, new FieldCallback() {
+
+                public void doWith(Field field)
+                        throws IllegalArgumentException, IllegalAccessException {
+
+                    boolean idFieldFound =
+                            ReflectiveIsNewStrategy.this.field != null;
+                    boolean isIdField = field.getAnnotation(Id.class) != null;
+
+                    if (!idFieldFound && isIdField) {
+                        ReflectiveIsNewStrategy.this.field = field;
+                    }
+                }
+            });
+
+            if (field != null) {
+                return;
+            }
+
+            ReflectionUtils.doWithMethods(domainClass, new MethodCallback() {
+
+                public void doWith(Method method)
+                        throws IllegalArgumentException, IllegalAccessException {
+
+                    boolean idMethodFound =
+                            ReflectiveIsNewStrategy.this.method != null;
+                    boolean isIdMethod =
+                            AnnotationUtils.findAnnotation(method, Id.class) != null;
+
+                    if (!idMethodFound && isIdMethod) {
+                        ReflectiveIsNewStrategy.this.method = method;
+                    }
+                }
+            });
+        }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.synyx.hades.dao.orm.GenericJpaDao.IsNewStrategy#isNew(java.lang
+         * .Object)
+         */
+        public boolean isNew(Object entity) {
+
+            if (field != null) {
+                ReflectionUtils.makeAccessible(field);
+                return ReflectionUtils.getField(field, entity) == null;
+            }
+
+            ReflectionUtils.makeAccessible(method);
+            return ReflectionUtils.invokeMethod(method, entity) == null;
         }
     }
 }

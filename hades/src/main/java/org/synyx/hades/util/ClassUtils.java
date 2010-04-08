@@ -29,7 +29,6 @@ import javax.persistence.EntityManager;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.domain.Page;
-import org.synyx.hades.domain.Persistable;
 
 
 /**
@@ -50,17 +49,16 @@ public abstract class ClassUtils {
     /**
      * Returns the domain class the given class is declared for. Will introspect
      * the given class for extensions of {@link GenericDao} or
-     * {@link ExtendedGenericDao} and retrieve the {@link Persistable} type from
-     * its generics declaration.
+     * {@link ExtendedGenericDao} and retrieve the domain class type from its
+     * generics declaration.
      * 
      * @param clazz
      * @return the domain class the given class is DAO for or {@code null} if
      *         none found.
      */
-    @SuppressWarnings("unchecked")
-    public static Class<? extends Persistable<?>> getDomainClass(Class<?> clazz) {
+    public static Class<?> getDomainClass(Class<?> clazz) {
 
-        return (Class<? extends Persistable<?>>) getGenericType(clazz, 0);
+        return getGenericType(clazz, 0);
     }
 
 

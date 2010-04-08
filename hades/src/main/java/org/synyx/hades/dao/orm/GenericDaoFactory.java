@@ -31,7 +31,6 @@ import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.query.QueryExtractor;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.synyx.hades.dao.query.QueryMethod;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.util.ClassUtils;
 
 
@@ -338,7 +337,7 @@ public class GenericDaoFactory {
 
                 if (isFinderMethod(method, daoInterface)) {
 
-                    Class<? extends Persistable<?>> domainClass =
+                    Class<?> domainClass =
                             ClassUtils.getDomainClass(daoInterface);
                     QueryExtractor extractor =
                             PersistenceProvider
