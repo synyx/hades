@@ -96,6 +96,24 @@ public class QueryCreatorUnitTest {
     }
 
 
+    @Test
+    public void createsQueryWithLessThanKeywordCorrectly() throws Exception {
+
+        method = getClass().getMethod("findByAgeLessThan", int.class);
+
+        assertCreatesQueryForMethod("where x.age < ?1", method);
+    }
+
+
+    @Test
+    public void createsQueryWithGreaterThanKeywordCorrectly() throws Exception {
+
+        method = getClass().getMethod("findByAgeGreaterThan", int.class);
+
+        assertCreatesQueryForMethod("where x.age > ?1", method);
+    }
+
+
     /**
      * Asserts that the query created for the given {@link Method} results in a
      * query ending with the given {@link String}.
@@ -162,6 +180,18 @@ public class QueryCreatorUnitTest {
         return null;
     }
 
+
+    public SampleEntity findByAgeLessThan(int age) {
+
+        return null;
+    }
+
+
+    public SampleEntity findByAgeGreaterThan(int age) {
+
+        return null;
+    }
+
     /**
      * Sample class for keyword split check.
      * 
@@ -174,6 +204,7 @@ public class QueryCreatorUnitTest {
         private String name;
 
         private Date startDate;
+        private int age;
 
         private SampleEmbeddable embeddable;
     }
