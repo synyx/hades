@@ -24,13 +24,13 @@ import javax.persistence.Id;
 
 /**
  * Example implementation of the very basic {@code Persistable} interface. The
- * id type is matching the typisation of the interface.
- * {@code Persitsable#isNew()} is implemented regarding the id as flag.
+ * id type is matching the typisation of the interface. {@code
+ * Persitsable#isNew()} is implemented regarding the id as flag.
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
 @Entity
-public class Role implements Persistable<Integer> {
+public class Role {
 
     private static final long serialVersionUID = -8832631113344035104L;
 

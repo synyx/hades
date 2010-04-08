@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
 
 
@@ -31,7 +30,7 @@ import org.synyx.hades.domain.Sort;
  * @author Eberhard Wolff
  * @author Oliver Gierke - gierke@synyx.de
  */
-public interface GenericDao<T extends Persistable<PK>, PK extends Serializable> {
+public interface GenericDao<T, PK extends Serializable> {
 
     /**
      * Saves a given entity. Use the returned instance for further operations as

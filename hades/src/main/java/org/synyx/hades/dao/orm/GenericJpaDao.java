@@ -30,7 +30,6 @@ import org.synyx.hades.dao.query.QueryUtils;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
 
 
@@ -44,8 +43,8 @@ import org.synyx.hades.domain.Sort;
  * @param <PK> the type of the entity's identifier
  */
 @Repository
-public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
-        extends GenericDaoSupport<T> implements GenericDao<T, PK> {
+public class GenericJpaDao<T, PK extends Serializable> extends
+        GenericDaoSupport<T> implements GenericDao<T, PK> {
 
     /**
      * Factory method to create {@link GenericJpaDao} instances.
@@ -56,7 +55,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      * @param domainClass the domain class to handle
      * @return
      */
-    public static <T extends Persistable<PK>, PK extends Serializable> GenericDao<T, PK> create(
+    public static <T, PK extends Serializable> GenericDao<T, PK> create(
             final EntityManager entityManager, final Class<T> domainClass) {
 
         GenericJpaDao<T, PK> dao = new GenericJpaDao<T, PK>();
@@ -199,7 +198,7 @@ public class GenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
      */
     public T save(final T entity) {
 
-        if (entity.isNew()) {
+        if (getIsNewStrategy().isNew(entity)) {
             getEntityManager().persist(entity);
             return entity;
         } else {

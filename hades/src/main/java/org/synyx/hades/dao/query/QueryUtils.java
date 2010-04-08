@@ -26,7 +26,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.util.Assert;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.Sort.Property;
 import org.synyx.hades.util.ClassUtils;
@@ -175,9 +174,8 @@ public abstract class QueryUtils {
      * @param entityManager
      * @return
      */
-    public static <T extends Persistable<?>> Query applyAndBind(
-            String queryString, Collection<T> entities,
-            EntityManager entityManager) {
+    public static <T> Query applyAndBind(String queryString,
+            Collection<T> entities, EntityManager entityManager) {
 
         Assert.notNull(queryString);
         Assert.notNull(entities);
