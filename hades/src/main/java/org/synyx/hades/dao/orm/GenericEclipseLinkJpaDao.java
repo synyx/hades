@@ -45,8 +45,8 @@ import org.synyx.hades.domain.Sort.Property;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class GenericEclipseLinkJpaDao<T extends Persistable<PK>, PK extends Serializable>
-        extends AbstractExtendedGenericJpaDao<T, PK> {
+public class GenericEclipseLinkJpaDao<T, PK extends Serializable> extends
+        AbstractExtendedGenericJpaDao<T, PK> {
 
     /**
      * Factory method to create {@link GenericEclipseLinkJpaDao} instances.

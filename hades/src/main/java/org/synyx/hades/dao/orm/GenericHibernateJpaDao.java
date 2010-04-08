@@ -41,8 +41,8 @@ import org.synyx.hades.domain.Sort.Property;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class GenericHibernateJpaDao<T extends Persistable<PK>, PK extends Serializable>
-        extends AbstractExtendedGenericJpaDao<T, PK> {
+public class GenericHibernateJpaDao<T, PK extends Serializable> extends
+        AbstractExtendedGenericJpaDao<T, PK> {
 
     /**
      * Factory method to create {@link GenericHibernateJpaDao} instances.

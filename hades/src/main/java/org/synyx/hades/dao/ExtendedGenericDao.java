@@ -33,8 +33,8 @@ import org.synyx.hades.domain.Sort;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public interface ExtendedGenericDao<T extends Persistable<PK>, PK extends Serializable>
-        extends GenericDao<T, PK> {
+public interface ExtendedGenericDao<T, PK extends Serializable> extends
+        GenericDao<T, PK> {
 
     /**
      * Returns all entities matching the given examples. If you provide more

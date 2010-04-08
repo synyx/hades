@@ -7,7 +7,6 @@ import java.util.List;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
 
 
@@ -17,7 +16,7 @@ import org.synyx.hades.domain.Sort;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public abstract class AbstractExtendedGenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
+public abstract class AbstractExtendedGenericJpaDao<T, PK extends Serializable>
         extends GenericJpaDao<T, PK> implements ExtendedGenericDao<T, PK> {
 
     /*
