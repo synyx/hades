@@ -223,22 +223,7 @@ class QueryCreator {
             /**
              * Property to be bound to a {@code between} statement.
              */
-            BETWEEN {
-
-                /**
-                 * Supports raw properties that end on 'between' and do not
-                 * reference a field.
-                 */
-                @Override
-                public boolean supports(String property, QueryMethod method) {
-
-                    if (method.isValidField(property)) {
-                        return false;
-                    }
-
-                    return property.endsWith("Between");
-                }
-
+            BETWEEN("Between", null) {
 
                 /**
                  * Binds 2 parameters.
@@ -247,16 +232,6 @@ class QueryCreator {
                 public int getNumberOfArguments() {
 
                     return 2;
-                }
-
-
-                /**
-                 * Removes training 'Between'.
-                 */
-                @Override
-                public String extractProperty(String property) {
-
-                    return property.substring(0, property.indexOf("Between"));
                 }
 
 
@@ -277,19 +252,26 @@ class QueryCreator {
 
             },
 
+            LESS_THAN("LessThan", "<"), GREATER_THAN("GreaterThan", ">"), SIMPLE_PROPERTY(
+                    null, "=");
+
+            private String keyword;
+            private String operator;
+
+
             /**
-             * Simple plain property.
+             * Creates a new {@link Type} using the given keyword and operator.
+             * Both can be {@literal null}.
+             * 
+             * @param keyword
+             * @param operator
              */
-            SIMPLE_PROPERTY {
+            private Type(String keyword, String operator) {
 
-                @Override
-                public String createQueryPart(String property,
-                        Parameter parameter) {
+                this.keyword = keyword;
+                this.operator = operator;
+            }
 
-                    return String.format("x.%s = %s", property, parameter
-                            .getPlaceholder());
-                }
-            };
 
             /**
              * Returns the {@link Type} of the {@link Part} for the given raw
@@ -305,7 +287,8 @@ class QueryCreator {
             public static Type fromProperty(String rawProperty,
                     QueryMethod method) {
 
-                for (Type type : Arrays.asList(BETWEEN, SIMPLE_PROPERTY)) {
+                for (Type type : Arrays.asList(BETWEEN, LESS_THAN,
+                        GREATER_THAN, SIMPLE_PROPERTY)) {
                     if (type.supports(rawProperty, method)) {
                         return type;
                     }
@@ -316,21 +299,27 @@ class QueryCreator {
 
 
             /**
-             * Create the actual query part for the given property.
+             * Create the actual query part for the given property. Creates a
+             * simple assignment of the following shape by default. {@code x.$
+             * property} ${operator} ${parameterPlaceholder}}.
              * 
              * @param property the actual clean property
              * @param parameters
              * @param index
              * @return
              */
-            public abstract String createQueryPart(String property,
-                    Parameter parameter);
+            public String createQueryPart(String property, Parameter parameter) {
+
+                return String.format("x.%s %s %s", property, operator,
+                        parameter.getPlaceholder());
+            }
 
 
             /**
              * Returns whether the the type supports the given raw property.
-             * Implementations can detect keywords here or abstain from special
-             * handling.
+             * Default implementation checks,. whether the property ends with
+             * the registered keyword. Does not support the keyword if the
+             * property is a valid field as is.
              * 
              * @param property
              * @param method
@@ -338,7 +327,15 @@ class QueryCreator {
              */
             protected boolean supports(String property, QueryMethod method) {
 
-                return true;
+                if (keyword == null) {
+                    return true;
+                }
+
+                if (method.isValidField(property)) {
+                    return false;
+                }
+
+                return property.endsWith(keyword);
             }
 
 
@@ -356,14 +353,16 @@ class QueryCreator {
 
             /**
              * Callback method to extract the actual property to be bound from
-             * the given part. Returns the raw part as is by default.
+             * the given part. Strips the keyword from the part's end if
+             * available.
              * 
              * @param part
              * @return
              */
             public String extractProperty(String part) {
 
-                return part;
+                return keyword == null ? part : part.substring(0, part
+                        .indexOf(keyword));
             }
         }
     }
