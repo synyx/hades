@@ -269,13 +269,13 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private BeanDefinition getEntityManagerBeanDefinitionFor(
             String entityManagerFactoryBeanName, Object source) {
 
-        AbstractBeanDefinition bean =
-                BeanDefinitionBuilder.rootBeanDefinition(
-                        "javax.persistence.EntityManager")
-                        .getRawBeanDefinition();
+        BeanDefinitionBuilder builder =
+                BeanDefinitionBuilder
+                        .rootBeanDefinition("org.springframework.orm.jpa.SharedEntityManagerCreator");
+        builder.setFactoryMethod("createSharedEntityManager");
+        builder.addConstructorArgReference(entityManagerFactoryBeanName);
 
-        bean.setFactoryBeanName(entityManagerFactoryBeanName);
-        bean.setFactoryMethodName("createEntityManager");
+        AbstractBeanDefinition bean = builder.getRawBeanDefinition();
         bean.setSource(source);
 
         return bean;
