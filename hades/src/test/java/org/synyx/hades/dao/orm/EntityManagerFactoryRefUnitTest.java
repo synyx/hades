@@ -22,12 +22,15 @@ import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.ejb.HibernateEntityManager;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
+import org.springframework.orm.jpa.EntityManagerFactoryInfo;
 import org.springframework.test.context.ContextConfiguration;
 import org.synyx.hades.dao.config.AbstractDaoConfigIntegrationTest;
 
@@ -93,6 +96,17 @@ public class EntityManagerFactoryRefUnitTest extends
                         (EntityManagerFactory) bean;
                 EntityManager em = mock(HibernateEntityManager.class);
                 when(entityManagerFactory.createEntityManager()).thenReturn(em);
+
+                EntityManagerFactoryInfo info = (EntityManagerFactoryInfo) bean;
+                when(info.getEntityManagerInterface()).thenAnswer(
+                        new Answer<Class<?>>() {
+
+                            public Class<?> answer(InvocationOnMock invocation)
+                                    throws Throwable {
+
+                                return HibernateEntityManager.class;
+                            }
+                        });
             }
 
             return bean;

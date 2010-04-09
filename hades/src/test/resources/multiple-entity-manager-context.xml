@@ -7,14 +7,21 @@
 
     <bean id="entityManagerFactory" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.hibernate.ejb.HibernateEntityManagerFactory" />
+        <constructor-arg ref="implementEntityManagerFactoryInfo" />
     </bean>
     
     <bean id="secondEntityManagerFactory" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.hibernate.ejb.HibernateEntityManagerFactory" />
+        <constructor-arg ref="implementEntityManagerFactoryInfo" />
     </bean>
     
-    <bean class="org.synyx.hades.dao.orm.EntityManagerFactoryRefIntegrationTest$MockPreparingBeanPostProcessor" />
-    <bean class="org.synyx.hades.dao.orm.EntityManagerFactoryRefIntegrationTest$NoOpPersistenceExceptionTranslator" />
+    <bean id="settings" class="org.mockito.Mockito" factory-method="withSettings" />
+    <bean id="implementEntityManagerFactoryInfo" factory-bean="settings" factory-method="extraInterfaces">
+      <constructor-arg value="org.springframework.orm.jpa.EntityManagerFactoryInfo" />
+    </bean>
+    
+    <bean class="org.synyx.hades.dao.orm.EntityManagerFactoryRefUnitTest$MockPreparingBeanPostProcessor" />
+    <bean class="org.synyx.hades.dao.orm.EntityManagerFactoryRefUnitTest$NoOpPersistenceExceptionTranslator" />
     
     <hades:dao-config base-package="org.synyx.hades.dao" entity-manager-factory-ref="secondEntityManagerFactory">
         <hades:dao id="userDao" />
