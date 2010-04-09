@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:hades="http://schemas.synyx.org/hades"
+  xsi:schemaLocation="http://schemas.synyx.org/hades http://schemas.synyx.org/hades/hades.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="infrastructure.xml" />
+  
+  <bean id="abstractEntityManagerFactory"
+    class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" abstract="true">
+    <property name="dataSource" ref="dataSource" />
+    <property name="jpaVendorAdapter" ref="vendorAdaptor" />
+    <property name="jpaProperties" ref="jpaProperties" />
+    <property name="persistenceXmlLocation" value="classpath:META-INF/persistence2.xml" />
+  </bean>
+  
+  <bean id="entityManagerFactory" parent="abstractEntityManagerFactory">
+    <property name="persistenceUnitName" value="first" />
+  </bean>
+  
+  <bean id="entityManagerFactory-2" parent="abstractEntityManagerFactory">
+    <property name="persistenceUnitName" value="second" />
+  </bean>
+  
+  <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="entityManagerFactory" />
+  </bean>
+  
+  <bean id="transactionManager-2" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="entityManagerFactory-2" />
+  </bean>
+  
+  <hades:dao-config base-package="org.synyx.hades.dao" entity-manager-factory-ref="entityManagerFactory">
+    <hades:dao id="userDao" />
+    <hades:dao id="roleDao" />
+  </hades:dao-config>
+  
+  <hades:dao-config base-package="org.synyx.hades.dao" entity-manager-factory-ref="entityManagerFactory-2">
+    <hades:dao id="auditableUserDao" />
+  </hades:dao-config>
+
+</beans>
