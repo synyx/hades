@@ -16,7 +16,6 @@
 
 package org.synyx.hades.domain.auditing;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.joda.time.DateTime;
-import org.synyx.hades.domain.Persistable;
 
 
 /**
@@ -45,10 +43,9 @@ import org.synyx.hades.domain.Persistable;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  * @param <T> the type of the auditing instance
- * @param <PK> the type of the auditing instance's identifier
  */
 @Aspect
-public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> {
+public class AuditingAdvice<T> {
 
     private static final Log LOG = LogFactory.getLog(AuditingAdvice.class);
 
@@ -104,7 +101,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditable
      */
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditable)")
-    public void touch(final Auditable<Persistable<PK>, ?> auditable) {
+    public void touch(final Auditable<T, ?> auditable) {
 
         if (null == auditable) {
             return;
@@ -140,9 +137,9 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditables
      */
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditables)")
-    public void touch(final List<Auditable<Persistable<PK>, ?>> auditables) {
+    public void touch(final List<Auditable<T, ?>> auditables) {
 
-        for (Auditable<Persistable<PK>, ?> auditable : auditables) {
+        for (Auditable<T, ?> auditable : auditables) {
 
             touch(auditable);
         }
@@ -156,7 +153,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditable
      * @return
      */
-    private T touchAuditor(final Auditable<Persistable<PK>, ?> auditable) {
+    private T touchAuditor(final Auditable<T, ?> auditable) {
 
         if (null == auditorAware) {
             return null;
@@ -186,7 +183,7 @@ public class AuditingAdvice<T extends Persistable<PK>, PK extends Serializable> 
      * @param auditable
      * @return
      */
-    private DateTime touchDate(final Auditable<Persistable<PK>, ?> auditable) {
+    private DateTime touchDate(final Auditable<T, ?> auditable) {
 
         DateTime now = new DateTime();
 

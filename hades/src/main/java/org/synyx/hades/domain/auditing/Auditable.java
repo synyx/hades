@@ -31,8 +31,7 @@ import org.synyx.hades.domain.Persistable;
  * @param <U> the auditing type. Typically some kind of user.
  * @param <PK> the type of the auditing type's idenifier
  */
-public interface Auditable<U extends Persistable<?>, PK extends Serializable>
-        extends Persistable<PK> {
+public interface Auditable<U, PK extends Serializable> extends Persistable<PK> {
 
     /**
      * Returns the user who created this entity.

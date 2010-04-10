@@ -26,7 +26,6 @@ import javax.persistence.TemporalType;
 
 import org.joda.time.DateTime;
 import org.synyx.hades.domain.AbstractPersistable;
-import org.synyx.hades.domain.Persistable;
 
 
 /**
@@ -38,8 +37,8 @@ import org.synyx.hades.domain.Persistable;
  * @param <PK> the type of the auditing type's idenifier
  */
 @MappedSuperclass
-public abstract class AbstractAuditable<U extends Persistable<?>, PK extends Serializable>
-        extends AbstractPersistable<PK> implements Auditable<U, PK> {
+public abstract class AbstractAuditable<U, PK extends Serializable> extends
+        AbstractPersistable<PK> implements Auditable<U, PK> {
 
     private static final long serialVersionUID = 141481953116476081L;
 
