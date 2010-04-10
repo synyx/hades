@@ -16,25 +16,23 @@
         <surname>Gierke</surname>
 
         <affiliation>
-          <jobtitle>Software Architect</jobtitle>
+          <jobtitle>Senior Consultant</jobtitle>
 
-          <orgname>Synyx GmbH &amp; Co. KG</orgname>
+          <orgname>SpringSource - a division of VMware</orgname>
         </affiliation>
 
-        <email>gierke@synyx.de</email>
-
-        <address>Karlstraße 68, 76137 Karsruhe, Germany</address>
+        <email>ogierke@vmware.com</email>
       </author>
     </authorgroup>
 
-    <releaseinfo>2.0</releaseinfo>
+    <releaseinfo>2.0 RC1</releaseinfo>
 
-    <pubdate>23.12.2009</pubdate>
+    <pubdate>10.04.2010</pubdate>
 
     <copyright>
-      <year>2008-2009</year>
+      <year>2008-2010</year>
 
-      <holder>Synyx GmbH &amp; Co. KG</holder>
+      <holder>The original authors</holder>
     </copyright>
 
     <revhistory>
@@ -239,6 +237,20 @@
         <revremark>Added documentation of usage of multiple
         EntityManagerFactories</revremark>
       </revision>
+
+      <revision>
+        <date>10.04.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Removed references to Persistable in examples where not
+        needed, mentioned @NoDaoBean, fixed some typos here and there,
+        metadata cleanup</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -323,52 +335,10 @@
     <section>
       <title>Entities and DAOs</title>
 
-      <para>The two central interfaces in Hades are
-      <interfacename>Persistable</interfacename> and
-      <interfacename>GenericDao</interfacename>. Entity defines the core
-      contract for persistent domain classes that a
-      <interfacename>GenericDao</interfacename> can handle.
-      <interfacename>GenericDao</interfacename> itself provides sophisticated
-      support for <glossterm>CRUD</glossterm> operations. Beyond that, the
-      base implementation of that interface provides even more sophisticated
-      features. Read more on that below.</para>
-
-      <example>
-        <title>Persistable interface</title>
-
-        <programlisting language="java">public interface Persistable&lt;PK extends Serializable&gt; {
-
-  public PK getId();
-
-  public boolean isNew();
-
-}</programlisting>
-      </example>
-
-      <para><interfacename>Persistable</interfacename>s have to be
-      identifyable to be retrieved from the database. Thus your entities will
-      have to provide an id or primary key. The id can be of any serializable
-      type, beginning with rather simple types like
-      <classname>Integer</classname> or <classname>Long</classname> up to
-      complex multi column dedicated key classes. The parameterization of the
-      interface will ensure typesafety on the id.</para>
-
-      <para>The <code>isNew()</code> method is used by
-      <interfacename>GenericDao</interfacename> implementations to distinguish
-      a lot of operations and thus abstracting e.g. an <code>INSERT</code>
-      from an <code>UPDATE</code>.</para>
-
-      <para>Implementing <interfacename>Persistable</interfacename> will allow
-      your domain class to be persisted by the default Hades
-      <interfacename>GenericDao</interfacename> implementation and leaves any
-      opportunity to implement certain class hierarchies to you. This freedom
-      results in a few standard JPA configuration tasks you have to do
-      manually. Hades provides more sophisticated base classes your entities
-      can extend. This will couple your domain class code more tightly to
-      Hades but frees you from implementing boilerplate JPA code.</para>
-
-      <para>Let's take a look at the <interfacename>GenericDao</interfacename>
-      interface that provides CRUD operations for entities.</para>
+      <para>The central interface in Hades is
+      <interfacename>GenericDao</interfacename>. It is typed with the entity
+      class to manage as well as the id type of the entity and provides some
+      sophisticated functionality around CRUD for the entity managed.</para>
 
       <example id="example.generic-dao">
         <title>GenericDao Interface</title>
@@ -394,12 +364,11 @@
             <area coords="20" id="generic-dao.exists" />
           </areaspec>
 
-          <programlisting language="java">public interface GenericDao&lt;T extends Persistable&lt;PK&gt;, PK extends Serializable&gt;
-        extends FinderExecuter&lt;T&gt; {
+          <programlisting language="java">public interface GenericDao&lt;T, PK extends Serializable&gt; {
 
-    T save(T persistable);
+    T save(T entity);
 
-    T saveAndFlush(T persistable);
+    T saveAndFlush(T entity);
 
     T readByPrimaryKey(PK primaryKey);
 
@@ -409,11 +378,13 @@
 
     Long count();
 
-    void delete(T persistable);
+    void delete(T entity);
 
     void flush();
 
     boolean exists(PK primaryKey);
+
+    // … more functionality omitted.
 }</programlisting>
 
           <calloutlist>
@@ -489,7 +460,7 @@
                   id="extended-generic-dao.read-by-example-pageable-sorted" />
           </areaspec>
 
-          <programlisting language="java">public interface ExtendedGenericDao&lt;T extends Persistable&lt;PK&gt;, 
+          <programlisting language="java">public interface ExtendedGenericDao&lt;T, 
         PK extends Serializable&gt; extends GenericDao&lt;T, PK&gt; {
 
     List&lt;T&gt; readByExample(T... examples);
@@ -585,8 +556,7 @@
         <example>
           <title><interfacename>AuditorAware</interfacename> interface</title>
 
-          <programlisting language="java">public interface AuditorAware&lt;T extends Persistable&lt;PK&gt;, 
-  PK extends Serializable&gt; {
+          <programlisting language="java">public interface AuditorAware&lt;T, PK extends Serializable&gt; {
 
     T getCurrentAuditor();
 }</programlisting>
@@ -862,7 +832,7 @@
           <title><classname>User</classname> entity</title>
 
           <programlisting language="java">@Entity
-public class User implements Persistable&lt;Long&gt; {
+public class User {
 
   public static final long serialVersionUID = 123L
 
@@ -899,7 +869,7 @@ public class User implements Persistable&lt;Long&gt; {
           <title><classname>Role</classname> entity</title>
 
           <programlisting language="java">@Entity
-public class Role implements Persistable&lt;Integer&gt; {
+public class Role {
 
   private static final long serialVersionUID = -123L;
 
@@ -999,8 +969,9 @@ public class Role implements Persistable&lt;Integer&gt; {
         </example>
 
         <para>This is smallest standard XML configuration possible. There are
-        a lot more options on GenericDaoFactoryBean, but you rather choose XML
-        namespace configuration due to less verbosity.</para>
+        a lot more options on <classname>GenericDaoFactoryBean</classname>,
+        but you rather choose XML namespace configuration due to less
+        verbosity.</para>
       </section>
 
       <section>
@@ -1228,6 +1199,73 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
             natural binding order (<code>AND</code> binds more than
             <code>OR</code>) is used for the query.</para>
           </example></para>
+
+        <para><table>
+            <title>Supported keywords inside method names</title>
+
+            <tgroup cols="3">
+              <colspec colwidth="1*" />
+
+              <colspec colwidth="2*" />
+
+              <colspec colsep="" colwidth="3*" />
+
+              <thead>
+                <row>
+                  <entry>Keyword</entry>
+
+                  <entry>Sample</entry>
+
+                  <entry>JPQL snippet</entry>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry><code>And</code></entry>
+
+                  <entry><code>findByLastnameAndFirstname</code></entry>
+
+                  <entry><code>‚Ä¶ where x.lastname = ?1 and x.firstname =
+                  ?2</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>Or</code></entry>
+
+                  <entry><code>findByLastnameOrFirstname</code></entry>
+
+                  <entry><code>‚Ä¶ where x.lastname = ?1 or x.firstname =
+                  ?2</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>Between</code></entry>
+
+                  <entry><code>findByStartDateBetween</code></entry>
+
+                  <entry><code>‚Ä¶ where x.startDate between 1? and
+                  ?2</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>LessThan</code></entry>
+
+                  <entry><code>findByAgeLessThan</code></entry>
+
+                  <entry><code>‚Ä¶ where x.age &lt; ?1</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>GreaterThan</code></entry>
+
+                  <entry><code>findByAgeGreaterThan</code></entry>
+
+                  <entry><code>‚Ä¶ where x.age &gt; ?2</code></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table></para>
       </section>
 
       <section id="finder-methods.named-queries">
@@ -1280,7 +1318,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
             <programlisting language="java">@Entity
 @NamedQuery(name = "User.findByEmailAddress", 
   query = "FROM User u WHERE u.emailAddress = ?1")
-public class User implements Persistable&lt;Long&gt; {
+public class User {
 
 }</programlisting>
           </example>
@@ -1383,8 +1421,9 @@ List&lt;User&gt; findByLastname(String lastname, Sort sort);</programlisting>The
           first method allows you to pass a <code>Pageable</code> instance to
           the query method to dynamically add paging to your statically
           defined query. <code>Sorting</code> options are handed via the
-          Pageable instance, too. If you only need sorting, simply add a
-          <code>Sort</code> parameter to your method.</para>
+          <interfacename>Pageable</interfacename> instance, too. If you only
+          need sorting, simply add a <code>Sort</code> parameter to your
+          method.</para>
         </example>
       </section>
 
@@ -1484,14 +1523,12 @@ public class AuditionAdviceTest extends AbstractJpaTests {
     user.setPassword("password");
     user.setEmailAddress("foo@bar.com");
 
-    AuditorAware auditorAware = EasyMock.createNiceMock(
+    AuditorAware auditorAware = Mockito.mock(
       AuditorAware.class);
-    EasyMock.expect(auditorAware.getCurrentUser()).andReturn(
-      user).anyTimes();
+    Mockito.when(auditorAware.getCurrentUser())
+      .thenReturn(user);
 
     advice.setAuditorAware();
-
-    EasyMock.replay(auditorAware);
   }
 
   @Test
@@ -1542,10 +1579,12 @@ public class AuditionAdviceTest extends AbstractJpaTests {
     <section id="sample-app.base-classes">
       <title>Using abstract base classes</title>
 
-      <para>As you could see declaring the id and implementing methods defined
-      in Persistable results in a lo of duplicate code. So Hades provides a
-      base class that already implements the necessary methods the way shown
-      above but leaves you the power to define the id type.</para>
+      <para>Using Hades you can implement data acces for plain JPA entities as
+      you like. So these entity classes usually share a common basic setup,
+      e.g. an id property with an <code>@Id</code> annotation and an
+      id-generation strategy applied. So Hades provides a simple base class
+      you can inherit with your entities from and thus free it from the noise
+      of these rather technical properties.</para>
 
       <para>Using <classname>AbstractPersistable</classname> would simplify
       User code like this</para>
@@ -1570,10 +1609,7 @@ public class User extends AbstractPersistable&lt;Long&gt; {
 }</programlisting>
       </example>
 
-      <para>Note that almost technical artefacts are gone. All methods of
-      persistable are implemented by
-      <classname>AbstractPersistable</classname> as well as declaration of the
-      id.</para>
+      <para>Note that almost technical artefacts are gone.</para>
 
       <para>If you are using auditable entities
       <classname>AbstractAuditable</classname> is your base class of choice.
@@ -1887,7 +1923,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
   &lt;dao id="userDao" /&gt;
 &lt;/dao-config&gt;
 
-&lt;bean id="userDaoImpl" class="..."&gt;
+&lt;bean id="userDaoImpl" class="…"&gt;
   &lt;!-- further configuration --&gt;
 &lt;/bean&gt;</programlisting>
 
@@ -1908,7 +1944,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
   &lt;dao id="userDao" dao-impl-ref="customDaoImplementation" /&gt;
 &lt;/dao-config&gt;
 
-&lt;bean id="customDaoImplementation" class="..."&gt;
+&lt;bean id="customDaoImplementation" class="…"&gt;
   &lt;!-- further configuration --&gt;
 &lt;/bean&gt;</programlisting></para>
           </example>
@@ -1926,8 +1962,8 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <example>
           <title>An interface declaring custom shared behaviour</title>
 
-          <para><programlisting language="java">public interface MyGenericDao&lt;T extends Persistable&lt;PK&gt;, 
-  PK extends Serializable&gt; extends GenericDao&lt;T, PK&gt; {
+          <para><programlisting language="java">public interface MyGenericDao&lt;T, PK extends Serializable&gt; 
+  extends GenericDao&lt;T, PK&gt; {
 
   void sharedCustomMethod(PK id);
 }</programlisting></para>
@@ -1939,12 +1975,24 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         <classname>GenericJpaDao</classname> and will act as custom base class
         for the DAO proxies then.</para>
 
+        <note>
+          <para>If you're using automatic DAO interface detection using the
+          Spring namespace using the interface just as is will cause Spring
+          trying to create an instance of
+          <interfacename>MyGenericDao</interfacename>. This is of course not
+          desired as it just acts as indermediate between
+          <interfacename>GenericDao</interfacename> and the actual DAO
+          interfaces you want to define for each entity. To exclude an
+          interface extending <interfacename>GenericDao</interfacename> from
+          being instantiated as DAO instance annotate it with
+          <interfacename>@NoDaoBean</interfacename>.</para>
+        </note>
+
         <example>
           <title>Custom DAO base class</title>
 
-          <programlisting language="java">public class MyGenericDaoImpl&lt;T extends Persistable&lt;PK&gt;, 
-  PK extends Serializable&gt; extends GenericJpaDao&lt;T, PK&gt; 
-  implements MyGenericDao&lt;T, PK&gt; {
+          <programlisting language="java">public class MyGenericDaoImpl&lt;T, PK extends Serializable&gt; 
+  extends GenericJpaDao&lt;T, PK&gt; implements MyGenericDao&lt;T, PK&gt; {
 
   public void sharedCustomMethod(PK id) {
     // implementation goes here
