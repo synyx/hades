@@ -16,23 +16,21 @@
         <surname>Gierke</surname>
 
         <affiliation>
-          <jobtitle>Software Architect</jobtitle>
+          <jobtitle>Senior Consultant</jobtitle>
 
-          <orgname>Synyx GmbH &amp; Co. KG</orgname>
+          <orgname>Spring Source - a division of VMware</orgname>
         </affiliation>
 
-        <email>gierke@synyx.de</email>
-
-        <address>Karlstraße 68, 76137 Karsruhe, Germany</address>
+        <email>ogierke@vmware.com</email>
       </author>
     </authorgroup>
 
     <releaseinfo>1.2</releaseinfo>
 
-    <pubdate>23.12.2009</pubdate>
+    <pubdate>10.04.2010</pubdate>
 
     <copyright>
-      <year>2008-2009</year>
+      <year>2008-2010</year>
 
       <holder>Synyx GmbH &amp; Co. KG</holder>
     </copyright>
@@ -250,8 +248,8 @@
         </author>
 
         <revremark>Removed references to Persistable in examples where not
-        needed, mentioned @NoDaoBean, fixed some typos here and
-        there</revremark>
+        needed, mentioned @NoDaoBean, fixed some typos here and there,
+        metadata cleanup</revremark>
       </revision>
     </revhistory>
   </bookinfo>
