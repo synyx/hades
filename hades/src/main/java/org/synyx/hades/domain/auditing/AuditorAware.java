@@ -16,8 +16,6 @@
 
 package org.synyx.hades.domain.auditing;
 
-import org.synyx.hades.domain.Persistable;
-
 /**
  * Interface for components that are aware of the application's current auditor.
  * This will be some kind of user mostly.
@@ -25,7 +23,7 @@ import org.synyx.hades.domain.Persistable;
  * @author Oliver Gierke - gierke@synyx.de
  * @param <T> the type of the auditing instance
  */
-public interface AuditorAware<T extends Persistable<?>> {
+public interface AuditorAware<T> {
 
     /**
      * Returns the current auditor of the application.
