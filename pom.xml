@@ -180,7 +180,7 @@
 	<scm>
 		<url>http://svn.synyx.org/synyx/opensource/hades</url>
 		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades</connection>
-		<developerConnection>scm:svn:https://svn.synyx.de/svn/synyx/opensource/hades</developerConnection>
+		<developerConnection>scm:svn:svn+ssh://synyxsvn/var/svn/synyx/opensource/hades</developerConnection>
 	</scm>
 	
 	<distributionManagement>
