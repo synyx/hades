@@ -221,7 +221,7 @@
 	<distributionManagement>
 		<site>
 			<id>static.synyx.org</id>
-			<url>scp://static.synyx.org/home/public/public_html/hades/site</url>
+			<url>scp://static.synyx.org/home/public/public_html/hades/1.x/site</url>
 		</site>
 		<repository>
 			<id>nexus.synyx.de</id>
