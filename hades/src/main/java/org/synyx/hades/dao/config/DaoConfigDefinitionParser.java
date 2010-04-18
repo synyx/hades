@@ -16,6 +16,7 @@
 
 package org.synyx.hades.dao.config;
 
+import static org.springframework.beans.factory.support.BeanDefinitionReaderUtils.*;
 import static org.synyx.hades.util.ClassUtils.*;
 
 import java.io.IOException;
@@ -76,6 +77,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
             PersistenceAnnotationBeanPostProcessor.class;
     private static final Class<?> PET_POST_PROCESSOR =
             PersistenceExceptionTranslationPostProcessor.class;
+    private static final String DAO_INTERFACE_POST_PROCESSOR =
+            "org.synyx.hades.dao.orm.DaoInterfaceAwareBeanPostProcessor";
 
 
     /*
@@ -375,28 +378,44 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
         BeanDefinitionRegistry registry = parserContext.getRegistry();
 
         // Create PersistenceAnnotationPostProcessor definition
-        if (!registry.containsBeanDefinition(PAB_POST_PROCESSOR.getName())) {
+        if (!hasBean(PAB_POST_PROCESSOR, registry)) {
 
             BeanDefinition definition =
                     BeanDefinitionBuilder
                             .rootBeanDefinition(PAB_POST_PROCESSOR)
                             .getBeanDefinition();
 
-            registry.registerBeanDefinition(definition.getBeanClassName(),
-                    definition);
+            registry.registerBeanDefinition(generateBeanName(definition,
+                    registry), definition);
         }
 
         // Create PersistenceExceptionTranslationPostProcessor definition
-        if (!registry.containsBeanDefinition(PET_POST_PROCESSOR.getName())) {
+        if (!hasBean(PET_POST_PROCESSOR, registry)) {
 
             BeanDefinition definition =
-                    BeanDefinitionBuilder.rootBeanDefinition(
-                            PersistenceExceptionTranslationPostProcessor.class)
+                    BeanDefinitionBuilder
+                            .rootBeanDefinition(PET_POST_PROCESSOR)
                             .getBeanDefinition();
 
-            registry.registerBeanDefinition(definition.getBeanClassName(),
-                    definition);
+            registry.registerBeanDefinition(generateBeanName(definition,
+                    registry), definition);
         }
+
+        BeanDefinition definition =
+                BeanDefinitionBuilder.rootBeanDefinition(
+                        DAO_INTERFACE_POST_PROCESSOR).getBeanDefinition();
+
+        registry.registerBeanDefinition(generateBeanName(definition, registry),
+                definition);
+    }
+
+
+    private boolean hasBean(Class<?> clazz, BeanDefinitionRegistry registry) {
+
+        String name =
+                String.format("%s%s0", clazz.getName(),
+                        GENERATED_BEAN_NAME_SEPARATOR);
+        return registry.containsBeanDefinition(name);
     }
 
     /**
