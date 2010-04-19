@@ -1,14 +1,32 @@
+/*
+ * Copyright 2008-2010 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.synyx.hades.dao.query;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.synyx.hades.dao.query.QueryLookupStrategy.*;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.QueryHint;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -274,6 +292,19 @@ public class QueryMethodUnitTest {
         QueryMethod queryMethod =
                 new QueryMethod(method, DOMAIN_CLASS, em, extractor);
         assertTrue(queryMethod.isValidField("property"));
+    }
+
+
+    @Test
+    public void discoversHintsCorrectly() throws Exception {
+
+        QueryMethod method =
+                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+        List<QueryHint> hints = method.getHints();
+
+        assertNotNull(hints);
+        assertThat(hints.get(0).name(), is("foo"));
+        assertThat(hints.get(0).value(), is("bar"));
     }
 
     /**

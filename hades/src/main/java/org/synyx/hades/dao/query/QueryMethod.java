@@ -15,18 +15,23 @@
  */
 package org.synyx.hades.dao.query;
 
+import static org.springframework.core.annotation.AnnotationUtils.*;
 import static org.synyx.hades.dao.query.QueryExecution.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.QueryHint;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.Modifying;
+import org.synyx.hades.dao.QueryHints;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
@@ -297,6 +302,25 @@ public class QueryMethod {
         }
 
         return SINGLE_ENTITY.execute(hadesQuery, executionParameters);
+    }
+
+
+    /**
+     * Returns all {@link QueryHint}s annotated at this class. Note, that
+     * {@link QueryHints}
+     * 
+     * @return
+     */
+    List<QueryHint> getHints() {
+
+        List<QueryHint> result = new ArrayList<QueryHint>();
+
+        QueryHints hints = getAnnotation(method, QueryHints.class);
+        if (hints != null) {
+            result.addAll(Arrays.asList(hints.value()));
+        }
+
+        return result;
     }
 
 

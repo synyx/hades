@@ -18,6 +18,8 @@ package org.synyx.hades.dao;
 
 import java.util.List;
 
+import javax.persistence.QueryHint;
+
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.User;
@@ -38,6 +40,7 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      * @param lastname
      * @return all users with the given lastname
      */
+    @QueryHints( { @QueryHint(name = "foo", value = "bar") })
     List<User> findByLastname(final String lastname);
 
 
