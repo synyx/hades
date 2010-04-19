@@ -15,8 +15,11 @@
  */
 package org.synyx.hades.dao.query;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.QueryHint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,17 +38,19 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
 
     private String queryString;
     private String alias;
+    private List<QueryHint> hints;
 
 
     /**
      * Creates a new {@link SimpleHadesQuery} that encapsulates a simple query
      * string.
      */
-    private SimpleHadesQuery(QueryMethod method, String queryString) {
+    SimpleHadesQuery(QueryMethod method, String queryString) {
 
         super(method);
         this.queryString = queryString;
         this.alias = QueryUtils.detectAlias(queryString);
+        this.hints = method.getHints();
     }
 
 
@@ -55,7 +60,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * 
      * @param method
      */
-    private SimpleHadesQuery(QueryMethod method) {
+    SimpleHadesQuery(QueryMethod method) {
 
         this(method, new QueryCreator(method).constructQuery());
     }
@@ -74,7 +79,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
         String query =
                 QueryUtils.applySorting(queryString, binder.getSort(), alias);
 
-        return em.createQuery(query);
+        return applyHints(em.createQuery(query));
     }
 
 
@@ -90,7 +95,23 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
         String query = QueryUtils.createCountQueryFor(queryString);
         query = QueryUtils.applySorting(query, binder.getSort(), alias);
 
-        return em.createQuery(query);
+        return applyHints(em.createQuery(query));
+    }
+
+
+    /**
+     * Applies the declared query hints to the given query.
+     * 
+     * @param query
+     * @return
+     */
+    private Query applyHints(Query query) {
+
+        for (QueryHint hint : hints) {
+            query.setHint(hint.name(), hint.value());
+        }
+
+        return query;
     }
 
 
