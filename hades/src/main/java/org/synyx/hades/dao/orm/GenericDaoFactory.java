@@ -242,25 +242,13 @@ public class GenericDaoFactory {
 
         Class<?> declaringClass = method.getDeclaringClass();
 
-        // Skip methods of Hades interfaces
-        if (ClassUtils.isGenericDaoInterface(declaringClass)) {
-            return false;
-        }
+        boolean isQueryMethod = declaringClass.equals(daoInterface);
+        boolean isHadesDaoInterface =
+                ClassUtils.isGenericDaoInterface(declaringClass);
+        boolean isBaseClassMethod =
+                declaringClass.isAssignableFrom(getDaoClass());
 
-        return !isFinderMethod(method, daoInterface);
-    }
-
-
-    /**
-     * Returns whether the given method is a finder method.
-     * 
-     * @param method
-     * @param daoInterface
-     * @return
-     */
-    private boolean isFinderMethod(Method method, Class<?> daoInterface) {
-
-        return daoInterface.equals(method.getDeclaringClass());
+        return !(isHadesDaoInterface || isBaseClassMethod || isQueryMethod);
     }
 
 
@@ -333,22 +321,17 @@ public class GenericDaoFactory {
             this.daoInterface = daoInterface;
             this.customDaoImplementation = customDaoImplementation;
 
-            for (Method method : daoInterface.getMethods()) {
+            for (Method method : daoInterface.getDeclaredMethods()) {
 
-                if (isFinderMethod(method, daoInterface)) {
+                Class<?> domainClass = ClassUtils.getDomainClass(daoInterface);
+                QueryExtractor extractor =
+                        PersistenceProvider.fromEntityManager(entityManager);
 
-                    Class<?> domainClass =
-                            ClassUtils.getDomainClass(daoInterface);
-                    QueryExtractor extractor =
-                            PersistenceProvider
-                                    .fromEntityManager(entityManager);
+                QueryMethod finder =
+                        new QueryMethod(method, domainClass, entityManager,
+                                extractor, queryLookupStrategy);
 
-                    QueryMethod finder =
-                            new QueryMethod(method, domainClass, entityManager,
-                                    extractor, queryLookupStrategy);
-
-                    queries.put(method, finder);
-                }
+                queries.put(method, finder);
             }
         }
 
