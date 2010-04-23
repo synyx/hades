@@ -18,6 +18,7 @@ package org.synyx.hades.dao.orm;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 
 import org.junit.Test;
@@ -62,6 +63,22 @@ public class IsNewStrategiesUnitTest {
 
 
     @Test
+    public void detectsEmbeddedIdFieldAnnotatedIdCorrectly() throws Exception {
+
+        IsNewStrategy strategy =
+                new GenericDaoSupport.ReflectiveIsNewStrategy(
+                        EmbeddedIdFieldAnnotatedEntity.class);
+
+        EmbeddedIdFieldAnnotatedEntity entity =
+                new EmbeddedIdFieldAnnotatedEntity(null);
+        assertThat(strategy.isNew(entity), is(true));
+
+        entity = new EmbeddedIdFieldAnnotatedEntity(1L);
+        assertThat(strategy.isNew(entity), is(false));
+    }
+
+
+    @Test
     public void detectsMethodAnnotatedIdCorrectly() throws Exception {
 
         IsNewStrategy strategy =
@@ -72,6 +89,23 @@ public class IsNewStrategiesUnitTest {
         assertThat(strategy.isNew(entity), is(true));
 
         entity = new MethodAnnotatedEntity();
+        entity.id = 1L;
+        assertThat(strategy.isNew(entity), is(false));
+    }
+
+
+    @Test
+    public void detectsEmbeddedIdMethodAnnotatedIdCorrectly() throws Exception {
+
+        IsNewStrategy strategy =
+                new GenericDaoSupport.ReflectiveIsNewStrategy(
+                        EmbeddedIdMethodAnnotatedEntity.class);
+
+        EmbeddedIdMethodAnnotatedEntity entity =
+                new EmbeddedIdMethodAnnotatedEntity();
+        assertThat(strategy.isNew(entity), is(true));
+
+        entity = new EmbeddedIdMethodAnnotatedEntity();
         entity.id = 1L;
         assertThat(strategy.isNew(entity), is(false));
     }
@@ -93,12 +127,36 @@ public class IsNewStrategiesUnitTest {
         }
     }
 
+    static class EmbeddedIdFieldAnnotatedEntity {
+
+        @EmbeddedId
+        Long id;
+
+
+        public EmbeddedIdFieldAnnotatedEntity(Long id) {
+
+            this.id = id;
+        }
+    }
+
     static class MethodAnnotatedEntity {
 
         private Long id;
 
 
         @Id
+        public Long getId() {
+
+            return id;
+        }
+    }
+
+    static class EmbeddedIdMethodAnnotatedEntity {
+
+        private Long id;
+
+
+        @EmbeddedId
         public Long getId() {
 
             return id;

@@ -21,6 +21,7 @@ import static org.synyx.hades.dao.query.QueryUtils.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
@@ -256,11 +257,16 @@ public abstract class GenericDaoSupport<T> {
                 public void doWith(Field field)
                         throws IllegalArgumentException, IllegalAccessException {
 
-                    boolean idFieldFound =
-                            ReflectiveIsNewStrategy.this.field != null;
-                    boolean isIdField = field.getAnnotation(Id.class) != null;
+                    if (ReflectiveIsNewStrategy.this.field != null) {
+                        return;
+                    }
 
-                    if (!idFieldFound && isIdField) {
+                    boolean hasIdAnnotation =
+                            field.getAnnotation(Id.class) != null;
+                    boolean hasEmbeddedIdAnnotation =
+                            field.getAnnotation(EmbeddedId.class) != null;
+
+                    if (hasIdAnnotation || hasEmbeddedIdAnnotation) {
                         ReflectiveIsNewStrategy.this.field = field;
                     }
                 }
@@ -275,12 +281,17 @@ public abstract class GenericDaoSupport<T> {
                 public void doWith(Method method)
                         throws IllegalArgumentException, IllegalAccessException {
 
-                    boolean idMethodFound =
-                            ReflectiveIsNewStrategy.this.method != null;
-                    boolean isIdMethod =
-                            AnnotationUtils.findAnnotation(method, Id.class) != null;
+                    if (ReflectiveIsNewStrategy.this.method != null) {
+                        return;
+                    }
 
-                    if (!idMethodFound && isIdMethod) {
+                    boolean hasIdAnnotation =
+                            AnnotationUtils.findAnnotation(method, Id.class) != null;
+                    boolean hasEmbeddedIdAnnotation =
+                            AnnotationUtils.findAnnotation(method,
+                                    EmbeddedId.class) != null;
+
+                    if (hasIdAnnotation || hasEmbeddedIdAnnotation) {
                         ReflectiveIsNewStrategy.this.method = method;
                     }
                 }
