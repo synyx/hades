@@ -218,13 +218,7 @@ public class GenericDaoFactory {
         }
 
         for (Method method : daoInterface.getMethods()) {
-
-            boolean customMethodCandidate =
-                    isCustomMethod(method, daoInterface);
-            boolean implementedByBaseClass =
-                    method.getDeclaringClass().isAssignableFrom(getDaoClass());
-
-            if (customMethodCandidate && !implementedByBaseClass) {
+            if (isCustomMethod(method, daoInterface)) {
                 return true;
             }
         }
@@ -244,25 +238,13 @@ public class GenericDaoFactory {
 
         Class<?> declaringClass = method.getDeclaringClass();
 
-        // Skip methods of Hades interfaces
-        if (ClassUtils.isHadesDaoInterface(declaringClass)) {
-            return false;
-        }
+        boolean isQueryMethod = declaringClass.equals(daoInterface);
+        boolean isHadesDaoInterface =
+                ClassUtils.isHadesDaoInterface(declaringClass);
+        boolean isBaseClassMethod =
+                declaringClass.isAssignableFrom(getDaoClass());
 
-        return !isFinderMethod(method, daoInterface);
-    }
-
-
-    /**
-     * Returns whether the given method is a finder method.
-     * 
-     * @param method
-     * @param daoInterface
-     * @return
-     */
-    private boolean isFinderMethod(Method method, Class<?> daoInterface) {
-
-        return daoInterface.equals(method.getDeclaringClass());
+        return !(isHadesDaoInterface || isBaseClassMethod || isQueryMethod);
     }
 
 
@@ -344,22 +326,17 @@ public class GenericDaoFactory {
             this.daoInterface = daoInterface;
             this.customDaoImplementation = customDaoImplementation;
 
-            for (Method method : daoInterface.getMethods()) {
+            for (Method method : daoInterface.getDeclaredMethods()) {
 
-                if (isFinderMethod(method, daoInterface)) {
+                Class<?> domainClass = ClassUtils.getDomainClass(daoInterface);
+                QueryExtractor extractor =
+                        PersistenceProvider.fromEntityManager(entityManager);
 
-                    Class<?> domainClass =
-                            ClassUtils.getDomainClass(daoInterface);
-                    QueryExtractor extractor =
-                            PersistenceProvider
-                                    .fromEntityManager(entityManager);
+                QueryMethod finder =
+                        new QueryMethod(method, domainClass, entityManager,
+                                extractor, queryLookupStrategy);
 
-                    QueryMethod finder =
-                            new QueryMethod(method, domainClass, entityManager,
-                                    extractor, queryLookupStrategy);
-
-                    queries.put(method, finder);
-                }
+                queries.put(method, finder);
             }
         }
 
