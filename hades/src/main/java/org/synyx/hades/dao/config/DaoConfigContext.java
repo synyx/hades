@@ -36,6 +36,9 @@ import org.w3c.dom.NodeList;
  */
 class DaoConfigContext {
 
+    private static final String FACTORY_CLASS =
+            "org.synyx.hades.dao.orm.GenericDaoFactoryBean";
+
     protected static final String DEFAULT_DAO_IMPL_POSTFIX = "Impl";
 
     protected static final String QUERY_LOOKUP_STRATEGY =
@@ -159,7 +162,8 @@ class DaoConfigContext {
     protected String getDaoFactoryClassName() {
 
         String factoryClassName = element.getAttribute(DAO_FACTORY_CLASS_NAME);
-        return StringUtils.hasText(factoryClassName) ? factoryClassName : null;
+        return StringUtils.hasText(factoryClassName) ? factoryClassName
+                : FACTORY_CLASS;
     }
 
 
