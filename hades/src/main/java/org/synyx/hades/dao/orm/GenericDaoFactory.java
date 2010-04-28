@@ -351,6 +351,7 @@ public class GenericDaoFactory {
             if (isCustomMethodInvocation(invocation)) {
 
                 try {
+                    ReflectionUtils.makeAccessible(method);
                     return method.invoke(customDaoImplementation, invocation
                             .getArguments());
                 } catch (Exception e) {
