@@ -18,8 +18,12 @@ package org.synyx.hades.dao.orm;
 
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
@@ -27,7 +31,6 @@ import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -239,6 +242,10 @@ public abstract class GenericDaoSupport<T> {
      */
     public static class ReflectiveIsNewStrategy implements IsNewStrategy {
 
+        @SuppressWarnings("unchecked")
+        private static final List<Class<? extends Annotation>> ID_ANNOTATIONS =
+                Arrays.asList(Id.class, EmbeddedId.class);
+
         private Field field;
         private Method method;
 
@@ -261,12 +268,7 @@ public abstract class GenericDaoSupport<T> {
                         return;
                     }
 
-                    boolean hasIdAnnotation =
-                            field.getAnnotation(Id.class) != null;
-                    boolean hasEmbeddedIdAnnotation =
-                            field.getAnnotation(EmbeddedId.class) != null;
-
-                    if (hasIdAnnotation || hasEmbeddedIdAnnotation) {
+                    if (hasAnnotation(field, ID_ANNOTATIONS)) {
                         ReflectiveIsNewStrategy.this.field = field;
                     }
                 }
@@ -285,17 +287,35 @@ public abstract class GenericDaoSupport<T> {
                         return;
                     }
 
-                    boolean hasIdAnnotation =
-                            AnnotationUtils.findAnnotation(method, Id.class) != null;
-                    boolean hasEmbeddedIdAnnotation =
-                            AnnotationUtils.findAnnotation(method,
-                                    EmbeddedId.class) != null;
-
-                    if (hasIdAnnotation || hasEmbeddedIdAnnotation) {
+                    if (hasAnnotation(method, ID_ANNOTATIONS)) {
                         ReflectiveIsNewStrategy.this.method = method;
                     }
                 }
             });
+        }
+
+
+        /**
+         * Checks whether the given {@link AnnotatedElement} carries one of the
+         * given {@link Annotation}s.
+         * 
+         * @param <A>
+         * @param annotatedElement
+         * @param annotations
+         * @return
+         */
+        private <A extends Annotation> boolean hasAnnotation(
+                AnnotatedElement annotatedElement,
+                List<Class<? extends A>> annotations) {
+
+            for (Class<? extends A> annotation : annotations) {
+
+                if (annotatedElement.getAnnotation(annotation) != null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
 
