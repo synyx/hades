@@ -27,6 +27,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.query.QueryExtractor;
@@ -356,6 +357,7 @@ public class GenericDaoFactory {
             if (isCustomMethodInvocation(invocation)) {
 
                 try {
+                    ReflectionUtils.makeAccessible(method);
                     return method.invoke(customDaoImplementation, invocation
                             .getArguments());
                 } catch (Exception e) {
