@@ -28,6 +28,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.synyx.hades.dao.AuditableUserDao;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.domain.User;
 
 
 /**
@@ -41,6 +43,9 @@ public class AuditingAdviceIntegrationTest {
 
     @Autowired
     private AuditableUserDao userDao;
+
+    @Autowired
+    private UserDao plainUserDao;
 
     private AuditableUser firstUser;
     private AuditableUser secondUser;
@@ -85,5 +90,16 @@ public class AuditingAdviceIntegrationTest {
             assertNotNull(user.getCreatedDate());
             assertNotNull(user.getLastModifiedDate());
         }
+    }
+
+
+    /**
+     * @see #300
+     */
+    @Test
+    public void doesntTouchNonAuditables() throws Exception {
+
+        plainUserDao.save(Arrays.asList(new User("firstname", "lastname",
+                "email")));
     }
 }

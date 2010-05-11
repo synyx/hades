@@ -136,12 +136,17 @@ public class AuditingAdvice<T> {
      * 
      * @param auditables
      */
+    @SuppressWarnings("unchecked")
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditables)")
     public void touch(final List<Auditable<T, ?>> auditables) {
 
-        for (Auditable<T, ?> auditable : auditables) {
-
-            touch(auditable);
+        // Matching concrete generic collections doesn't seem to be supported
+        // currently so we need to check manually. For details, see:
+        // http://jira.springframework.org/browse/SPR-7186
+        for (Object auditable : auditables) {
+            if (auditable instanceof Auditable<?, ?>) {
+                touch((Auditable<T, ?>) auditable);
+            }
         }
     }
 
