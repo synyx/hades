@@ -138,7 +138,7 @@ public class AuditingAdvice<T> {
      */
     @SuppressWarnings("unchecked")
     @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditables)")
-    public void touch(final List<Auditable<T, ?>> auditables) {
+    public void touch(final List<?> auditables) {
 
         // Matching concrete generic collections doesn't seem to be supported
         // currently so we need to check manually. For details, see:
