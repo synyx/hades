@@ -309,11 +309,11 @@ public class GenericDaoFactory {
      */
     private class QueryExecuterMethodInterceptor implements MethodInterceptor {
 
-        private Map<Method, QueryMethod> queries =
+        private final Map<Method, QueryMethod> queries =
                 new ConcurrentHashMap<Method, QueryMethod>();
 
-        private Object customDaoImplementation;
-        private Class<?> daoInterface;
+        private final Object customDaoImplementation;
+        private final Class<?> daoInterface;
 
 
         /**

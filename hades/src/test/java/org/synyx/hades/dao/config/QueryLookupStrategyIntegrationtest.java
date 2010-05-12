@@ -21,9 +21,9 @@ import static org.synyx.hades.dao.query.QueryLookupStrategy.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.synyx.hades.dao.UserDao;
 import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
 
@@ -35,10 +35,10 @@ import org.synyx.hades.dao.query.QueryLookupStrategy;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:namespace/lookup-strategies-context.xml")
-public class QueryLookupStrategyIntegrationtest {
+public class QueryLookupStrategyIntegrationTest {
 
     @Autowired
-    private GenericDaoFactoryBean<UserDao> factory;
+    private ApplicationContext context;
 
 
     /**
@@ -47,6 +47,9 @@ public class QueryLookupStrategyIntegrationtest {
      */
     @Test
     public void assertUseDeclaredQuery() {
+
+        GenericDaoFactoryBean<?> factory =
+                (GenericDaoFactoryBean<?>) context.getBean("&roleDao");
 
         assertEquals(USE_DECLARED_QUERY, factory.getQueryLookupStrategy());
     }
