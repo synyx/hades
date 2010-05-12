@@ -36,7 +36,7 @@
     <hades:dao id="roleDao" />
   </hades:dao-config>
   
-  <hades:dao-config base-package="org.synyx.hades.dao" entity-manager-factory-ref="entityManagerFactory-2">
+  <hades:dao-config base-package="org.synyx.hades.dao" entity-manager-factory-ref="entityManagerFactory-2" transaction-manager-ref="transactionManager-2">
     <hades:dao id="auditableUserDao" />
   </hades:dao-config>
 
