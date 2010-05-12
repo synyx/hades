@@ -248,4 +248,19 @@ class DaoContext extends DaoConfigContext {
         return StringUtils.hasText(ref) ? ref : parent
                 .getEntityManagerFactoryRef();
     }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.synyx.hades.dao.config.DaoConfigContext#getTransactionManagerRef()
+     */
+    @Override
+    protected String getTransactionManagerRef() {
+
+        String ref = getElement().getAttribute(TRANSACTION_MANAGER_REF);
+        return StringUtils.hasText(ref) ? ref : parent
+                .getTransactionManagerRef();
+    }
 }

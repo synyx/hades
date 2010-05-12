@@ -217,6 +217,9 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                             beanSource));
         }
 
+        beanDefinitionBuilder.addPropertyValue("transactionManager", context
+                .getTransactionManagerRef());
+
         String customImplementationBeanName =
                 registerCustomImplementation(context, parserContext,
                         beanDefinitionBuilder);

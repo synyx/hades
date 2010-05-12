@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,6 +39,8 @@ class DaoConfigContext {
 
     private static final String FACTORY_CLASS =
             "org.synyx.hades.dao.orm.GenericDaoFactoryBean";
+    private static final String DEFAULT_TRANSACTION_MANAGER_REF =
+            GenericDaoFactoryBean.DEFAULT_TRANSACTION_MANAGER;
 
     protected static final String DEFAULT_DAO_IMPL_POSTFIX = "Impl";
 
@@ -48,6 +51,8 @@ class DaoConfigContext {
     protected static final String DAO_FACTORY_CLASS_NAME = "factory-class";
     protected static final String ENTITY_MANAGER_FACTORY_REF =
             "entity-manager-factory-ref";
+    protected static final String TRANSACTION_MANAGER_REF =
+            "transaction-manager-ref";
 
     private Element element;
 
@@ -191,5 +196,18 @@ class DaoConfigContext {
 
         String ref = element.getAttribute(ENTITY_MANAGER_FACTORY_REF);
         return StringUtils.hasText(ref) ? ref : null;
+    }
+
+
+    /**
+     * Returns the transaction manager bean name to be used. Defaults to
+     * {@value #DEFAULT_TRANSACTION_MANAGER_REF}.
+     * 
+     * @return
+     */
+    protected String getTransactionManagerRef() {
+
+        String ref = element.getAttribute(TRANSACTION_MANAGER_REF);
+        return StringUtils.hasText(ref) ? ref : DEFAULT_TRANSACTION_MANAGER_REF;
     }
 }
