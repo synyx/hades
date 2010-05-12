@@ -16,6 +16,7 @@
 
 package org.synyx.hades.dao.test;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ import org.synyx.hades.domain.User;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext.xml" })
-@Transactional()
+@Transactional
 public class UserDaoIntegrationTest {
 
     @PersistenceContext
@@ -154,8 +155,10 @@ public class UserDaoIntegrationTest {
 
         flushTestUsers();
 
+        long before = userDao.count();
+
         userDao.delete(Arrays.asList(firstUser, secondUser));
-        assertEquals((Long) 0L, userDao.count());
+        assertThat(userDao.count(), is(before - 2));
     }
 
 

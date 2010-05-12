@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.persistence.QueryHint;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.User;
@@ -42,6 +43,15 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      */
     @QueryHints( { @QueryHint(name = "foo", value = "bar") })
     List<User> findByLastname(final String lastname);
+
+
+    /**
+     * Redeclaration of
+     * {@link GenericDao#readByPrimaryKey(java.io.Serializable)} to change
+     * transaction configuration.
+     */
+    @Transactional
+    public User readByPrimaryKey(Integer primaryKey);
 
 
     /**
@@ -92,6 +102,7 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      * @return
      */
     @Query("select u from User u where u.emailAddress = ?1")
+    @Transactional(readOnly = true)
     User findByHadesQuery(final String emailAddress);
 
 

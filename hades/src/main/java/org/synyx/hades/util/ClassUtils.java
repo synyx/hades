@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -37,6 +38,13 @@ import org.synyx.hades.domain.Page;
  * @author Oliver Gierke - gierke@synyx.de
  */
 public abstract class ClassUtils {
+
+    @SuppressWarnings("unchecked")
+    private static final TypeVariable<Class<GenericDao>>[] PARAMETERS =
+            GenericDao.class.getTypeParameters();
+    private static final String DOMAIN_TYPE_NAME = PARAMETERS[0].getName();
+    private static final String ID_TYPE_NAME = PARAMETERS[1].getName();
+
 
     /**
      * Private constructor to prevent instantiation.
@@ -311,5 +319,114 @@ public abstract class ClassUtils {
         }
 
         throw ex;
+    }
+
+
+    /**
+     * Returns the given base class' method if the given method (declared in the
+     * interface) was also declared at the base class. Returns the given method
+     * if the given base class does not declare the method given. Takes generics
+     * into account.
+     * 
+     * @param method
+     * @param baseClass
+     * @param daoInterface
+     * @return
+     */
+    public static Method getBaseClassMethodFor(Method method,
+            Class<?> baseClass, Class<?> daoInterface) {
+
+        for (Method daoClassMethod : baseClass.getDeclaredMethods()) {
+
+            // Wrong name
+            if (!method.getName().equals(daoClassMethod.getName())) {
+                continue;
+            }
+
+            // Wrong number of arguments
+            if (!(method.getParameterTypes().length == daoClassMethod
+                    .getParameterTypes().length)) {
+                continue;
+            }
+
+            // Check whether all parameters match
+            if (!parametersMatch(method, daoClassMethod, daoInterface)) {
+                continue;
+            }
+
+            return daoClassMethod;
+        }
+
+        return method;
+    }
+
+
+    /**
+     * Checks the given method's parameters to match the ones of the given base
+     * class method. Matches generic arguments agains the ones bound in the
+     * given DAO interface.
+     * 
+     * @param method
+     * @param baseClassMethod
+     * @param daoInterface
+     * @return
+     */
+    private static boolean parametersMatch(Method method,
+            Method baseClassMethod, Class<?> daoInterface) {
+
+        Type[] genericTypes = baseClassMethod.getGenericParameterTypes();
+        Class<?>[] types = baseClassMethod.getParameterTypes();
+        Class<?>[] methodParameters = method.getParameterTypes();
+
+        for (int i = 0; i < genericTypes.length; i++) {
+
+            Type type = genericTypes[i];
+
+            if (type instanceof TypeVariable<?>) {
+
+                String name = ((TypeVariable<?>) type).getName();
+
+                if (!matchesGenericType(name, methodParameters[i], daoInterface)) {
+                    return false;
+                }
+
+            } else {
+
+                if (!types[i].equals(methodParameters[i])) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Checks whether the given parameter type matches the generic type of the
+     * given parameter. Thus when {@literal PK} is declared, the method ensures
+     * that given method parameter is the primary key type declared in the given
+     * DAO interface e.g.
+     * 
+     * @param name
+     * @param parameterType
+     * @param daoInterface
+     * @return
+     */
+    private static boolean matchesGenericType(String name,
+            Class<?> parameterType, Class<?> daoInterface) {
+
+        Class<?> entityType = getDomainClass(daoInterface);
+        Class<?> idClass = getIdClass(daoInterface);
+
+        if (ID_TYPE_NAME.equals(name) && parameterType.equals(idClass)) {
+            return true;
+        }
+
+        if (DOMAIN_TYPE_NAME.equals(name) && parameterType.equals(entityType)) {
+            return true;
+        }
+
+        return false;
     }
 }

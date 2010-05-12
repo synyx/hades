@@ -16,8 +16,13 @@
 
 package org.synyx.hades.dao.orm;
 
+import static org.springframework.util.ReflectionUtils.*;
+import static org.synyx.hades.util.ClassUtils.*;
+
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
@@ -27,7 +32,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.query.QueryExtractor;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
@@ -51,6 +55,9 @@ public class GenericDaoFactory {
     private EntityManager entityManager;
     private QueryLookupStrategy queryLookupStrategy =
             QueryLookupStrategy.getDefault();
+
+    private Map<Method, Method> methodCache =
+            new ConcurrentHashMap<Method, Method>();
 
 
     /**
@@ -171,8 +178,11 @@ public class GenericDaoFactory {
             ProxyFactory result = new ProxyFactory();
             result.setTarget(genericJpaDao);
             result.setInterfaces(new Class[] { daoInterface });
+
+            prepare(result);
+
             result.addAdvice(new QueryExecuterMethodInterceptor(daoInterface,
-                    customDaoImplementation));
+                    customDaoImplementation, genericJpaDao));
 
             return (T) result.getProxy();
         } catch (InstantiationException e) {
@@ -180,6 +190,20 @@ public class GenericDaoFactory {
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+
+    /**
+     * Callback method to prepare the given {@link ProxyFactory} to e.g. add
+     * further interceptors. The {@link QueryExecuterMethodInterceptor} will be
+     * added <em>after</em> this method was called, so all interceptors or
+     * advisors added in this method will kick in before it.
+     * 
+     * @see GenericDaoFactoryBean#prepare(ProxyFactory)
+     * @param proxyFactory
+     */
+    protected void prepare(ProxyFactory proxyFactory) {
+
     }
 
 
@@ -218,17 +242,58 @@ public class GenericDaoFactory {
 
         for (Method method : daoInterface.getMethods()) {
 
-            boolean customMethodCandidate =
-                    isCustomMethod(method, daoInterface);
-            boolean implementedByBaseClass =
-                    method.getDeclaringClass().isAssignableFrom(getDaoClass());
-
-            if (customMethodCandidate && !implementedByBaseClass) {
+            if (isCustomMethod(method, daoInterface)
+                    && !isBaseClassMethod(method, daoInterface)) {
                 return true;
             }
         }
 
         return hasCustomMethod;
+    }
+
+
+    /**
+     * Returns whether the given method is considered to be a DAO base class
+     * method.
+     * 
+     * @param method
+     * @return
+     */
+    private boolean isBaseClassMethod(Method method, Class<?> daoInterface) {
+
+        Assert.notNull(method);
+
+        if (method.getDeclaringClass().isAssignableFrom(getDaoClass())) {
+            return true;
+        }
+
+        return !method.equals(getBaseClassMethod(method, daoInterface));
+    }
+
+
+    /**
+     * Returns the base class method that is backing the given method. This can
+     * be necessary if a DAO interface redeclares a method in {@link GenericDao}
+     * (e.g. for transaction behaviour customization). Returns the method itself
+     * if the base class does not implement the given method.
+     * 
+     * @param method
+     * @return
+     */
+    private Method getBaseClassMethod(Method method, Class<?> daoInterface) {
+
+        Assert.notNull(method);
+
+        Method result = methodCache.get(method);
+
+        if (null != result) {
+            return result;
+        }
+
+        result = getBaseClassMethodFor(method, getDaoClass(), daoInterface);
+        methodCache.put(method, result);
+
+        return result;
     }
 
 
@@ -246,10 +311,30 @@ public class GenericDaoFactory {
         boolean isQueryMethod = declaringClass.equals(daoInterface);
         boolean isHadesDaoInterface =
                 ClassUtils.isGenericDaoInterface(declaringClass);
-        boolean isBaseClassMethod =
-                declaringClass.isAssignableFrom(getDaoClass());
+        boolean isBaseClassMethod = isBaseClassMethod(method, daoInterface);
 
         return !(isHadesDaoInterface || isBaseClassMethod || isQueryMethod);
+    }
+
+
+    /**
+     * Returns all
+     * 
+     * @param daoInterface
+     * @return
+     */
+    private Iterable<Method> getFinderMethods(Class<?> daoInterface) {
+
+        Set<Method> result = new HashSet<Method>();
+
+        for (Method method : daoInterface.getDeclaredMethods()) {
+            if (!isCustomMethod(method, daoInterface)
+                    && !isBaseClassMethod(method, daoInterface)) {
+                result.add(method);
+            }
+        }
+
+        return result;
     }
 
 
@@ -304,11 +389,12 @@ public class GenericDaoFactory {
      */
     private class QueryExecuterMethodInterceptor implements MethodInterceptor {
 
-        private Map<Method, QueryMethod> queries =
+        private final Map<Method, QueryMethod> queries =
                 new ConcurrentHashMap<Method, QueryMethod>();
 
-        private Object customDaoImplementation;
-        private Class<?> daoInterface;
+        private final Object customDaoImplementation;
+        private final Class<?> daoInterface;
+        private final GenericDaoSupport<?> dao;
 
 
         /**
@@ -317,12 +403,13 @@ public class GenericDaoFactory {
          * methods.
          */
         public QueryExecuterMethodInterceptor(Class<?> daoInterface,
-                Object customDaoImplementation) {
+                Object customDaoImplementation, GenericDaoSupport<?> dao) {
 
             this.daoInterface = daoInterface;
             this.customDaoImplementation = customDaoImplementation;
+            this.dao = dao;
 
-            for (Method method : daoInterface.getDeclaredMethods()) {
+            for (Method method : getFinderMethods(daoInterface)) {
 
                 Class<?> domainClass = ClassUtils.getDomainClass(daoInterface);
                 QueryExtractor extractor =
@@ -351,22 +438,44 @@ public class GenericDaoFactory {
 
             if (isCustomMethodInvocation(invocation)) {
 
-                try {
-                    ReflectionUtils.makeAccessible(method);
-                    return method.invoke(customDaoImplementation, invocation
-                            .getArguments());
-                } catch (Exception e) {
-                    ClassUtils.unwrapReflectionException(e);
-                }
+                makeAccessible(method);
+                return executeMethodOn(customDaoImplementation, method,
+                        invocation.getArguments());
             }
 
             if (hasQueryFor(method)) {
-
                 return queries.get(method).executeQuery(
                         invocation.getArguments());
             }
 
-            return invocation.proceed();
+            // Lookup actual method as it might be redeclared in the interface
+            // and we have to use the dao instance nevertheless
+            // Method actualMethod = getBaseClassMethod(method);
+            Method actualMethod = getBaseClassMethod(method, daoInterface);
+            return executeMethodOn(dao, actualMethod, invocation.getArguments());
+        }
+
+
+        /**
+         * Executes the given method on the given target. Correctly unwraps
+         * exceptions not caused by the reflection magic.
+         * 
+         * @param target
+         * @param method
+         * @param parameters
+         * @return
+         * @throws Throwable
+         */
+        private Object executeMethodOn(Object target, Method method,
+                Object[] parameters) throws Throwable {
+
+            try {
+                return method.invoke(target, parameters);
+            } catch (Exception e) {
+                ClassUtils.unwrapReflectionException(e);
+            }
+
+            throw new IllegalStateException("Should not occur!");
         }
 
 

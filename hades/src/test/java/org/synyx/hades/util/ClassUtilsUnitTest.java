@@ -15,16 +15,19 @@
  */
 package org.synyx.hades.util;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.synyx.hades.util.ClassUtils.*;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import javax.persistence.Entity;
 
 import org.junit.Test;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.dao.orm.GenericJpaDao;
 import org.synyx.hades.daocustom.UserCustomExtendedDao;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
@@ -89,6 +92,35 @@ public class ClassUtilsUnitTest {
                 getDomainClass(GenericEntityDao.class));
     }
 
+
+    /**
+     * #301
+     */
+    @Test
+    public void discoversDaoBaseClassMethod() throws Exception {
+
+        Method method =
+                FooDao.class.getMethod("readByPrimaryKey", Integer.class);
+
+        Method reference =
+                getBaseClassMethodFor(method, GenericJpaDao.class, FooDao.class);
+        assertEquals(reference.getDeclaringClass(), GenericJpaDao.class);
+        assertThat(reference.getName(), is("readByPrimaryKey"));
+    }
+
+
+    /**
+     * #301
+     */
+    @Test
+    public void discoveresNonDaoBaseClassMethod() throws Exception {
+
+        Method method = FooDao.class.getMethod("readByPrimaryKey", Long.class);
+
+        assertThat(getBaseClassMethodFor(method, GenericJpaDao.class,
+                FooDao.class), is(method));
+    }
+
     /**
      * Sample entity with a custom name.
      * 
@@ -136,5 +168,20 @@ public class ClassUtilsUnitTest {
     private interface GenericEntityDao extends
             GenericDao<GenericEntity<String>, Long> {
 
+    }
+
+    /**
+     * Sample DAO interface to test redeclaration of {@link GenericDao} methods.
+     * 
+     * @author Oliver Gierke
+     */
+    private static interface FooDao extends GenericDao<User, Integer> {
+
+        // Redeclared method
+        User readByPrimaryKey(Integer primaryKey);
+
+
+        // Not a redeclared method
+        User readByPrimaryKey(Long primaryKey);
     }
 }

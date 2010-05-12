@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.GenericDaoFactory;
 import org.synyx.hades.daocustom.CustomGenericDaoFactory;
@@ -130,6 +131,8 @@ public class GenericDaoFactoryUnitTest {
 
     private interface SimpleSampleDao extends GenericDao<User, Integer> {
 
+        @Transactional
+        User readByPrimaryKey(Integer primaryKey);
     }
 
     /**
