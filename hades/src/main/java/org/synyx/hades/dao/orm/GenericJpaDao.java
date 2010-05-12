@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.query.QueryUtils;
@@ -43,6 +44,7 @@ import org.synyx.hades.domain.Sort;
  * @param <PK> the type of the entity's identifier
  */
 @Repository
+@Transactional
 public class GenericJpaDao<T, PK extends Serializable> extends
         GenericDaoSupport<T> implements GenericDao<T, PK> {
 
@@ -112,6 +114,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * @see
      * com.synyx.jpa.support.GenericDao#readByPrimaryKey(java.io.Serializable)
      */
+    @Transactional(readOnly = true)
     public T readByPrimaryKey(final PK primaryKey) {
 
         Assert.notNull(primaryKey, "The given primaryKey must not be null!");
@@ -125,6 +128,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * 
      * @see org.synyx.hades.dao.GenericDao#exists(java.io.Serializable)
      */
+    @Transactional(readOnly = true)
     public boolean exists(final PK primaryKey) {
 
         Assert.notNull(primaryKey, "The given primary key must not be null!");
@@ -139,6 +143,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * @see com.synyx.jpa.support.GenericDao#readAll()
      */
     @SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
     public List<T> readAll() {
 
         return getReadAllQuery().getResultList();
@@ -151,6 +156,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * @see org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.Sort)
      */
     @SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
     public List<T> readAll(final Sort sort) {
 
         String queryString =
@@ -168,6 +174,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * org.synyx.hades.hades.dao.GenericDao#readAll(org.synyx.hades.hades.dao
      * .Pageable)
      */
+    @Transactional(readOnly = true)
     public Page<T> readAll(final Pageable pageable) {
 
         if (null == pageable) {
@@ -184,6 +191,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * 
      * @see org.synyx.hades.hades.jpa.support.GenericDao#count()
      */
+    @Transactional(readOnly = true)
     public Long count() {
 
         return (Long) getEntityManager().createQuery(getCountQueryString())
