@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class TypeFilterParser {
+class TypeFilterParser {
 
     private static final String FILTER_TYPE_ATTRIBUTE = "type";
     private static final String FILTER_EXPRESSION_ATTRIBUTE = "expression";
