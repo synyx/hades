@@ -29,6 +29,22 @@ public class QueryUtilsUnitTest {
     public void createsCountQueryCorrectly() throws Exception {
 
         assertThat(createCountQueryFor(QUERY), is(COUNT_QUERY));
+
+    }
+
+
+    /**
+     * @see #303
+     */
+    @Test
+    public void createsCountQueriesCorrectlyForCapitalLetterJPQL() {
+
+        assertThat(createCountQueryFor("FROM User u WHERE u.foo.bar = ?"),
+                is("select count(*) FROM User u WHERE u.foo.bar = ?"));
+
+        assertThat(
+                createCountQueryFor("SELECT u FROM User u where u.foo.bar = ?"),
+                is("SELECT count(*) FROM User u where u.foo.bar = ?"));
     }
 
 
