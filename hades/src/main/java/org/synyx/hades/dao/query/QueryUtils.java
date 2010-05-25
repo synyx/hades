@@ -44,7 +44,10 @@ public abstract class QueryUtils {
     public static final String READ_ALL_QUERY = "select x from %s x";
     private static final String DEFAULT_ALIAS = "x";
 
-    private static final String COUNT_MATCH = "(?<=select )(.*)(?= from)";
+    private static final Pattern SIMPLE_FROM =
+            compile("from.*", CASE_INSENSITIVE);
+    private static final Pattern COUNT_MATCH =
+            compile("(?<=select )(.*)(?= from)", CASE_INSENSITIVE);
     private static final String COUNT_REPLACEMENT = "count(*)";
 
     private static final Pattern ALIAS_MATCH;
@@ -220,11 +223,12 @@ public abstract class QueryUtils {
 
         Assert.hasText(originalQuery);
 
-        if (originalQuery.startsWith("from")) {
+        if (SIMPLE_FROM.matcher(originalQuery).matches()) {
             return String.format("select %s %s", COUNT_REPLACEMENT,
                     originalQuery);
         }
 
-        return originalQuery.replaceFirst(COUNT_MATCH, COUNT_REPLACEMENT);
+        return COUNT_MATCH.matcher(originalQuery).replaceFirst(
+                COUNT_REPLACEMENT);
     }
 }
