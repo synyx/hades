@@ -15,28 +15,6 @@
 		<version>2.0.0.BUILD-SNAPSHOT</version>
 	</parent>
 
-	<developers>
-		<developer>
-			<id>gierke_cvs</id>
-			<name>Oliver Gierke</name>
-			<email>gierke@synyx.de</email>
-			<organization>Synyx GmbH &amp; Co. KG</organization>
-			<organizationUrl>http://www.synyx.de</organizationUrl>
-			<roles>
-				<role>Project lead</role>
-			</roles>
-			<timezone>+1</timezone>
-		</developer>
-	</developers>
-	
-	<contributors>
-		<contributor>
-			<name>Eberhard Wolff</name>
-			<organization>Spring Source</organization>
-			<organizationUrl>http://www.springsource.com</organizationUrl>
-		</contributor>
-	</contributors>
-
 	<dependencies>
     
 		<dependency>

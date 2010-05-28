@@ -35,6 +35,29 @@
         <junit.version>4.7</junit.version>
         <spring.version>3.0.3.BUILD-SNAPSHOT</spring.version>
     </properties>
+    
+    <developers>
+        <developer>
+            <id>gierke_cvs</id>
+            <name>Oliver Gierke</name>
+            <email>ogierke@vmware.com</email>
+            <organization>SpringSource - a division of VMware</organization>
+            <organizationUrl>http://www.springsource.com</organizationUrl>
+            <roles>
+                <role>Project lead</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    
+    <contributors>
+        <contributor>
+            <name>Eberhard Wolff</name>
+            <organization>SpringSource - a division of VMware</organization>
+            <organizationUrl>http://www.springsource.com</organizationUrl>
+            <timezone>+1</timezone>
+        </contributor>
+    </contributors>
 
     <build>
         <plugins>
@@ -121,6 +144,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.0</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
