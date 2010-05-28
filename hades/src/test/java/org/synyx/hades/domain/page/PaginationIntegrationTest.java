@@ -48,6 +48,8 @@ public class PaginationIntegrationTest {
     @Before
     public void setUp() {
 
+        userDao.deleteAll();
+
         for (int i = 0; i < 10; i++) {
 
             User user =
