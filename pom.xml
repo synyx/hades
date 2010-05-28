@@ -6,6 +6,7 @@
 	<packaging>pom</packaging>
 
 	<name>Hades</name>
+	<description>Library to implement persistence layers based on JPA and Spring.</description>
 	<url>http://hades.synyx.org</url>
 
 	<organization>
@@ -14,6 +15,14 @@
 	</organization>
 	
 	<inceptionYear>2009</inceptionYear>
+    
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
 	
 	<modules>
 		<module>hades</module>
