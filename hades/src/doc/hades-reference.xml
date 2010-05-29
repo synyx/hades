@@ -25,7 +25,7 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>2.0 RC1</releaseinfo>
+    <releaseinfo>2.0 RC2</releaseinfo>
 
     <pubdate>10.04.2010</pubdate>
 
@@ -250,6 +250,18 @@
         <revremark>Removed references to Persistable in examples where not
         needed, mentioned @NoDaoBean, fixed some typos here and there,
         metadata cleanup</revremark>
+      </revision>
+
+      <revision>
+        <date>29.05.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation on transactional behaviour</revremark>
       </revision>
     </revhistory>
   </bookinfo>
@@ -1415,7 +1427,7 @@ public class User {
         <example>
           <title>Using Pageable and Sort in query methods</title>
 
-          <para><programlisting>Page&lt;User&gt; findByLastname(String lastname, Pageable pageable);
+          <para><programlisting language="java">Page&lt;User&gt; findByLastname(String lastname, Pageable pageable);
 
 List&lt;User&gt; findByLastname(String lastname, Sort sort);</programlisting>The
           first method allows you to pass a <code>Pageable</code> instance to
@@ -1441,13 +1453,133 @@ List&lt;User&gt; findByLastname(String lastname, Sort sort);</programlisting>The
         <example>
           <title>Declaring manipulating queries</title>
 
-          <programlisting>@Modifying
+          <programlisting language="java">@Modifying
 @Query("update User u set u.firstname = ?1 where u.lastname = ?2")
 Long setFixedFirstnameFor(String firstname, String lastname);</programlisting>
         </example>
 
         <para>This will trigger the query annotated to the method as updating
         query instead of a selecting one.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Transactionality</title>
+
+      <para>As of version 2.0 Hades CRUD methods on DAO instances are
+      transactional by default. For reading operations the transaction
+      configuration <code>readOnly</code> flag is set to true, all others are
+      configured with a plain <classname>@Transactional</classname> so that
+      default transaction configuration applies. For details see JavaDoc of
+      <classname>GenericJpaDao</classname>. If you need to tweak transaction
+      configuration for one of the methods declared in
+      <interfacename>GenericDao</interfacename> simply redeclare the method in
+      your DAO interface as follows:</para>
+
+      <example>
+        <title>Custom transaction configuration for CRUD </title>
+
+        <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
+
+  @Override
+  @Transactional(timeout = 10)
+  public List&lt;User&gt; readAll();
+
+  // Further DAO method declarations
+}</programlisting>
+
+        <para>This will cause the <methodname>readAll()</methodname> method to
+        be executed with a timeout of 10 seconds and without the
+        <code>readOnly</code> flag.</para>
+      </example>
+
+      <para>Another possibility to alter transactional behaviour is by using a
+      facade or service implementation that typically covers more than one DAO
+      the. Its purpose is to define transactional boundaries for non-CRUD
+      operations:</para>
+
+      <example>
+        <title>Using a facade to define transactions for multiple DAO
+        calls</title>
+
+        <programlisting language="java">@Service
+class UserManagementImpl implements UserManagement {
+
+  private final UserDao userDao;
+  private final RoleDao roleDao;
+
+  @Autowired
+  public UserManagementImpl(UserDao userDao, RoleDao roleDao) {
+    this.userDao = userDao;
+    this.roleDao = roleDao;
+  }
+
+  @Transactional
+  public void addRoleToAllUsers(String roleName) {
+
+    Role role = roleDao.findByName(roleName);
+
+    for (User user : userDao.readAll()) {
+      user.addRole(role);
+      userDao.save(user);
+    }
+}</programlisting>
+
+        <para>This will cause call to
+        <methodname>addRoleToAllUsers(…)</methodname> to run inside a
+        transaction (participating in an existing one or create a new one if
+        none already running). The transaction configuration at the DAOs will
+        be neglected then as the outer transaction configuration determines
+        the actual one used. Note that you will have to activate
+        <code>&lt;tx:annotation-driven /&gt;</code> explicitly to get
+        annotation based configuration at facades working. The example above
+        assumes you're using component scanning.</para>
+      </example>
+
+      <section>
+        <title>Transactional query methods</title>
+
+        <para>To let your query methods be transactional simply use
+        <interfacename>@Transactional</interfacename> at the DAO interface you
+        define.</para>
+
+        <example>
+          <title>Using @Transactional at query methods</title>
+
+          <programlisting language="java">@Transactional(readOnly = true)
+public interface UserDao extends GenericDao&lt;User, Long&gt; {
+
+  List&lt;User&gt; findByLastname(String lastname);
+
+  @Modifying
+  @Transactional
+  @Query("delete from User u where u.active = false")
+  void deleteInactiveUsers();
+}</programlisting>
+
+          <para>Typically you will use the <code>readOnly</code> flag set to
+          true as most of the query methods will be reading ones. In contrast
+          to that <methodname>deleteInactiveUsers()</methodname> makes use of
+          the <interfacename>@Modifying</interfacename> annotation and
+          overrides the transaction configuration. Thus the method will be
+          executed with <code>readOnly</code> flag set to false. </para>
+        </example>
+
+        <note>
+          <para>It's definately reasonable to use transactions for read only
+          queries as we can mark them as such by setting the
+          <code>readOnly</code> flag. This will not act as check that you do
+          not trigger a manipulating query nevertheless (although some
+          databases reject e.g. <literal>INSERT</literal> or
+          <literal>UPDATE</literal> statements inside a transaction set to be
+          read only) but gets propagated as hint to the underlying JDBC driver
+          to do performance optimizations. Furthermore Spring will do some
+          optimizations to the underlying JPA provider. E.g. when used with
+          Hibernate the flush mode is set to <code>NEVER</code> when you
+          configure a transaction as read only which causes Hibernate to skip
+          dirty checks that gets quite noticeable on large object
+          trees.</para>
+        </note>
       </section>
     </section>
 
