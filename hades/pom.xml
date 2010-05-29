@@ -2,40 +2,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.synyx.hades</artifactId>
-    <version>1.6-SNAPSHOT</version>
 
 	<name>Hades Library</name>
-	<description>
-		Domain class and DAO development framework
-	</description>
 
 	<parent>
-		<artifactId>hades-parent</artifactId>
 		<groupId>org.synyx.hades</groupId>
+		<artifactId>org.synyx.hades.parent</artifactId>
 		<version>1.6-SNAPSHOT</version>
 	</parent>
-
-	<developers>
-		<developer>
-			<id>gierke_cvs</id>
-			<name>Oliver Gierke</name>
-			<email>gierke@synyx.de</email>
-			<organization>Synyx GmbH &amp; Co. KG</organization>
-			<organizationUrl>http://www.synyx.de</organizationUrl>
-			<roles>
-				<role>Project lead</role>
-			</roles>
-			<timezone>+1</timezone>
-		</developer>
-	</developers>
-	
-	<contributors>
-		<contributor>
-			<name>Eberhard Wolff</name>
-			<organization>Spring Source</organization>
-			<organizationUrl>http://www.springsource.com</organizationUrl>
-		</contributor>
-	</contributors>
 
 	<properties>
 		<spring.agent.version>2.5.6</spring.agent.version>

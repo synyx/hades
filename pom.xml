@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx.hades</groupId>
-	<artifactId>hades-parent</artifactId>
+	<artifactId>org.synyx.hades.parent</artifactId>
 	<version>1.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -27,15 +27,34 @@
 	<modules>
 		<module>hades</module>
 		<module>hades-sample</module>
-		<!--
-		<module>hades-eclipse-plugin</module>
-		<module>hades-eclipse-feature</module>
-		-->
 	</modules>
 	
 	<properties>
 		<osgi.version>1.5.0</osgi.version>
 	</properties>
+    
+    <developers>
+        <developer>
+            <id>gierke_cvs</id>
+            <name>Oliver Gierke</name>
+            <email>ogierke@vmware.com</email>
+            <organization>SpringSource - a division of VMware</organization>
+            <organizationUrl>http://www.springsource.com</organizationUrl>
+            <roles>
+                <role>Project lead</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    
+    <contributors>
+        <contributor>
+            <name>Eberhard Wolff</name>
+            <organization>SpringSource - a division of VMware</organization>
+            <organizationUrl>http://www.springsource.com</organizationUrl>
+            <timezone>+1</timezone>
+        </contributor>
+    </contributors>
 	
 	<profiles>
 	
@@ -63,6 +82,55 @@
 				<junit.version>4.7</junit.version>
 			</properties>
 	    </profile>
+        
+        <profile>
+            <!--  Additional plugins for deploy step -->
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>                
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!--  Sign artifacts -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <keyname>${gpg.key}</keyname>
+                                    <passphrase>${gpg.password}</passphrase>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <!-- Package JavaDoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.5</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	    
 	</profiles>
 
@@ -88,22 +156,6 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<!-- Package JavaDocs -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.5</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<phase>deploy</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -162,8 +214,7 @@
 	  	<!-- SpringSource OSGiyfied bundles -->
 		<repository>
 			<id>com.springsource.repository.bundles.release</id>
-			<name>SpringSource Enterprise Bundle Repository -
-				SpringSource Bundle Release Bundles</name>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Release Bundles</name>
 			<url>http://repository.springsource.com/maven/bundles/release</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -180,8 +231,7 @@
 		
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
-			<name>SpringSource Enterprise Bundle Repository -
-				External Bundles</name>
+			<name>SpringSource Enterprise Bundle Repository - External Bundles</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
 			<snapshots>
 				<enabled>false</enabled>
@@ -190,8 +240,7 @@
 		
 		<repository>
 			<id>com.springsource.repository.bundles.snapshot</id>
-			<name>SpringSource Enterprise Bundle Repository -
-				SpringSource Snapshot Bundles</name>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Snapshot Bundles</name>
 			<url>http://repository.springsource.com/maven/bundles/snapshot</url>
 			<releases>
 				<enabled>false</enabled>
@@ -204,8 +253,7 @@
 	
 		<pluginRepository>
 			<id>com.springsource.repository.bundles.milestone</id>
-			<name>SpringSource Enterprise Bundle Repository -
-				SpringSource Milestone Bundles</name>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Milestone Bundles</name>
 			<url>http://repository.springsource.com/maven/bundles/milestone</url>
 		</pluginRepository>
 		
