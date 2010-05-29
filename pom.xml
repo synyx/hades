@@ -34,7 +34,7 @@
         <osgi.version>2.0.0.RC1</osgi.version>
         <junit.version>4.7</junit.version>
         <spring.version>3.0.3.BUILD-SNAPSHOT</spring.version>
-        <hibernate.version>3.5.1-Final</hibernate.version>
+        <hibernate.version>3.5.2-Final</hibernate.version>
     </properties>
     
     <developers>
@@ -191,7 +191,7 @@
         <repository>
             <id>jboss</id>
             <name>JBoss repository</name>
-            <url>http://repository.jboss.org/maven2</url>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
         </repository>
 
         <!-- SpringSource OSGiyfied bundles -->
