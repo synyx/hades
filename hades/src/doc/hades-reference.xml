@@ -1087,7 +1087,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       customize the bean id for the DAO registered. This defaults to
       <code>Dao</code>.</para>
 
-      <simplesect id="config.autoconfig">
+      <section id="config.autoconfig">
         <title>Auto configuration</title>
 
         <para>You can simplify configuration even more by adding no
@@ -1102,7 +1102,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:hades="http://schemas.synyx.org/hades"
   xsi:schemaLocation="http://www.springframework.org/schema/beans 
-    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/beans/spring-beans.xsd
     http://schemas.synyx.org/hades 
     http://schemas.synyx.org/hades/hades.xsd"&gt;
 
@@ -1125,7 +1125,40 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
             <code>entity-manager-factory-ref</code> attribute to point to the
             desired Spring bean.</para>
           </note></para>
-      </simplesect>
+      </section>
+
+      <section>
+        <title>Using filters</title>
+
+        <para>By default Hades will pick up every interface extending
+        <interfacename>GenericDao</interfacename> located underneath the
+        configured base package and create a bean instance for it. However,
+        you might want to gain finer grained control over which interfaces
+        bean instances get created for. Hades supports the use of
+        <code>&lt;include-filter /&gt;</code> and <code>&lt;exclude-filter
+        /&gt;</code> elements inside <code>&lt;dao-config /&gt;</code>. The
+        samantics are exactly equivalent to the elements in Spring's context
+        namespace. For details see <ulink
+        url="http://static.springsource.org/spring/docs/2.5.x/reference/beans.html#beans-scanning-filters"
+        vendor="">Spring reference documentation</ulink> on these
+        elements.</para>
+
+        <para>E.g. to exclude certain interfaces from instantiation as Hades
+        DAO, you could use the following configuration:</para>
+
+        <example>
+          <title>Using exclude-filter element</title>
+
+          <programlisting language="xml">&lt;hades:dao-config base-package="org.synyx.hades.dao"&gt;
+  &lt;exclude-filter type="regex" expression=".*SomeDao" /&gt;
+&lt;/hades:dao-config&gt;
+</programlisting>
+
+          <para>This would exclude all interface ending on
+          <interfacename>SomeDao</interfacename> from being
+          instantiated.</para>
+        </example>
+      </section>
     </section>
 
     <section id="finder-methods">
