@@ -251,6 +251,19 @@
         needed, mentioned @NoDaoBean, fixed some typos here and there,
         metadata cleanup</revremark>
       </revision>
+
+      <revision>
+        <date>30.05.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of include-filter and exclude-filter
+        elements</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -1075,7 +1088,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       customize the bean id for the DAO registered. This defaults to
       <code>Dao</code>.</para>
 
-      <simplesect id="config.autoconfig">
+      <section id="config.autoconfig">
         <title>Auto configuration</title>
 
         <para>You can simplify configuration even more by adding no
@@ -1113,7 +1126,40 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
             <code>entity-manager-factory-ref</code> attribute to point to the
             desired Spring bean.</para>
           </note></para>
-      </simplesect>
+      </section>
+
+      <section>
+        <title>Using filters</title>
+
+        <para>By default Hades will pick up every interface extending
+        <interfacename>GenericDao</interfacename> located underneath the
+        configured base package and create a bean instance for it. However,
+        you might want to gain finer grained control over which interfaces
+        bean instances get created for. Hades supports the use of
+        <code>&lt;include-filter /&gt;</code> and <code>&lt;exclude-filter
+        /&gt;</code> elements inside <code>&lt;dao-config /&gt;</code>. The
+        samantics are exactly equivalent to the elements in Spring's context
+        namespace. For details see <ulink
+        url="http://static.springsource.org/spring/docs/2.5.x/reference/beans.html#beans-scanning-filters"
+        vendor="">Spring reference documentation</ulink> on these
+        elements.</para>
+
+        <para>E.g. to exclude certain interfaces from instantiation as Hades
+        DAO, you could use the following configuration:</para>
+
+        <example>
+          <title>Using exclude-filter element</title>
+
+          <programlisting language="xml">&lt;hades:dao-config base-package="org.synyx.hades.dao"&gt;
+  &lt;exclude-filter type="regex" expression=".*SomeDao" /&gt;
+&lt;/hades:dao-config&gt;
+</programlisting>
+
+          <para>This would exclude all interface ending on
+          <interfacename>SomeDao</interfacename> from being
+          instantiated.</para>
+        </example>
+      </section>
     </section>
 
     <section id="finder-methods">
@@ -1584,7 +1630,7 @@ public class AuditionAdviceTest extends AbstractJpaTests {
       e.g. an id property with an <code>@Id</code> annotation and an
       id-generation strategy applied. So Hades provides a simple base class
       you can inherit with your entities from and thus free it from the noise
-      of these rather technical properties. </para>
+      of these rather technical properties.</para>
 
       <para>Using <classname>AbstractPersistable</classname> would simplify
       User code like this</para>
