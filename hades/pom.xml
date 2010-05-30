@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.synyx.hades</groupId>
 		<artifactId>org.synyx.hades.parent</artifactId>
-		<version>1.6-SNAPSHOT</version>
+		<version>1.5.1</version>
 	</parent>
 
 	<properties>
