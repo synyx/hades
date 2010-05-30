@@ -263,6 +263,19 @@
 
         <revremark>Added documentation on transactional behaviour</revremark>
       </revision>
+
+      <revision>
+        <date>30.05.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of include-filter and exclude-filter
+        elements</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
