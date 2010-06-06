@@ -219,7 +219,7 @@ class TypeFilterParser {
         static FilterType fromString(String typeString) {
 
             for (FilterType filter : FilterType.values()) {
-                if (filter.name().toLowerCase().equals(typeString)) {
+                if (filter.name().equalsIgnoreCase(typeString)) {
                     return filter;
                 }
             }
