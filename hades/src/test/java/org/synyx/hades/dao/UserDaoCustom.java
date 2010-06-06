@@ -22,7 +22,7 @@ import org.synyx.hades.domain.User;
 /**
  * Simple interface for custom methods on the DAO for {@code User}s.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface UserDaoCustom {
 

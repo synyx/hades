@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * your concrete DAO interfaces from the intermediate one but don't want Hades
  * to create a Spring bean for the intermediate interface.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

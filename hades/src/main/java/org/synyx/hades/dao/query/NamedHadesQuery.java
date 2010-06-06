@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * Implementation of {@link HadesQuery} based on
  * {@link javax.persistence.NamedQuery}s.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 final class NamedHadesQuery extends AbstractHadesQuery {
 

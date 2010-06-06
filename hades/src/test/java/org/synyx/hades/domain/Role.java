@@ -27,7 +27,7 @@ import javax.persistence.Id;
  * id type is matching the typisation of the interface. {@code
  * Persitsable#isNew()} is implemented regarding the id as flag.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Entity
 public class Role {

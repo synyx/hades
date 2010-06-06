@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  * the manually defined DAO instances or scans the defined domain package for
  * candidates for DAOs.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @author Eberhard Wolff
  * @author Gil Markham
  */
@@ -411,7 +411,7 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * interfaces extending {@link GenericDao}. Skips interfaces annotated with
      * {@link NoDaoBean}.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     static class GenericDaoComponentProvider extends
             ClassPathScanningCandidateComponentProvider {
@@ -451,7 +451,7 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
          * {@link TypeFilter} that only matches interfaces. Thus setting this up
          * makes only sense providing an interface type as {@code targetType}.
          * 
-         * @author Oliver Gierke - gierke@synyx.de
+         * @author Oliver Gierke
          */
         private static class InterfaceTypeFilter extends AssignableTypeFilter {
 

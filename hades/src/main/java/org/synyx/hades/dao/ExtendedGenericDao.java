@@ -31,7 +31,7 @@ import org.synyx.hades.domain.Sort;
  * functionality declared here will require an implementation that is based of
  * some proprietary features of certain JPA providers.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface ExtendedGenericDao<T, PK extends Serializable> extends
         GenericDao<T, PK> {

@@ -41,7 +41,7 @@ import org.synyx.hades.domain.Persistable;
 /**
  * Abstract base class for generic DAOs.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <T> the type of entity to be handled
  */
 public abstract class GenericDaoSupport<T> {

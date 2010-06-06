@@ -22,7 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * Integration test to test DAO auto configuration.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @ContextConfiguration(locations = "classpath:namespace-autoconfig-context.xml")
 public class DaoAutoConfigIntegrationTest extends

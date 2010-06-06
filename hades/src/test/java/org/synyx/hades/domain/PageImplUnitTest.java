@@ -30,7 +30,7 @@ import org.synyx.hades.domain.Pageable;
 /**
  * Unit test for {@link PageImpl}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class PageImplUnitTest {
 

@@ -43,7 +43,7 @@ import org.synyx.hades.domain.Sort.Property;
 /**
  * EclipseLink based implementation of {@code ExtendedGenericDao}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class GenericEclipseLinkJpaDao<T, PK extends Serializable> extends
         AbstractExtendedGenericJpaDao<T, PK> {

@@ -37,7 +37,7 @@ import org.synyx.hades.domain.Sort;
  * Default implementation of the {@link GenericDao} interface. This will offer
  * you a more sophisticated interface than the plain {@link EntityManager}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @author Eberhard Wolff
  * @param <T> the type of the entity to handle
  * @param <PK> the type of the entity's identifier

@@ -49,7 +49,7 @@ import org.synyx.hades.domain.Sort.Property;
  * config file that provides a bean named {@code jpaVendorAdaptor} as well as a
  * Hades configuration for {@link UserExtendedDao}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:namespace-applicationContext.xml" })

@@ -30,7 +30,7 @@ import org.synyx.hades.domain.User;
  * Unit test for {@code GenericHibernateJpaDao}. Primarily tests configuration
  * issues.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class GenericHibernateJpaDaoUnitTest {
 

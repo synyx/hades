@@ -14,7 +14,7 @@ import org.synyx.hades.domain.Sort;
  * Base class for implementations of {@link ExtendedGenericDao} that simply
  * routes varargs parameterized methods to the {@link Collection} based ones.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public abstract class AbstractExtendedGenericJpaDao<T, PK extends Serializable>
         extends GenericJpaDao<T, PK> implements ExtendedGenericDao<T, PK> {

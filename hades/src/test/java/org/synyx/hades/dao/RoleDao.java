@@ -22,7 +22,7 @@ import org.synyx.hades.domain.Role;
 /**
  * Typing interface for {@code Role}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface RoleDao extends GenericDao<Role, Integer> {
 

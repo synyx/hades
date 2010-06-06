@@ -27,7 +27,7 @@ import org.synyx.hades.domain.auditing.AbstractAuditable;
  * AbstractAuditableEntity}. No declaration of an ID is necessary. Furthermore
  * no auditing information has to be declared explicitly.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Entity
 @NamedQuery(name = "AuditableUser.findByFirstname", query = "SELECT u FROM AuditableUser u WHERE u.firstname = ?1")

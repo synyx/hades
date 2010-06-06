@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 /**
  * Class to encapsulate query creation logic for {@link QueryMethod}s.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 class QueryCreator {
 

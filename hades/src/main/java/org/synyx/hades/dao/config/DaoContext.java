@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * value found on the {@code dao} element. This way {@code dao} declarations can
  * override parent element's configuration.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 class DaoContext extends DaoConfigContext {
 

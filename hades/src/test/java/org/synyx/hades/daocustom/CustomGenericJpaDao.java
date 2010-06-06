@@ -27,7 +27,7 @@ import org.synyx.hades.domain.Persistable;
  * derived DAO instances.
  * 
  * @author Gil Markham
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class CustomGenericJpaDao<T extends Persistable<PK>, PK extends Serializable>
         extends GenericJpaDao<T, PK> implements CustomGenericDao<T, PK> {

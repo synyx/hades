@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * existanve of an {@link org.synyx.hades.dao.Query} annotation and creates a
  * JPA {@link Query} from it.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 final class SimpleHadesQuery extends AbstractHadesQuery {
 

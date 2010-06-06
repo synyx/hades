@@ -39,7 +39,7 @@ import org.synyx.hades.domain.Sort.Property;
 /**
  * Implements extended {@link ExtendedGenericDao} functionality with Hibernate.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class GenericHibernateJpaDao<T, PK extends Serializable> extends
         AbstractExtendedGenericJpaDao<T, PK> {

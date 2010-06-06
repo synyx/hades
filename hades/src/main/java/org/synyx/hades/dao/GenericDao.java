@@ -28,7 +28,7 @@ import org.synyx.hades.domain.Sort;
  * Interface for generic CRUD operations on a DAO for a specific type.
  * 
  * @author Eberhard Wolff
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface GenericDao<T, PK extends Serializable> {
 

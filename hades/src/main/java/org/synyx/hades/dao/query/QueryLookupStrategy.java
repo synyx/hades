@@ -22,7 +22,7 @@ import java.util.Locale;
 /**
  * Query lookup strategy to execute finders.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public enum QueryLookupStrategy {
 

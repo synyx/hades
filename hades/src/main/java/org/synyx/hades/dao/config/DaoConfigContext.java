@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
  * {@code dao-config} element in XML namespcae configuration. Defines default
  * values to populate resulting DAOs with.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 class DaoConfigContext {
 

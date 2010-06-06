@@ -34,7 +34,7 @@ import org.synyx.hades.util.ClassUtils;
 /**
  * Simple utility class to create JPA queries.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public abstract class QueryUtils {
 

@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 
 
 /**
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Entity
 public class Account extends AbstractPersistable<Long> {

@@ -21,7 +21,7 @@ package org.synyx.hades.domain;
 /**
  * Basic Java Bean implementation of {@code Pageable}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class PageRequest implements Pageable {
 

@@ -19,7 +19,7 @@ package org.synyx.hades.domain;
 /**
  * Abstract interface for pagination information.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface Pageable {
 

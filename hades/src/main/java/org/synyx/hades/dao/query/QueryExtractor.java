@@ -23,7 +23,7 @@ import javax.persistence.Query;
  * Interface to hide different implementations to extract the original JPA query
  * string from a {@link Query}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface QueryExtractor {
 

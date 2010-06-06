@@ -32,7 +32,7 @@ import org.synyx.hades.domain.Sort;
  * Abstracts method parameters that have to be bound to query parameters or
  * applied to the query independently.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 class Parameters implements Iterable<Parameter> {
 

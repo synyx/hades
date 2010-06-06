@@ -49,7 +49,7 @@ import org.synyx.hades.domain.User;
  * To test further persistence providers subclass this class and provide a
  * custom provider configuration.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext.xml" })

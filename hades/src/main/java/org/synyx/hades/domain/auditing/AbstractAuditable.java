@@ -32,7 +32,7 @@ import org.synyx.hades.domain.AbstractPersistable;
  * Abstract base class for auditable entities. Stores the audition values in
  * persistent fields.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <U> the auditing type. Typically some kind of user.
  * @param <PK> the type of the auditing type's idenifier
  */

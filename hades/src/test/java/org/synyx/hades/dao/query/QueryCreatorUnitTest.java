@@ -20,7 +20,7 @@ import org.synyx.hades.domain.User;
 /**
  * Unit test for {@link QueryCreator}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(MockitoJUnitRunner.class)
 public class QueryCreatorUnitTest {
@@ -208,7 +208,7 @@ public class QueryCreatorUnitTest {
     /**
      * Sample class for keyword split check.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     @SuppressWarnings("unused")
     static class SampleEntity {

@@ -8,7 +8,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link Order}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class OrderUnitTest {
 

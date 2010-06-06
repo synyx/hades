@@ -28,7 +28,7 @@ import org.synyx.hades.util.ClassUtils;
 /**
  * Enumeration representing peristence providers to be used with Hades.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 enum PersistenceProvider implements QueryExtractor {
 

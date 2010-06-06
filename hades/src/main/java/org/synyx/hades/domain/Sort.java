@@ -26,7 +26,7 @@ import java.util.List;
  * sort for that must not include {@code null} or empty strings. The order
  * defaults to {@value Order#ASCENDING}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class Sort implements Iterable<org.synyx.hades.domain.Sort.Property> {
 
@@ -225,7 +225,7 @@ public class Sort implements Iterable<org.synyx.hades.domain.Sort.Property> {
      * used to provide input for {@link Sort}
      * 
      * @author Joachim Uhrlaß - ecapot@gmail.com
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     public static class Property {
 

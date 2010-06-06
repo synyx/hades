@@ -25,7 +25,7 @@ import org.junit.Test;
 /**
  * Unit test for {@code AuditionAdvice}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @SuppressWarnings("unchecked")
 public class AuditingAdviceUnitTest {

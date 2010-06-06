@@ -44,7 +44,7 @@ import org.synyx.hades.domain.User;
 /**
  * Unit test for {@link QueryMethod}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(MockitoJUnitRunner.class)
 public class QueryMethodUnitTest {
@@ -295,7 +295,7 @@ public class QueryMethodUnitTest {
     /**
      * Interface to define invalid DAO methods for testing.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     static interface InvalidDao {
 
@@ -335,7 +335,7 @@ public class QueryMethodUnitTest {
     /**
      * Sample domain class to simulate inheritance.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     @SuppressWarnings( { "unused", "serial" })
     private static class SubUser extends User {
@@ -347,7 +347,7 @@ public class QueryMethodUnitTest {
      * Interface handling the common superclass but allow queries for derived
      * entities.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private static interface SubUserDao extends GenericDao<User, Integer> {
 

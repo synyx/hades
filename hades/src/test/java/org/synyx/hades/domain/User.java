@@ -32,7 +32,7 @@ import javax.persistence.NamedQuery;
  * {@code AbstractEntity}. No declaration of an id is required. The id is typed
  * by the parameterizable superclass.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Entity
 @NamedQuery(name = "User.findByEmailAddress", query = "SELECT u FROM User u WHERE u.emailAddress = ?1")

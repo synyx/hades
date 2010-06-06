@@ -23,7 +23,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * Simple namespace handler for {@literal dao-config} namespace.
  * 
  * @author Eberhard Wolff
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class DaoNameSpaceHandler extends NamespaceHandlerSupport {
 

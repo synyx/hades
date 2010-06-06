@@ -39,7 +39,7 @@ import org.synyx.hades.dao.config.AbstractDaoConfigIntegrationTest;
  * Assures the injected DAO instances are wired to the customly configured
  * {@link EntityManagerFactory}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @ContextConfiguration(locations = "classpath:multiple-entity-manager-context.xml")
 public class EntityManagerFactoryRefUnitTest extends
@@ -65,7 +65,7 @@ public class EntityManagerFactoryRefUnitTest extends
      * A simple No-Op {@link PersistenceExceptionTranslator} to be configured in
      * the test case's config file as it is required.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     static class NoOpPersistenceExceptionTranslator implements
             PersistenceExceptionTranslator {
@@ -83,7 +83,7 @@ public class EntityManagerFactoryRefUnitTest extends
      * configured to be never invoked, {@code secondEntityManagerFactory} is
      * configured to be invoked at least once.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     static class MockPreparingBeanPostProcessor implements BeanPostProcessor {
 

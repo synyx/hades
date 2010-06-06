@@ -38,7 +38,7 @@ import org.synyx.hades.domain.Sort;
 /**
  * Unit test for {@link ParameterBinder}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ParameterBinderUnitTest {

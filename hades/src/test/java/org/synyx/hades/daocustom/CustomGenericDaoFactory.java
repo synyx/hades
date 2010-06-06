@@ -26,7 +26,7 @@ import org.synyx.hades.dao.orm.GenericJpaDao;
  * Sample implementation of a custom {@link GenericDaoFactory} to use a custom
  * DAO base class.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class CustomGenericDaoFactory extends GenericDaoFactory {
 

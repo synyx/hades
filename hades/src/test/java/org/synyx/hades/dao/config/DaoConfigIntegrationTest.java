@@ -21,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * Integration test for DAO namespace configuration.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @ContextConfiguration(locations = "classpath:namespace-applicationContext.xml")
 public class DaoConfigIntegrationTest extends AbstractDaoConfigIntegrationTest {

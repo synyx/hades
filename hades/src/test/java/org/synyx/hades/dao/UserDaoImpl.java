@@ -6,7 +6,7 @@ import org.synyx.hades.domain.User;
 /**
  * Dummy implementation to allow check for invoking a custom implementation.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class UserDaoImpl implements UserDaoCustom {
 

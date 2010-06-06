@@ -4,7 +4,7 @@ package org.synyx.hades.dao.query;
  * Exception to be thrown if a query cannot be created from a
  * {@link QueryMethod}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public final class QueryCreationException extends RuntimeException {
 

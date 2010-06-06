@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link Sort}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class SortUnitTest {
 

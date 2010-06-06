@@ -46,7 +46,7 @@ import org.synyx.hades.util.ClassUtils;
  * resolution can be configured by setting {@link #queryLookupStrategy} which
  * defaults to {@link QueryLookupStrategy#getDefault()}
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class GenericDaoFactory {
 
@@ -306,7 +306,7 @@ public class GenericDaoFactory {
      * rely on having a custom dao implementation instance set if this returns
      * true.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private class QueryExecuterMethodInterceptor implements MethodInterceptor {
 

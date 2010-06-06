@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates a method should be regarded as modifying query.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

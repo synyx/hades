@@ -34,7 +34,7 @@ import org.synyx.hades.domain.User;
 /**
  * Unit test for {@link ClassUtils}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class ClassUtilsUnitTest {
 
@@ -92,7 +92,7 @@ public class ClassUtilsUnitTest {
     /**
      * Sample entity with a custom name.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     @Entity(name = "AnotherNamedUser")
     private class NamedUser {
@@ -108,7 +108,7 @@ public class ClassUtilsUnitTest {
      * interface hierarchy</li>
      * </ol>
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private interface SomeDao extends Serializable, UserDao {
 
@@ -118,7 +118,7 @@ public class ClassUtilsUnitTest {
     /**
      * Sample interface to test recursive lookup of domain class.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private interface ExtensionOfUserCustomExtendedDao extends
             UserCustomExtendedDao {
@@ -128,7 +128,7 @@ public class ClassUtilsUnitTest {
     /**
      * Helper class to reproduce #256.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private class GenericEntity<T> {
     }

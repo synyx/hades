@@ -40,7 +40,7 @@ import org.synyx.hades.domain.User;
  * strategies.
  * 
  * @see QueryLookupStrategy
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:namespace-applicationContext.xml")
