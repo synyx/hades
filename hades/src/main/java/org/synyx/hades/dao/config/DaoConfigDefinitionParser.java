@@ -42,7 +42,6 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.synyx.hades.dao.GenericDao;
@@ -448,8 +447,9 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
         }
 
         /**
-         * {@link TypeFilter} that only matches interfaces. Thus setting this up
-         * makes only sense providing an interface type as {@code targetType}.
+         * {@link org.springframework.core.type.filter.TypeFilter} that only
+         * matches interfaces. Thus setting this up makes only sense providing
+         * an interface type as {@code targetType}.
          * 
          * @author Oliver Gierke
          */
