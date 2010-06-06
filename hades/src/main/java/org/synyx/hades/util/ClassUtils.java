@@ -30,7 +30,6 @@ import javax.persistence.EntityManager;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.ExtendedGenericDao;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.domain.Page;
 
 
 /**
@@ -130,7 +129,8 @@ public abstract class ClassUtils {
 
     /**
      * Returns the domain class returned by the given {@link Method}. Will
-     * extract the type from {@link Collection}s and {@link Page} as well.
+     * extract the type from {@link Collection}s and
+     * {@link org.synyx.hades.domain.Page} as well.
      * 
      * @param method
      * @return

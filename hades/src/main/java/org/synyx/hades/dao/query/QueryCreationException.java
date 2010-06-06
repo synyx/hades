@@ -6,7 +6,7 @@ package org.synyx.hades.dao.query;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class QueryCreationException extends RuntimeException {
+public final class QueryCreationException extends RuntimeException {
 
     private static final long serialVersionUID = -1238456123580L;
 

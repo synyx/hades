@@ -15,7 +15,6 @@
  */
 package org.synyx.hades.dao.orm;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -50,7 +49,7 @@ class DaoInterfaceAwareBeanPostProcessor extends
      * org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org
      * .springframework.beans.factory.BeanFactory)
      */
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(BeanFactory beanFactory) {
 
         if (beanFactory instanceof ConfigurableListableBeanFactory) {
 

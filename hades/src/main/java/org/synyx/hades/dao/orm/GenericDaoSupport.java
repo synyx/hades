@@ -209,7 +209,7 @@ public abstract class GenericDaoSupport<T> {
      */
     public interface IsNewStrategy {
 
-        public boolean isNew(Object entity);
+        boolean isNew(Object entity);
     }
 
     /**
