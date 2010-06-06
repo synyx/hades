@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 
@@ -39,6 +40,8 @@ class QueryCreator {
      * @param finderMethod
      */
     public QueryCreator(QueryMethod finderMethod) {
+
+        Assert.isTrue(!finderMethod.isModifyingQuery());
 
         this.method = finderMethod;
     }

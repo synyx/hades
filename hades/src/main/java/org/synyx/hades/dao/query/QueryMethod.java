@@ -16,7 +16,6 @@
 package org.synyx.hades.dao.query;
 
 import static org.springframework.core.annotation.AnnotationUtils.*;
-import static org.synyx.hades.dao.query.QueryExecution.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -52,7 +51,6 @@ public class QueryMethod {
     private Parameters parameters;
     private Class<?> domainClass;
 
-    private HadesQuery hadesQuery;
     private EntityManager em;
     private QueryExtractor extractor;
 
@@ -64,10 +62,10 @@ public class QueryMethod {
      * @param method
      * @param domainClass
      * @param em
-     * @param strategy
+     * @param extractor
      */
     public QueryMethod(Method method, Class<?> domainClass, EntityManager em,
-            QueryExtractor extractor, QueryLookupStrategy strategy) {
+            QueryExtractor extractor) {
 
         Assert.notNull(method, "Method must not be null!");
         Assert.notNull(domainClass, "Domain class must not be null!");
@@ -102,26 +100,11 @@ public class QueryMethod {
                 String.format("Modifying method must not contain %s!",
                         Parameters.TYPES));
 
-        QueryLookupStrategy strategyToUse =
-                null == strategy ? QueryLookupStrategy.getDefault() : strategy;
-
-        this.hadesQuery = strategyToUse.resolveQuery(this);
-    }
-
-
-    /**
-     * Creates a new {@link QueryMethod}. Assumes applying default
-     * {@link QueryLookupStrategy} by handing {@code null}.
-     * 
-     * @param method
-     * @param domainClass
-     * @param em
-     * @param extractor
-     */
-    public QueryMethod(Method method, Class<?> domainClass, EntityManager em,
-            QueryExtractor extractor) {
-
-        this(method, domainClass, em, extractor, null);
+        if (parameters.hasPageableParameter() && !extractor.canExtractQuery()) {
+            throw new IllegalArgumentException(
+                    "You cannot use Pageable as method parameter if your "
+                            + "persistence provider cannot extract queries!");
+        }
     }
 
 
@@ -273,35 +256,6 @@ public class QueryMethod {
     QueryExtractor getQueryExtractor() {
 
         return extractor;
-    }
-
-
-    /**
-     * Executes the {@link javax.persistence.Query} backing the
-     * {@link QueryMethod} with the given parameters.
-     * 
-     * @param em
-     * @param parameters
-     * @return
-     */
-    public Object executeQuery(Object... methodParameters) {
-
-        ParameterBinder executionParameters =
-                new ParameterBinder(parameters, methodParameters);
-
-        if (isCollectionQuery()) {
-            return COLLECTION.execute(hadesQuery, executionParameters);
-        }
-
-        if (isPageQuery()) {
-            return PAGE.execute(hadesQuery, executionParameters);
-        }
-
-        if (isModifyingQuery()) {
-            return MODIFY.execute(hadesQuery, executionParameters);
-        }
-
-        return SINGLE_ENTITY.execute(hadesQuery, executionParameters);
     }
 
 

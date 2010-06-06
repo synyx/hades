@@ -15,6 +15,8 @@
  */
 package org.synyx.hades.dao.query;
 
+import static org.synyx.hades.dao.query.QueryExecution.*;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -64,6 +66,35 @@ abstract class AbstractHadesQuery implements HadesQuery {
     public Query createCountQuery(ParameterBinder binder) {
 
         return createCountQuery(method.getEntityManager(), binder);
+    }
+
+
+    /**
+     * Executes the {@link javax.persistence.Query} backing the
+     * {@link QueryMethod} with the given parameters.
+     * 
+     * @param em
+     * @param parameters
+     * @return
+     */
+    public Object execute(Object... parameters) {
+
+        ParameterBinder binder =
+                new ParameterBinder(method.getParameters(), parameters);
+
+        if (method.isCollectionQuery()) {
+            return COLLECTION.execute(this, binder);
+        }
+
+        if (method.isPageQuery()) {
+            return PAGE.execute(this, binder);
+        }
+
+        if (method.isModifyingQuery()) {
+            return MODIFY.execute(this, binder);
+        }
+
+        return SINGLE_ENTITY.execute(this, binder);
     }
 
 

@@ -1,6 +1,5 @@
 package org.synyx.hades.dao.query;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
@@ -14,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.synyx.hades.dao.query.QueryMethodUnitTest.InvalidDao;
 import org.synyx.hades.domain.User;
 
 
@@ -46,8 +46,7 @@ public class QueryCreatorUnitTest {
     public void rejectsInvalidProperty() throws Exception {
 
         QueryMethod finderMethod =
-                new QueryMethod(method, User.class, em, extractor,
-                        QueryLookupStrategy.CREATE_IF_NOT_FOUND);
+                new QueryMethod(method, User.class, em, extractor);
 
         new QueryCreator(finderMethod).constructQuery();
     }
@@ -114,6 +113,21 @@ public class QueryCreatorUnitTest {
     }
 
 
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsModifyingMethodWithoutBacking()
+            throws SecurityException, NoSuchMethodException {
+
+        Method invalidModifyingMethod =
+                InvalidDao.class.getMethod("updateMethod", String.class);
+
+        QueryMethod method =
+                new QueryMethod(invalidModifyingMethod,
+                        QueryMethodUnitTest.DOMAIN_CLASS, em, extractor);
+
+        new QueryCreator(method);
+    }
+
+
     /**
      * Asserts that the query created for the given {@link Method} results in a
      * query ending with the given {@link String}.
@@ -124,11 +138,10 @@ public class QueryCreatorUnitTest {
     private void assertCreatesQueryForMethod(String queryEnd, Method method) {
 
         QueryMethod queryMethod =
-                new QueryMethod(method, method.getReturnType(), em, extractor,
-                        QueryLookupStrategy.CREATE);
+                new QueryMethod(method, method.getReturnType(), em, extractor);
 
         String result = new QueryCreator(queryMethod).constructQuery();
-        assertThat(result, endsWith(queryEnd));
+        assertTrue(result.endsWith(queryEnd));
     }
 
 
