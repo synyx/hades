@@ -26,7 +26,7 @@ import org.synyx.hades.domain.Sort;
  * {@link ParameterBinder} is used to bind method parameters to a {@link Query}.
  * This is usually done whenever a {@link HadesQuery} is executed.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 class ParameterBinder {
 

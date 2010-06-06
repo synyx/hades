@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 
 /**
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public abstract class UnitTestUtils {
 

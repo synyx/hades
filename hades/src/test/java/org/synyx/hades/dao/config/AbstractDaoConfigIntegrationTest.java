@@ -29,7 +29,7 @@ import org.synyx.hades.dao.UserDao;
 /**
  * Abstract base class for integration test for namespace configuration.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class AbstractDaoConfigIntegrationTest {

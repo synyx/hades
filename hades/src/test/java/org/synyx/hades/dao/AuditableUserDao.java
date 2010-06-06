@@ -24,7 +24,7 @@ import org.synyx.hades.domain.auditing.AuditableUser;
 /**
  * DAO interface for {@code AuditableUser}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface AuditableUserDao extends GenericDao<AuditableUser, Long> {
 

@@ -28,7 +28,7 @@ import org.eclipse.persistence.platform.database.HSQLPlatform;
  * Eclipselink with HSQL.
  * 
  * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=240618
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class EclipseLinkHSQLPlatform extends HSQLPlatform {
 

@@ -27,7 +27,7 @@ import org.synyx.hades.domain.Persistable;
  * modification information. The changing instance (typically some user) is to
  * be defined by a generics definition.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <U> the auditing type. Typically some kind of user.
  * @param <PK> the type of the auditing type's idenifier
  */

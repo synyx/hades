@@ -31,7 +31,7 @@ import org.synyx.hades.domain.User;
 /**
  * Unit test for {@link Parameters}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class ParametersUnitTest {
 

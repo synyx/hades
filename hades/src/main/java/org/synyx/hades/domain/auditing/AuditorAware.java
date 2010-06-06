@@ -20,7 +20,7 @@ package org.synyx.hades.domain.auditing;
  * Interface for components that are aware of the application's current auditor.
  * This will be some kind of user mostly.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <T> the type of the auditing instance
  */
 public interface AuditorAware<T> {

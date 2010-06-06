@@ -43,7 +43,7 @@ import org.synyx.hades.util.ClassUtils;
  * information that is necessary to construct {@link HadesQuery}s for the
  * method.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class QueryMethod {
 

@@ -35,7 +35,7 @@ import org.synyx.hades.domain.User;
 /**
  * Integration test for {@link AuditingAdvice}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:auditing-integration-test-context.xml" })

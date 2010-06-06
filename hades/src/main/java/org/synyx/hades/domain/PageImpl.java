@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Basic {@code Page} implementation.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <T> the type of which the page consists.
  */
 public class PageImpl<T> implements Page<T> {

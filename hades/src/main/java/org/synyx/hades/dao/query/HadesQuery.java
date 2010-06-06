@@ -21,7 +21,7 @@ import javax.persistence.Query;
 /**
  * Interface for a query abstraction.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface HadesQuery {
 

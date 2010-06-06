@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation to declare finder queries directly on DAO methods.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

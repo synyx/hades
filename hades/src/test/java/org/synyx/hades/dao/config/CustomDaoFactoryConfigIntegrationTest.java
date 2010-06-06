@@ -34,7 +34,7 @@ import org.synyx.hades.daocustom.UserCustomExtendedDao;
  * your concrete DAO interfaces from the intermediate one but don't want Hades
  * to create a Spring bean for the intermediate interface.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:namespace-customfactory-context.xml")

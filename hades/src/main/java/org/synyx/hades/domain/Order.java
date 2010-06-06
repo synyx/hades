@@ -3,7 +3,7 @@ package org.synyx.hades.domain;
 /**
  * Enumeration for sort orders.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public enum Order {
 

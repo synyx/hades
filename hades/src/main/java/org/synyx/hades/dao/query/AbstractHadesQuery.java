@@ -26,7 +26,7 @@ import javax.persistence.Query;
  * {@link Query} through {@link #createQuery(EntityManager, Parameters)} and
  * executes it.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 abstract class AbstractHadesQuery implements HadesQuery {
 

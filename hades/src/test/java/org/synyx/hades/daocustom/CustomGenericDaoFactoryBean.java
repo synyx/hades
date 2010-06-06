@@ -25,7 +25,7 @@ import org.synyx.hades.dao.orm.GenericJpaDao;
  * {@link GenericDaoFactoryBean} to return a custom DAO base class.
  * 
  * @author Gil Markham
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class CustomGenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
         GenericDaoFactoryBean<T> {

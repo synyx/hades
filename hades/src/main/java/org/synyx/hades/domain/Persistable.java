@@ -22,7 +22,7 @@ import java.io.Serializable;
 /**
  * Simple interface for entities.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <PK> the type of the identifier
  */
 public interface Persistable<PK extends Serializable> extends Serializable {

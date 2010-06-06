@@ -33,7 +33,7 @@ import org.synyx.hades.domain.auditing.AuditableUser;
  * Assures the injected DAO instances are wired to the customly configured
  * {@link EntityManagerFactory}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:foo.xml")

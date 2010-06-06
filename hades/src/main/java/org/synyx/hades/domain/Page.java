@@ -24,7 +24,7 @@ import java.util.List;
  * A page is a sublist of a list of objects. It allows gain information about
  * the position of it in the containing entire list.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <T>
  */
 public interface Page<T> extends Iterable<T> {

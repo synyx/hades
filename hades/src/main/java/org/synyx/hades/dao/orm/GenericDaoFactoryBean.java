@@ -36,7 +36,7 @@ import org.synyx.hades.dao.GenericDao;
  * Special {@link GenericDaoFactory} adapter for Springs {@link FactoryBean}
  * interface to allow easy setup of DAO factories via Spring configuration.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @author Eberhard Wolff
  * @param <T> the type of the DAO
  */

@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
  * {@link ClassPathScanningCandidateComponentProvider} with {@link TypeFilter}s
  * parsed from the given {@link Element}'s children.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 class TypeFilterParser {
 

@@ -30,7 +30,7 @@ import org.synyx.hades.domain.User;
  * DAO interface for {@code User}s. The declared methods will trigger named
  * queries as they start with {@code findBy}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
 

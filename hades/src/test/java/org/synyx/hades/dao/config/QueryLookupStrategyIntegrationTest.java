@@ -32,7 +32,7 @@ import org.synyx.hades.dao.query.QueryLookupStrategy;
 /**
  * Integration test for XML configuration of {@link QueryLookupStrategy}s.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:namespace/lookup-strategies-context.xml")

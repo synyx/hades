@@ -34,7 +34,7 @@ import org.synyx.hades.dao.GenericDao;
 /**
  * Utility class to work with classes.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public abstract class ClassUtils {
 

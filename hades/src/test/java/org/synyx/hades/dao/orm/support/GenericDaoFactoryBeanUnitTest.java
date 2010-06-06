@@ -36,7 +36,7 @@ import org.synyx.hades.domain.User;
  * TODO: Check if test methods double the ones in
  * {@link GenericDaoFactoryUnitTest}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GenericDaoFactoryBeanUnitTest {
@@ -127,7 +127,7 @@ public class GenericDaoFactoryBeanUnitTest {
     /**
      * Sample interface to contain a custom method.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private interface SampleCustomDao {
 

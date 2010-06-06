@@ -28,7 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
  * Use namespace context to run tests. Checks for existence of required
  * PostProcessors, too.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @author Eberhard Wolff
  */
 @ContextConfiguration(locations = "classpath:namespace-applicationContext.xml", inheritLocations = false)

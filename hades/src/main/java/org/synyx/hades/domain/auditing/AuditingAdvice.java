@@ -41,7 +41,7 @@ import org.joda.time.DateTime;
  * &lt;bean class=&quot;org.synyx.hades.domain.support.AuditionAdvice&quot; /&gt;
  * </pre>
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  * @param <T> the type of the auditing instance
  */
 @Aspect

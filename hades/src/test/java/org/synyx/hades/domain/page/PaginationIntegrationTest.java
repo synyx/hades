@@ -34,7 +34,7 @@ import org.synyx.hades.domain.User;
 /**
  * Integration test for pagination functionality.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:namespace-applicationContext.xml")

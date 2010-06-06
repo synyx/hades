@@ -26,7 +26,7 @@ import org.synyx.hades.domain.PageImpl;
  * type of a {@link QueryMethod} a {@link HadesQuery} can be executed in various
  * flavours.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 enum QueryExecution {
 

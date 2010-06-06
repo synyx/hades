@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link AbstractPersistable}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 public class AbstractPersistableUnitTest {
 
@@ -69,7 +69,7 @@ public class AbstractPersistableUnitTest {
     /**
      * Sample user class.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private class SampleUser extends AbstractPersistable<Long> {
 
@@ -90,7 +90,7 @@ public class AbstractPersistableUnitTest {
     /**
      * Sample role class
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private class SampleRole extends AbstractPersistable<Long> {
 

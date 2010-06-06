@@ -28,7 +28,7 @@ import org.synyx.hades.dao.NoDaoBean;
  * instances derived from this interface and implementation base class.
  * 
  * @author Gil Markham
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @NoDaoBean
 public interface CustomGenericDao<T, PK extends Serializable> extends

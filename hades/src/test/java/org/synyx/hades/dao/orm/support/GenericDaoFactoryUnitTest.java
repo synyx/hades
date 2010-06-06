@@ -38,7 +38,7 @@ import org.synyx.hades.domain.User;
 /**
  * Unit test for {@code GenericDaoFactoryBean}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GenericDaoFactoryUnitTest {
@@ -138,7 +138,7 @@ public class GenericDaoFactoryUnitTest {
     /**
      * Sample interface to contain a custom method.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     public interface SampleCustomDao {
 
@@ -151,7 +151,7 @@ public class GenericDaoFactoryUnitTest {
     /**
      * Implementation of the custom DAO interface.
      * 
-     * @author Oliver Gierke - gierke@synyx.de
+     * @author Oliver Gierke
      */
     private class SampleCustomDaoImpl implements SampleCustomDao {
 
