@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.synyx.hades.sample.dao.UserDaoCustom;
 import org.synyx.hades.sample.domain.User;
 
@@ -32,8 +32,7 @@ import org.synyx.hades.sample.domain.User;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-public class UserDaoJdbcImpl extends SimpleJdbcDaoSupport implements
-        UserDaoCustom {
+public class UserDaoJdbcImpl extends JdbcDaoSupport implements UserDaoCustom {
 
     private static final String COMPLICATED_SQL = "SELECT * FROM User";
 
@@ -45,8 +44,7 @@ public class UserDaoJdbcImpl extends SimpleJdbcDaoSupport implements
      */
     public List<User> myCustomBatchOperation() {
 
-        return getSimpleJdbcTemplate().query(COMPLICATED_SQL,
-                new UserRowMapper());
+        return getJdbcTemplate().query(COMPLICATED_SQL, new UserRowMapper());
     }
 
     private static class UserRowMapper implements ParameterizedRowMapper<User> {
