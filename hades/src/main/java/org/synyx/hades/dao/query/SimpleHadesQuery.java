@@ -36,18 +36,18 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
 
     private static final Log LOG = LogFactory.getLog(SimpleHadesQuery.class);
 
-    private String queryString;
-    private String alias;
-    private List<QueryHint> hints;
+    private final String queryString;
+    private final String alias;
+    private final List<QueryHint> hints;
 
 
     /**
      * Creates a new {@link SimpleHadesQuery} that encapsulates a simple query
      * string.
      */
-    SimpleHadesQuery(QueryMethod method, String queryString) {
+    SimpleHadesQuery(QueryMethod method, EntityManager em, String queryString) {
 
-        super(method);
+        super(method, em);
         this.queryString = queryString;
         this.alias = QueryUtils.detectAlias(queryString);
         this.hints = method.getHints();
@@ -59,10 +59,11 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * given {@link QueryMethod}.
      * 
      * @param method
+     * @param em
      */
-    SimpleHadesQuery(QueryMethod method) {
+    SimpleHadesQuery(QueryMethod method, EntityManager em) {
 
-        this(method, new QueryCreator(method).constructQuery());
+        this(method, em, new QueryCreator(method).constructQuery());
     }
 
 
@@ -120,10 +121,12 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * potentially annotated with {@link org.synyx.hades.dao.Query}.
      * 
      * @param finderMethod
+     * @param em
      * @return the {@link HadesQuery} derived from the annotation or {@code
      *         null} if no annotation found.
      */
-    public static HadesQuery fromHadesAnnotation(QueryMethod finderMethod) {
+    public static HadesQuery fromHadesAnnotation(QueryMethod finderMethod,
+            EntityManager em) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(String.format("Looking up Hades query for method %s",
@@ -134,7 +137,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
                 finderMethod.getQueryAnnotation();
 
         return null == annotation ? null : new SimpleHadesQuery(finderMethod,
-                annotation.value());
+                em, annotation.value());
     }
 
 
@@ -142,9 +145,10 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * Constructs a {@link HadesQuery} from the given {@link QueryMethod}.
      * 
      * @param queryMethod
+     * @param em
      * @return
      */
-    public static HadesQuery construct(QueryMethod queryMethod) {
+    public static HadesQuery construct(QueryMethod queryMethod, EntityManager em) {
 
         if (queryMethod.isModifyingQuery()) {
             throw QueryCreationException
@@ -156,6 +160,6 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
                                     + "strategy to lookup queries!");
         }
 
-        return new SimpleHadesQuery(queryMethod);
+        return new SimpleHadesQuery(queryMethod, em);
     }
 }

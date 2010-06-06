@@ -18,6 +18,8 @@ package org.synyx.hades.dao.query;
 
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
+
 
 /**
  * Query lookup strategy to execute finders.
@@ -32,9 +34,9 @@ public enum QueryLookupStrategy {
     CREATE {
 
         @Override
-        public HadesQuery resolveQuery(QueryMethod method) {
+        public HadesQuery resolveQuery(QueryMethod method, EntityManager em) {
 
-            return SimpleHadesQuery.construct(method);
+            return SimpleHadesQuery.construct(method, em);
         }
 
     },
@@ -45,15 +47,15 @@ public enum QueryLookupStrategy {
     USE_DECLARED_QUERY {
 
         @Override
-        public HadesQuery resolveQuery(QueryMethod method) {
+        public HadesQuery resolveQuery(QueryMethod method, EntityManager em) {
 
-            HadesQuery query = SimpleHadesQuery.fromHadesAnnotation(method);
+            HadesQuery query = SimpleHadesQuery.fromHadesAnnotation(method, em);
 
             if (null != query) {
                 return query;
             }
 
-            query = NamedHadesQuery.lookupFrom(method);
+            query = NamedHadesQuery.lookupFrom(method, em);
 
             if (null != query) {
                 return query;
@@ -75,12 +77,12 @@ public enum QueryLookupStrategy {
     CREATE_IF_NOT_FOUND {
 
         @Override
-        public HadesQuery resolveQuery(QueryMethod method) {
+        public HadesQuery resolveQuery(QueryMethod method, EntityManager em) {
 
             try {
-                return USE_DECLARED_QUERY.resolveQuery(method);
+                return USE_DECLARED_QUERY.resolveQuery(method, em);
             } catch (IllegalStateException e) {
-                return SimpleHadesQuery.construct(method);
+                return SimpleHadesQuery.construct(method, em);
             }
         }
     };
@@ -117,7 +119,8 @@ public enum QueryLookupStrategy {
      * be executed afterwards.
      * 
      * @param method
+     * @param em
      * @return
      */
-    public abstract HadesQuery resolveQuery(QueryMethod method);
+    public abstract HadesQuery resolveQuery(QueryMethod method, EntityManager em);
 }

@@ -39,13 +39,13 @@ final class NamedHadesQuery extends AbstractHadesQuery {
     /**
      * Creates a new {@link NamedHadesQuery}.
      */
-    private NamedHadesQuery(QueryMethod method) {
+    private NamedHadesQuery(QueryMethod method, EntityManager em) {
 
-        super(method);
+        super(method, em);
 
         this.queryName = method.getNamedQueryName();
         this.extractor = method.getQueryExtractor();
-        method.getEntityManager().createNamedQuery(queryName);
+        em.createNamedQuery(queryName);
     }
 
 
@@ -55,7 +55,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
      * @param method
      * @return
      */
-    public static HadesQuery lookupFrom(QueryMethod method) {
+    public static HadesQuery lookupFrom(QueryMethod method, EntityManager em) {
 
         final String queryName = method.getNamedQueryName();
 
@@ -65,7 +65,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
         try {
 
-            HadesQuery query = new NamedHadesQuery(method);
+            HadesQuery query = new NamedHadesQuery(method, em);
             Parameters parameters = method.getParameters();
 
             if (parameters.hasSortParameter()) {

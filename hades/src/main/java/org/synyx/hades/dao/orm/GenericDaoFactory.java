@@ -417,10 +417,10 @@ public class GenericDaoFactory {
                         PersistenceProvider.fromEntityManager(entityManager);
 
                 QueryMethod finder =
-                        new QueryMethod(method, domainClass, entityManager,
-                                extractor);
+                        new QueryMethod(method, domainClass, extractor);
 
-                queries.put(method, queryLookupStrategy.resolveQuery(finder));
+                queries.put(method, queryLookupStrategy.resolveQuery(finder,
+                        entityManager));
             }
         }
 

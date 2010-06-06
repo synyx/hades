@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.QueryHint;
 
 import org.springframework.core.annotation.AnnotationUtils;
@@ -51,7 +50,6 @@ public class QueryMethod {
     private Parameters parameters;
     private Class<?> domainClass;
 
-    private EntityManager em;
     private QueryExtractor extractor;
 
 
@@ -61,16 +59,14 @@ public class QueryMethod {
      * 
      * @param method
      * @param domainClass
-     * @param em
      * @param extractor
      */
-    public QueryMethod(Method method, Class<?> domainClass, EntityManager em,
+    public QueryMethod(Method method, Class<?> domainClass,
             QueryExtractor extractor) {
 
         Assert.notNull(method, "Method must not be null!");
         Assert.notNull(domainClass, "Domain class must not be null!");
         Assert.notNull(extractor, "Query extractor must not be null!");
-        Assert.notNull(em, "EntityManager must not be null!");
 
         for (Class<?> type : Parameters.TYPES) {
             if (ClassUtils.getNumberOfOccurences(method, type) > 1) {
@@ -92,7 +88,6 @@ public class QueryMethod {
         this.method = method;
         this.parameters = new Parameters(method);
         this.domainClass = domainClass;
-        this.em = em;
         this.extractor = extractor;
 
         Assert.isTrue(
@@ -172,17 +167,6 @@ public class QueryMethod {
     org.synyx.hades.dao.Query getQueryAnnotation() {
 
         return method.getAnnotation(org.synyx.hades.dao.Query.class);
-    }
-
-
-    /**
-     * Returns the {@link EntityManager}.
-     * 
-     * @return
-     */
-    EntityManager getEntityManager() {
-
-        return this.em;
     }
 
 
