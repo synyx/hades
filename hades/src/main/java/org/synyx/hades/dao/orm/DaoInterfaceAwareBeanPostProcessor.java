@@ -21,18 +21,17 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
-import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.util.ClassUtils;
 
 
 /**
- * A {@link SmartInstantiationAwareBeanPostProcessor} implementing the
- * {@link SmartInstantiationAwareBeanPostProcessor#predictBeanType(Class, String)}
- * method to return the configured DAO interface from
- * {@link GenericDaoFactoryBean}s. This is done as shortcut to prevent the need
- * of instantiating {@link GenericDaoFactoryBean}s just to find out what DAO
- * interface they actually create.
+ * A
+ * {@link org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor}
+ * implementing {@code #predictBeanType(Class, String)} to return the configured
+ * DAO interface from {@link GenericDaoFactoryBean}s. This is done as shortcut
+ * to prevent the need of instantiating {@link GenericDaoFactoryBean}s just to
+ * find out what DAO interface they actually create.
  * 
  * @author Oliver Gierke
  */
