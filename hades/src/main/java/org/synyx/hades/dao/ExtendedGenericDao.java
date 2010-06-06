@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
-import org.synyx.hades.domain.Persistable;
 import org.synyx.hades.domain.Sort;
 
 
@@ -52,7 +51,7 @@ public interface ExtendedGenericDao<T, PK extends Serializable> extends
      * Returns all entites matching the given criteria sorted by the given sort
      * options.
      * 
-     * @see ExtendedGenericDao#readByExample(Persistable...)
+     * @see ExtendedGenericDao#readByExample(Object...)
      * @param sort
      * @param examples
      * @return all entites matching the given criteria sorted by the given sort
@@ -65,7 +64,7 @@ public interface ExtendedGenericDao<T, PK extends Serializable> extends
      * Returns all entites matching the given criteria sorted by the given sort
      * options.
      * 
-     * @see ExtendedGenericDao#readByExample(Persistable...)
+     * @see ExtendedGenericDao#readByExample(Object...)
      * @param sort
      * @param examples
      * @return all entites matching the given criteria sorted by the given sort
@@ -78,7 +77,7 @@ public interface ExtendedGenericDao<T, PK extends Serializable> extends
      * Returns all entites matching the given criteria sorted by the given sort
      * options.
      * 
-     * @see ExtendedGenericDao#readByExample(Persistable...)
+     * @see ExtendedGenericDao#readByExample(Object...)
      * @param sort
      * @param examples
      * @return all entites matching the given criteria sorted by the given sort
