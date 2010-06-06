@@ -43,12 +43,12 @@ abstract class AbstractHadesQuery implements HadesQuery {
     }
 
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Creates a JPA {@link Query} with the given {@link ParameterBinder} from
+     * the {@link HadesQuery}.
      * 
-     * @see
-     * org.synyx.hades.dao.query.HadesQuery#createJpaQuery(org.synyx.hades.dao
-     * .query.ParameterBinder)
+     * @param binder
+     * @return
      */
     public Query createJpaQuery(ParameterBinder binder) {
 
@@ -56,12 +56,12 @@ abstract class AbstractHadesQuery implements HadesQuery {
     }
 
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Creates a JPA {@link Query} to count the instances of the
+     * {@link HadesQuery} to be returned.
      * 
-     * @see
-     * org.synyx.hades.dao.query.HadesQuery#createCountQuery(org.synyx.hades
-     * .dao.query.ParameterBinder)
+     * @param binder
+     * @return
      */
     public Query createCountQuery(ParameterBinder binder) {
 

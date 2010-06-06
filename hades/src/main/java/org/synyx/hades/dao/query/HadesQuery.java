@@ -15,7 +15,6 @@
  */
 package org.synyx.hades.dao.query;
 
-import javax.persistence.Query;
 
 
 /**
@@ -24,26 +23,6 @@ import javax.persistence.Query;
  * @author Oliver Gierke
  */
 public interface HadesQuery {
-
-    /**
-     * Creates a JPA {@link Query} with the given {@link ParameterBinder} from
-     * the {@link HadesQuery}.
-     * 
-     * @param binder
-     * @return
-     */
-    Query createJpaQuery(ParameterBinder binder);
-
-
-    /**
-     * Creates a JPA {@link Query} to count the instances of the
-     * {@link HadesQuery} to be returned.
-     * 
-     * @param binder
-     * @return
-     */
-    Query createCountQuery(ParameterBinder binder);
-
 
     /**
      * Executes the query with the given parameters.
