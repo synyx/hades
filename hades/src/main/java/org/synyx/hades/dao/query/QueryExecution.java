@@ -37,7 +37,8 @@ enum QueryExecution {
     COLLECTION {
 
         @Override
-        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
+        protected Object doExecute(AbstractHadesQuery query,
+                ParameterBinder binder) {
 
             return binder.bindAndPrepare(query.createJpaQuery(binder))
                     .getResultList();
@@ -52,7 +53,8 @@ enum QueryExecution {
 
         @Override
         @SuppressWarnings("unchecked")
-        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
+        protected Object doExecute(AbstractHadesQuery query,
+                ParameterBinder binder) {
 
             // Execute query to compute total
             Query projection = binder.bind(query.createCountQuery(binder));
@@ -72,7 +74,8 @@ enum QueryExecution {
     SINGLE_ENTITY {
 
         @Override
-        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
+        protected Object doExecute(AbstractHadesQuery query,
+                ParameterBinder binder) {
 
             return binder.bind(query.createJpaQuery(binder)).getSingleResult();
         }
@@ -84,7 +87,8 @@ enum QueryExecution {
     MODIFY {
 
         @Override
-        protected Object doExecute(HadesQuery query, ParameterBinder binder) {
+        protected Object doExecute(AbstractHadesQuery query,
+                ParameterBinder binder) {
 
             return binder.bind(query.createJpaQuery(binder)).executeUpdate();
         }
@@ -97,7 +101,7 @@ enum QueryExecution {
      * @param binder
      * @return
      */
-    public Object execute(HadesQuery query, ParameterBinder binder) {
+    public Object execute(AbstractHadesQuery query, ParameterBinder binder) {
 
         try {
             return doExecute(query, binder);
@@ -108,11 +112,13 @@ enum QueryExecution {
 
 
     /**
-     * Method to implement {@link HadesQuery} executions by single enum values.
+     * Method to implement {@link AbstractHadesQuery} executions by single enum
+     * values.
      * 
      * @param query
      * @param binder
      * @return
      */
-    protected abstract Object doExecute(HadesQuery query, ParameterBinder binder);
+    protected abstract Object doExecute(AbstractHadesQuery query,
+            ParameterBinder binder);
 }
