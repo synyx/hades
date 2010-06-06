@@ -91,8 +91,8 @@ class Parameters implements Iterable<Parameter> {
 
         this.parameters = new ArrayList<Parameter>();
 
-        int pageableIndex = -1;
-        int sortIndex = -1;
+        int pageableIndexTemp = -1;
+        int sortIndexTemp = -1;
 
         for (int i = 0; i < originals.size(); i++) {
 
@@ -100,12 +100,12 @@ class Parameters implements Iterable<Parameter> {
 
             this.parameters.add(new Parameter(original, this, i));
 
-            pageableIndex = original.isPageable() ? i : -1;
-            sortIndex = original.isSort() ? i : -1;
+            pageableIndexTemp = original.isPageable() ? i : -1;
+            sortIndexTemp = original.isSort() ? i : -1;
         }
 
-        this.pageableIndex = pageableIndex;
-        this.sortIndex = sortIndex;
+        this.pageableIndex = pageableIndexTemp;
+        this.sortIndex = sortIndexTemp;
     }
 
 
