@@ -16,6 +16,9 @@
 
 package org.synyx.hades.dao.query;
 
+import java.util.Locale;
+
+
 /**
  * Query lookup strategy to execute finders.
  * 
@@ -94,7 +97,7 @@ public enum QueryLookupStrategy {
             return getDefault();
         }
 
-        return valueOf(xml.toUpperCase().replace("-", "_"));
+        return valueOf(xml.toUpperCase(Locale.US).replace("-", "_"));
     }
 
 
