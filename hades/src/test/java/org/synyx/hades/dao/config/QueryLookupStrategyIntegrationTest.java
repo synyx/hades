@@ -16,6 +16,7 @@
 package org.synyx.hades.dao.config;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.util.ReflectionTestUtils.*;
 import static org.synyx.hades.dao.query.QueryLookupStrategy.*;
 
 import org.junit.Test;
@@ -51,6 +52,7 @@ public class QueryLookupStrategyIntegrationTest {
         GenericDaoFactoryBean<?> factory =
                 context.getBean("&roleDao", GenericDaoFactoryBean.class);
 
-        assertEquals(USE_DECLARED_QUERY, factory.getQueryLookupStrategy());
+        assertEquals(USE_DECLARED_QUERY, getField(factory,
+                "queryLookupStrategy"));
     }
 }

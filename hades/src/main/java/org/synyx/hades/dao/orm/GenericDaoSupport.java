@@ -209,7 +209,7 @@ public abstract class GenericDaoSupport<T> {
      */
     public interface IsNewStrategy {
 
-        public boolean isNew(Object entity);
+        boolean isNew(Object entity);
     }
 
     /**
@@ -261,8 +261,7 @@ public abstract class GenericDaoSupport<T> {
 
             ReflectionUtils.doWithFields(domainClass, new FieldCallback() {
 
-                public void doWith(Field field)
-                        throws IllegalArgumentException, IllegalAccessException {
+                public void doWith(Field field) {
 
                     if (ReflectiveIsNewStrategy.this.field != null) {
                         return;
@@ -280,8 +279,7 @@ public abstract class GenericDaoSupport<T> {
 
             ReflectionUtils.doWithMethods(domainClass, new MethodCallback() {
 
-                public void doWith(Method method)
-                        throws IllegalArgumentException, IllegalAccessException {
+                public void doWith(Method method) {
 
                     if (ReflectiveIsNewStrategy.this.method != null) {
                         return;

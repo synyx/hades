@@ -119,7 +119,7 @@ public class GenericDaoFactory {
      * 
      * @return the queryLookupStrategy
      */
-    public QueryLookupStrategy getQueryLookupStrategy() {
+    QueryLookupStrategy getQueryLookupStrategy() {
 
         return queryLookupStrategy;
     }
