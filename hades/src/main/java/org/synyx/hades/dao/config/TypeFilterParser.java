@@ -105,25 +105,86 @@ class TypeFilterParser {
     }
 
 
-    @SuppressWarnings("unchecked")
     protected TypeFilter createTypeFilter(Element element,
             ClassLoader classLoader) {
 
         String filterType = element.getAttribute(FILTER_TYPE_ATTRIBUTE);
         String expression = element.getAttribute(FILTER_EXPRESSION_ATTRIBUTE);
+
         try {
-            if ("annotation".equals(filterType)) {
+
+            FilterType filter = FilterType.fromString(filterType);
+            return filter.getFilter(expression, classLoader);
+
+        } catch (ClassNotFoundException ex) {
+            throw new FatalBeanException("Type filter class not found: "
+                    + expression, ex);
+        }
+    }
+
+    /**
+     * Enum representing all the filter types available for {@code include} and
+     * {@code exclude} elements. This acts as factory for {@link TypeFilter}
+     * instances.
+     * 
+     * @see #getFilter(String, ClassLoader)
+     * @author Oliver Gierke
+     */
+    private static enum FilterType {
+
+        ANNOTATION {
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public TypeFilter getFilter(String expression,
+                    ClassLoader classLoader) throws ClassNotFoundException {
+
                 return new AnnotationTypeFilter((Class<Annotation>) classLoader
                         .loadClass(expression));
-            } else if ("assignable".equals(filterType)) {
+            }
+        },
+
+        ASSIGNABLE {
+
+            @Override
+            public TypeFilter getFilter(String expression,
+                    ClassLoader classLoader) throws ClassNotFoundException {
+
                 return new AssignableTypeFilter(classLoader
                         .loadClass(expression));
-            } else if ("aspectj".equals(filterType)) {
+            }
+
+        },
+
+        ASPECTJ {
+
+            @Override
+            public TypeFilter getFilter(String expression,
+                    ClassLoader classLoader) {
+
                 return new AspectJTypeFilter(expression, classLoader);
-            } else if ("regex".equals(filterType)) {
+            }
+
+        },
+
+        REGEX {
+
+            @Override
+            public TypeFilter getFilter(String expression,
+                    ClassLoader classLoader) {
+
                 return new RegexPatternTypeFilter(Pattern.compile(expression));
-            } else if ("custom".equals(filterType)) {
-                Class filterClass = classLoader.loadClass(expression);
+            }
+
+        },
+
+        CUSTOM {
+
+            @Override
+            public TypeFilter getFilter(String expression,
+                    ClassLoader classLoader) throws ClassNotFoundException {
+
+                Class<?> filterClass = classLoader.loadClass(expression);
                 if (!TypeFilter.class.isAssignableFrom(filterClass)) {
                     throw new IllegalArgumentException(
                             "Class is not assignable to ["
@@ -131,13 +192,40 @@ class TypeFilterParser {
                                     + expression);
                 }
                 return (TypeFilter) BeanUtils.instantiateClass(filterClass);
-            } else {
-                throw new IllegalArgumentException("Unsupported filter type: "
-                        + filterType);
             }
-        } catch (ClassNotFoundException ex) {
-            throw new FatalBeanException("Type filter class not found: "
-                    + expression, ex);
+        };
+
+        /**
+         * Returns the {@link TypeFilter} for the given expression and
+         * {@link ClassLoader}.
+         * 
+         * @param expression
+         * @param classLoader
+         * @return
+         * @throws ClassNotFoundException
+         */
+        abstract TypeFilter getFilter(String expression, ClassLoader classLoader)
+                throws ClassNotFoundException;
+
+
+        /**
+         * Returns the {@link FilterType} for the given type as {@link String}.
+         * 
+         * @param typeString
+         * @return
+         * @throws IllegalArgumentException if no {@link FilterType} could be
+         *             found for the given argument.
+         */
+        static FilterType fromString(String typeString) {
+
+            for (FilterType filter : FilterType.values()) {
+                if (filter.name().toLowerCase().equals(typeString)) {
+                    return filter;
+                }
+            }
+
+            throw new IllegalArgumentException("Unsupported filter type: "
+                    + typeString);
         }
     }
 
@@ -179,7 +267,7 @@ class TypeFilterParser {
          * @param node
          * @return
          */
-        public Element getElement(Node node) {
+        Element getElement(Node node) {
 
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 String localName = node.getLocalName();
@@ -192,7 +280,7 @@ class TypeFilterParser {
         }
 
 
-        public abstract void addFilter(TypeFilter filter,
+        abstract void addFilter(TypeFilter filter,
                 ClassPathScanningCandidateComponentProvider scanner);
     }
 }
