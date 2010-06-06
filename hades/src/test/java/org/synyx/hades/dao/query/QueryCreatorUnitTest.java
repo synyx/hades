@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
-import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +27,6 @@ public class QueryCreatorUnitTest {
     private Method method;
 
     @Mock
-    private EntityManager em;
-    @Mock
     private QueryExtractor extractor;
 
 
@@ -46,7 +43,7 @@ public class QueryCreatorUnitTest {
     public void rejectsInvalidProperty() throws Exception {
 
         QueryMethod finderMethod =
-                new QueryMethod(method, User.class, em, extractor);
+                new QueryMethod(method, User.class, extractor);
 
         new QueryCreator(finderMethod).constructQuery();
     }
@@ -122,7 +119,7 @@ public class QueryCreatorUnitTest {
 
         QueryMethod method =
                 new QueryMethod(invalidModifyingMethod,
-                        QueryMethodUnitTest.DOMAIN_CLASS, em, extractor);
+                        QueryMethodUnitTest.DOMAIN_CLASS, extractor);
 
         new QueryCreator(method);
     }
@@ -138,7 +135,7 @@ public class QueryCreatorUnitTest {
     private void assertCreatesQueryForMethod(String queryEnd, Method method) {
 
         QueryMethod queryMethod =
-                new QueryMethod(method, method.getReturnType(), em, extractor);
+                new QueryMethod(method, method.getReturnType(), extractor);
 
         String result = new QueryCreator(queryMethod).constructQuery();
         assertTrue(result.endsWith(queryEnd));

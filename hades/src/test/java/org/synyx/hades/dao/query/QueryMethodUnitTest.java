@@ -17,13 +17,11 @@ package org.synyx.hades.dao.query;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.QueryHint;
 
@@ -53,8 +51,6 @@ public class QueryMethodUnitTest {
 
     private Method daoMethod;
 
-    @Mock
-    private EntityManager em;
     @Mock
     private QueryExtractor extractor;
 
@@ -96,7 +92,7 @@ public class QueryMethodUnitTest {
     public void testname() throws Exception {
 
         QueryMethod method =
-                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
         assertEquals("User.findByLastname", method.getNamedQueryName());
         assertTrue(method.isCollectionQuery());
@@ -108,28 +104,21 @@ public class QueryMethodUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullDaoMethod() throws Exception {
 
-        new QueryMethod(null, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(null, DOMAIN_CLASS, extractor);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullDomainClass() throws Exception {
 
-        new QueryMethod(daoMethod, null, em, extractor);
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void preventsNullEntityManager() throws Exception {
-
-        new QueryMethod(daoMethod, DOMAIN_CLASS, null, extractor);
+        new QueryMethod(daoMethod, null, extractor);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullQueryExtractor() throws Exception {
 
-        new QueryMethod(daoMethod, DOMAIN_CLASS, em, null);
+        new QueryMethod(daoMethod, DOMAIN_CLASS, null);
     }
 
 
@@ -137,7 +126,7 @@ public class QueryMethodUnitTest {
     public void returnsCorrectName() {
 
         QueryMethod method =
-                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
         assertEquals(daoMethod.getName(), method.getName());
     }
@@ -147,7 +136,7 @@ public class QueryMethodUnitTest {
     public void determinesValidFieldsCorrectly() {
 
         QueryMethod method =
-                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
         assertTrue(method.isValidField("firstname"));
         assertTrue(method.isValidField("Firstname"));
@@ -160,14 +149,14 @@ public class QueryMethodUnitTest {
             NoSuchMethodException {
 
         QueryMethod method =
-                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
         assertNull(method.getQueryAnnotation());
 
         Method daoMethod =
                 UserDao.class.getMethod("findByHadesQuery", String.class);
 
-        assertNotNull(new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor)
+        assertNotNull(new QueryMethod(daoMethod, DOMAIN_CLASS, extractor)
                 .getQueryAnnotation());
     }
 
@@ -176,7 +165,7 @@ public class QueryMethodUnitTest {
     public void returnsCorrectDomainClassName() {
 
         QueryMethod method =
-                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
         assertEquals(DOMAIN_CLASS.getSimpleName(), method.getDomainClassName());
     }
@@ -186,7 +175,7 @@ public class QueryMethodUnitTest {
     public void returnsCorrectNumberOfParameters() {
 
         QueryMethod method =
-                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
         assertTrue(method.isCorrectNumberOfParameters(daoMethod
                 .getParameterTypes().length));
@@ -196,28 +185,28 @@ public class QueryMethodUnitTest {
     @Test(expected = IllegalStateException.class)
     public void rejectsInvalidReturntypeOnPagebleFinder() {
 
-        new QueryMethod(invalidReturnType, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(invalidReturnType, DOMAIN_CLASS, extractor);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsPageableAndSortInFinderMethod() {
 
-        new QueryMethod(pageableAndSort, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(pageableAndSort, DOMAIN_CLASS, extractor);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsTwoPageableParameters() {
 
-        new QueryMethod(pageableTwice, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(pageableTwice, DOMAIN_CLASS, extractor);
     }
 
 
     @Test(expected = IllegalStateException.class)
     public void rejectsTwoSortableParameters() {
 
-        new QueryMethod(sortableTwice, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(sortableTwice, DOMAIN_CLASS, extractor);
     }
 
 
@@ -231,10 +220,9 @@ public class QueryMethodUnitTest {
 
         Query query = mock(Query.class);
 
-        when(em.createNamedQuery(anyString())).thenReturn(query);
         when(extractor.canExtractQuery()).thenReturn(false);
 
-        new QueryMethod(method, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(method, DOMAIN_CLASS, extractor);
     }
 
 
@@ -242,7 +230,7 @@ public class QueryMethodUnitTest {
     public void recognizesModifyingMethod() throws Exception {
 
         QueryMethod method =
-                new QueryMethod(modifyingMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(modifyingMethod, DOMAIN_CLASS, extractor);
         assertTrue(method.isModifyingQuery());
     }
 
@@ -254,7 +242,7 @@ public class QueryMethodUnitTest {
                 InvalidDao.class.getMethod("updateMethod", String.class,
                         Pageable.class);
 
-        new QueryMethod(method, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(method, DOMAIN_CLASS, extractor);
     }
 
 
@@ -265,7 +253,7 @@ public class QueryMethodUnitTest {
                 InvalidDao.class.getMethod("updateMethod", String.class,
                         Sort.class);
 
-        new QueryMethod(method, DOMAIN_CLASS, em, extractor);
+        new QueryMethod(method, DOMAIN_CLASS, extractor);
     }
 
 
@@ -275,7 +263,7 @@ public class QueryMethodUnitTest {
         Method method =
                 SubUserDao.class.getMethod("findByProperty", String.class);
         QueryMethod queryMethod =
-                new QueryMethod(method, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(method, DOMAIN_CLASS, extractor);
         assertTrue(queryMethod.isValidField("property"));
     }
 
@@ -284,7 +272,7 @@ public class QueryMethodUnitTest {
     public void discoversHintsCorrectly() throws Exception {
 
         QueryMethod method =
-                new QueryMethod(daoMethod, DOMAIN_CLASS, em, extractor);
+                new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
         List<QueryHint> hints = method.getHints();
 
         assertNotNull(hints);

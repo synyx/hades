@@ -60,14 +60,15 @@ public class SimpleHadesQueryUnitTest {
         when(em.createQuery(anyString())).thenReturn(query);
 
         Method setUp = UserDao.class.getMethod("findByLastname", String.class);
-        method = new QueryMethod(setUp, User.class, em, extractor);
+        method = new QueryMethod(setUp, User.class, extractor);
     }
 
 
     @Test
     public void appliesHintsCorrectly() throws Exception {
 
-        SimpleHadesQuery hadesQuery = new SimpleHadesQuery(method, "foobar");
+        SimpleHadesQuery hadesQuery =
+                new SimpleHadesQuery(method, em, "foobar");
         hadesQuery.createQuery(em, new ParameterBinder(method.getParameters(),
                 "gierke"));
 

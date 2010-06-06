@@ -30,16 +30,18 @@ import javax.persistence.Query;
  */
 abstract class AbstractHadesQuery implements HadesQuery {
 
-    private QueryMethod method;
+    private final QueryMethod method;
+    private final EntityManager em;
 
 
     /**
      * Creates a new {@link AbstractHadesQuery} from the given
      * {@link QueryMethod}.
      */
-    public AbstractHadesQuery(QueryMethod method) {
+    public AbstractHadesQuery(QueryMethod method, EntityManager em) {
 
         this.method = method;
+        this.em = em;
     }
 
 
@@ -52,7 +54,7 @@ abstract class AbstractHadesQuery implements HadesQuery {
      */
     public Query createJpaQuery(ParameterBinder binder) {
 
-        return createQuery(method.getEntityManager(), binder);
+        return createQuery(em, binder);
     }
 
 
@@ -65,7 +67,7 @@ abstract class AbstractHadesQuery implements HadesQuery {
      */
     public Query createCountQuery(ParameterBinder binder) {
 
-        return createCountQuery(method.getEntityManager(), binder);
+        return createCountQuery(em, binder);
     }
 
 
