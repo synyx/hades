@@ -33,6 +33,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.dao.query.HadesQuery;
 import org.synyx.hades.dao.query.QueryExtractor;
 import org.synyx.hades.dao.query.QueryLookupStrategy;
 import org.synyx.hades.dao.query.QueryMethod;
@@ -389,8 +390,8 @@ public class GenericDaoFactory {
      */
     private class QueryExecuterMethodInterceptor implements MethodInterceptor {
 
-        private final Map<Method, QueryMethod> queries =
-                new ConcurrentHashMap<Method, QueryMethod>();
+        private final Map<Method, HadesQuery> queries =
+                new ConcurrentHashMap<Method, HadesQuery>();
 
         private final Object customDaoImplementation;
         private final Class<?> daoInterface;
@@ -417,9 +418,9 @@ public class GenericDaoFactory {
 
                 QueryMethod finder =
                         new QueryMethod(method, domainClass, entityManager,
-                                extractor, queryLookupStrategy);
+                                extractor);
 
-                queries.put(method, finder);
+                queries.put(method, queryLookupStrategy.resolveQuery(finder));
             }
         }
 
@@ -444,8 +445,7 @@ public class GenericDaoFactory {
             }
 
             if (hasQueryFor(method)) {
-                return queries.get(method).executeQuery(
-                        invocation.getArguments());
+                return queries.get(method).execute(invocation.getArguments());
             }
 
             // Lookup actual method as it might be redeclared in the interface

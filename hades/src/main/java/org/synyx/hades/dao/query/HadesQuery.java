@@ -23,7 +23,7 @@ import javax.persistence.Query;
  * 
  * @author Oliver Gierke - gierke@synyx.de
  */
-interface HadesQuery {
+public interface HadesQuery {
 
     /**
      * Creates a JPA {@link Query} with the given {@link ParameterBinder} from
@@ -43,4 +43,13 @@ interface HadesQuery {
      * @return
      */
     Query createCountQuery(ParameterBinder binder);
+
+
+    /**
+     * Executes the query with the given parameters.
+     * 
+     * @param parameters
+     * @return
+     */
+    Object execute(Object... parameters);
 }
