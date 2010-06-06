@@ -46,11 +46,11 @@ import org.synyx.hades.util.ClassUtils;
  */
 public class QueryMethod {
 
-    private Method method;
-    private Parameters parameters;
-    private Class<?> domainClass;
+    private final Method method;
+    private final Parameters parameters;
+    private final Class<?> domainClass;
 
-    private QueryExtractor extractor;
+    private final QueryExtractor extractor;
 
 
     /**
