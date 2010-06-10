@@ -94,8 +94,6 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     protected Query createCountQuery(EntityManager em, ParameterBinder binder) {
 
         String query = QueryUtils.createCountQueryFor(queryString);
-        query = QueryUtils.applySorting(query, binder.getSort(), alias);
-
         return applyHints(em.createQuery(query));
     }
 
