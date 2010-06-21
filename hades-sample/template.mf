@@ -2,21 +2,19 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ${project.artifactId}
 Bundle-Name: ${project.name}
 Bundle-Vendor: Synyx GmbH & Co. KG
-Bundle-Version: ${osgi.version}
+Bundle-Version: ${project.version}
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: 
  javax.sql;version="0.0.0",
- org.hsqldb;version="[1.8.0,1.9.0)",
- org.synyx.hades.dao.orm;version="${osgi.version:[=.=.=, +1.0.0)}",
- org.synyx.hades.domain;version="${osgi.version:[=.=.=, +1.0.0)}"
+ org.hsqldb;version="[1.8.0,1.9.0)"
 Export-Template: 
- org.synyx.hades.sample.dao.*;version="${osgi.version}"
+ org.synyx.hades.sample.dao.*;version="${project.version}"
 Excluded-Exports: 
  org.synyx.hades.sample.dao.impl
 Import-Template: 
  javax.persistence.*;version="[1.0.0,2.0.0)", 
  org.springframework.*;version="[2.5.0,4.0.0)",
- org.synyx.hades.*;version="${osgi.version:[=.=.=, +1.0.0)}"
+ org.synyx.hades.*;version="${project.version:[=.=.=.=, +1.0.0)}"
 Import-Library: 
  org.springframework.spring;version="[2.5.6.A,4.0.0)",
  org.hibernate.ejb;version="[3.3.2.GA,3.3.2.GA]"
