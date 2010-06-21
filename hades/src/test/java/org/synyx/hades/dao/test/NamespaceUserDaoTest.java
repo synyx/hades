@@ -16,9 +16,13 @@
 
 package org.synyx.hades.dao.test;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
+import static org.junit.Assert.*;
+
+import java.util.Map;
+
+import org.junit.Test;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,34 +36,24 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Eberhard Wolff
  */
 @ContextConfiguration(locations = "classpath:namespace-applicationContext.xml", inheritLocations = false)
-public class NamespaceUserDaoTest extends UserDaoIntegrationTest implements
-        BeanFactoryAware {
+public class NamespaceUserDaoTest extends UserDaoIntegrationTest {
 
-    private BeanFactory beanFactory;
+    @Autowired
+    private ListableBeanFactory beanFactory;
 
 
-    /**
-     * Tests, that PostProcessor beans are available as expected.
-     */
-    public void testCreationOfPostProcessors() {
+    @Test
+    public void registersPostProcessors() {
 
-        beanFactory.getBean(PersistenceAnnotationBeanPostProcessor.class
-                .getName());
-
-        beanFactory.getBean(PersistenceExceptionTranslationPostProcessor.class
-                .getName());
+        hasAtLeastOneBeanOfType(PersistenceAnnotationBeanPostProcessor.class);
+        hasAtLeastOneBeanOfType(PersistenceExceptionTranslationPostProcessor.class);
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org
-     * .springframework.beans.factory.BeanFactory)
-     */
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    @SuppressWarnings("unchecked")
+    private void hasAtLeastOneBeanOfType(Class<?> beanType) {
 
-        this.beanFactory = beanFactory;
+        Map<String, ?> beans = beanFactory.getBeansOfType(beanType);
+        assertFalse(beans.entrySet().isEmpty());
     }
 }
