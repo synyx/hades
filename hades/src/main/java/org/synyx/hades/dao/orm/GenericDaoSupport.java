@@ -29,7 +29,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -137,9 +137,10 @@ public abstract class GenericDaoSupport<T> {
      * 
      * @return the query to retrieve all entities.
      */
-    protected Query getReadAllQuery() {
+    protected TypedQuery<T> getReadAllQuery() {
 
-        return getEntityManager().createQuery(getReadAllQueryString());
+        return getEntityManager().createQuery(getReadAllQueryString(),
+                getDomainClass());
     }
 
 

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,7 +142,6 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * 
      * @see com.synyx.jpa.support.GenericDao#readAll()
      */
-    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<T> readAll() {
 
@@ -155,13 +154,13 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * 
      * @see org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.Sort)
      */
-    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<T> readAll(final Sort sort) {
 
         String queryString =
                 QueryUtils.applySorting(getReadAllQueryString(), sort);
-        Query query = getEntityManager().createQuery(queryString);
+        TypedQuery<T> query =
+                getEntityManager().createQuery(queryString, getDomainClass());
 
         return (null == sort) ? readAll() : query.getResultList();
     }
@@ -194,7 +193,8 @@ public class GenericJpaDao<T, PK extends Serializable> extends
     @Transactional(readOnly = true)
     public Long count() {
 
-        return (Long) getEntityManager().createQuery(getCountQueryString())
+        return getEntityManager()
+                .createQuery(getCountQueryString(), Long.class)
                 .getSingleResult();
     }
 
@@ -266,11 +266,11 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * @param query
      * @return a page of entities for the given JPQL query
      */
-    @SuppressWarnings("unchecked")
     protected Page<T> readPage(final Pageable pageable, final String query) {
 
         String queryString = QueryUtils.applySorting(query, pageable.getSort());
-        Query jpaQuery = getEntityManager().createQuery(queryString);
+        TypedQuery<T> jpaQuery =
+                getEntityManager().createQuery(queryString, getDomainClass());
 
         jpaQuery.setFirstResult(pageable.getFirstItem());
         jpaQuery.setMaxResults(pageable.getPageSize());
