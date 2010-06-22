@@ -27,19 +27,19 @@ import org.junit.Test;
  * 
  * @author Oliver Gierke
  */
-@SuppressWarnings("unchecked")
 public class AuditingAdviceUnitTest {
 
-    private AuditingAdvice auditionAdvice;
+    private AuditingAdvice<AuditableUser> auditionAdvice;
     private AuditorAware<AuditableUser> auditorAware;
 
     private AuditableUser user;
 
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
 
-        auditionAdvice = new AuditingAdvice();
+        auditionAdvice = new AuditingAdvice<AuditableUser>();
 
         user = new AuditableUser();
 

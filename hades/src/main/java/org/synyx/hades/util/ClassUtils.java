@@ -38,7 +38,7 @@ import org.synyx.hades.dao.GenericDao;
  */
 public abstract class ClassUtils {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private static final TypeVariable<Class<GenericDao>>[] PARAMETERS =
             GenericDao.class.getTypeParameters();
     private static final String DOMAIN_TYPE_NAME = PARAMETERS[0].getName();

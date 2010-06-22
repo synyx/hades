@@ -169,6 +169,7 @@ public class GenericDaoFactory {
 
         try {
             // Instantiate generic dao
+            @SuppressWarnings("rawtypes")
             GenericDaoSupport genericJpaDao = getDaoClass().newInstance();
             genericJpaDao.setEntityManager(entityManager);
             genericJpaDao.setDomainClass(ClassUtils
@@ -217,7 +218,7 @@ public class GenericDaoFactory {
      * 
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     protected Class<? extends GenericJpaDao> getDaoClass() {
 
         return GenericJpaDao.class;

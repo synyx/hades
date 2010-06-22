@@ -325,7 +325,7 @@ public class QueryMethodUnitTest {
      * 
      * @author Oliver Gierke
      */
-    @SuppressWarnings( { "unused", "serial" })
+    @SuppressWarnings({ "unused", "serial" })
     private static class SubUser extends User {
 
         private String property;

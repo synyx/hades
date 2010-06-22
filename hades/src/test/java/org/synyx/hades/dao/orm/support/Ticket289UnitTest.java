@@ -95,7 +95,7 @@ public class Ticket289UnitTest {
     private static class CustomGenericDaoFactory extends GenericDaoFactory {
 
         @Override
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         protected Class<? extends GenericJpaDao> getDaoClass() {
 
             return CustomDaoBaseClass.class;
