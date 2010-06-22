@@ -51,8 +51,8 @@ import org.synyx.hades.util.ClassUtils;
 public class GenericDaoFactory {
 
     private EntityManager entityManager;
-    private QueryLookupStrategy queryLookupStrategy =
-            QueryLookupStrategy.getDefault();
+    private QueryLookupStrategy queryLookupStrategy = QueryLookupStrategy
+            .getDefault();
 
 
     /**
@@ -293,10 +293,9 @@ public class GenericDaoFactory {
         if (null == customDaoImplementation && hasCustomMethod(daoInterface)) {
 
             throw new IllegalArgumentException(
-                    String
-                            .format(
-                                    "You have custom methods in %s but not provided a custom implementation!",
-                                    daoInterface));
+                    String.format(
+                            "You have custom methods in %s but not provided a custom implementation!",
+                            daoInterface));
         }
     }
 
@@ -338,8 +337,8 @@ public class GenericDaoFactory {
                 QueryMethod finder =
                         new QueryMethod(method, domainClass, extractor);
 
-                queries.put(method, queryLookupStrategy.resolveQuery(finder,
-                        entityManager));
+                queries.put(method,
+                        queryLookupStrategy.resolveQuery(finder, entityManager));
             }
         }
 
@@ -360,8 +359,8 @@ public class GenericDaoFactory {
 
                 try {
                     ReflectionUtils.makeAccessible(method);
-                    return method.invoke(customDaoImplementation, invocation
-                            .getArguments());
+                    return method.invoke(customDaoImplementation,
+                            invocation.getArguments());
                 } catch (Exception e) {
                     ClassUtils.unwrapReflectionException(e);
                 }
@@ -369,8 +368,7 @@ public class GenericDaoFactory {
 
             if (hasQueryFor(method)) {
 
-                return queries.get(method).execute(
-                        invocation.getArguments());
+                return queries.get(method).execute(invocation.getArguments());
             }
 
             return invocation.proceed();
