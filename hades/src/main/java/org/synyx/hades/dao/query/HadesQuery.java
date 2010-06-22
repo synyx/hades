@@ -15,8 +15,6 @@
  */
 package org.synyx.hades.dao.query;
 
-
-
 /**
  * Interface for a query abstraction.
  * 

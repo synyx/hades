@@ -24,8 +24,8 @@ import javax.persistence.Id;
 
 /**
  * Example implementation of the very basic {@code Persistable} interface. The
- * id type is matching the typisation of the interface. {@code
- * Persitsable#isNew()} is implemented regarding the id as flag.
+ * id type is matching the typisation of the interface.
+ * {@code Persitsable#isNew()} is implemented regarding the id as flag.
  * 
  * @author Oliver Gierke
  */

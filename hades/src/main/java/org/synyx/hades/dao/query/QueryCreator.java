@@ -22,8 +22,8 @@ class QueryCreator {
     private static final String INVALID_PARAMETER_SIZE =
             "You have to provide method arguments for each query "
                     + "criteria to construct the query correctly!";
-    private static final String[] PREFIXES =
-            new String[] { "findBy", "find", "readBy", "read", "getBy", "get" };
+    private static final String[] PREFIXES = new String[] { "findBy", "find",
+            "readBy", "read", "getBy", "get" };
 
     private static final String AND = "And";
     private static final String OR = "Or";
@@ -56,8 +56,8 @@ class QueryCreator {
     String constructQuery() {
 
         StringBuilder queryBuilder =
-                new StringBuilder(getQueryString(READ_ALL_QUERY, method
-                        .getDomainClassName()));
+                new StringBuilder(getQueryString(READ_ALL_QUERY,
+                        method.getDomainClassName()));
         queryBuilder.append(" where ");
 
         // Split OR
@@ -79,8 +79,8 @@ class QueryCreator {
 
                 try {
                     Part part =
-                            new Part(andPart, method, parameters
-                                    .getParameter(parametersBound));
+                            new Part(andPart, method,
+                                    parameters.getParameter(parametersBound));
 
                     andBuilder.append(part.getQueryPart()).append(" and ");
                     parametersBound += part.getNumberOfArguments();
@@ -364,8 +364,8 @@ class QueryCreator {
              */
             public String extractProperty(String part) {
 
-                return keyword == null ? part : part.substring(0, part
-                        .indexOf(keyword));
+                return keyword == null ? part : part.substring(0,
+                        part.indexOf(keyword));
             }
         }
     }

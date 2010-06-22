@@ -62,10 +62,9 @@ public enum QueryLookupStrategy {
             }
 
             throw new IllegalStateException(
-                    String
-                            .format(
-                                    "Did neither find a NamedQuery nor a Hades Query for method %s!",
-                                    method));
+                    String.format(
+                            "Did neither find a NamedQuery nor a Hades Query for method %s!",
+                            method));
         }
     },
 

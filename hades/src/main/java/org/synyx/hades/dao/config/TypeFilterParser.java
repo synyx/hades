@@ -97,8 +97,8 @@ class TypeFilterParser {
                             scanner);
 
                 } catch (Exception e) {
-                    readerContext.error(e.getMessage(), readerContext
-                            .extractSource(element), e.getCause());
+                    readerContext.error(e.getMessage(),
+                            readerContext.extractSource(element), e.getCause());
                 }
             }
         }
@@ -139,8 +139,8 @@ class TypeFilterParser {
             public TypeFilter getFilter(String expression,
                     ClassLoader classLoader) throws ClassNotFoundException {
 
-                return new AnnotationTypeFilter((Class<Annotation>) classLoader
-                        .loadClass(expression));
+                return new AnnotationTypeFilter(
+                        (Class<Annotation>) classLoader.loadClass(expression));
             }
         },
 
@@ -150,8 +150,8 @@ class TypeFilterParser {
             public TypeFilter getFilter(String expression,
                     ClassLoader classLoader) throws ClassNotFoundException {
 
-                return new AssignableTypeFilter(classLoader
-                        .loadClass(expression));
+                return new AssignableTypeFilter(
+                        classLoader.loadClass(expression));
             }
 
         },

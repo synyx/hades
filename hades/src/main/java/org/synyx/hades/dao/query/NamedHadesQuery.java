@@ -70,13 +70,12 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
             if (parameters.hasSortParameter()) {
                 throw new IllegalStateException(
-                        String
-                                .format(
-                                        "Finder method %s is backed "
-                                                + "by a NamedQuery and must "
-                                                + "not contain a sort parameter as we "
-                                                + "cannot modify the query! Use @Query instead!",
-                                        method));
+                        String.format(
+                                "Finder method %s is backed "
+                                        + "by a NamedQuery and must "
+                                        + "not contain a sort parameter as we "
+                                        + "cannot modify the query! Use @Query instead!",
+                                method));
             }
 
             boolean isPaging = parameters.hasPageableParameter();
@@ -85,19 +84,16 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
             if (isPaging && cannotExtractQuery) {
                 throw QueryCreationException
-                        .create(
-                                method,
+                        .create(method,
                                 "Cannot use Pageable parameter in query methods with your persistence provider!");
             }
 
             if (parameters.hasPageableParameter()) {
-                LOG
-                        .info(String
-                                .format(
-                                        "Finder method %s is backed by a NamedQuery"
-                                                + " but contains a Pageble parameter! Sorting deliviered "
-                                                + "via this Pageable will not be applied!",
-                                        method));
+                LOG.info(String
+                        .format("Finder method %s is backed by a NamedQuery"
+                                + " but contains a Pageble parameter! Sorting deliviered "
+                                + "via this Pageable will not be applied!",
+                                method));
 
             }
 

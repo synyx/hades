@@ -42,9 +42,9 @@ public abstract class ClassUtils {
     /**
      * Hades own DAO interfaces.
      */
-    private static final List<String> HADES_DAO_INTERFACE_NAMES =
-            Arrays.asList(GenericDao.class.getName(), ExtendedGenericDao.class
-                    .getName());
+    private static final List<String> HADES_DAO_INTERFACE_NAMES = Arrays
+            .asList(GenericDao.class.getName(),
+                    ExtendedGenericDao.class.getName());
 
 
     /**
@@ -111,8 +111,7 @@ public abstract class ClassUtils {
                             parammeterizedType.getActualTypeArguments()[index];
 
                     return (Class<?>) (result instanceof ParameterizedType ? ((ParameterizedType) result)
-                            .getRawType()
-                            : result);
+                            .getRawType() : result);
                 }
             }
 

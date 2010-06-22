@@ -156,8 +156,8 @@ public class QueryCreatorUnitTest {
 
     /**
      * A method to check that query keyowrds are considered correctly. The
-     * {@link QueryCreator} must not detect the {@code Or} in {@code
-     * Organization} as keyword.
+     * {@link QueryCreator} must not detect the {@code Or} in
+     * {@code Organization} as keyword.
      * 
      * @param name
      * @param organization

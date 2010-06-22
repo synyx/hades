@@ -71,8 +71,8 @@ public class DaoInterfaceAwareBeanPostProcessorUnitTest {
     public void returnsDaoInterfaceClassForFactoryBean() throws Exception {
 
         processor.setBeanFactory(beanFactory);
-        assertEquals(UserDao.class, processor.predictBeanType(FACTORY_CLASS,
-                BEAN_NAME));
+        assertEquals(UserDao.class,
+                processor.predictBeanType(FACTORY_CLASS, BEAN_NAME));
     }
 
 

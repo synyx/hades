@@ -24,7 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 
-
 /**
  * Abstract base class for entities. Allows parameterization of id type and
  * offers a flag determining the "new" state of the entity.

@@ -176,8 +176,8 @@ public class UserDaoIntegrationTest {
         flushTestUsers();
         userDao.renameAllUsersTo("newLastname");
 
-        assertEquals(userDao.count().intValue(), userDao.findByLastname(
-                "newLastname").size());
+        assertEquals(userDao.count().intValue(),
+                userDao.findByLastname("newLastname").size());
     }
 
 

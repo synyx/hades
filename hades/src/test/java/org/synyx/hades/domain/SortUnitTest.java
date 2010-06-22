@@ -39,8 +39,8 @@ public class SortUnitTest {
     public void appliesDefaultForOrder() throws Exception {
 
         assertEquals(Sort.DEFAULT_ORDER, new Sort("foo").getOrder());
-        assertEquals(Sort.DEFAULT_ORDER, new Sort((Order) null, "foo")
-                .getOrder());
+        assertEquals(Sort.DEFAULT_ORDER,
+                new Sort((Order) null, "foo").getOrder());
     }
 
 

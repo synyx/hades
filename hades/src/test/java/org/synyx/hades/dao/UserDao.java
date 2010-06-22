@@ -34,19 +34,21 @@ import org.synyx.hades.domain.User;
 public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
 
     /**
-     * Retrieve users by their lastname. The finder {@literal
-     * User.findByLastname} is declared in {@literal META-INF/orm.xml}.
+     * Retrieve users by their lastname. The finder
+     * {@literal User.findByLastname} is declared in {@literal META-INF/orm.xml}
+     * .
      * 
      * @param lastname
      * @return all users with the given lastname
      */
-    @QueryHints( { @QueryHint(name = "foo", value = "bar") })
+    @QueryHints({ @QueryHint(name = "foo", value = "bar") })
     List<User> findByLastname(final String lastname);
 
 
     /**
-     * Retrieve users by their email address. The finder {@literal
-     * User.findByEmailAddress} is declared as annotation at {@code User}.
+     * Retrieve users by their email address. The finder
+     * {@literal User.findByEmailAddress} is declared as annotation at
+     * {@code User}.
      * 
      * @param emailAddress
      * @return the user with the given email address

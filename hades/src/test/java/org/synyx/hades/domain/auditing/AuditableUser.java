@@ -23,9 +23,9 @@ import org.synyx.hades.domain.auditing.AbstractAuditable;
 
 
 /**
- * Sample auditable user to demonstrate working with {@code
- * AbstractAuditableEntity}. No declaration of an ID is necessary. Furthermore
- * no auditing information has to be declared explicitly.
+ * Sample auditable user to demonstrate working with
+ * {@code AbstractAuditableEntity}. No declaration of an ID is necessary.
+ * Furthermore no auditing information has to be declared explicitly.
  * 
  * @author Oliver Gierke
  */
