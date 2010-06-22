@@ -1,0 +1,4 @@
+# Tooling related information for the Hades namespace
+http\://schemas.synyx.org/hades@name=Hades Namespace
+http\://schemas.synyx.org/hades@prefix=hades
+http\://schemas.synyx.org/hades@icon=org/springframework/jdbc/config/spring-jdbc.gif
