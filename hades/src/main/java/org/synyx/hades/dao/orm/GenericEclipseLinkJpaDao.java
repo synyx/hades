@@ -132,7 +132,7 @@ public class GenericEclipseLinkJpaDao<T, PK extends Serializable> extends
 
         List<T> entities = (List<T>) executeQuery(query);
 
-        return new PageImpl(entities, pageable, total);
+        return new PageImpl<T>(entities, pageable, total);
     }
 
 

@@ -104,7 +104,7 @@ enum PersistenceProvider implements QueryExtractor {
         }
     };
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private Class<? extends GenericJpaDao> daoBaseClass;
     private String entityManagerClassName;
 
@@ -117,7 +117,7 @@ enum PersistenceProvider implements QueryExtractor {
      * @param entityManagerClassName the name of the provider specific
      *            {@link EntityManager} implementation
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private PersistenceProvider(Class<? extends GenericJpaDao> daoBaseClass,
             String entityManagerClassName) {
 
@@ -131,7 +131,7 @@ enum PersistenceProvider implements QueryExtractor {
      * 
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Class<? extends GenericJpaDao> getDaoBaseClass() {
 
         return daoBaseClass;

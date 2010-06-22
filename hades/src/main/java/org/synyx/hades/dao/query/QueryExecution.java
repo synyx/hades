@@ -63,8 +63,8 @@ enum QueryExecution {
             Query jpaQuery =
                     binder.bindAndPrepare(query.createJpaQuery(binder));
 
-            return new PageImpl(jpaQuery.getResultList(), binder.getPageable(),
-                    total);
+            return new PageImpl<Object>(jpaQuery.getResultList(),
+                    binder.getPageable(), total);
         }
     },
 

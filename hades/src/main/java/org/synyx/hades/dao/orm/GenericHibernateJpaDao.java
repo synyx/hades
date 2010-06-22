@@ -120,7 +120,7 @@ public class GenericHibernateJpaDao<T, PK extends Serializable> extends
         // Apply pagination
         applyPagination(listCriteria, pageable);
 
-        return new PageImpl(listCriteria.list(), pageable, count);
+        return new PageImpl<T>(listCriteria.list(), pageable, count);
     }
 
 

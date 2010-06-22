@@ -66,7 +66,7 @@ class DaoInterfaceAwareBeanPostProcessor extends
      */
     @Override
     public Class<?> predictBeanType(
-            @SuppressWarnings("unchecked") Class beanClass, String beanName) {
+            @SuppressWarnings("rawtypes") Class beanClass, String beanName) {
 
         if (null == context
                 || !GenericDaoFactoryBean.class.isAssignableFrom(beanClass)) {

@@ -51,7 +51,7 @@ public class CustomGenericDaoFactory extends GenericDaoFactory {
      * @see org.synyx.hades.dao.orm.GenericDaoFactory#getDaoClass()
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     protected Class<? extends GenericJpaDao> getDaoClass() {
 
         return CustomGenericJpaDao.class;
