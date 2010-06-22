@@ -33,7 +33,7 @@
     <properties>
         <junit.version>4.7</junit.version>
         <spring.version>3.0.3.RELEASE</spring.version>
-        <hibernate.version>3.5.2-Final</hibernate.version>
+        <hibernate.version>3.5.3-Final</hibernate.version>
     </properties>
     
     <developers>
