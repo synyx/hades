@@ -54,8 +54,8 @@ import org.synyx.hades.util.ClassUtils;
 public class GenericDaoFactory {
 
     private EntityManager entityManager;
-    private QueryLookupStrategy queryLookupStrategy =
-            QueryLookupStrategy.getDefault();
+    private QueryLookupStrategy queryLookupStrategy = QueryLookupStrategy
+            .getDefault();
 
     private Map<Method, Method> methodCache =
             new ConcurrentHashMap<Method, Method>();
@@ -373,10 +373,9 @@ public class GenericDaoFactory {
         if (null == customDaoImplementation && hasCustomMethod(daoInterface)) {
 
             throw new IllegalArgumentException(
-                    String
-                            .format(
-                                    "You have custom methods in %s but not provided a custom implementation!",
-                                    daoInterface));
+                    String.format(
+                            "You have custom methods in %s but not provided a custom implementation!",
+                            daoInterface));
         }
     }
 
@@ -420,8 +419,8 @@ public class GenericDaoFactory {
                 QueryMethod finder =
                         new QueryMethod(method, domainClass, extractor);
 
-                queries.put(method, queryLookupStrategy.resolveQuery(finder,
-                        entityManager));
+                queries.put(method,
+                        queryLookupStrategy.resolveQuery(finder, entityManager));
             }
         }
 

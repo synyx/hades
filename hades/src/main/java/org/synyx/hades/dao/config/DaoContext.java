@@ -114,8 +114,8 @@ class DaoContext extends DaoConfigContext {
 
 
     /**
-     * Returns the id of the DAO bean registered in the {@code
-     * ApplicationContext}.
+     * Returns the id of the DAO bean registered in the
+     * {@code ApplicationContext}.
      * 
      * @return
      */

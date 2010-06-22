@@ -60,7 +60,7 @@ class DaoInterfaceAwareBeanPostProcessor extends
     /*
      * (non-Javadoc)
      * 
-     * @seeorg.springframework.beans.factory.config.
+     * @see org.springframework.beans.factory.config.
      * InstantiationAwareBeanPostProcessorAdapter
      * #predictBeanType(java.lang.Class, java.lang.String)
      */

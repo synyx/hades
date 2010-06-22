@@ -51,10 +51,10 @@ import org.w3c.dom.Element;
 
 /**
  * Parser to create bean definitions for dao-config namespace. Registers bean
- * definitions for DAOs as well as {@code
- * PersistenceAnnotationBeanPostProcessor} and {@code
- * PersistenceExceptionTranslationPostProcessor} to transparently inject entity
- * manager factory instance and apply exception translation.
+ * definitions for DAOs as well as
+ * {@code PersistenceAnnotationBeanPostProcessor} and
+ * {@code PersistenceExceptionTranslationPostProcessor} to transparently inject
+ * entity manager factory instance and apply exception translation.
  * <p>
  * The definition parser allows two ways of configuration. Either it looks up
  * the manually defined DAO instances or scans the defined domain package for
@@ -66,8 +66,8 @@ import org.w3c.dom.Element;
  */
 class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
-    private static final Log LOG =
-            LogFactory.getLog(DaoConfigDefinitionParser.class);
+    private static final Log LOG = LogFactory
+            .getLog(DaoConfigDefinitionParser.class);
 
     private static final Class<?> PAB_POST_PROCESSOR =
             PersistenceAnnotationBeanPostProcessor.class;
@@ -133,8 +133,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
         for (String daoInterface : daoInterfaces) {
 
-            registerGenericDaoFactoryBean(parserContext, DaoContext
-                    .fromInterfaceName(daoInterface, configContext));
+            registerGenericDaoFactoryBean(parserContext,
+                    DaoContext.fromInterfaceName(daoInterface, configContext));
         }
     }
 
@@ -203,21 +203,22 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 BeanDefinitionBuilder.rootBeanDefinition(context
                         .getDaoFactoryClassName());
 
-        beanDefinitionBuilder.addPropertyValue("daoInterface", context
-                .getInterfaceName());
-        beanDefinitionBuilder.addPropertyValue("queryLookupStrategy", context
-                .getQueryLookupStrategy());
+        beanDefinitionBuilder.addPropertyValue("daoInterface",
+                context.getInterfaceName());
+        beanDefinitionBuilder.addPropertyValue("queryLookupStrategy",
+                context.getQueryLookupStrategy());
 
         String entityManagerRef = context.getEntityManagerFactoryRef();
 
         if (null != entityManagerRef) {
-            beanDefinitionBuilder.addPropertyValue("entityManager",
+            beanDefinitionBuilder.addPropertyValue(
+                    "entityManager",
                     getEntityManagerBeanDefinitionFor(entityManagerRef,
                             beanSource));
         }
 
-        beanDefinitionBuilder.addPropertyValue("transactionManager", context
-                .getTransactionManagerRef());
+        beanDefinitionBuilder.addPropertyValue("transactionManager",
+                context.getTransactionManagerRef());
 
         String customImplementationBeanName =
                 registerCustomImplementation(context, parserContext,
@@ -243,8 +244,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
         }
 
         BeanComponentDefinition definition =
-                new BeanComponentDefinition(beanDefinition, context
-                        .getBeanName());
+                new BeanComponentDefinition(beanDefinition,
+                        context.getBeanName());
 
         parserContext.registerBeanComponent(definition);
     }
@@ -375,8 +376,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                             .rootBeanDefinition(PAB_POST_PROCESSOR)
                             .getBeanDefinition();
 
-            registry.registerBeanDefinition(generateBeanName(definition,
-                    registry), definition);
+            registry.registerBeanDefinition(
+                    generateBeanName(definition, registry), definition);
         }
 
         // Create PersistenceExceptionTranslationPostProcessor definition
@@ -387,8 +388,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                             .rootBeanDefinition(PET_POST_PROCESSOR)
                             .getBeanDefinition();
 
-            registry.registerBeanDefinition(generateBeanName(definition,
-                    registry), definition);
+            registry.registerBeanDefinition(
+                    generateBeanName(definition, registry), definition);
         }
 
         BeanDefinition definition =

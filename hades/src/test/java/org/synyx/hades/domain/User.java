@@ -26,7 +26,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 
 
-
 /**
  * Domain class representing a person emphasizing the use of
  * {@code AbstractEntity}. No declaration of an id is required. The id is typed

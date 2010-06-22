@@ -120,8 +120,8 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * 
      * @param finderMethod
      * @param em
-     * @return the {@link HadesQuery} derived from the annotation or {@code
-     *         null} if no annotation found.
+     * @return the {@link HadesQuery} derived from the annotation or
+     *         {@code null} if no annotation found.
      */
     public static HadesQuery fromHadesAnnotation(QueryMethod finderMethod,
             EntityManager em) {
@@ -150,8 +150,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
 
         if (queryMethod.isModifyingQuery()) {
             throw QueryCreationException
-                    .create(
-                            queryMethod,
+                    .create(queryMethod,
                             "Cannot create query from method name "
                                     + "for modifying query. Use @Query or @NamedQuery to "
                                     + "declare the query to execute. Do not use CREATE as "

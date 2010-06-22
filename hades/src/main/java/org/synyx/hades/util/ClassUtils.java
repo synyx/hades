@@ -109,8 +109,7 @@ public abstract class ClassUtils {
                             parammeterizedType.getActualTypeArguments()[index];
 
                     return (Class<?>) (result instanceof ParameterizedType ? ((ParameterizedType) result)
-                            .getRawType()
-                            : result);
+                            .getRawType() : result);
                 }
             }
 

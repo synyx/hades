@@ -52,7 +52,7 @@ public class QueryLookupStrategyIntegrationTest {
         GenericDaoFactoryBean<?> factory =
                 context.getBean("&roleDao", GenericDaoFactoryBean.class);
 
-        assertEquals(USE_DECLARED_QUERY, getField(factory,
-                "queryLookupStrategy"));
+        assertEquals(USE_DECLARED_QUERY,
+                getField(factory, "queryLookupStrategy"));
     }
 }

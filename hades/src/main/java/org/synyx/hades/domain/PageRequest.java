@@ -16,8 +16,6 @@
 
 package org.synyx.hades.domain;
 
-
-
 /**
  * Basic Java Bean implementation of {@code Pageable}.
  * 

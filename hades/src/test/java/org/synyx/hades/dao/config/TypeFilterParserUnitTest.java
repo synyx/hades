@@ -72,8 +72,9 @@ public class TypeFilterParserUnitTest {
         factory.setNamespaceAware(true);
 
         documentElement =
-                factory.newDocumentBuilder().parse(
-                        sampleXmlFile.getInputStream()).getDocumentElement();
+                factory.newDocumentBuilder()
+                        .parse(sampleXmlFile.getInputStream())
+                        .getDocumentElement();
     }
 
 

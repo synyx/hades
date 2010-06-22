@@ -37,14 +37,13 @@ import org.synyx.hades.domain.Sort;
 class Parameter {
 
     @SuppressWarnings("unchecked")
-    static final List<Class<?>> TYPES =
-            Arrays.asList(Pageable.class, Sort.class);
+    static final List<Class<?>> TYPES = Arrays.asList(Pageable.class,
+            Sort.class);
 
-    private static final String PARAM_ON_SPECIAL =
-            String.format(
-                    "You must not user @%s on a parameter typed %s or %s",
-                    Param.class.getSimpleName(),
-                    Pageable.class.getSimpleName(), Sort.class.getSimpleName());
+    private static final String PARAM_ON_SPECIAL = String.format(
+            "You must not user @%s on a parameter typed %s or %s",
+            Param.class.getSimpleName(), Pageable.class.getSimpleName(),
+            Sort.class.getSimpleName());
 
     private static final String NAMED_PARAMETER_TEMPLATE = ":%s";
     private static final String POSITION_PARAMETER_TEMPLATE = "?%s";

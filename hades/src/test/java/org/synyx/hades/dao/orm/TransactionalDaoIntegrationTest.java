@@ -22,7 +22,7 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke
  */
-@ContextConfiguration( { "classpath:namespace-autoconfig-context.xml",
+@ContextConfiguration({ "classpath:namespace-autoconfig-context.xml",
         "classpath:tx-manager.xml" })
 public class TransactionalDaoIntegrationTest extends
         AbstractJUnit4SpringContextTests {

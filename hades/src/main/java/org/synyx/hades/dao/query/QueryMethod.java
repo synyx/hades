@@ -71,8 +71,8 @@ public class QueryMethod {
         for (Class<?> type : Parameters.TYPES) {
             if (ClassUtils.getNumberOfOccurences(method, type) > 1) {
                 throw new IllegalStateException(String.format(
-                        "Method must only one argument of type %s!", type
-                                .getSimpleName()));
+                        "Method must only one argument of type %s!",
+                        type.getSimpleName()));
             }
         }
 
@@ -142,8 +142,8 @@ public class QueryMethod {
             return true;
         }
 
-        return null != ReflectionUtils.findField(returnType, StringUtils
-                .uncapitalize(fieldName));
+        return null != ReflectionUtils.findField(returnType,
+                StringUtils.uncapitalize(fieldName));
     }
 
 

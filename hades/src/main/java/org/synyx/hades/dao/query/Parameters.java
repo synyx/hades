@@ -37,17 +37,15 @@ import org.synyx.hades.domain.Sort;
 class Parameters implements Iterable<Parameter> {
 
     @SuppressWarnings("unchecked")
-    static final List<Class<?>> TYPES =
-            Arrays.asList(Pageable.class, Sort.class);
+    static final List<Class<?>> TYPES = Arrays.asList(Pageable.class,
+            Sort.class);
 
     private static final String ALL_OR_NOTHING =
-            String
-                    .format(
-                            "Either use @%s "
-                                    + "on all parameters except %s and %s typed once, or none at all!",
-                            Param.class.getSimpleName(), Pageable.class
-                                    .getSimpleName(), Sort.class
-                                    .getSimpleName());
+            String.format(
+                    "Either use @%s "
+                            + "on all parameters except %s and %s typed once, or none at all!",
+                    Param.class.getSimpleName(),
+                    Pageable.class.getSimpleName(), Sort.class.getSimpleName());
 
     private final int pageableIndex;
     private final int sortIndex;

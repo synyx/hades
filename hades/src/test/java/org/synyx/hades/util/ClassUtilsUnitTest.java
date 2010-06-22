@@ -117,8 +117,9 @@ public class ClassUtilsUnitTest {
 
         Method method = FooDao.class.getMethod("readByPrimaryKey", Long.class);
 
-        assertThat(getBaseClassMethodFor(method, GenericJpaDao.class,
-                FooDao.class), is(method));
+        assertThat(
+                getBaseClassMethodFor(method, GenericJpaDao.class, FooDao.class),
+                is(method));
     }
 
     /**

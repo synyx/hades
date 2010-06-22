@@ -3,7 +3,6 @@ package org.synyx.hades.domain;
 import javax.persistence.Entity;
 
 
-
 /**
  * @author Oliver Gierke
  */

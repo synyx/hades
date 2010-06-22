@@ -74,9 +74,9 @@ public class GenericDaoFactoryBeanUnitTest {
 
 
     /**
-     * Assert that the factory rejects calls to {@code
-     * GenericDaoFactoryBean#setDaoInterface(Class)} with {@code null} or any
-     * other parameter instance not implementing {@code GenericDao}.
+     * Assert that the factory rejects calls to
+     * {@code GenericDaoFactoryBean#setDaoInterface(Class)} with {@code null} or
+     * any other parameter instance not implementing {@code GenericDao}.
      */
     @Test(expected = IllegalArgumentException.class)
     public void preventsNullDaoInterface() {
@@ -86,8 +86,8 @@ public class GenericDaoFactoryBeanUnitTest {
 
 
     /**
-     * Assert that the factory detects unset DAO class and interface in {@code
-     * GenericDaoFactoryBean#afterPropertiesSet()}.
+     * Assert that the factory detects unset DAO class and interface in
+     * {@code GenericDaoFactoryBean#afterPropertiesSet()}.
      */
     @Test(expected = IllegalArgumentException.class)
     public void preventsUnsetDaoInterface() throws Exception {

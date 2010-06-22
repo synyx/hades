@@ -13,7 +13,8 @@ public class UserDaoImpl implements UserDaoCustom {
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.dao.UserDao#someOtherMethod(org.synyx.hades.domain.User)
+     * @see
+     * org.synyx.hades.dao.UserDao#someOtherMethod(org.synyx.hades.domain.User)
      */
     public void someCustomMethod(final User u) {
 
