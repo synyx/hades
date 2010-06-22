@@ -22,7 +22,6 @@ import static org.mockito.Mockito.*;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.persistence.Query;
 import javax.persistence.QueryHint;
 
 import org.junit.Before;
@@ -217,8 +216,6 @@ public class QueryMethodUnitTest {
         Method method =
                 UserDao.class.getMethod("findByFirstname", Pageable.class,
                         String.class);
-
-        Query query = mock(Query.class);
 
         when(extractor.canExtractQuery()).thenReturn(false);
 
