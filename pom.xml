@@ -60,7 +60,7 @@
 	      		<activeByDefault>true</activeByDefault>
 	      	</activation>   
 			<properties>
-				<spring.version>2.5.6.SEC01</spring.version>
+				<spring.version>2.5.6.SEC02</spring.version>
 				<spring.artifactPrefix>org.springframework.</spring.artifactPrefix>
 				<spring.agent.name>spring-agent</spring.agent.name>
 				<junit.version>4.4</junit.version>
