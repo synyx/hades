@@ -58,7 +58,7 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.hades.domain.Auditable#getCreatedBy()
+     * @see org.synyx.hades.domain.auditing.Auditable#getCreatedBy()
      */
     public U getCreatedBy() {
 
@@ -70,8 +70,7 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.hades.domain.Auditable#setCreatedBy(org.synyx.hades.hades
-     * .domain.Identifyable)
+     * org.synyx.hades.domain.auditing.Auditable#setCreatedBy(java.lang.Object)
      */
     public void setCreatedBy(final U createdBy) {
 
@@ -82,7 +81,7 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.hades.domain.Auditable#getCreatedDate()
+     * @see org.synyx.hades.domain.auditing.Auditable#getCreatedDate()
      */
     public DateTime getCreatedDate() {
 
@@ -93,9 +92,11 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.hades.domain.Auditable#setCreated(java.util.Date)
+     * @see
+     * org.synyx.hades.domain.auditing.Auditable#setCreatedDate(org.joda.time
+     * .DateTime)
      */
-    public void setCreated(final DateTime createdDate) {
+    public void setCreatedDate(final DateTime createdDate) {
 
         this.createdDate = null == createdDate ? null : createdDate.toDate();
     }
@@ -104,7 +105,7 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.hades.domain.Auditable#getLastModifiedBy()
+     * @see org.synyx.hades.domain.auditing.Auditable#getLastModifiedBy()
      */
     public U getLastModifiedBy() {
 
@@ -116,8 +117,8 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.hades.domain.Auditable#setLastModifiedBy(org.synyx.hades
-     * .hades.domain.Identifyable)
+     * org.synyx.hades.domain.auditing.Auditable#setLastModifiedBy(java.lang
+     * .Object)
      */
     public void setLastModifiedBy(final U lastModifiedBy) {
 
@@ -128,7 +129,7 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
     /*
      * (non-Javadoc)
      * 
-     * @see org.synyx.hades.hades.domain.Auditable#getLastModifiedDate()
+     * @see org.synyx.hades.domain.auditing.Auditable#getLastModifiedDate()
      */
     public DateTime getLastModifiedDate() {
 
@@ -140,9 +141,10 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.hades.domain.Auditable#setLastModified(java.util.Date)
+     * org.synyx.hades.domain.auditing.Auditable#setLastModifiedDate(org.joda
+     * .time.DateTime)
      */
-    public void setLastModified(final DateTime lastModifiedDate) {
+    public void setLastModifiedDate(final DateTime lastModifiedDate) {
 
         this.lastModifiedDate =
                 null == lastModifiedDate ? null : lastModifiedDate.toDate();

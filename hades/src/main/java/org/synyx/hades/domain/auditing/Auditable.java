@@ -62,7 +62,7 @@ public interface Auditable<U, PK extends Serializable> extends Persistable<PK> {
      * 
      * @param creationDate the creation date to set
      */
-    void setCreated(final DateTime creationDate);
+    void setCreatedDate(final DateTime creationDate);
 
 
     /**
@@ -94,5 +94,5 @@ public interface Auditable<U, PK extends Serializable> extends Persistable<PK> {
      * 
      * @param lastModifiedDate the date of the last modification to set
      */
-    void setLastModified(final DateTime lastModifiedDate);
+    void setLastModifiedDate(final DateTime lastModifiedDate);
 }

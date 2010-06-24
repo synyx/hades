@@ -68,8 +68,8 @@ public class AuditingAdvice<T> {
 
 
     /**
-     * Setter do determine if {@link Auditable#setCreated(DateTime)} and
-     * {@link Auditable#setLastModified(DateTime)} shall be filled with the
+     * Setter do determine if {@link Auditable#setCreatedDate(DateTime)} and
+     * {@link Auditable#setLastModifiedDate(DateTime)} shall be filled with the
      * current Java time. Defaults to {@code true}. One might set this to
      * {@code false} to use database features to set entity time.
      * 
@@ -193,14 +193,14 @@ public class AuditingAdvice<T> {
         DateTime now = new DateTime();
 
         if (auditable.isNew()) {
-            auditable.setCreated(now);
+            auditable.setCreatedDate(now);
 
             if (!modifyOnCreation) {
                 return now;
             }
         }
 
-        auditable.setLastModified(now);
+        auditable.setLastModifiedDate(now);
 
         return now;
     }
