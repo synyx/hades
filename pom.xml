@@ -33,6 +33,7 @@
         <junit.version>4.7</junit.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <hibernate.version>3.5.3-Final</hibernate.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
     <developers>
