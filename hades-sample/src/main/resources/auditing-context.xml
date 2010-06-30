@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:hades="http://schemas.synyx.org/hades"
+    xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://schemas.synyx.org/hades http://schemas.synyx.org/hades/hades-2.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<import resource="infrastructure.xml" />
 	
-	<aop:aspectj-autoproxy />
-	
 	<!-- 
-	 - Declare advice to enable auditing 
+	 - Activate auditing by using Hades namespace element
 	 - Reference AuditorAware to also keep track of WHO changed entities 
 	-->
-	<bean class="org.synyx.hades.domain.auditing.AuditingAdvice">
-		<property name="auditorAware" ref="auditorAware" />
-	</bean>
+	<hades:auditing auditor-aware-ref="auditorAware" />
 	
 	<bean id="auditorAware" class="org.synyx.hades.sample.auditing.AuditorAwareImpl" />
 	
