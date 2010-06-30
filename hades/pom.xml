@@ -20,6 +20,13 @@
 		</dependency>
         
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.aspects</artifactId>
+            <version>${spring.version}</version>
+            <optional>true</optional>
+        </dependency>
+        
+        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging-api</artifactId>
             <version>1.1</version>
@@ -121,6 +128,46 @@
 
 	<build>
 		<plugins>
+        
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjrt</artifactId>
+                        <version>1.6.8</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>1.6.8</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outxml>true</outxml>
+                    <aspectLibraries>
+                        <aspectLibrary>
+                            <groupId>org.springframework</groupId>
+                            <artifactId>org.springframework.aspects</artifactId>
+                        </aspectLibrary>
+                    </aspectLibraries>
+                    <excludes>
+                        <exclude>**/AuditingAdvice.java</exclude>
+                    </excludes>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
 					
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

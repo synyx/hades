@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:hades="http://schemas.synyx.org/hades"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://schemas.synyx.org/hades http://schemas.synyx.org/hades/hades.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <import resource="infrastructure.xml" />
+
+    <context:spring-configured />
+    
+    <bean class="org.synyx.hades.domain.auditing.AuditingEntityListener" scope="prototype">
+        <property name="auditorAware">
+            <bean class="org.mockito.Mockito" factory-method="mock">
+                <constructor-arg value="org.synyx.hades.domain.auditing.AuditorAware" />
+            </bean>
+        </property>
+    </bean>
+    
+    <hades:dao-config base-package="org.synyx.hades.dao">
+        <hades:dao id="auditableUserDao" />
+    </hades:dao-config>
+
+</beans>
