@@ -149,21 +149,20 @@
                     <execution>
                         <goals>
                             <goal>compile</goal>
-                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <outxml>true</outxml>
+                    <verbose>true</verbose>
                     <aspectLibraries>
                         <aspectLibrary>
                             <groupId>org.springframework</groupId>
                             <artifactId>org.springframework.aspects</artifactId>
                         </aspectLibrary>
                     </aspectLibraries>
-                    <excludes>
-                        <exclude>**/AuditingAdvice.java</exclude>
-                    </excludes>
+                    <includes>
+                        <include>**/domain/**/*.java</include>
+                    </includes>
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>

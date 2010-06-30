@@ -4,7 +4,7 @@
     <persistence-unit-metadata>
         <persistence-unit-defaults>
             <entity-listeners>
-                <entity-listener class="org.synyx.hades.domain.auditing.AuditingEntityListener" />
+                <entity-listener class="org.synyx.hades.domain.auditing.support.AuditingEntityListener" />
             </entity-listeners>
         </persistence-unit-defaults>
     </persistence-unit-metadata>

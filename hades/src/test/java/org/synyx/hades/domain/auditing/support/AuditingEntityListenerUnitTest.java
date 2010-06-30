@@ -13,13 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.synyx.hades.domain.auditing;
+package org.synyx.hades.domain.auditing.support;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.synyx.hades.domain.auditing.AuditableUser;
+import org.synyx.hades.domain.auditing.AuditorAware;
 
 
 /**
@@ -27,19 +29,19 @@ import org.junit.Test;
  * 
  * @author Oliver Gierke
  */
-public class AuditingAdviceUnitTest {
+@SuppressWarnings("unchecked")
+public class AuditingEntityListenerUnitTest {
 
-    private AuditingAdvice<AuditableUser> auditionAdvice;
+    private AuditingEntityListener<AuditableUser> auditionAdvice;
     private AuditorAware<AuditableUser> auditorAware;
 
     private AuditableUser user;
 
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() {
 
-        auditionAdvice = new AuditingAdvice<AuditableUser>();
+        auditionAdvice = new AuditingEntityListener<AuditableUser>();
 
         user = new AuditableUser();
 

@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:hades="http://schemas.synyx.org/hades"
     xmlns:context="http://www.springframework.org/schema/context"
+    default-lazy-init="true"
+    xmlns:hades="http://schemas.synyx.org/hades"
     xsi:schemaLocation="http://schemas.synyx.org/hades http://schemas.synyx.org/hades/hades-2.0.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
-    <import resource="infrastructure.xml" />
-
-    <hades:auditing auditor-aware-ref="auditorAware" />
-    <bean id="auditorAware" class="org.synyx.hades.domain.auditing.AuditorAwareStub" />
     
-    <hades:dao-config base-package="org.synyx.hades.dao">
-        <hades:dao id="auditableUserDao" />
-    </hades:dao-config>
+    <import resource="infrastructure.xml" />
+    
+    <hades:auditing auditor-aware-ref="auditorAware" />
+    
+    <bean id="auditorAware" class="org.synyx.hades.domain.auditing.AuditorAwareStub" /> 
 
 </beans>

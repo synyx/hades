@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.synyx.hades.domain.auditing;
 
-package org.synyx.hades.dao.config;
-
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import org.synyx.hades.domain.User;
 
 
 /**
- * Simple namespace handler for {@literal dao-config} namespace.
+ * Stub implementation for {@link AuditorAware}. Returns {@literal null} for the
+ * current auditor.
  * 
- * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public class DaoNameSpaceHandler extends NamespaceHandlerSupport {
+public class AuditorAwareStub implements AuditorAware<User> {
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.springframework.beans.factory.xml.NamespaceHandler#init()
+     * @see org.synyx.hades.domain.auditing.AuditorAware#getCurrentAuditor()
      */
-    public void init() {
+    public User getCurrentAuditor() {
 
-        registerBeanDefinitionParser("dao-config",
-                new DaoConfigDefinitionParser());
-        registerBeanDefinitionParser("auditing",
-                new AuditingBeanDefinitionParser());
+        return null;
     }
+
 }

@@ -1,1 +1,2 @@
 http\://schemas.synyx.org/hades/hades.xsd=org/synyx/hades/dao/config/hades.xsd
+http\://schemas.synyx.org/hades/hades-2.0.xsd=org/synyx/hades/dao/config/hades-2.0.xsd

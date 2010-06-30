@@ -1,53 +1,60 @@
 /*
  * Copyright 2008-2010 the original author or authors.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.synyx.hades.domain.auditing.support;
 
-package org.synyx.hades.domain.auditing;
-
-import java.util.List;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.synyx.hades.domain.auditing.Auditable;
+import org.synyx.hades.domain.auditing.AuditorAware;
 
 
 /**
- * Aspect touching entities being saved. Sets modification date and auditor. If
- * no {@code AuditorAware} is set only modification and creation date will be
- * set.
- * <p>
- * The advice intercepts calls to save methods of
- * {@link org.synyx.hades.dao.GenericDao}. It is implemented using
- * {@link Aspect} annotations to be suitable for all kinds of aspect weaving. To
- * enable capturing audit data simply register the advice and activate
- * annotation based aspect:
+ * JPA entity listener to capture auditing information on persiting and updating
+ * entities. To get this one flying be sure you configure it as entity listener
+ * in your {@code orm.xml} as follows:
  * 
  * <pre>
- * &lt;aop:aspectj-autoproxy /&gt;
- * &lt;bean class=&quot;org.synyx.hades.domain.support.AuditionAdvice&quot; /&gt;
+ * &lt;persistence-unit-metadata&gt;
+ *     &lt;persistence-unit-defaults&gt;
+ *         &lt;entity-listeners&gt;
+ *             &lt;entity-listener class="org.synyx.hades.domain.auditing.support.AuditingEntityListener" /&gt;
+ *         &lt;/entity-listeners&gt;
+ *     &lt;/persistence-unit-defaults&gt;
+ * &lt;/persistence-unit-metadata&gt;
+ * </pre>
+ * 
+ * After that it's just a matter of activating auditing in your Spring config:
+ * 
+ * <pre>
+ * &lt;hades:auditing auditor-aware-ref="yourAuditorAwarebean" /&gt;
  * </pre>
  * 
  * @author Oliver Gierke
- * @param <T> the type of the auditing instance
  */
-@Aspect
-public class AuditingAdvice<T> {
+@Configurable
+public class AuditingEntityListener<T> implements InitializingBean {
 
-    private static final Log LOG = LogFactory.getLog(AuditingAdvice.class);
+    private static final Log LOG = LogFactory
+            .getLog(AuditingEntityListener.class);
 
     private AuditorAware<T> auditorAware;
 
@@ -68,8 +75,8 @@ public class AuditingAdvice<T> {
 
 
     /**
-     * Setter do determine if {@link Auditable#setCreatedDate(DateTime)} and
-     * {@link Auditable#setLastModifiedDate(DateTime)} shall be filled with the
+     * Setter do determine if {@link Auditable#setCreated(DateTime)} and
+     * {@link Auditable#setLastModified(DateTime)} shall be filled with the
      * current Java time. Defaults to {@code true}. One might set this to
      * {@code false} to use database features to set entity time.
      * 
@@ -96,16 +103,21 @@ public class AuditingAdvice<T> {
 
 
     /**
-     * Sets modification and creation date and auditor on an auditable entity.
+     * Sets modification and creation date and auditor on the target object in
+     * case it implements {@link Auditable}.
      * 
-     * @param auditable
+     * @param target
      */
-    @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditable)")
-    public void touch(final Auditable<T, ?> auditable) {
+    @PrePersist
+    @PreUpdate
+    public void touch(Object target) {
 
-        if (null == auditable) {
+        if (!(target instanceof Auditable)) {
             return;
         }
+
+        @SuppressWarnings("unchecked")
+        Auditable<T, ?> auditable = (Auditable<T, ?>) target;
 
         T auditor = touchAuditor(auditable);
         DateTime now = dateTimeForNow ? touchDate(auditable) : null;
@@ -126,27 +138,6 @@ public class AuditingAdvice<T> {
             }
 
             LOG.debug(builder.toString());
-        }
-    }
-
-
-    /**
-     * Sets modification and creation date and auditor on a {@link List} of
-     * {@link Auditable}s.
-     * 
-     * @param auditables
-     */
-    @SuppressWarnings("unchecked")
-    @Before("execution(* org.synyx.hades.dao.GenericDao+.save*(..)) && args(auditables)")
-    public void touch(final List<?> auditables) {
-
-        // Matching concrete generic collections doesn't seem to be supported
-        // currently so we need to check manually. For details, see:
-        // http://jira.springframework.org/browse/SPR-7186
-        for (Object auditable : auditables) {
-            if (auditable instanceof Auditable<?, ?>) {
-                touch((Auditable<T, ?>) auditable);
-            }
         }
     }
 
@@ -203,5 +194,19 @@ public class AuditingAdvice<T> {
         auditable.setLastModifiedDate(now);
 
         return now;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    public void afterPropertiesSet() throws Exception {
+
+        if (auditorAware == null) {
+            LOG.debug("No AuditorAware set! Auditing will not be applied!");
+        }
     }
 }
