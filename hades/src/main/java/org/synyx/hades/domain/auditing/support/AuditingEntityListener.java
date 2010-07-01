@@ -203,7 +203,7 @@ public class AuditingEntityListener<T> implements InitializingBean {
      * @see
      * org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
 
         if (auditorAware == null) {
             LOG.debug("No AuditorAware set! Auditing will not be applied!");
