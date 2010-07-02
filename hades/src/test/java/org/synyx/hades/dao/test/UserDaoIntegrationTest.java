@@ -18,6 +18,8 @@ package org.synyx.hades.dao.test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.synyx.hades.domain.Specifications.*;
+import static org.synyx.hades.domain.UserSpecifications.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +40,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.PageRequest;
 import org.synyx.hades.domain.Role;
+import org.synyx.hades.domain.Specification;
 import org.synyx.hades.domain.User;
 
 
@@ -386,6 +391,39 @@ public class UserDaoIntegrationTest {
 
         flushTestUsers();
         assertEquals(1, userDao.countWithFirstname("Oliver").longValue());
+    }
+
+
+    @Test
+    public void executesSpecificationCorrectly() {
+
+        flushTestUsers();
+        assertThat(userDao.readAll(where(userHasFirstname("Oliver"))).size(),
+                is(1));
+    }
+
+
+    @Test
+    public void executesCombinedSpecificationsCorrectly() {
+
+        flushTestUsers();
+        Specification<User> spec =
+                where(userHasFirstname("Oliver")).or(userHasLastname("Arrasz"));
+        assertThat(userDao.readAll(spec).size(), is(2));
+    }
+
+
+    @Test
+    public void executesCombinedSpecificationsWithPageableCorrectly() {
+
+        flushTestUsers();
+        Specification<User> spec =
+                where(userHasFirstname("Oliver")).or(userHasLastname("Arrasz"));
+
+        Page<User> users = userDao.readAll(spec, new PageRequest(0, 1));
+        assertThat(users.getSize(), is(1));
+        assertThat(users.hasPreviousPage(), is(false));
+        assertThat(users.getTotalElements(), is(2L));
     }
 
 

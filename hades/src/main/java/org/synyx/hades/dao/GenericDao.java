@@ -22,6 +22,7 @@ import java.util.List;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
+import org.synyx.hades.domain.Specification;
 
 
 /**
@@ -104,6 +105,26 @@ public interface GenericDao<T, PK extends Serializable> {
      * @return a page of entities
      */
     Page<T> readAll(final Pageable pageable);
+
+
+    /**
+     * Returns all entities matching the given {@link Specification}.
+     * 
+     * @param spec
+     * @return
+     */
+    List<T> readAll(final Specification<T> spec);
+
+
+    /**
+     * Returns a {@link Page} of entities matching the given
+     * {@link Specification}.
+     * 
+     * @param spec
+     * @param pageable
+     * @return
+     */
+    Page<T> readAll(final Specification<T> spec, final Pageable pageable);
 
 
     /**

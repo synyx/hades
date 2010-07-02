@@ -22,6 +22,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,7 @@ import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
+import org.synyx.hades.domain.Specification;
 
 
 /**
@@ -146,6 +151,41 @@ public class GenericJpaDao<T, PK extends Serializable> extends
     public List<T> readAll() {
 
         return getReadAllQuery().getResultList();
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.Specification
+     * )
+     */
+    @Transactional(readOnly = true)
+    public List<T> readAll(Specification<T> spec) {
+
+        return createQueryFrom(spec).getResultList();
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.synyx.hades.dao.GenericDao#readAll(org.synyx.hades.domain.Specification
+     * , org.synyx.hades.domain.Pageable)
+     */
+    @Transactional(readOnly = true)
+    public Page<T> readAll(Specification<T> spec, Pageable pageable) {
+
+        if (spec == null) {
+            return readAll(pageable);
+        }
+
+        TypedQuery<T> query = createQueryFrom(spec);
+
+        return pageable == null ? new PageImpl<T>(query.getResultList())
+                : readPage(query, pageable);
     }
 
 
@@ -272,9 +312,42 @@ public class GenericJpaDao<T, PK extends Serializable> extends
         TypedQuery<T> jpaQuery =
                 getEntityManager().createQuery(queryString, getDomainClass());
 
-        jpaQuery.setFirstResult(pageable.getFirstItem());
-        jpaQuery.setMaxResults(pageable.getPageSize());
+        return readPage(jpaQuery, pageable);
+    }
 
-        return new PageImpl<T>(jpaQuery.getResultList(), pageable, count());
+
+    /**
+     * @param query
+     * @param pageable
+     * @return
+     */
+    private Page<T> readPage(final TypedQuery<T> query, final Pageable pageable) {
+
+        query.setFirstResult(pageable.getFirstItem());
+        query.setMaxResults(pageable.getPageSize());
+
+        return new PageImpl<T>(query.getResultList(), pageable, count());
+    }
+
+
+    /**
+     * Creates a {@link TypedQuery} from the given {@link Specification}.
+     * 
+     * @param spec
+     * @return
+     */
+    private TypedQuery<T> createQueryFrom(Specification<T> spec) {
+
+        CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(getDomainClass());
+        Root<T> root = query.from(getDomainClass());
+
+        Predicate predicate = spec.toPredicate(root, query, builder);
+
+        if (predicate != null) {
+            query.where(predicate);
+        }
+
+        return getEntityManager().createQuery(query);
     }
 }
