@@ -25,7 +25,7 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>1.5.2</releaseinfo>
+    <releaseinfo>1.6.0</releaseinfo>
 
     <pubdate>23.06.2010</pubdate>
 
@@ -264,6 +264,19 @@
         <revremark>Added documentation of include-filter and exclude-filter
         elements</revremark>
       </revision>
+
+      <revision>
+        <date>12.07.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of new keywords in query creation,
+        updated auditing, added chapters on project metadata</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -312,6 +325,32 @@
         configuration along with proper exception translation into Spring's
         <classname>DataAccessException</classname> hierarchy.</para>
       </simplesect>
+    </section>
+
+    <section>
+      <title>Project metadata</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Version control - <ulink
+          url="http://svn.synyx.org/synyx/opensource/hades">http://svn.synyx.org/synyx/opensource/hades</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Bugtracker - <ulink
+          url="http://hades.synyx.org">http://hades.synyx.org</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Repository - <ulink
+          url="http://repo2.maven.org/maven2/org/synyx/hades">http://repo2.maven.org/maven2/org/synyx/hades</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Snapshot repsitory - <ulink
+          url="https://oss.sonatype.org/content/repositories/snapshots/org/synyx/hades">https://oss.sonatype.org/content/repositories/snapshots/org/synyx/hades</ulink></para>
+        </listitem>
+      </itemizedlist>
     </section>
   </preface>
 
@@ -514,6 +553,17 @@
     <section>
       <title>Auditablity</title>
 
+      <note>
+        <para>As of version 1.6 auditing through the usage of
+        <classname>AuditingAdvice</classname> is deprecated. The approach
+        suffered various drawbacks such as the need to call
+        <methodname>GenericDao.save(…)</methodname> explicitly to trigger
+        auditing. Additionally auditing only worked for the root entity handed
+        to the <methodname>save(…)</methodname> method. The new approach
+        documented here solves all these issues so we highly recommend to
+        switch to use the new approach.</para>
+      </note>
+
       <para>Most applications will require some auditability for entities
       allowing to track creation date and user and modification date and user.
       Hades provides facilities to add this audition information to entity
@@ -558,13 +608,38 @@
       </note>
 
       <simplesect>
-        <title><code>AuditingAdvice</code></title>
+        <title><code>General auditing configuration</code></title>
 
-        <para>The <classname>AuditingAdvice</classname> is used to
-        transparently set audition information during the work with the DAO.
-        The advice gets access to the user changing or creating the entity
-        through the <interfacename>AuditorAware</interfacename>
-        interface.</para>
+        <para>Hades ships with an entity listener that can be used to trigger
+        capturing auditing information. So first you have to register the
+        <classname>AuditingEntityListener</classname> inside your
+        <filename>orm.xml</filename> to be used for all entities in your
+        persistence contexts:</para>
+
+        <example>
+          <title>Auditing configuration orm.xml</title>
+
+          <programlisting language="xml">&lt;persistence-unit-metadata&gt;
+  &lt;persistence-unit-defaults&gt;
+    &lt;entity-listeners&gt;
+      &lt;entity-listener class="….hades.domain.auditing.support.AuditingEntityListener" /&gt;
+    &lt;/entity-listeners&gt;
+  &lt;/persistence-unit-defaults&gt;
+&lt;/persistence-unit-metadata&gt;</programlisting>
+        </example>
+
+        <para>Now activating auditing functionlity is just a matter of adding
+        the Hades auditing namespace element to your configuration:</para>
+
+        <example>
+          <title>Activating auditing in the Spring configuration</title>
+
+          <programlisting language="xml">&lt;hades:auditing auditor-aware-ref="yourAuditorAwareBean" /&gt;</programlisting>
+        </example>
+
+        <para>As you can see you have to provide a bean that implements the
+        <interfacename>AuditorAware</interfacename> interface which looks as
+        follows:</para>
 
         <example>
           <title><interfacename>AuditorAware</interfacename> interface</title>
@@ -580,64 +655,6 @@
         system. This component should be
         <interfacename>AuditorAware</interfacename> and thus allow seemless
         tracking of the auditor.</para>
-
-        <para>To activate transparent creation of auditioning information the
-        configuration has to look something like this:</para>
-
-        <example>
-          <title>Configuration of auditing functionality</title>
-
-          <programlistingco>
-            <areaspec>
-              <area coords="9" id="auditing-advice.aop-activation" />
-
-              <area coords="11" id="auditing-advice.audition-advice" />
-
-              <area coords="15" id="auditing-advice.current-user-aware" />
-            </areaspec>
-
-            <programlisting language="xml">&lt;beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:aop="http://www.springframework.org/schema/aop"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans 
-    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/aop 
-    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"&gt;
-
-  &lt;aop:aspectj-autoproxy /&gt;
-
-  &lt;bean class="org.synyx.hades.domain.auditing.AuditingAdvice"&gt;
-    &lt;property name="auditorAware" ref="auditorAware" /&gt;
-  &lt;/bean&gt;
-
-  &lt;bean id="auditorAware" class="foo.bar.AuthenticationService" /&gt;
-
-&lt;/beans&gt;</programlisting>
-
-            <calloutlist>
-              <callout arearefs="auditing-advice.aop-activation">
-                <para>Activate auto proxy creation for spring beans.</para>
-              </callout>
-
-              <callout arearefs="auditing-advice.audition-advice">
-                <para>Declare the advice as spring bean and add a reference to
-                the <interfacename>AuditorAware</interfacename>.</para>
-              </callout>
-
-              <callout arearefs="auditing-advice.current-user-aware">
-                <para>Declare a spring bean that implements
-                <interfacename>AuditorAware</interfacename>.</para>
-              </callout>
-            </calloutlist>
-          </programlistingco>
-        </example>
-
-        <note>
-          <para>By default the <classname>AuditingAdvice</classname> will use
-          the current Java date as creation or modification date. If you
-          prefer to use your database's capabilities to determine modification
-          and creation date use <code>setDateTimeForNow(false)</code>.</para>
-        </note>
       </simplesect>
     </section>
   </chapter>
@@ -783,6 +800,29 @@
             </calloutlist>
           </programlistingco>
         </example>
+
+        <para>As you can see we have configured an
+        <classname>EntityManagerFactoryBean</classname> to work with Hibernate
+        in our case. As Hades supports any JPA provider, we do not declare
+        mandatory dependencies in our <filename>pom.xml</filename>. Thus,
+        you'll have to add the persistence provider of your choice to your
+        project. In our case this would look something like this:</para>
+
+        <example>
+          <title>Hibernate dependency</title>
+
+          <programlisting>&lt;dependency&gt;
+  &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+  &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
+  &lt;version&gt;3.3.2-GA&lt;/version&gt;
+&lt;/dependency&gt;</programlisting>
+        </example>
+
+        <note>
+          <para>You might have to add other dependencies as well (SLF4J in
+          case of Hibernate). So check the documentation of your persistence
+          provider for setup details.</para>
+        </note>
       </simplesect>
 
       <simplesect>
@@ -1307,7 +1347,56 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByAgeGreaterThan</code></entry>
 
-                  <entry><code>… where x.age &gt; ?2</code></entry>
+                  <entry><code>… where x.age &gt; ?1</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>IsNull</code></entry>
+
+                  <entry><code>findByAgeIsNull</code></entry>
+
+                  <entry><code>… where x.age is null</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>IsNotNull,NotNull</code></entry>
+
+                  <entry><code>findByAge(Is)NotNull</code></entry>
+
+                  <entry><code>… where x.age not null</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>Like</code></entry>
+
+                  <entry><code>findByFirstnameLike</code></entry>
+
+                  <entry><code>… where x.firstname like ?</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>NotLike</code></entry>
+
+                  <entry><code>findByFirstnameNotLike</code></entry>
+
+                  <entry><code>… where x.firstname not like ?</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>OrderBy</code></entry>
+
+                  <entry><code>findByAgeOrderByLastnameDesc</code></entry>
+
+                  <entry><code>… where x.age &gt; ?1 order by x.lastname
+                  desc</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>Not</code></entry>
+
+                  <entry><code>findByLastnameNot</code></entry>
+
+                  <entry><code>… where x.lastname &lt;&gt; ?1</code></entry>
                 </row>
               </tbody>
             </tgroup>
