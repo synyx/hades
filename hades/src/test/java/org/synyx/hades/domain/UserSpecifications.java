@@ -41,7 +41,7 @@ public class UserSpecifications {
 
 
     /**
-     * A {@link Specification} to match on a {@link User}'s firstname.
+     * A {@link Specification} to match on a {@link User}'s lastname.
      * 
      * @param firstname
      * @return
