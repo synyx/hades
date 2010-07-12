@@ -42,8 +42,12 @@ import org.joda.time.DateTime;
  * </pre>
  * 
  * @author Oliver Gierke
+ * @deprecated use
+ *             {@link org.synyx.hades.domain.auditing.support.AuditingEntityListener}
+ *             instead
  * @param <T> the type of the auditing instance
  */
+@Deprecated
 @Aspect
 public class AuditingAdvice<T> {
 
