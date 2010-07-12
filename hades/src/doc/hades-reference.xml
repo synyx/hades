@@ -25,7 +25,7 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>2.0 RC2</releaseinfo>
+    <releaseinfo>2.0 RC3</releaseinfo>
 
     <pubdate>30.05.2010</pubdate>
 
@@ -276,6 +276,19 @@
         <revremark>Added documentation of include-filter and exclude-filter
         elements</revremark>
       </revision>
+
+      <revision>
+        <date>12.07.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of new keywords in query creation,
+        updated auditing, added chapters on project metadata</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -324,6 +337,32 @@
         configuration along with proper exception translation into Spring's
         <classname>DataAccessException</classname> hierarchy.</para>
       </simplesect>
+    </section>
+
+    <section>
+      <title>Project metadata</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Version control - <ulink
+          url="http://svn.synyx.org/synyx/opensource/hades">http://svn.synyx.org/synyx/opensource/hades</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Bugtracker - <ulink
+          url="http://hades.synyx.org">http://hades.synyx.org</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Repository - <ulink
+          url="http://repo2.maven.org/maven2/org/synyx/hades">http://repo2.maven.org/maven2/org/synyx/hades</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Snapshot repsitory - <ulink
+          url="https://oss.sonatype.org/content/repositories/snapshots/org/synyx/hades">https://oss.sonatype.org/content/repositories/snapshots/org/synyx/hades</ulink></para>
+        </listitem>
+      </itemizedlist>
     </section>
   </preface>
 
@@ -460,67 +499,6 @@
       programatically Hades provides <classname>GenericDaoFactory</classname>.
       Read more on configuration in <xref
       linkend="sample-app.configuration" />.</para>
-
-      <para>For more sophisticated DAO operations Hades provides
-      <interfacename>ExtendedGenericDao</interfacename>. It contains
-      functionality that can not be implemented with standard JPA features in
-      the version 1.0. So implementations will have to rely on persistence
-      providers proprietary API. Extending this interface with your concrete
-      DAO interface will require to use either Hibernate or
-      EclipseLink.</para>
-
-      <example>
-        <title>ExtendedGenericDao interface</title>
-
-        <programlistingco>
-          <areaspec>
-            <area coords="4" id="extended-generic-dao.read-by-example" />
-
-            <area coords="6" id="extended-generic-dao.read-by-example-sorted" />
-
-            <area coords="8"
-                  id="extended-generic-dao.read-by-example-pageable" />
-
-            <area coords="10"
-                  id="extended-generic-dao.read-by-example-pageable-sorted" />
-          </areaspec>
-
-          <programlisting language="java">public interface ExtendedGenericDao&lt;T, 
-        PK extends Serializable&gt; extends GenericDao&lt;T, PK&gt; {
-
-    List&lt;T&gt; readByExample(T... examples);
-
-    List&lt;T&gt; readbyExample(Sort sort, T... examples);
-
-    Page&lt;T&gt; readByExample(Pageable pageable, T... examples);
-
-    Page&lt;T&gt; readByExample(Pageable pageable, Sort sort, T... examples);
-}</programlisting>
-
-          <calloutlist>
-            <callout arearefs="extended-generic-dao.read-by-example">
-              <para>Returns all entities matching the given examples. If you
-              provide more that one example, their restrictions will be
-              <code>OR</code> concatenated.</para>
-            </callout>
-
-            <callout arearefs="extended-generic-dao.read-by-example-pageable">
-              <para>Returns all entities matching the given examples, sorted
-              by the given sort option.</para>
-            </callout>
-
-            <callout arearefs="extended-generic-dao.read-by-example-pageable">
-              <para>Returns a single page of the restriction result defined by
-              the given example.</para>
-            </callout>
-
-            <callout arearefs="extended-generic-dao.read-by-example-pageable-sorted">
-              <para>Returns a single page of the restriction result defined by
-              the given example sorted by the given sort option.</para>
-            </callout>
-          </calloutlist>
-        </programlistingco>
-      </example>
     </section>
 
     <section>
@@ -570,13 +548,38 @@
       </note>
 
       <simplesect>
-        <title><code>AuditingAdvice</code></title>
+        <title><code>General auditing configuration</code></title>
 
-        <para>The <classname>AuditingAdvice</classname> is used to
-        transparently set audition information during the work with the DAO.
-        The advice gets access to the user changing or creating the entity
-        through the <interfacename>AuditorAware</interfacename>
-        interface.</para>
+        <para>Hades ships with an entity listener that can be used to trigger
+        capturing auditing information. So first you have to register the
+        <classname>AuditingEntityListener</classname> inside your
+        <filename>orm.xml</filename> to be used for all entities in your
+        persistence contexts:</para>
+
+        <example>
+          <title>Auditing configuration orm.xml</title>
+
+          <programlisting language="xml">&lt;persistence-unit-metadata&gt;
+  &lt;persistence-unit-defaults&gt;
+    &lt;entity-listeners&gt;
+      &lt;entity-listener class="….hades.domain.auditing.support.AuditingEntityListener" /&gt;
+    &lt;/entity-listeners&gt;
+  &lt;/persistence-unit-defaults&gt;
+&lt;/persistence-unit-metadata&gt;</programlisting>
+        </example>
+
+        <para>Now activating auditing functionlity is just a matter of adding
+        the Hades auditing namespace element to your configuration:</para>
+
+        <example>
+          <title>Activating auditing in the Spring configuration</title>
+
+          <programlisting language="xml">&lt;hades:auditing auditor-aware-ref="yourAuditorAwareBean" /&gt;</programlisting>
+        </example>
+
+        <para>As you can see you have to provide a bean that implements the
+        <interfacename>AuditorAware</interfacename> interface which looks as
+        follows:</para>
 
         <example>
           <title><interfacename>AuditorAware</interfacename> interface</title>
@@ -592,64 +595,6 @@
         system. This component should be
         <interfacename>AuditorAware</interfacename> and thus allow seemless
         tracking of the auditor.</para>
-
-        <para>To activate transparent creation of auditioning information the
-        configuration has to look something like this:</para>
-
-        <example>
-          <title>Configuration of auditing functionality</title>
-
-          <programlistingco>
-            <areaspec>
-              <area coords="9" id="auditing-advice.aop-activation" />
-
-              <area coords="11" id="auditing-advice.audition-advice" />
-
-              <area coords="15" id="auditing-advice.current-user-aware" />
-            </areaspec>
-
-            <programlisting language="xml">&lt;beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:aop="http://www.springframework.org/schema/aop"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans 
-    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/aop 
-    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"&gt;
-
-  &lt;aop:aspectj-autoproxy /&gt;
-
-  &lt;bean class="org.synyx.hades.domain.auditing.AuditingAdvice"&gt;
-    &lt;property name="auditorAware" ref="auditorAware" /&gt;
-  &lt;/bean&gt;
-
-  &lt;bean id="auditorAware" class="foo.bar.AuthenticationService" /&gt;
-
-&lt;/beans&gt;</programlisting>
-
-            <calloutlist>
-              <callout arearefs="auditing-advice.aop-activation">
-                <para>Activate auto proxy creation for spring beans.</para>
-              </callout>
-
-              <callout arearefs="auditing-advice.audition-advice">
-                <para>Declare the advice as spring bean and add a reference to
-                the <interfacename>AuditorAware</interfacename>.</para>
-              </callout>
-
-              <callout arearefs="auditing-advice.current-user-aware">
-                <para>Declare a spring bean that implements
-                <interfacename>AuditorAware</interfacename>.</para>
-              </callout>
-            </calloutlist>
-          </programlistingco>
-        </example>
-
-        <note>
-          <para>By default the <classname>AuditingAdvice</classname> will use
-          the current Java date as creation or modification date. If you
-          prefer to use your database's capabilities to determine modification
-          and creation date use <code>setDateTimeForNow(false)</code>.</para>
-        </note>
       </simplesect>
     </section>
   </chapter>
@@ -795,6 +740,29 @@
             </calloutlist>
           </programlistingco>
         </example>
+
+        <para>As you can see we have configured an
+        <classname>EntityManagerFactoryBean</classname> to work with Hibernate
+        in our case. As Hades supports any JPA provider, we do not declare
+        mandatory dependencies in our <filename>pom.xml</filename>. Thus,
+        you'll have to add the persistence provider of your choice to your
+        project. In our case this would look something like this: </para>
+
+        <example>
+          <title>Hibernate dependency</title>
+
+          <programlisting>&lt;dependency&gt;
+  &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+  &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
+  &lt;version&gt;3.5.3-Final&lt;/version&gt;
+&lt;/dependency&gt;</programlisting>
+        </example>
+
+        <note>
+          <para>You might have to add other dependencies as well (SLF4J in
+          case of Hibernate). So check the documentation of your persistence
+          provider for setup details.</para>
+        </note>
       </simplesect>
 
       <simplesect>
@@ -1284,7 +1252,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByLastnameAndFirstname</code></entry>
 
-                  <entry><code>‚Ä¶ where x.lastname = ?1 and x.firstname =
+                  <entry><code>… where x.lastname = ?1 and x.firstname =
                   ?2</code></entry>
                 </row>
 
@@ -1293,7 +1261,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByLastnameOrFirstname</code></entry>
 
-                  <entry><code>‚Ä¶ where x.lastname = ?1 or x.firstname =
+                  <entry><code>… where x.lastname = ?1 or x.firstname =
                   ?2</code></entry>
                 </row>
 
@@ -1302,7 +1270,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByStartDateBetween</code></entry>
 
-                  <entry><code>‚Ä¶ where x.startDate between 1? and
+                  <entry><code>… where x.startDate between 1? and
                   ?2</code></entry>
                 </row>
 
@@ -1311,7 +1279,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByAgeLessThan</code></entry>
 
-                  <entry><code>‚Ä¶ where x.age &lt; ?1</code></entry>
+                  <entry><code>… where x.age &lt; ?1</code></entry>
                 </row>
 
                 <row>
@@ -1319,7 +1287,56 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByAgeGreaterThan</code></entry>
 
-                  <entry><code>‚Ä¶ where x.age &gt; ?2</code></entry>
+                  <entry><code>… where x.age &gt; ?1</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>IsNull</code></entry>
+
+                  <entry><code>findByAgeIsNull</code></entry>
+
+                  <entry><code>… where x.age is null</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>IsNotNull,NotNull</code></entry>
+
+                  <entry><code>findByAge(Is)NotNull</code></entry>
+
+                  <entry><code>… where x.age not null</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>Like</code></entry>
+
+                  <entry><code>findByFirstnameLike</code></entry>
+
+                  <entry><code>… where x.firstname like ?</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>NotLike</code></entry>
+
+                  <entry><code>findByFirstnameNotLike</code></entry>
+
+                  <entry><code>… where x.firstname not like ?</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>OrderBy</code></entry>
+
+                  <entry><code>findByAgeOrderByLastnameDesc</code></entry>
+
+                  <entry><code>… where x.age &gt; ?1 order by x.lastname
+                  desc</code></entry>
+                </row>
+
+                <row>
+                  <entry><code>Not</code></entry>
+
+                  <entry><code>findByLastnameNot</code></entry>
+
+                  <entry><code>… where x.lastname &lt;&gt; ?1</code></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -1523,7 +1540,7 @@ Long setFixedFirstnameFor(String firstname, String lastname);</programlisting>
       your DAO interface as follows:</para>
 
       <example>
-        <title>Custom transaction configuration for CRUD </title>
+        <title>Custom transaction configuration for CRUD</title>
 
         <programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt; {
 
@@ -1608,7 +1625,7 @@ public interface UserDao extends GenericDao&lt;User, Long&gt; {
           to that <methodname>deleteInactiveUsers()</methodname> makes use of
           the <interfacename>@Modifying</interfacename> annotation and
           overrides the transaction configuration. Thus the method will be
-          executed with <code>readOnly</code> flag set to false. </para>
+          executed with <code>readOnly</code> flag set to false.</para>
         </example>
 
         <note>
