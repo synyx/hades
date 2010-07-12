@@ -9,8 +9,4 @@
         </persistence-unit-defaults>
     </persistence-unit-metadata>
 
-	<named-query name="User.findByLastname">
-		<query>SELECT u FROM User u WHERE u.lastname = ?1</query>
-	</named-query>
-	
 </entity-mappings>

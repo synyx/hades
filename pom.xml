@@ -51,6 +51,10 @@
             <timezone>+1</timezone>
         </contributor>
     </contributors>
+    
+    <properties>
+        <aspectj.version>1.6.1</aspectj.version>
+    </properties>
 	
 	<profiles>
 	
@@ -178,7 +182,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<failOnWarnings>false</failOnWarnings>
+					<failOnWarnings>true</failOnWarnings>
 				</configuration>
      		</plugin>
      		

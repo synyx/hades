@@ -16,10 +16,13 @@
 
 package org.synyx.hades.domain.auditing;
 
-import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.synyx.hades.domain.auditing.AbstractAuditable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 
 
 /**
@@ -36,6 +39,9 @@ public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
     private static final long serialVersionUID = 7409344446795693011L;
 
     private String firstname;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private Set<AuditableRole> roles = new HashSet<AuditableRole>();
 
 
     /**
@@ -57,5 +63,17 @@ public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
     public void setFirstname(final String firstname) {
 
         this.firstname = firstname;
+    }
+
+
+    public void addRole(AuditableRole role) {
+
+        this.roles.add(role);
+    }
+
+
+    public Set<AuditableRole> getRoles() {
+
+        return roles;
     }
 }

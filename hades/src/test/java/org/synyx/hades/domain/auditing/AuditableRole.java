@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.synyx.hades.domain.auditing;
 
-package org.synyx.hades.dao.config;
-
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import javax.persistence.Entity;
 
 
 /**
- * Simple namespace handler for {@literal dao-config} namespace.
+ * Sample auditable role entity.
  * 
- * @author Eberhard Wolff
  * @author Oliver Gierke
  */
-public class DaoNameSpaceHandler extends NamespaceHandlerSupport {
+@Entity
+public class AuditableRole extends AbstractAuditable<AuditableUser, Long> {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.springframework.beans.factory.xml.NamespaceHandler#init()
-     */
-    public void init() {
+    private static final long serialVersionUID = 5997359055260303863L;
 
-        registerBeanDefinitionParser("dao-config",
-                new DaoConfigDefinitionParser());
-        registerBeanDefinitionParser("auditing",
-                new AuditingBeanDefinitionParser());
+    private String name;
+
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+
+    public String getName() {
+
+        return name;
     }
 }

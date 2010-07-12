@@ -30,7 +30,13 @@
 				<artifactId>${spring.artifactPrefix}aop</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-		
+            
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>org.springframework.aspects</artifactId>
+                <version>${spring.version}</version>
+                <optional>true</optional>
+            </dependency>
 		
 		<dependency>
 			<groupId>joda-time</groupId>
@@ -42,12 +48,12 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.6.1</version>
+			<version>${aspectj.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>1.6.1</version>
+			<version>${aspectj.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -139,6 +145,48 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjrt</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                    <aspectLibraries>
+                        <aspectLibrary>
+                            <groupId>org.springframework</groupId>
+                            <artifactId>org.springframework.aspects</artifactId>
+                        </aspectLibrary>
+                    </aspectLibraries>
+                    <includes>
+                        <include>**/domain/**/*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/domain/auditing/AuditingAdvice.java</exclude>
+                    </excludes>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
 
 			<plugin>
 				<groupId>com.agilejava.docbkx</groupId>
