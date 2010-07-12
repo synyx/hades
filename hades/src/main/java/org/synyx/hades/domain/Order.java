@@ -43,12 +43,14 @@ public enum Order {
     public static Order fromJpaValue(String value) {
 
         for (Order order : Order.values()) {
-            if (order.getJpaValue().equals(value)) {
+            if (order.getJpaValue().equalsIgnoreCase(value)) {
                 return order;
             }
         }
 
-        throw new IllegalArgumentException(String.format(
-                "Invalid value '%s' given!", value));
+        throw new IllegalArgumentException(
+                String.format(
+                        "Invalid value '%s' for orders given! Has to be either 'desc' or 'asc'.",
+                        value));
     }
 }
