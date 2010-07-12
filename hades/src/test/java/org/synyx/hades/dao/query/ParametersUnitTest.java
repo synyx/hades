@@ -140,6 +140,14 @@ public class ParametersUnitTest {
     }
 
 
+    @Test
+    public void detectsEmptyParameterListCorrectly() throws Exception {
+
+        Parameters parameters = getParametersFor("emptyParameters");
+        assertThat(parameters.hasParameterAt(0), is(false));
+    }
+
+
     private Parameters getParametersFor(String methodName,
             Class<?>... parameterTypes) throws SecurityException,
             NoSuchMethodException {
@@ -180,6 +188,9 @@ public class ParametersUnitTest {
 
         User invalidSort(@Param("username") String username,
                 @Param("foo") Sort sort);
+
+
+        User emptyParameters();
 
     }
 }

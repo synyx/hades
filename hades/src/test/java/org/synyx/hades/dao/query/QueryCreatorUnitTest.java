@@ -1,5 +1,21 @@
+/*
+ * Copyright 2008-2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.synyx.hades.dao.query;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
@@ -125,6 +141,57 @@ public class QueryCreatorUnitTest {
     }
 
 
+    @Test
+    public void parsesLikeOperatorCorrectly() throws Exception {
+
+        method = getClass().getMethod("findByNameLike", String.class);
+        assertCreatesQueryForMethod("where x.name like ?1", method);
+    }
+
+
+    @Test
+    public void parsesNotOperatorCorrectly() throws Exception {
+
+        method = getClass().getMethod("findByNameNot", String.class);
+        assertCreatesQueryForMethod("where x.name <> ?1", method);
+    }
+
+
+    @Test
+    public void parsesNotNullOperatorCorrectly() throws Exception {
+
+        method = getClass().getMethod("findByNameNotNull");
+        assertCreatesQueryForMethod("where x.name is not null", method);
+    }
+
+
+    @Test
+    public void parsesLikeCorrectly() throws Exception {
+
+        method = getClass().getMethod("findByNameLike", String.class);
+        assertCreatesQueryForMethod("where x.name like ?1", method);
+    }
+
+
+    @Test
+    public void parsesNotLikeCorrectly() throws Exception {
+
+        method = getClass().getMethod("findByNameNotLike", String.class);
+        assertCreatesQueryForMethod("where x.name not like ?1", method);
+    }
+
+
+    @Test
+    public void parsesOrderByClauseCorrectly() throws Exception {
+
+        method =
+                getClass().getMethod("findByNameOrderByOrganizationDesc",
+                        String.class);
+        assertCreatesQueryForMethod(
+                "where x.name = ?1 order by x.organization desc", method);
+    }
+
+
     /**
      * Asserts that the query created for the given {@link Method} results in a
      * query ending with the given {@link String}.
@@ -138,7 +205,7 @@ public class QueryCreatorUnitTest {
                 new QueryMethod(method, method.getReturnType(), extractor);
 
         String result = new QueryCreator(queryMethod).constructQuery();
-        assertTrue(result.endsWith(queryEnd));
+        assertThat(result, endsWith(queryEnd));
     }
 
 
@@ -198,6 +265,36 @@ public class QueryCreatorUnitTest {
 
 
     public SampleEntity findByAgeGreaterThan(int age) {
+
+        return null;
+    }
+
+
+    public SampleEntity findByNameLike(String name) {
+
+        return null;
+    }
+
+
+    public SampleEntity findByNameNotLike(String name) {
+
+        return null;
+    }
+
+
+    public SampleEntity findByNameNot(String name) {
+
+        return null;
+    }
+
+
+    public SampleEntity findByNameNotNull() {
+
+        return null;
+    }
+
+
+    public SampleEntity findByNameOrderByOrganizationDesc(String name) {
 
         return null;
     }

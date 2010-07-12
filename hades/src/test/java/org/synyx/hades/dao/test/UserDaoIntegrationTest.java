@@ -16,7 +16,7 @@
 
 package org.synyx.hades.dao.test;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.synyx.hades.domain.Specifications.*;
 import static org.synyx.hades.domain.UserSpecifications.*;
@@ -467,5 +467,39 @@ public class UserDaoIntegrationTest {
 
         assertTrue(userDao.findByFirstnameOrLastname("Oliver", "Arrasz")
                 .containsAll(Arrays.asList(firstUser, secondUser)));
+    }
+
+
+    @Test
+    public void executesLikeAndOrderByCorrectly() throws Exception {
+
+        flushTestUsers();
+
+        List<User> result =
+                userDao.findByLastnameLikeOrderByFirstnameDesc("%r%");
+        assertEquals(firstUser, result.get(0));
+        assertEquals(secondUser, result.get(1));
+    }
+
+
+    @Test
+    public void executesNotLikeCorrectly() throws Exception {
+
+        flushTestUsers();
+
+        List<User> result = userDao.findByLastnameNotLike("%er%");
+        assertThat(result.size(), is(1));
+        assertEquals(secondUser, result.get(0));
+    }
+
+
+    @Test
+    public void executesSimpleNotCorrectly() throws Exception {
+
+        flushTestUsers();
+
+        List<User> result = userDao.findByLastnameNot("Gierke");
+        assertThat(result.size(), is(1));
+        assertEquals(secondUser, result.get(0));
     }
 }

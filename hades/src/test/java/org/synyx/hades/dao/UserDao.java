@@ -168,4 +168,13 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      */
     List<User> findByFirstnameOrLastname(@Param("lastname") String lastname,
             @Param("firstname") String firstname);
+
+
+    List<User> findByLastnameLikeOrderByFirstnameDesc(String lastname);
+
+
+    List<User> findByLastnameNotLike(String lastname);
+
+
+    List<User> findByLastnameNot(String lastname);
 }

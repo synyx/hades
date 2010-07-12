@@ -1,14 +1,32 @@
+/*
+ * Copyright 2008-2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.synyx.hades.dao.query;
 
 import static org.synyx.hades.dao.query.QueryUtils.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.synyx.hades.domain.Order;
 
 
 /**
@@ -22,8 +40,6 @@ class QueryCreator {
     private static final String INVALID_PARAMETER_SIZE =
             "You have to provide method arguments for each query "
                     + "criteria to construct the query correctly!";
-    private static final String[] PREFIXES = new String[] { "findBy", "find",
-            "readBy", "read", "getBy", "get" };
 
     private static final String AND = "And";
     private static final String OR = "Or";
@@ -60,27 +76,31 @@ class QueryCreator {
                         method.getDomainClassName()));
         queryBuilder.append(" where ");
 
+        PartSource source = new PartSource(method.getName());
+
         // Split OR
-        String[] orParts = split(strip(method.getName()), OR);
+        List<PartSource> orParts = source.getParts(OR);
 
         int parametersBound = 0;
 
-        for (String orPart : orParts) {
+        for (PartSource orPart : orParts) {
 
             // Split AND
-            String[] andParts = split(orPart, AND);
-
+            List<PartSource> andParts = orPart.getParts(AND);
             StringBuilder andBuilder = new StringBuilder();
 
-            for (String andPart : andParts) {
+            for (PartSource andPart : andParts) {
 
                 Parameters parameters =
                         method.getParameters().getBindableParameters();
 
+                Parameter parameter =
+                        parameters.hasParameterAt(parametersBound) ? parameters
+                                .getParameter(parametersBound) : null;
+
                 try {
                     Part part =
-                            new Part(andPart, method,
-                                    parameters.getParameter(parametersBound));
+                            new Part(andPart.cleanedUp(), method, parameter);
 
                     andBuilder.append(part.getQueryPart()).append(" and ");
                     parametersBound += part.getNumberOfArguments();
@@ -104,6 +124,11 @@ class QueryCreator {
 
         queryBuilder.delete(queryBuilder.length() - 4, queryBuilder.length());
 
+        if (source.hasOrderByClause()) {
+            queryBuilder.append(" ").append(
+                    source.getOrderBySource().getClause());
+        }
+
         String query = queryBuilder.toString();
 
         if (LOG.isDebugEnabled()) {
@@ -112,44 +137,6 @@ class QueryCreator {
         }
 
         return query;
-    }
-
-
-    /**
-     * Splits the given text at the given keywords. Expects camelcase style to
-     * only match concrete keywords and not derivatives of it.
-     * 
-     * @param text
-     * @param keyword
-     * @return
-     */
-    private String[] split(String text, String keyword) {
-
-        String regex = String.format(KEYWORD_TEMPLATE, keyword);
-
-        Pattern pattern = Pattern.compile(regex);
-        return pattern.split(text);
-    }
-
-
-    /**
-     * Strips a prefix from the given method name if it starts with one of
-     * {@value #PREFIXES}.
-     * 
-     * @param methodName
-     * @return
-     */
-    private String strip(String methodName) {
-
-        for (String prefix : PREFIXES) {
-
-            String regex = String.format(PREFIX_TEMPLATE, prefix);
-            if (methodName.matches(regex)) {
-                return methodName.substring(prefix.length());
-            }
-        }
-
-        return methodName;
     }
 
     /**
@@ -226,7 +213,7 @@ class QueryCreator {
             /**
              * Property to be bound to a {@code between} statement.
              */
-            BETWEEN("Between", null) {
+            BETWEEN(null, "Between") {
 
                 /**
                  * Binds 2 parameters.
@@ -255,10 +242,50 @@ class QueryCreator {
 
             },
 
-            LESS_THAN("LessThan", "<"), GREATER_THAN("GreaterThan", ">"), SIMPLE_PROPERTY(
-                    null, "=");
+            IS_NOT_NULL(null, "IsNotNull", "NotNull") {
 
-            private String keyword;
+                @Override
+                public int getNumberOfArguments() {
+
+                    return 0;
+                }
+
+
+                @Override
+                public String createQueryPart(String property,
+                        Parameter parameter) {
+
+                    return String.format("x.%s is not null", property);
+                }
+            },
+
+            IS_NULL(null, "IsNull", "Null") {
+
+                @Override
+                public int getNumberOfArguments() {
+
+                    return 0;
+                }
+
+
+                @Override
+                public String createQueryPart(String property,
+                        Parameter parameter) {
+
+                    return String.format("x.%s is null", property);
+                }
+            },
+
+            LESS_THAN("<", "LessThan"), GREATER_THAN(">", "GreaterThan"), NOT_LIKE(
+                    "not like", "NotLike"), LIKE("like", "Like"), NEGATING_SIMPLE_PROPERTY(
+                    "<>", "Not"), SIMPLE_PROPERTY("=");
+
+            // Need to list them again explicitly as the order is important
+            // (esp. for IS_NULL, IS_NOT_NULL)
+            private static final List<Type> ALL = Arrays.asList(IS_NOT_NULL,
+                    IS_NULL, BETWEEN, LESS_THAN, GREATER_THAN, NOT_LIKE, LIKE,
+                    NEGATING_SIMPLE_PROPERTY, SIMPLE_PROPERTY);
+            private List<String> keywords;
             private String operator;
 
 
@@ -266,12 +293,12 @@ class QueryCreator {
              * Creates a new {@link Type} using the given keyword and operator.
              * Both can be {@literal null}.
              * 
-             * @param keyword
              * @param operator
+             * @param keywords
              */
-            private Type(String keyword, String operator) {
+            private Type(String operator, String... keywords) {
 
-                this.keyword = keyword;
+                this.keywords = Arrays.asList(keywords);
                 this.operator = operator;
             }
 
@@ -290,8 +317,7 @@ class QueryCreator {
             public static Type fromProperty(String rawProperty,
                     QueryMethod method) {
 
-                for (Type type : Arrays.asList(BETWEEN, LESS_THAN,
-                        GREATER_THAN, SIMPLE_PROPERTY)) {
+                for (Type type : ALL) {
                     if (type.supports(rawProperty, method)) {
                         return type;
                     }
@@ -330,7 +356,7 @@ class QueryCreator {
              */
             protected boolean supports(String property, QueryMethod method) {
 
-                if (keyword == null) {
+                if (keywords == null) {
                     return true;
                 }
 
@@ -338,7 +364,13 @@ class QueryCreator {
                     return false;
                 }
 
-                return property.endsWith(keyword);
+                for (String keyword : keywords) {
+                    if (property.endsWith(keyword)) {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
 
@@ -364,9 +396,163 @@ class QueryCreator {
              */
             public String extractProperty(String part) {
 
-                return keyword == null ? part : part.substring(0,
-                        part.indexOf(keyword));
+                for (String keyword : keywords) {
+                    if (part.endsWith(keyword)) {
+                        return part.substring(0, part.indexOf(keyword));
+                    }
+                }
+
+                return part;
             }
+        }
+    }
+
+    /**
+     * Helper class to split a method name into all of its logical parts
+     * (prefix, properties, postfix).
+     * 
+     * @author Oliver Gierke
+     */
+    private static class PartSource {
+
+        private static final String ORDER_BY = "OrderBy";
+        private static final String[] PREFIXES = new String[] { "findBy",
+                "find", "readBy", "read", "getBy", "get" };
+
+        private final String cleanedUpString;
+        private final OrderBySource orderBySource;
+
+
+        public PartSource(String methodName) {
+
+            String removedPrefixes = strip(methodName);
+
+            String[] parts = split(removedPrefixes, ORDER_BY);
+
+            if (parts.length > 2) {
+                throw new IllegalArgumentException(
+                        "OrderBy must not be used more than once in a method name!");
+            }
+
+            this.cleanedUpString = parts[0];
+            this.orderBySource =
+                    parts.length == 2 ? new OrderBySource(parts[1]) : null;
+        }
+
+
+        public OrderBySource getOrderBySource() {
+
+            return orderBySource;
+        }
+
+
+        public boolean hasOrderByClause() {
+
+            return orderBySource != null;
+        }
+
+
+        public List<PartSource> getParts(String keyword) {
+
+            List<PartSource> parts = new ArrayList<PartSource>();
+            for (String part : split(cleanedUpString, keyword)) {
+                parts.add(new PartSource(part));
+            }
+
+            return parts;
+        }
+
+
+        public String cleanedUp() {
+
+            return cleanedUpString;
+        }
+
+
+        /**
+         * Strips a prefix from the given method name if it starts with one of
+         * {@value #PREFIXES}.
+         * 
+         * @param methodName
+         * @return
+         */
+        private String strip(String methodName) {
+
+            for (String prefix : PREFIXES) {
+
+                String regex = String.format(PREFIX_TEMPLATE, prefix);
+                if (methodName.matches(regex)) {
+                    return methodName.substring(prefix.length());
+                }
+            }
+
+            return methodName;
+        }
+
+
+        /**
+         * Splits the given text at the given keywords. Expects camelcase style
+         * to only match concrete keywords and not derivatives of it.
+         * 
+         * @param text
+         * @param keyword
+         * @return
+         */
+        private String[] split(String text, String keyword) {
+
+            String regex = String.format(KEYWORD_TEMPLATE, keyword);
+
+            Pattern pattern = Pattern.compile(regex);
+            return pattern.split(text);
+        }
+    }
+
+    /**
+     * Simple helper class to create a JPA order by clause from a method name
+     * end. It expects the last part of the method name to be given and supports
+     * lining up multiple properties ending with the sorting direction. So the
+     * following method end would be valid: {@code LastnameUsernameDesc}. This
+     * would create a clause {@code order by x.lastname, x.username desc}.
+     * 
+     * @author Oliver Gierke
+     */
+    static class OrderBySource {
+
+        private final Order order;
+        private final List<String> parts;
+
+
+        public OrderBySource(String clause) {
+
+            String[] parts = clause.split("(?<=[a-z])(?=[A-Z])");
+
+            this.order = Order.fromJpaValue(parts[parts.length - 1]);
+            this.parts = new ArrayList<String>();
+
+            for (String part : parts) {
+                this.parts.add(StringUtils.uncapitalize(part));
+            }
+
+            this.parts.remove(this.parts.size() - 1);
+        }
+
+
+        /**
+         * Returns the final JPA order by clause.
+         * 
+         * @return
+         */
+        public String getClause() {
+
+            StringBuilder builder = new StringBuilder("order by ");
+            builder.append(StringUtils.collectionToDelimitedString(parts, ",",
+                    "x.", ""));
+
+            if (order != null) {
+                builder.append(" ").append(order.getJpaValue());
+            }
+
+            return builder.toString();
         }
     }
 }

@@ -159,6 +159,22 @@ class Parameters implements Iterable<Parameter> {
 
 
     /**
+     * Returns whether we have a parameter at the given position.
+     * 
+     * @param position
+     * @return
+     */
+    public boolean hasParameterAt(int position) {
+
+        try {
+            return null != getParameter(position);
+        } catch (ParameterOutOfBoundsException e) {
+            return false;
+        }
+    }
+
+
+    /**
      * Returns whether the method signature contains one of the special
      * parameters ({@link Pageable}, {@link Sort}).
      * 
