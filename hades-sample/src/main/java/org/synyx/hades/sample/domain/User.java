@@ -25,11 +25,18 @@ public class User extends AbstractPersistable<Long> {
     private String lastname;
 
 
+    public User() {
+
+        this(null);
+    }
+
+
     /**
      * Creates a new user instance.
      */
-    public User() {
+    public User(Long id) {
 
+        this.setId(id);
     }
 
 

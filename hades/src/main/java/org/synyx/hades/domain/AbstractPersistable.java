@@ -58,7 +58,7 @@ public abstract class AbstractPersistable<PK extends Serializable> implements
      * 
      * @param id the id to set
      */
-    public void setId(final PK id) {
+    protected void setId(final PK id) {
 
         this.id = id;
     }

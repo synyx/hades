@@ -39,10 +39,10 @@ public class IsNewStrategiesUnitTest {
         IsNewStrategy strategy =
                 new GenericDaoSupport.PersistableIsNewStrategy();
 
-        PersistableEntity entity = new PersistableEntity();
+        PersistableEntity entity = new PersistableEntity(null);
         assertThat(strategy.isNew(entity), is(true));
 
-        entity.setId(1L);
+        entity = new PersistableEntity(1L);
         assertThat(strategy.isNew(entity), is(false));
     }
 
@@ -113,6 +113,12 @@ public class IsNewStrategiesUnitTest {
     static class PersistableEntity extends AbstractPersistable<Long> {
 
         private static final long serialVersionUID = -5898780128204716452L;
+
+
+        public PersistableEntity(Long id) {
+
+            setId(id);
+        }
     }
 
     static class FieldAnnotatedEntity {

@@ -44,6 +44,18 @@ public class AuditableUser extends AbstractAuditable<AuditableUser, Long> {
     private Set<AuditableRole> roles = new HashSet<AuditableRole>();
 
 
+    public AuditableUser() {
+
+        this(null);
+    }
+
+
+    public AuditableUser(Long id) {
+
+        this.setId(id);
+    }
+
+
     /**
      * Returns the firstname.
      * 

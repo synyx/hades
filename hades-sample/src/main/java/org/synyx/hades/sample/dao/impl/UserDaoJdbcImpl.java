@@ -58,8 +58,7 @@ public class UserDaoJdbcImpl extends JdbcDaoSupport implements UserDaoCustom {
          */
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-            User user = new User();
-            user.setId(rs.getLong("id"));
+            User user = new User(rs.getLong("id"));
             user.setUsername(rs.getString("username"));
             user.setLastname(rs.getString("lastname"));
             user.setFirstname(rs.getString("firstname"));

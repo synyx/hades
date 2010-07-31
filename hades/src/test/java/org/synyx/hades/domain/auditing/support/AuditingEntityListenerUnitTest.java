@@ -116,7 +116,7 @@ public class AuditingEntityListenerUnitTest {
     @Test
     public void onlySetsModificationDataOnNotNewEntities() {
 
-        user.setId(1L);
+        user = new AuditableUser(1L);
 
         auditionAdvice.setAuditorAware(auditorAware);
         auditionAdvice.touch(user);
