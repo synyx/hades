@@ -27,7 +27,7 @@
 
     <releaseinfo>1.6.0</releaseinfo>
 
-    <pubdate>23.06.2010</pubdate>
+    <pubdate>31.07.2010</pubdate>
 
     <copyright>
       <year>2008-2010</year>
@@ -276,6 +276,18 @@
 
         <revremark>Added documentation of new keywords in query creation,
         updated auditing, added chapters on project metadata</revremark>
+      </revision>
+
+      <revision>
+        <date>31.07.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added FAQ on more detailled logging (see #329)</revremark>
       </revision>
     </revhistory>
   </bookinfo>
@@ -2355,6 +2367,36 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
     <title>Frequently asked questions</title>
 
     <qandaset>
+      <qandadiv>
+        <title>Common</title>
+
+        <qandaentry>
+          <question>
+            <para>I'd like to get more detailled logging information on what
+            methods are called inside
+            <interfacename>GenericDao</interfacename>, e.g. How can I gain
+            them?</para>
+          </question>
+
+          <answer>
+            <para>You can make use of
+            <classname>CustomizableTraceInterceptor</classname> provided by
+            Spring:</para>
+
+            <programlisting language="xml">&lt;bean id="customizableTraceInterceptor" class="
+  org.springframework.aop.interceptor.CustomizableTraceInterceptor"&gt;
+  &lt;property name="enterMessage" value="Entering $[methodName]($[arguments])"/&gt;
+  &lt;property name="exitMessage" value="Leaving $[methodName](): $[returnValue]"/&gt;
+&lt;/bean&gt;
+
+&lt;aop:config&gt;
+  &lt;aop:advisor advice-ref="customizableTraceInterceptor" 
+    pointcut="execution(public * org.synyx.hades.dao.GenericDao+.*(..))"/&gt;
+&lt;/aop:config&gt;</programlisting>
+          </answer>
+        </qandaentry>
+      </qandadiv>
+
       <qandadiv>
         <title>Infrastructure</title>
 
