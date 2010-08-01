@@ -25,11 +25,18 @@
             <version>${spring.version}</version>
             <optional>true</optional>
         </dependency>
+
+        <!-- Logging (SLF4J + JCL bridge) -->        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
         
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-            <version>1.1</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         
 		<dependency>
@@ -120,7 +127,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.8</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
 		

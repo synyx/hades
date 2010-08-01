@@ -21,8 +21,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.QueryHint;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -34,7 +34,8 @@ import org.apache.commons.logging.LogFactory;
  */
 final class SimpleHadesQuery extends AbstractHadesQuery {
 
-    private static final Log LOG = LogFactory.getLog(SimpleHadesQuery.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(SimpleHadesQuery.class);
 
     private final String queryString;
     private final String alias;
@@ -126,10 +127,8 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     public static HadesQuery fromHadesAnnotation(QueryMethod finderMethod,
             EntityManager em) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(String.format("Looking up Hades query for method %s",
-                    finderMethod.getName()));
-        }
+        LOG.debug("Looking up Hades query for method %s",
+                finderMethod.getName());
 
         org.synyx.hades.dao.Query annotation =
                 finderMethod.getQueryAnnotation();

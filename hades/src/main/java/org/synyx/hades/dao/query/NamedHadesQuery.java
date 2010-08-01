@@ -18,8 +18,8 @@ package org.synyx.hades.dao.query;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,7 +30,8 @@ import org.apache.commons.logging.LogFactory;
  */
 final class NamedHadesQuery extends AbstractHadesQuery {
 
-    private static final Log LOG = LogFactory.getLog(NamedHadesQuery.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(NamedHadesQuery.class);
 
     private String queryName;
     private QueryExtractor extractor;
@@ -59,9 +60,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
         final String queryName = method.getNamedQueryName();
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(String.format("Looking up named query %s", queryName));
-        }
+        LOG.debug("Looking up named query %s", queryName);
 
         try {
 

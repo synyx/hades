@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.domain.Order;
@@ -36,7 +36,8 @@ import org.synyx.hades.domain.Order;
  */
 class QueryCreator {
 
-    private static final Log LOG = LogFactory.getLog(QueryCreator.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(QueryCreator.class);
     private static final String INVALID_PARAMETER_SIZE =
             "You have to provide method arguments for each query "
                     + "criteria to construct the query correctly!";
@@ -131,10 +132,7 @@ class QueryCreator {
 
         String query = queryBuilder.toString();
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(String.format("Created query '%s' from method %s", query,
-                    method.getName()));
-        }
+        LOG.debug("Created query '%s' from method %s", query, method.getName());
 
         return query;
     }

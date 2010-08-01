@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
@@ -66,8 +66,8 @@ import org.w3c.dom.Element;
  */
 class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
-    private static final Log LOG = LogFactory
-            .getLog(DaoConfigDefinitionParser.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(DaoConfigDefinitionParser.class);
 
     private static final Class<?> PAB_POST_PROCESSOR =
             PersistenceAnnotationBeanPostProcessor.class;
@@ -311,11 +311,9 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 return null;
             }
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Registering custom DAO implementation: "
-                        + context.getImplementationBeanName() + " "
-                        + beanDefinition.getBeanClassName());
-            }
+            LOG.debug("Registering custom DAO implementation: %s %s",
+                    context.getImplementationBeanName(),
+                    beanDefinition.getBeanClassName());
 
             parserContext.registerBeanComponent(new BeanComponentDefinition(
                     beanDefinition, beanName));

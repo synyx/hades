@@ -18,9 +18,9 @@ package org.synyx.hades.domain.auditing.support;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.synyx.hades.domain.auditing.Auditable;
@@ -53,8 +53,8 @@ import org.synyx.hades.domain.auditing.AuditorAware;
 @Configurable
 public class AuditingEntityListener<T> implements InitializingBean {
 
-    private static final Log LOG = LogFactory
-            .getLog(AuditingEntityListener.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(AuditingEntityListener.class);
 
     private AuditorAware<T> auditorAware;
 
@@ -122,23 +122,11 @@ public class AuditingEntityListener<T> implements InitializingBean {
         T auditor = touchAuditor(auditable);
         DateTime now = dateTimeForNow ? touchDate(auditable) : null;
 
-        // Log touching
-        if (LOG.isDebugEnabled()) {
+        Object defaultedNow = now == null ? "not set" : now;
+        Object defaultedAuditor = auditor == null ? "unknown" : auditor;
 
-            StringBuilder builder = new StringBuilder("Touched ");
-            builder.append(auditable);
-
-            if (null != now) {
-                builder.append(" Last modification: ").append(now);
-            }
-
-            if (null != auditor) {
-                builder.append(" by ");
-                builder.append(auditor.toString());
-            }
-
-            LOG.debug(builder.toString());
-        }
+        LOG.debug("Touched %s - Last modification at %s by %s", new Object[] {
+                auditable, defaultedNow, defaultedAuditor });
     }
 
 
