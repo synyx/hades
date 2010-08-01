@@ -34,7 +34,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:infrastructure.xml")
-public class ORMInfrastructureTest {
+public class ORMInfrastructureIntegrationTest {
 
     @Autowired
     private ApplicationContext context;

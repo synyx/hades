@@ -29,6 +29,6 @@ import org.junit.Ignore;
 // true)
 @Ignore
 public class EclipseLinkNamespaceUserDaoIntegrationTest extends
-        NamespaceUserDaoTest {
+        NamespaceUserDaoIntegrationTest {
 
 }
