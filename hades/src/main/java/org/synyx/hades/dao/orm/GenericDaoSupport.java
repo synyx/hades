@@ -48,7 +48,7 @@ public abstract class GenericDaoSupport<T> {
 
     private EntityManager entityManager;
     private Class<T> domainClass;
-    private IsNewStrategy isNewStrategy;
+    private IsNewAware isNewStrategy;
 
 
     /**
@@ -176,8 +176,8 @@ public abstract class GenericDaoSupport<T> {
     /**
      * Return whether the given entity is to be regarded as new. Default
      * implementation will inspect the given domain class and use either
-     * {@link PersistableIsNewStrategy} if the class implements
-     * {@link Persistable} or {@link ReflectiveIsNewStrategy} otherwise.
+     * {@link PersistableEntityInformation} if the class implements
+     * {@link Persistable} or {@link ReflectiveEntityInformation} otherwise.
      * 
      * @param entity
      * @return
@@ -185,9 +185,9 @@ public abstract class GenericDaoSupport<T> {
     protected void createIsNewStrategy(Class<?> domainClass) {
 
         if (Persistable.class.isAssignableFrom(domainClass)) {
-            this.isNewStrategy = new PersistableIsNewStrategy();
+            this.isNewStrategy = new PersistableEntityInformation();
         } else {
-            this.isNewStrategy = new ReflectiveIsNewStrategy(domainClass);
+            this.isNewStrategy = new ReflectiveEntityInformation(domainClass);
         }
     }
 
@@ -198,29 +198,41 @@ public abstract class GenericDaoSupport<T> {
      * 
      * @return the isNewStrategy
      */
-    protected IsNewStrategy getIsNewStrategy() {
+    protected IsNewAware getIsNewStrategy() {
 
         return isNewStrategy;
     }
 
     /**
-     * Interface to abstract the ways to determine if a
+     * Interface to abstract the ways to determine if the given entity is to be
+     * considered as new.
      * 
      * @author Oliver Gierke
      */
-    public interface IsNewStrategy {
+    public interface IsNewAware {
 
         boolean isNew(Object entity);
     }
 
     /**
-     * Implementation of {@link IsNewStrategy} that assumes the entity handled
+     * Interface to abstract the ways to retrieve the id of the given entity.
+     * 
+     * @author Oliver Gierke
+     */
+    public interface IdAware {
+
+        Object getId(Object entity);
+    }
+
+    /**
+     * Implementation of {@link IsNewAware} that assumes the entity handled
      * implements {@link Persistable} and uses {@link Persistable#isNew()} for
      * the {@link #isNew(Object)} check.
      * 
      * @author Oliver Gierke
      */
-    public static class PersistableIsNewStrategy implements IsNewStrategy {
+    public static class PersistableEntityInformation implements IsNewAware,
+            IdAware {
 
         /*
          * (non-Javadoc)
@@ -233,15 +245,30 @@ public abstract class GenericDaoSupport<T> {
 
             return ((Persistable<?>) entity).isNew();
         }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.synyx.hades.dao.orm.GenericDaoSupport.IdAware#getId(java.lang
+         * .Object)
+         */
+        public Object getId(Object entity) {
+
+            return ((Persistable<?>) entity).getId();
+        }
+
     }
 
     /**
-     * {@link IsNewStrategy} implementation that reflectively checks a
+     * {@link IsNewAware} implementation that reflectively checks a
      * {@link Field} or {@link Method} annotated with {@link Id}.
      * 
      * @author Oliver Gierke
      */
-    public static class ReflectiveIsNewStrategy implements IsNewStrategy {
+    public static class ReflectiveEntityInformation implements IsNewAware,
+            IdAware {
 
         @SuppressWarnings("unchecked")
         private static final List<Class<? extends Annotation>> ID_ANNOTATIONS =
@@ -252,24 +279,24 @@ public abstract class GenericDaoSupport<T> {
 
 
         /**
-         * Creates a new {@link ReflectiveIsNewStrategy} by inspecting the given
-         * class for a {@link Field} or {@link Method} for and {@link Id}
+         * Creates a new {@link ReflectiveEntityInformation} by inspecting the
+         * given class for a {@link Field} or {@link Method} for and {@link Id}
          * annotation.
          * 
          * @param domainClass
          */
-        public ReflectiveIsNewStrategy(Class<?> domainClass) {
+        public ReflectiveEntityInformation(Class<?> domainClass) {
 
             ReflectionUtils.doWithFields(domainClass, new FieldCallback() {
 
                 public void doWith(Field field) {
 
-                    if (ReflectiveIsNewStrategy.this.field != null) {
+                    if (ReflectiveEntityInformation.this.field != null) {
                         return;
                     }
 
                     if (hasAnnotation(field, ID_ANNOTATIONS)) {
-                        ReflectiveIsNewStrategy.this.field = field;
+                        ReflectiveEntityInformation.this.field = field;
                     }
                 }
             });
@@ -282,12 +309,12 @@ public abstract class GenericDaoSupport<T> {
 
                 public void doWith(Method method) {
 
-                    if (ReflectiveIsNewStrategy.this.method != null) {
+                    if (ReflectiveEntityInformation.this.method != null) {
                         return;
                     }
 
                     if (hasAnnotation(method, ID_ANNOTATIONS)) {
-                        ReflectiveIsNewStrategy.this.method = method;
+                        ReflectiveEntityInformation.this.method = method;
                     }
                 }
             });
@@ -327,13 +354,26 @@ public abstract class GenericDaoSupport<T> {
          */
         public boolean isNew(Object entity) {
 
+            return getId(entity) == null;
+        }
+
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.synyx.hades.dao.orm.GenericDaoSupport.IdAware#getId(java.lang
+         * .Object)
+         */
+        public Object getId(Object entity) {
+
             if (field != null) {
                 ReflectionUtils.makeAccessible(field);
-                return ReflectionUtils.getField(field, entity) == null;
+                return ReflectionUtils.getField(field, entity);
             }
 
             ReflectionUtils.makeAccessible(method);
-            return ReflectionUtils.invokeMethod(method, entity) == null;
+            return ReflectionUtils.invokeMethod(method, entity);
         }
     }
 }

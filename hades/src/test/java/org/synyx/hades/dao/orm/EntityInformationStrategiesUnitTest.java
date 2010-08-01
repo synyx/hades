@@ -22,92 +22,96 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 
 import org.junit.Test;
-import org.synyx.hades.dao.orm.GenericDaoSupport.IsNewStrategy;
+import org.synyx.hades.dao.orm.GenericDaoSupport.IdAware;
+import org.synyx.hades.dao.orm.GenericDaoSupport.IsNewAware;
+import org.synyx.hades.dao.orm.GenericDaoSupport.PersistableEntityInformation;
+import org.synyx.hades.dao.orm.GenericDaoSupport.ReflectiveEntityInformation;
 import org.synyx.hades.domain.AbstractPersistable;
 
 
 /**
- * Unit test for various implementations of {@link IsNewStrategy}.
+ * Unit test for various implementations of {@link IsNewAware}.
  * 
  * @author Oliver Gierke
  */
-public class IsNewStrategiesUnitTest {
+public class EntityInformationStrategiesUnitTest {
 
     @Test
     public void detectsPersistableCorrectly() throws Exception {
 
-        IsNewStrategy strategy =
-                new GenericDaoSupport.PersistableIsNewStrategy();
+        PersistableEntityInformation info = new PersistableEntityInformation();
 
-        PersistableEntity entity = new PersistableEntity(null);
-        assertThat(strategy.isNew(entity), is(true));
-
-        entity = new PersistableEntity(1L);
-        assertThat(strategy.isNew(entity), is(false));
+        assertNewAndNoId(info, new PersistableEntity(null));
+        assertNotNewAndId(info, new PersistableEntity(1L), 1L);
     }
 
 
     @Test
     public void detectsFieldAnnotatedIdCorrectly() throws Exception {
 
-        IsNewStrategy strategy =
-                new GenericDaoSupport.ReflectiveIsNewStrategy(
-                        FieldAnnotatedEntity.class);
+        ReflectiveEntityInformation info =
+                new ReflectiveEntityInformation(FieldAnnotatedEntity.class);
 
-        FieldAnnotatedEntity entity = new FieldAnnotatedEntity(null);
-        assertThat(strategy.isNew(entity), is(true));
-
-        entity = new FieldAnnotatedEntity(1L);
-        assertThat(strategy.isNew(entity), is(false));
+        assertNewAndNoId(info, new FieldAnnotatedEntity(null));
+        assertNotNewAndId(info, new FieldAnnotatedEntity(1L), 1L);
     }
 
 
     @Test
     public void detectsEmbeddedIdFieldAnnotatedIdCorrectly() throws Exception {
 
-        IsNewStrategy strategy =
-                new GenericDaoSupport.ReflectiveIsNewStrategy(
+        ReflectiveEntityInformation info =
+                new ReflectiveEntityInformation(
                         EmbeddedIdFieldAnnotatedEntity.class);
 
-        EmbeddedIdFieldAnnotatedEntity entity =
-                new EmbeddedIdFieldAnnotatedEntity(null);
-        assertThat(strategy.isNew(entity), is(true));
-
-        entity = new EmbeddedIdFieldAnnotatedEntity(1L);
-        assertThat(strategy.isNew(entity), is(false));
+        assertNewAndNoId(info, new EmbeddedIdFieldAnnotatedEntity(null));
+        assertNotNewAndId(info, new EmbeddedIdFieldAnnotatedEntity(1L), 1L);
     }
 
 
     @Test
     public void detectsMethodAnnotatedIdCorrectly() throws Exception {
 
-        IsNewStrategy strategy =
-                new GenericDaoSupport.ReflectiveIsNewStrategy(
-                        MethodAnnotatedEntity.class);
+        ReflectiveEntityInformation info =
+                new ReflectiveEntityInformation(MethodAnnotatedEntity.class);
+
+        assertNewAndNoId(info, new MethodAnnotatedEntity());
 
         MethodAnnotatedEntity entity = new MethodAnnotatedEntity();
-        assertThat(strategy.isNew(entity), is(true));
-
-        entity = new MethodAnnotatedEntity();
         entity.id = 1L;
-        assertThat(strategy.isNew(entity), is(false));
+        assertNotNewAndId(info, entity, 1L);
     }
 
 
     @Test
     public void detectsEmbeddedIdMethodAnnotatedIdCorrectly() throws Exception {
 
-        IsNewStrategy strategy =
-                new GenericDaoSupport.ReflectiveIsNewStrategy(
+        ReflectiveEntityInformation strategy =
+                new ReflectiveEntityInformation(
                         EmbeddedIdMethodAnnotatedEntity.class);
+
+        assertNewAndNoId(strategy, new EmbeddedIdMethodAnnotatedEntity());
 
         EmbeddedIdMethodAnnotatedEntity entity =
                 new EmbeddedIdMethodAnnotatedEntity();
-        assertThat(strategy.isNew(entity), is(true));
-
-        entity = new EmbeddedIdMethodAnnotatedEntity();
         entity.id = 1L;
-        assertThat(strategy.isNew(entity), is(false));
+        assertNotNewAndId(strategy, entity, 1L);
+    }
+
+
+    private <T extends IdAware & IsNewAware> void assertNewAndNoId(T info,
+            Object entity) {
+
+        assertThat(info.isNew(entity), is(true));
+        assertThat(info.getId(entity), is(nullValue()));
+    }
+
+
+    private <T extends IdAware & IsNewAware> void assertNotNewAndId(T info,
+            Object entity, Object id) {
+
+        assertThat(info.isNew(entity), is(false));
+        assertThat(info.getId(entity), is(id));
     }
 
     static class PersistableEntity extends AbstractPersistable<Long> {
