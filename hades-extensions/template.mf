@@ -1,0 +1,13 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: ${project.artifactId}
+Bundle-Name: ${project.name}
+Bundle-Vendor: Synyx GmbH & Co. KG
+Bundle-Version: ${project.version}
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Template: 
+ org.synyx.hades.*;version="${project.version}"
+Import-Template:
+ org.synyx.hades.*;version="${project.version}",
+ org.springframework.*;version="${spring.version:[=.=.=.=,+1.0.0)}",
+ javax.servlet.*;version="${servlet.version:[=.=.=,+1.0.0)}
+ 
