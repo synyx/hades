@@ -30,5 +30,4 @@ public @interface PageableDefaults {
      * corresponding parameter defined in request (default is 0).
      */
     int pageNumber() default 0;
-
 }

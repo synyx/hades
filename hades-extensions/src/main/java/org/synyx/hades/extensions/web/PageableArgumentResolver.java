@@ -147,7 +147,6 @@ public class PageableArgumentResolver implements WebArgumentResolver {
         // instance under the covers
         return new PageRequest(fallbackPagable.getPageNumber(),
                 fallbackPagable.getPageSize(), fallbackPagable.getSort());
-
     }
 
 
@@ -162,9 +161,7 @@ public class PageableArgumentResolver implements WebArgumentResolver {
     private String getPrefix(MethodParameter parameter) {
 
         for (Annotation annotation : parameter.getParameterAnnotations()) {
-
             if (annotation instanceof Qualifier) {
-
                 return new StringBuilder(((Qualifier) annotation).value())
                         .append("_").append(prefix).toString();
             }
@@ -281,8 +278,8 @@ public class PageableArgumentResolver implements WebArgumentResolver {
      */
     private static class SortPropertyEditor extends PropertyEditorSupport {
 
-        private String orderProperty;
-        private PropertyValues values;
+        private final String orderProperty;
+        private final PropertyValues values;
 
 
         /**

@@ -23,7 +23,7 @@ import org.synyx.hades.util.ClassUtils;
  * to an instance of this class for automatic registration of a
  * {@link PropertyEditor} for each {@link GenericDao}.
  * 
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 
 public class GenericDaoPropertyEditorRegistrar implements
@@ -44,9 +44,10 @@ public class GenericDaoPropertyEditorRegistrar implements
         for (Entry<Class<?>, GenericDao<?, Serializable>> entry : daoMap
                 .entrySet()) {
 
-            registry.registerCustomEditor(entry.getKey(),
-                    new DomainClassPropertyEditor<Serializable>(entry.getValue(),
-                            registry));
+            registry.registerCustomEditor(
+                    entry.getKey(),
+                    new DomainClassPropertyEditor<Serializable>(entry
+                            .getValue(), registry));
         }
     }
 

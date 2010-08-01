@@ -19,6 +19,12 @@ import org.synyx.hades.dao.GenericDao;
 
 
 /**
+ * {@link org.springframework.core.convert.converter.Converter} to convert
+ * arbitrary input into domain classes managed by Hades DAOs. The implementation
+ * uses a {@link ConversionService} in turn to convert the source type into the
+ * domain class' id type which is then converted into a domain class object by
+ * using a Hades {@link GenericDao}.
+ * 
  * @author Oliver Gierke
  */
 public class GenericDaoConverter implements ConditionalGenericConverter,
@@ -28,6 +34,11 @@ public class GenericDaoConverter implements ConditionalGenericConverter,
     private final ConversionService service;
 
 
+    /**
+     * Creates a new {@link GenericDaoConverter}.
+     * 
+     * @param service
+     */
     public GenericDaoConverter(ConversionService service) {
 
         this.service = service;

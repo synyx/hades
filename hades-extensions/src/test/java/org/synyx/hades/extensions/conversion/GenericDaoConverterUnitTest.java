@@ -21,6 +21,8 @@ import org.synyx.hades.extensions.converter.GenericDaoConverter;
 
 
 /**
+ * Unit test for {@link GenericDaoConverter}.
+ * 
  * @author Oliver Gierke
  */
 @RunWith(MockitoJUnitRunner.class)
