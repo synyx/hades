@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.GenericDaoFactory;
+import org.synyx.hades.dao.orm.GenericDaoSupport;
 import org.synyx.hades.dao.orm.GenericJpaDao;
 import org.synyx.hades.domain.User;
 
@@ -96,7 +97,7 @@ public class Ticket289UnitTest {
 
         @Override
         @SuppressWarnings("rawtypes")
-        protected Class<? extends GenericJpaDao> getDaoClass() {
+        protected Class<? extends GenericDaoSupport> getDaoClass() {
 
             return CustomDaoBaseClass.class;
         }

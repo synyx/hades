@@ -219,7 +219,7 @@ public class GenericDaoFactory {
      * @return
      */
     @SuppressWarnings("rawtypes")
-    protected Class<? extends GenericJpaDao> getDaoClass() {
+    protected Class<? extends GenericDaoSupport> getDaoClass() {
 
         return GenericJpaDao.class;
     }
