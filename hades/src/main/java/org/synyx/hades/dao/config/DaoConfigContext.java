@@ -49,9 +49,8 @@ class DaoConfigContext {
     protected static final String ENTITY_MANAGER_FACTORY_REF =
             "entity-manager-factory-ref";
 
-    private Element element;
-
-    private Set<DaoContext> daoContexts;
+    private final Element element;
+    private final Set<DaoContext> daoContexts;
 
 
     /**

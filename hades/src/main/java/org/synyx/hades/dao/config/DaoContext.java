@@ -34,8 +34,8 @@ class DaoContext extends DaoConfigContext {
 
     private static final String CUSTOM_IMPL_REF = "custom-impl-ref";
 
-    private DaoConfigContext parent;
-    private String id;
+    private final DaoConfigContext parent;
+    private final String id;
 
 
     /**
