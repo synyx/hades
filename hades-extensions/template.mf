@@ -9,5 +9,5 @@ Export-Template:
 Import-Template:
  org.synyx.hades.*;version="${project.version}",
  org.springframework.*;version="${spring.version:[=.=.=.=,+1.0.0)}",
- javax.servlet.*;version="${servlet.version:[=.=.=,+1.0.0)}
+ javax.servlet.*;version="${servlet.version:[=.=.=,+1.0.0)}"
  
