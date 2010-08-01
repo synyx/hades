@@ -34,6 +34,7 @@
         <junit.version>4.7</junit.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <hibernate.version>3.5.3-Final</hibernate.version>
+        <openjpa.version>2.0.0</openjpa.version>
         <aspectj.version>1.6.9</aspectj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mockito.version>1.8.4</mockito.version>
