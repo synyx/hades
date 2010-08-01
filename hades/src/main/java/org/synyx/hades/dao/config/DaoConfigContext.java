@@ -54,9 +54,8 @@ class DaoConfigContext {
     protected static final String TRANSACTION_MANAGER_REF =
             "transaction-manager-ref";
 
-    private Element element;
-
-    private Set<DaoContext> daoContexts;
+    private final Element element;
+    private final Set<DaoContext> daoContexts;
 
 
     /**
