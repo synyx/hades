@@ -36,6 +36,7 @@
         <hibernate.version>3.5.3-Final</hibernate.version>
         <aspectj.version>1.6.9</aspectj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mockito.version>1.8.4</mockito.version>
     </properties>
     
     <developers>

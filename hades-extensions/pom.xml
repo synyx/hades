@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.synyx.hades.extensions</artifactId>
-    <name>Hades extensions</name>
+    <name>Hades Extensions</name>
     <description>Library to provide useful extensions for Hades to integrate with other (Spring) projects</description>
 
     <parent>
@@ -54,13 +54,15 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.8.4</version>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
