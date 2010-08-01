@@ -27,6 +27,7 @@
     <modules>
         <module>hades</module>
         <module>hades-sample</module>
+        <module>hades-extensions</module>
     </modules>
 
     <properties>
