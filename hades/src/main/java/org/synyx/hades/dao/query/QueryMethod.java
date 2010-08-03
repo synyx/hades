@@ -159,6 +159,19 @@ public class QueryMethod {
 
 
     /**
+     * Returns the entity name that shall be used for queries created for this
+     * method.
+     * 
+     * @return
+     */
+    String getEntityName() {
+
+        Class<?> domainClass = ClassUtils.getReturnedDomainClass(method);
+        return ClassUtils.getEntityName(domainClass);
+    }
+
+
+    /**
      * Returns the {@link org.synyx.hades.dao.Query} annotation that is applied
      * to the method or {@code null} if none available.
      * 

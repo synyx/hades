@@ -73,7 +73,7 @@ class QueryCreator {
 
         StringBuilder queryBuilder =
                 new StringBuilder(getQueryString(READ_ALL_QUERY,
-                        method.getDomainClassName()));
+                        method.getEntityName()));
         queryBuilder.append(" where ");
 
         PartSource source = new PartSource(method.getName());

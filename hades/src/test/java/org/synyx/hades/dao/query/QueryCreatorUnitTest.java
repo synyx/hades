@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -193,6 +194,20 @@ public class QueryCreatorUnitTest {
 
 
     /**
+     * @see #344
+     * @see #97
+     * @throws Exception
+     */
+    @Test
+    public void usesEntityNameIfConfigured() throws Exception {
+
+        method = getClass().getMethod("findByName", String.class);
+        assertThat(getCreatedQueryFor(method),
+                is("select x from Foo x where x.name = ?1"));
+    }
+
+
+    /**
      * Asserts that the query created for the given {@link Method} results in a
      * query ending with the given {@link String}.
      * 
@@ -201,11 +216,17 @@ public class QueryCreatorUnitTest {
      */
     private void assertCreatesQueryForMethod(String queryEnd, Method method) {
 
+        String result = getCreatedQueryFor(method);
+        assertThat(result, endsWith(queryEnd));
+    }
+
+
+    private String getCreatedQueryFor(Method method) {
+
         QueryMethod queryMethod =
                 new QueryMethod(method, method.getReturnType(), extractor);
 
-        String result = new QueryCreator(queryMethod).constructQuery();
-        assertThat(result, endsWith(queryEnd));
+        return new QueryCreator(queryMethod).constructQuery();
     }
 
 
@@ -299,6 +320,12 @@ public class QueryCreatorUnitTest {
         return null;
     }
 
+
+    public SampleNamedEntity findByName(String name) {
+
+        return null;
+    }
+
     /**
      * Sample class for keyword split check.
      * 
@@ -322,5 +349,12 @@ public class QueryCreatorUnitTest {
 
         private String foo;
         private String bar;
+    }
+
+    @Entity(name = "Foo")
+    @SuppressWarnings("unused")
+    static class SampleNamedEntity {
+
+        private String name;
     }
 }
