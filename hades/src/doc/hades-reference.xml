@@ -301,6 +301,18 @@
 
         <revremark>Added FAQ on more detailled logging (see #329)</revremark>
       </revision>
+
+      <revision>
+        <date>05.08.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added documentation of Specifications feature</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -354,7 +366,7 @@
     <section>
       <title>Project metadata</title>
 
-      <itemizedlist>
+      <itemizedlist spacing="compact">
         <listitem>
           <para>Version control - <ulink
           url="http://svn.synyx.org/synyx/opensource/hades">http://svn.synyx.org/synyx/opensource/hades</ulink></para>
@@ -1536,6 +1548,106 @@ Long setFixedFirstnameFor(String firstname, String lastname);</programlisting>
         <para>This will trigger the query annotated to the method as updating
         query instead of a selecting one.</para>
       </section>
+    </section>
+
+    <section>
+      <title>Specifications</title>
+
+      <para>JPA 2 introduces a criteria API that can be used to build queries
+      programatically. Writing a criteria you actually define the where-clause
+      of a query for a query of the handled domain class. Taking another step
+      back these criterias can be regarded as predicate over the entity that
+      is verbalized by the JPA criteria API constraints.</para>
+
+      <para>Hades now takes the concept of a specification from Eric Evans'
+      book Domain Driven Design, that carries the same semantics and provides
+      an API to define such <interfacename>Specification</interfacename>s
+      using the JPA criteria API. Thus you find methods like this in
+      <interfacename>GenericDao</interfacename>:</para>
+
+      <programlisting language="java">List&lt;T&gt; readAll(Specification&lt;T&gt; spec);</programlisting>
+
+      <para>The <interfacename>Specification</interfacename> interface now
+      looks as follows:</para>
+
+      <programlisting language="java">public interface Specification&lt;T&gt; {
+  Predicate toPredicate(Root&lt;T&gt; root, CriteriaQuery&lt;T&gt; query,
+            CriteriaBuilder builder);
+}</programlisting>
+
+      <para>Okay, so what is the typical use case?
+      <interfacename>Specification</interfacename>s can easily be used to
+      build an extensible set of predicates on top of an entity that then can
+      be combined and used with <interfacename>GenericDao</interfacename>
+      without the need of declaring a query (method) for every needed
+      combination of those. Here's an example:</para>
+
+      <example>
+        <title>Specifications for a Customer</title>
+
+        <programlisting language="java">public class CustomerSpecs {
+
+  public static Specification&lt;Customer&gt; isLongTermCustomer() {
+    return new Specification&lt;Customer&gt;() {
+      Predicate toPredicate(Root&lt;T&gt; root, CriteriaQuery&lt;T&gt; query,
+            CriteriaBuilder builder) {
+
+         LocalDate date = new LocalDate().minusYears(2);
+         return builder.lessThan(root.get(Customer_.createdAt), date);
+      }
+    };
+  }
+
+
+  public static Specification&lt;Customer&gt; hasSalesOfMoreThan(MontaryAmount value) {
+    return new Specification&lt;Customer&gt;() {
+      Predicate toPredicate(Root&lt;T&gt; root, CriteriaQuery&lt;T&gt; query,
+            CriteriaBuilder builder) {
+
+         // build query here
+      }
+    };
+  }
+}</programlisting>
+      </example>
+
+      <para>Admittedly the amount of boilerplate leaves room for improvement
+      (that will hopefully be reduced by Java 7 closures) but the client side
+      becomes much nicer as you will see below. Besides that we have expressed
+      some criteria on a business requirement abstraction level and created
+      executable <interfacename>Specification</interfacename>s. So a client
+      might use a <interfacename>Specification</interfacename> as
+      follows:</para>
+
+      <example>
+        <title>Using a simple Specification</title>
+
+        <programlisting language="java">List&lt;Customer&gt; customers = customerDao.readAll(isLongTermCustomer());</programlisting>
+      </example>
+
+      <para>Okay, why not simply creating a query for this kind of data
+      access? You're right. Using a single
+      <interfacename>Specification</interfacename> does not gain a lot of
+      benefit over a plain query declaration. The power of
+      <interfacename>Specification</interfacename>s really exposes when you
+      combine them to create new <interfacename>Specification</interfacename>
+      objects. You can achieve this through the
+      <classname>Specifications</classname> helper class Hades provides to
+      build expressions like this:</para>
+
+      <example>
+        <title>Combined Specifications</title>
+
+        <para><programlisting language="java">MonetaryAmount amount = new MonetaryAmount(200.0, Currencies.DOLLAR);
+List&lt;Customer&gt; customers = customerDao.readAll(
+  where(isLongTermCustomer()).or(hasSalesOfMoreThan(amount)));</programlisting>As
+        you can see, <classname>Specifications</classname> offers some
+        gluecode methods to chain and combine
+        <interfacename>Specification</interfacename>s. Thus extending your
+        data access layer is just a matter of creating new
+        <interfacename>Specification</interfacename> implementations and
+        combining them with ones already existing.</para>
+      </example>
     </section>
 
     <section>
