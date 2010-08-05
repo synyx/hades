@@ -107,7 +107,7 @@ public class PageableArgumentResolver implements WebArgumentResolver {
      * org.springframework.web.context.request.NativeWebRequest)
      */
     public Object resolveArgument(MethodParameter methodParameter,
-            NativeWebRequest webRequest) throws Exception {
+            NativeWebRequest webRequest) {
 
         if (methodParameter.getParameterType().equals(Pageable.class)) {
 
