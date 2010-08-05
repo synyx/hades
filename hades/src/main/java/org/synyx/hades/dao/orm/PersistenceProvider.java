@@ -43,12 +43,6 @@ enum PersistenceProvider implements QueryExtractor {
             return ((HibernateQuery) query).getHibernateQuery()
                     .getQueryString();
         }
-
-
-        public boolean canExtractQuery() {
-
-            return true;
-        }
     },
 
     /**
@@ -61,12 +55,6 @@ enum PersistenceProvider implements QueryExtractor {
 
             return ((JpaQuery) query).getDatabaseQuery().getJPQLString();
         }
-
-
-        public boolean canExtractQuery() {
-
-            return true;
-        }
     },
 
     /**
@@ -78,12 +66,6 @@ enum PersistenceProvider implements QueryExtractor {
         public String extractQueryString(Query query) {
 
             return ((OpenJPAQuery) query).getQueryString();
-        }
-
-
-        public boolean canExtractQuery() {
-
-            return true;
         }
     },
 
@@ -98,6 +80,7 @@ enum PersistenceProvider implements QueryExtractor {
         }
 
 
+        @Override
         public boolean canExtractQuery() {
 
             return false;
@@ -156,5 +139,16 @@ enum PersistenceProvider implements QueryExtractor {
         }
 
         return GENERIC_JPA;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.synyx.hades.dao.query.QueryExtractor#canExtractQuery()
+     */
+    public boolean canExtractQuery() {
+
+        return true;
     }
 }
