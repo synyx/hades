@@ -18,6 +18,7 @@ package org.synyx.hades.dao.orm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -90,7 +91,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * 
      * @see org.synyx.hades.dao.GenericDao#delete(java.util.List)
      */
-    public void delete(final List<T> entities) {
+    public void delete(final Collection<? extends T> entities) {
 
         if (null == entities || entities.isEmpty()) {
             return;
@@ -276,7 +277,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * 
      * @see org.synyx.hades.dao.GenericDao#saveAll(java.util.List)
      */
-    public List<T> save(List<T> entities) {
+    public List<T> save(Collection<? extends T> entities) {
 
         List<T> result = new ArrayList<T>();
 

@@ -17,6 +17,7 @@
 package org.synyx.hades.dao;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.synyx.hades.domain.Page;
@@ -47,7 +48,7 @@ public interface GenericDao<T, PK extends Serializable> {
      * @param entities
      * @return
      */
-    List<T> save(final List<T> entities);
+    List<T> save(final Collection<? extends T> entities);
 
 
     /**
@@ -148,7 +149,7 @@ public interface GenericDao<T, PK extends Serializable> {
      * 
      * @param entities
      */
-    void delete(final List<T> entities);
+    void delete(final Collection<? extends T> entities);
 
 
     /**
