@@ -119,9 +119,7 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private void doAutoConfiguration(final DaoConfigContext configContext,
             final ParserContext parserContext) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Triggering auto DAO detection");
-        }
+        LOG.debug("Triggering auto DAO detection");
 
         ResourceLoader resourceLoader =
                 parserContext.getReaderContext().getResourceLoader();
@@ -173,9 +171,7 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
     private void doManualConfiguration(final DaoConfigContext context,
             final ParserContext parserContext) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Triggering manual DAO detection");
-        }
+        LOG.debug("Triggering manual DAO detection");
 
         // Add dao declarations
         for (DaoContext daoContext : context.getDaoContexts()) {
@@ -228,20 +224,12 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 beanDefinitionBuilder.getBeanDefinition();
         beanDefinition.setSource(beanSource);
 
-        if (LOG.isDebugEnabled()) {
-
-            StringBuilder builder =
-                    new StringBuilder("Registering Hades DAO: ");
-            builder.append(context.getBeanName());
-            builder.append(" - DAO interface: ");
-            builder.append(context.getInterfaceName());
-            builder.append(" - Factory: ");
-            builder.append(context.getDaoFactoryClassName());
-            builder.append(" - Custom implementation: ");
-            builder.append(customImplementationBeanName);
-
-            LOG.debug(builder.toString());
-        }
+        LOG.debug(
+                "Registering Hades DAO: %s - DAO interface: %s - Factory: %s, - Custom implementation: %s",
+                new Object[] { context.getBeanName(),
+                        context.getInterfaceName(),
+                        context.getDaoFactoryClassName(),
+                        customImplementationBeanName });
 
         BeanComponentDefinition definition =
                 new BeanComponentDefinition(beanDefinition,
