@@ -2,7 +2,7 @@
 <feature
       id="org.synyx.hades.eclipse.feature"
       label="Hades Namespace Support"
-      version="0.4.0"
+      version="0.5.0"
       provider-name="Synyx GmbH &amp; Co. KG">
 
    <description>
@@ -28,36 +28,21 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.wst.sse.core" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.wst.sse.ui" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.navigator" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.jdt.core" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.wst.xml.core" version="1.1.0" match="compatible"/>
       <import plugin="org.eclipse.wst.xml.ui" version="1.0.0" match="compatible"/>
       <import plugin="org.springframework.ide.eclipse.core" version="2.2.1" match="compatible"/>
       <import plugin="org.springframework.ide.eclipse.beans.core" version="2.2.1" match="compatible"/>
       <import plugin="org.springframework.ide.eclipse.beans.ui" version="2.2.1" match="compatible"/>
-      <import plugin="org.springframework.ide.eclipse.beans.ui.editor" version="2.2.1" match="compatible"/>
       <import plugin="org.springframework.ide.eclipse.ui" version="2.2.1" match="compatible"/>
-      <import plugin="org.springframework.core" version="2.5.0" match="compatible"/>
+      <import plugin="org.springframework.ide.eclipse.beans.ui.editor" version="2.2.1" match="compatible"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.springsource.javax.persistence"/>
-      <import plugin="com.springsource.org.aopalliance"/>
-      <import plugin="org.aspectj.runtime"/>
-      <import plugin="com.springsource.org.joda.time"/>
-      <import plugin="org.springframework.aop"/>
-      <import plugin="org.springframework.beans"/>
-      <import plugin="org.springframework.context"/>
-      <import plugin="org.springframework.transaction"/>
-      <import plugin="org.springframework.orm"/>
-      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.jface.text" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.navigator" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.jdt.core" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="compatible"/>
-      <import plugin="org.apache.commons.logging"/>
+      <import plugin="org.synyx.hades"/>
    </requires>
 
    <plugin
@@ -85,7 +70,7 @@
          id="org.synyx.hades"
          download-size="0"
          install-size="0"
-         version="1.1.0"
+         version="1.6.0.RELEASE"
          unpack="false"/>
 
 </feature>
