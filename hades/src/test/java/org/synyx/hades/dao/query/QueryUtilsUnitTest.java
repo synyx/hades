@@ -17,7 +17,7 @@ public class QueryUtilsUnitTest {
 
     private static final String QUERY = "select u from User u";
     private static final String SIMPLE_QUERY = "from User u";
-    private static final String COUNT_QUERY = "select count(*) from User u";
+    private static final String COUNT_QUERY = "select count(u) from User u";
 
     private static final String QUERY_WITH_AS =
             "select u from User as u where u.username = ?";
@@ -40,11 +40,11 @@ public class QueryUtilsUnitTest {
     public void createsCountQueriesCorrectlyForCapitalLetterJPQL() {
 
         assertThat(createCountQueryFor("FROM User u WHERE u.foo.bar = ?"),
-                is("select count(*) FROM User u WHERE u.foo.bar = ?"));
+                is("select count(u) FROM User u WHERE u.foo.bar = ?"));
 
         assertThat(
                 createCountQueryFor("SELECT u FROM User u where u.foo.bar = ?"),
-                is("SELECT count(*) FROM User u where u.foo.bar = ?"));
+                is("SELECT count(u) FROM User u where u.foo.bar = ?"));
     }
 
 
@@ -56,7 +56,7 @@ public class QueryUtilsUnitTest {
 
         assertThat(
                 createCountQueryFor("select distinct u from User u where u.foo = ?"),
-                is("select distinct count(*) from User u where u.foo = ?"));
+                is("select count(distinct u) from User u where u.foo = ?"));
     }
 
 
