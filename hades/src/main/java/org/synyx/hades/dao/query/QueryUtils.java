@@ -47,7 +47,7 @@ public abstract class QueryUtils {
     private static final Pattern SIMPLE_FROM = compile("from.*",
             CASE_INSENSITIVE);
     private static final Pattern COUNT_MATCH = compile(
-            "(?<=select )(.*)(?= from)", CASE_INSENSITIVE);
+            "(?<=select (distinct )?+)(.*)(?= from)", CASE_INSENSITIVE);
     private static final String COUNT_REPLACEMENT = "count(*)";
 
     private static final Pattern ALIAS_MATCH;

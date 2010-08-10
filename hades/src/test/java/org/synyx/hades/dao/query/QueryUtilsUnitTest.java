@@ -48,6 +48,18 @@ public class QueryUtilsUnitTest {
     }
 
 
+    /**
+     * @see #351
+     */
+    @Test
+    public void createsCountQueryForDistinctQueries() throws Exception {
+
+        assertThat(
+                createCountQueryFor("select distinct u from User u where u.foo = ?"),
+                is("select distinct count(*) from User u where u.foo = ?"));
+    }
+
+
     @Test
     public void allowsShortJpaSyntax() throws Exception {
 
