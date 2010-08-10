@@ -54,6 +54,7 @@
     
     <properties>
         <aspectj.version>1.6.1</aspectj.version>
+        <jpa.version>1.0.0</jpa.version>
     </properties>
 	
 	<profiles>
