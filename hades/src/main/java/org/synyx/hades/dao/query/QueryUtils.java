@@ -47,7 +47,8 @@ public abstract class QueryUtils {
     private static final Pattern SIMPLE_FROM = compile("^(?:from \\w* )(\\w*)",
             CASE_INSENSITIVE);
     private static final Pattern COUNT_MATCH = compile(
-            "(?<=select )(.*)(?= from)", CASE_INSENSITIVE);
+            "(?:select )?((distinct )?+(?:.*))[ ]?from \\w* (\\w*)",
+            CASE_INSENSITIVE);
     private static final String COUNT_REPLACEMENT = "count($1)";
 
     private static final Pattern ALIAS_MATCH;
@@ -223,14 +224,23 @@ public abstract class QueryUtils {
 
         Assert.hasText(originalQuery);
 
-        Matcher matcher = SIMPLE_FROM.matcher(originalQuery);
+        Matcher matcher = COUNT_MATCH.matcher(originalQuery);
 
         if (matcher.find()) {
-            return String.format("select count(%s) %s", matcher.group(1),
-                    originalQuery);
+
+            if (originalQuery.toLowerCase().startsWith("from")) {
+                return String.format("select count(%s) %s", matcher.group(2),
+                        originalQuery);
+            }
+
+            String countContent =
+                    matcher.group(2) == null ? matcher.group(3) : matcher
+                            .group(2) + matcher.group(3);
+
+            return originalQuery.replaceFirst(Pattern.quote(matcher.group(1)),
+                    String.format("count(%s) ", countContent));
         }
 
-        return COUNT_MATCH.matcher(originalQuery).replaceFirst(
-                COUNT_REPLACEMENT);
+        return null;
     }
 }
