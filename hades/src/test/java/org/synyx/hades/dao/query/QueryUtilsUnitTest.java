@@ -61,6 +61,15 @@ public class QueryUtilsUnitTest {
 
 
     @Test
+    public void createsCountQueryForConstructorQueries() throws Exception {
+
+        assertThat(
+                createCountQueryFor("select distinct new User(u.name) from User u where u.foo = ?"),
+                is("select count(distinct u) from User u where u.foo = ?"));
+    }
+
+
+    @Test
     public void allowsShortJpaSyntax() throws Exception {
 
         assertThat(createCountQueryFor(SIMPLE_QUERY), is(COUNT_QUERY));
