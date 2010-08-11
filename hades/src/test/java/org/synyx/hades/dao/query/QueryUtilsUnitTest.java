@@ -44,7 +44,7 @@ public class QueryUtilsUnitTest {
 
         assertThat(
                 createCountQueryFor("SELECT u FROM User u where u.foo.bar = ?"),
-                is("SELECT count(u) FROM User u where u.foo.bar = ?"));
+                is("select count(u) FROM User u where u.foo.bar = ?"));
     }
 
 
