@@ -60,12 +60,27 @@ public class QueryUtilsUnitTest {
     }
 
 
+    /**
+     * @see #351
+     */
     @Test
     public void createsCountQueryForConstructorQueries() throws Exception {
 
         assertThat(
                 createCountQueryFor("select distinct new User(u.name) from User u where u.foo = ?"),
                 is("select count(distinct u) from User u where u.foo = ?"));
+    }
+
+
+    /**
+     * @see #352
+     */
+    @Test
+    public void createsCountQueryForJoins() throws Exception {
+
+        assertThat(
+                createCountQueryFor("select distinct new User(u.name) from User u left outer join u.roles r WHERE r = ?"),
+                is("select count(distinct u) from User u left outer join u.roles r WHERE r = ?"));
     }
 
 
