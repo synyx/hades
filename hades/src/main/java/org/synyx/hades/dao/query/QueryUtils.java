@@ -195,7 +195,7 @@ public abstract class QueryUtils {
 
         for (int i = 0; i < entities.size(); i++) {
 
-            builder.append(String.format(" %s = ?", alias));
+            builder.append(String.format(" %s = ?%d", alias, i + 1));
 
             if (i < entities.size() - 1) {
                 builder.append(" or");
