@@ -45,7 +45,7 @@ public abstract class QueryUtils {
     private static final String DEFAULT_ALIAS = "x";
 
     private static final Pattern COUNT_MATCH =
-            compile("(select\\s*((distinct )?.*)\\s*)?(from\\s*\\w*\\s*(?:as)?\\s*)(\\w*)(.*)",
+            compile("(select\\s+((distinct )?.+?)\\s+)?(from\\s+\\w+(?:\\s+as)?\\s+)(\\w+)(.*)",
                     CASE_INSENSITIVE);
     private static final String COUNT_REPLACEMENT = "select count($3$5) $4$5$6";
 

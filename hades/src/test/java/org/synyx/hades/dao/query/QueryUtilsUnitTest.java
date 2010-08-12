@@ -83,6 +83,18 @@ public class QueryUtilsUnitTest {
 
 
     /**
+     * @see #352
+     */
+    @Test
+    public void createsCountQueryForQueriesWithSubSelects() throws Exception {
+
+        assertCountQuery(
+                "select u from User u left outer join u.roles r where r in (select r from Role)",
+                "select count(u) from User u left outer join u.roles r where r in (select r from Role)");
+    }
+
+
+    /**
      * @see #355
      */
     @Test
