@@ -319,22 +319,6 @@ public class UserDaoIntegrationTest {
 
 
     /**
-     * Tests that an exception is being thrown if you try to persist some
-     * relation that is not configured to be cascaded.
-     */
-    @Test(expected = DataAccessException.class)
-    public void testMergingDoesNotCascadeRoles() {
-
-        flushTestUsers();
-
-        firstUser.addRole(new Role("USER"));
-
-        userDao.save(firstUser);
-
-    }
-
-
-    /**
      * Tests, that the generic dao implements count correctly.
      */
     @Test
