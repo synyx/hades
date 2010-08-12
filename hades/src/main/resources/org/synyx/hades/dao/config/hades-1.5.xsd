@@ -60,9 +60,8 @@
 	<xsd:attributeGroup name="dao-attributes">
 		<xsd:attribute name="dao-impl-postfix" type="xsd:string" />
 		<xsd:attribute name="query-lookup-strategy" type="query-strategy" />
-    <xsd:attribute name="factory-class" type="classType" />
-    <xsd:attribute name="entity-manager-factory-ref" type="entityManagerFactoryRef" />
-    <xsd:attribute name="transaction-manager-ref" type="transactionManagerRef" />
+        <xsd:attribute name="factory-class" type="classType" />
+        <xsd:attribute name="entity-manager-factory-ref" type="customImplementationReference" />
 	</xsd:attributeGroup>
 
 	<xsd:simpleType name="query-strategy">
@@ -107,28 +106,6 @@
 		</xsd:annotation>
 		<xsd:union memberTypes="xsd:string" />
 	</xsd:simpleType>
-  
-  <xsd:simpleType name="entityManagerFactoryRef">
-    <xsd:annotation>
-      <xsd:appinfo>
-        <tool:annotation kind="ref">
-          <tool:assignable-to type="org.springframework.orm.jpa.AbstractEntityManagerFactoryBean" />
-        </tool:annotation>
-      </xsd:appinfo>
-    </xsd:annotation>
-    <xsd:union memberTypes="xsd:string" />
-  </xsd:simpleType>
-  
-  <xsd:simpleType name="transactionManagerRef">
-    <xsd:annotation>
-      <xsd:appinfo>
-        <tool:annotation kind="ref">
-          <tool:assignable-to type="org.springframework.transaction.PlatformTransactionManager" />
-        </tool:annotation>
-      </xsd:appinfo>
-    </xsd:annotation>
-    <xsd:union memberTypes="xsd:string" />
-  </xsd:simpleType>
 
 	<xsd:simpleType name="classType">
 		<xsd:annotation>
