@@ -137,11 +137,11 @@ public interface UserDao extends GenericDao<User, Integer>, UserDaoCustom {
      * @param lastname
      */
     @Modifying
-    @Query("update User u set u.lastname = ?")
+    @Query("update User u set u.lastname = ?1")
     void renameAllUsersTo(String lastname);
 
 
-    @Query("select count(u) from User u where u.firstname = ?")
+    @Query("select count(u) from User u where u.firstname = ?1")
     Long countWithFirstname(String firstname);
 
 
