@@ -28,7 +28,7 @@ public class QueryUtilsUnitTest {
     @Test
     public void createsCountQueryCorrectly() throws Exception {
 
-        assertThat(createCountQueryFor(QUERY), is(COUNT_QUERY));
+        assertCountQuery(QUERY, COUNT_QUERY);
 
     }
 
@@ -39,12 +39,11 @@ public class QueryUtilsUnitTest {
     @Test
     public void createsCountQueriesCorrectlyForCapitalLetterJPQL() {
 
-        assertThat(createCountQueryFor("FROM User u WHERE u.foo.bar = ?"),
-                is("select count(u) FROM User u WHERE u.foo.bar = ?"));
+        assertCountQuery("FROM User u WHERE u.foo.bar = ?",
+                "select count(u) FROM User u WHERE u.foo.bar = ?");
 
-        assertThat(
-                createCountQueryFor("SELECT u FROM User u where u.foo.bar = ?"),
-                is("select count(u) FROM User u where u.foo.bar = ?"));
+        assertCountQuery("SELECT u FROM User u where u.foo.bar = ?",
+                "select count(u) FROM User u where u.foo.bar = ?");
     }
 
 
@@ -54,9 +53,8 @@ public class QueryUtilsUnitTest {
     @Test
     public void createsCountQueryForDistinctQueries() throws Exception {
 
-        assertThat(
-                createCountQueryFor("select distinct u from User u where u.foo = ?"),
-                is("select count(distinct u) from User u where u.foo = ?"));
+        assertCountQuery("select distinct u from User u where u.foo = ?",
+                "select count(distinct u) from User u where u.foo = ?");
     }
 
 
@@ -66,9 +64,9 @@ public class QueryUtilsUnitTest {
     @Test
     public void createsCountQueryForConstructorQueries() throws Exception {
 
-        assertThat(
-                createCountQueryFor("select distinct new User(u.name) from User u where u.foo = ?"),
-                is("select count(distinct u) from User u where u.foo = ?"));
+        assertCountQuery(
+                "select distinct new User(u.name) from User u where u.foo = ?",
+                "select count(distinct u) from User u where u.foo = ?");
     }
 
 
@@ -78,16 +76,39 @@ public class QueryUtilsUnitTest {
     @Test
     public void createsCountQueryForJoins() throws Exception {
 
-        assertThat(
-                createCountQueryFor("select distinct new User(u.name) from User u left outer join u.roles r WHERE r = ?"),
-                is("select count(distinct u) from User u left outer join u.roles r WHERE r = ?"));
+        assertCountQuery(
+                "select distinct new User(u.name) from User u left outer join u.roles r WHERE r = ?",
+                "select count(distinct u) from User u left outer join u.roles r WHERE r = ?");
+    }
+
+
+    /**
+     * @see #352
+     */
+    @Test
+    public void createsCountQueryForQueriesWithSubSelects() throws Exception {
+
+        assertCountQuery(
+                "select u from User u left outer join u.roles r where r in (select r from Role)",
+                "select count(u) from User u left outer join u.roles r where r in (select r from Role)");
+    }
+
+
+    /**
+     * @see #355
+     */
+    @Test
+    public void createsCountQueryForAliasesCorrectly() throws Exception {
+
+        assertCountQuery("select u from User as u",
+                "select count(u) from User as u");
     }
 
 
     @Test
     public void allowsShortJpaSyntax() throws Exception {
 
-        assertThat(createCountQueryFor(SIMPLE_QUERY), is(COUNT_QUERY));
+        assertCountQuery(SIMPLE_QUERY, COUNT_QUERY);
     }
 
 
@@ -101,5 +122,11 @@ public class QueryUtilsUnitTest {
         assertThat(detectAlias("SELECT FROM USER U"), is("U"));
         assertThat(detectAlias("select u from  User u"), IS_U);
         assertThat(detectAlias("select u from  com.acme.User u"), IS_U);
+    }
+
+
+    private void assertCountQuery(String originalQuery, String countQuery) {
+
+        assertThat(createCountQueryFor(originalQuery), is(countQuery));
     }
 }
