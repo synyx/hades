@@ -232,6 +232,10 @@ public class GenericJpaDao<T, PK extends Serializable> extends
 
         List<T> result = new ArrayList<T>();
 
+        if (entities == null) {
+            return result;
+        }
+
         for (T entity : entities) {
             result.add(save(entity));
         }
