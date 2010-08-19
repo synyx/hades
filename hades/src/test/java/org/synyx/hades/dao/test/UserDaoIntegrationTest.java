@@ -142,6 +142,15 @@ public class UserDaoIntegrationTest {
     }
 
 
+    @Test
+    public void existReturnsWhetherAnEntityCanBeLoaded() throws Exception {
+
+        flushTestUsers();
+        assertTrue(userDao.exists(id));
+        assertFalse(userDao.exists(id * 27));
+    }
+
+
     /**
      * Tests deleting a user.
      */
@@ -170,10 +179,23 @@ public class UserDaoIntegrationTest {
     @Test
     public void deleteEmptyCollectionDoesNotDeleteAnything() {
 
+        assertDeleteCallDoesNotDeleteAnything(new ArrayList<User>());
+    }
+
+
+    @Test
+    public void deleteWithNullDoesNotDeleteAnything() throws Exception {
+
+        assertDeleteCallDoesNotDeleteAnything(null);
+    }
+
+
+    private void assertDeleteCallDoesNotDeleteAnything(List<User> collection) {
+
         flushTestUsers();
         Long count = userDao.count();
 
-        userDao.delete(new ArrayList<User>());
+        userDao.delete(collection);
         assertEquals(count, userDao.count());
     }
 
