@@ -75,7 +75,7 @@
 	    <profile>
 	    	<id>spring3</id>
 			<properties>
-				<spring.version>3.0.3.RELEASE</spring.version>
+				<spring.version>3.0.4.RELEASE</spring.version>
 				<spring.artifactPrefix>org.springframework.</spring.artifactPrefix>
 				<spring.agent.name>org.springframework.instrument</spring.agent.name>
 				<junit.version>4.7</junit.version>
