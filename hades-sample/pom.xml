@@ -21,6 +21,23 @@
 			<artifactId>org.synyx.hades</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- We have to redeclare the dependencies here as we get 2.5.x versions by referencing Hades otherwise -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>${spring.artifactPrefix}context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>${spring.artifactPrefix}orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>${spring.artifactPrefix}aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>junit</groupId>
