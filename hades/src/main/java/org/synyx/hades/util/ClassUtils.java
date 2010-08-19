@@ -15,6 +15,8 @@
  */
 package org.synyx.hades.util;
 
+import static org.springframework.core.GenericTypeResolver.*;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -65,7 +67,8 @@ public abstract class ClassUtils {
      */
     public static Class<?> getDomainClass(Class<?> clazz) {
 
-        return getGenericType(clazz, 0);
+        Class<?>[] arguments = resolveTypeArguments(clazz, GenericDao.class);
+        return arguments == null ? null : arguments[0];
     }
 
 
@@ -82,45 +85,9 @@ public abstract class ClassUtils {
     @SuppressWarnings("unchecked")
     public static Class<? extends Serializable> getIdClass(Class<?> clazz) {
 
-        return (Class<? extends Serializable>) getGenericType(clazz, 1);
-    }
-
-
-    /**
-     * Returns the generic type with the given index from the given
-     * {@link Class} if it implements {@link GenericDao} or
-     * {@link ExtendedGenericDao}.
-     * 
-     * @param clazz
-     * @param index
-     * @return the domain class for index 0, the id class for index 1.
-     */
-    private static Class<?> getGenericType(Class<?> clazz, int index) {
-
-        for (Type type : clazz.getGenericInterfaces()) {
-
-            if (type instanceof ParameterizedType) {
-
-                ParameterizedType parammeterizedType = (ParameterizedType) type;
-
-                if (isGenericDao(parammeterizedType)) {
-
-                    Type result =
-                            parammeterizedType.getActualTypeArguments()[index];
-
-                    return (Class<?>) (result instanceof ParameterizedType ? ((ParameterizedType) result)
-                            .getRawType() : result);
-                }
-            }
-
-            Class<?> result = getGenericType((Class<?>) type, index);
-
-            if (null != result) {
-                return result;
-            }
-        }
-
-        return null;
+        Class<?>[] arguments = resolveTypeArguments(clazz, GenericDao.class);
+        return (Class<? extends Serializable>) (arguments == null ? null
+                : arguments[1]);
     }
 
 
@@ -143,19 +110,6 @@ public abstract class ClassUtils {
         } else {
             return method.getReturnType();
         }
-    }
-
-
-    /**
-     * Returns whether a {@link ParameterizedType} is a {@link GenericDao} or
-     * {@link ExtendedGenericDao}.
-     * 
-     * @param type
-     * @return
-     */
-    private static boolean isGenericDao(ParameterizedType type) {
-
-        return GenericDao.class.isAssignableFrom((Class<?>) type.getRawType());
     }
 
 
