@@ -23,6 +23,7 @@ import static org.synyx.hades.domain.UserSpecifications.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -40,9 +41,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.domain.Order;
 import org.synyx.hades.domain.Page;
+import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.PageRequest;
+import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Role;
+import org.synyx.hades.domain.Sort;
 import org.synyx.hades.domain.Specification;
 import org.synyx.hades.domain.User;
 
@@ -126,6 +131,34 @@ public class UserDaoIntegrationTest {
     }
 
 
+    @Test
+    public void savesCollectionCorrectly() throws Exception {
+
+        List<User> result = userDao.save(Arrays.asList(firstUser, secondUser));
+        assertNotNull(result);
+        assertThat(result.size(), is(2));
+        assertThat(result, hasItems(firstUser, secondUser));
+    }
+
+
+    @Test
+    public void savingNullCollectionIsNoOp() throws Exception {
+
+        List<User> result = userDao.save((Collection<User>) null);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+
+    @Test
+    public void savingEmptyCollectionIsNoOp() throws Exception {
+
+        List<User> result = userDao.save(new ArrayList<User>());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+
     /**
      * Tests updating a user.
      */
@@ -161,6 +194,19 @@ public class UserDaoIntegrationTest {
 
         userDao.delete(firstUser);
         assertNull(userDao.readByPrimaryKey(id));
+    }
+
+
+    @Test
+    public void returnsAllSortedCorrectly() throws Exception {
+
+        flushTestUsers();
+        List<User> result =
+                userDao.readAll(new Sort(Order.ASCENDING, "lastname"));
+        assertNotNull(result);
+        assertThat(result.size(), is(2));
+        assertThat(result.get(0), is(secondUser));
+        assertThat(result.get(1), is(firstUser));
     }
 
 
@@ -507,5 +553,41 @@ public class UserDaoIntegrationTest {
         List<User> result = userDao.findByLastnameNot("Gierke");
         assertThat(result.size(), is(1));
         assertEquals(secondUser, result.get(0));
+    }
+
+
+    @Test
+    public void returnsSameListIfNoSpecGiven() throws Exception {
+
+        flushTestUsers();
+        assertEquals(userDao.readAll(),
+                userDao.readAll((Specification<User>) null));
+    }
+
+
+    @Test
+    public void returnsSameListIfNoSortIsGiven() throws Exception {
+
+        flushTestUsers();
+        assertEquals(userDao.readAll(), userDao.readAll((Sort) null));
+    }
+
+
+    @Test
+    public void returnsSamePageIfNoSpecGiven() throws Exception {
+
+        Pageable pageable = new PageRequest(0, 1);
+
+        flushTestUsers();
+        assertEquals(userDao.readAll(pageable), userDao.readAll(null, pageable));
+    }
+
+
+    @Test
+    public void returnsAllAsPageIfNoPageableIsGiven() throws Exception {
+
+        flushTestUsers();
+        assertEquals(new PageImpl<User>(userDao.readAll()),
+                userDao.readAll((Pageable) null));
     }
 }

@@ -281,6 +281,10 @@ public class GenericJpaDao<T, PK extends Serializable> extends
 
         List<T> result = new ArrayList<T>();
 
+        if (entities == null) {
+            return result;
+        }
+
         for (T entity : entities) {
             result.add(save(entity));
         }
@@ -338,6 +342,10 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * @return
      */
     private TypedQuery<T> createQueryFrom(Specification<T> spec) {
+
+        if (spec == null) {
+            return getReadAllQuery();
+        }
 
         CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(getDomainClass());
