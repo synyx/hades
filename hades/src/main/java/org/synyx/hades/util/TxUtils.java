@@ -22,6 +22,10 @@ package org.synyx.hades.util;
  */
 public abstract class TxUtils {
 
+    private TxUtils() {
+
+    }
+
     public static final String DEFAULT_TRANSACTION_MANAGER =
             "transactionManager";
 }

@@ -522,12 +522,12 @@ class QueryCreator {
 
         public OrderBySource(String clause) {
 
-            String[] parts = clause.split("(?<=[a-z])(?=[A-Z])");
+            String[] partsArray = clause.split("(?<=[a-z])(?=[A-Z])");
 
-            this.order = Order.fromJpaValue(parts[parts.length - 1]);
+            this.order = Order.fromJpaValue(partsArray[partsArray.length - 1]);
             this.parts = new ArrayList<String>();
 
-            for (String part : parts) {
+            for (String part : partsArray) {
                 this.parts.add(StringUtils.uncapitalize(part));
             }
 
