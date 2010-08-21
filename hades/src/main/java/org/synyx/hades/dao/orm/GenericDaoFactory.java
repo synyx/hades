@@ -20,7 +20,9 @@ import static org.springframework.util.ReflectionUtils.*;
 import static org.synyx.hades.util.ClassUtils.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,6 +61,8 @@ public class GenericDaoFactory {
 
     private Map<Method, Method> methodCache =
             new ConcurrentHashMap<Method, Method>();
+    private List<DaoProxyPostProcessor> postProcessors =
+            new ArrayList<DaoProxyPostProcessor>();
 
 
     /**
@@ -140,6 +144,21 @@ public class GenericDaoFactory {
 
 
     /**
+     * Adds {@link DaoProxyPostProcessor}s to the factory to allow manipulation
+     * of the {@link ProxyFactory} before the proxy gets created. Note that the
+     * {@link QueryExecuterMethodInterceptor} will be added to the proxy
+     * <em>after</em> the {@link DaoProxyPostProcessor}s are considered.
+     * 
+     * @param processor
+     */
+    void addDaoProxyPostProcessor(DaoProxyPostProcessor processor) {
+
+        Assert.notNull(processor);
+        this.postProcessors.add(processor);
+    }
+
+
+    /**
      * Returns a DAO instance for the given interface.
      * 
      * @param <T>
@@ -181,7 +200,9 @@ public class GenericDaoFactory {
             result.setTarget(genericJpaDao);
             result.setInterfaces(new Class[] { daoInterface });
 
-            prepare(result);
+            for (DaoProxyPostProcessor processor : postProcessors) {
+                processor.postProcess(result);
+            }
 
             result.addAdvice(new QueryExecuterMethodInterceptor(daoInterface,
                     customDaoImplementation, genericJpaDao));
@@ -192,20 +213,6 @@ public class GenericDaoFactory {
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-
-    /**
-     * Callback method to prepare the given {@link ProxyFactory} to e.g. add
-     * further interceptors. The {@link QueryExecuterMethodInterceptor} will be
-     * added <em>after</em> this method was called, so all interceptors or
-     * advisors added in this method will kick in before it.
-     * 
-     * @see GenericDaoFactoryBean#prepare(ProxyFactory)
-     * @param proxyFactory
-     */
-    protected void prepare(ProxyFactory proxyFactory) {
-
     }
 
 

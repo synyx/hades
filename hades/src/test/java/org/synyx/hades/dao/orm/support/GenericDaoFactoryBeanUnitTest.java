@@ -17,6 +17,11 @@
 package org.synyx.hades.dao.orm.support;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -25,6 +30,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.GenericDaoFactoryBean;
 import org.synyx.hades.domain.User;
@@ -46,9 +54,22 @@ public class GenericDaoFactoryBeanUnitTest {
     @Mock
     private EntityManager entityManager;
 
+    @Mock
+    private ListableBeanFactory beanFactory;
+    @Mock
+    private PersistenceExceptionTranslator translator;
+
 
     @Before
     public void setUp() {
+
+        Map<String, PersistenceExceptionTranslator> beans =
+                new HashMap<String, PersistenceExceptionTranslator>();
+        beans.put("foo", translator);
+        when(
+                beanFactory.getBeansOfType(
+                        eq(PersistenceExceptionTranslator.class), anyBoolean(),
+                        anyBoolean())).thenReturn(beans);
 
         // Setup standard factory configuration
         factory =
@@ -67,9 +88,17 @@ public class GenericDaoFactoryBeanUnitTest {
     @Test
     public void setsUpBasicInstanceCorrectly() throws Exception {
 
+        factory.setBeanFactory(beanFactory);
         factory.afterPropertiesSet();
 
         assertNotNull(factory.getObject());
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void requiresListableBeanFactory() throws Exception {
+
+        factory.setBeanFactory(mock(BeanFactory.class));
     }
 
 

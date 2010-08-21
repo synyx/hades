@@ -18,18 +18,15 @@ package org.synyx.hades.dao.orm;
 
 import javax.persistence.EntityManager;
 
-import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.dao.support.PersistenceExceptionTranslationInterceptor;
-import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.util.Assert;
 import org.synyx.hades.dao.GenericDao;
+import org.synyx.hades.util.TxUtils;
 
 
 /**
@@ -47,11 +44,8 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
     private Class<? extends T> daoInterface;
     private Object customDaoImplementation;
 
-    private String transactionManagerName;
-
-    private TransactionInterceptor transactionInterceptor;
-    private PersistenceExceptionTranslationInterceptor petInterceptor;
     private String transactionManagerName = TxUtils.DEFAULT_TRANSACTION_MANAGER;
+    private DaoProxyPostProcessor txPostProcessor;
 
 
     /**
@@ -162,7 +156,7 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
         Assert.notNull(getEntityManager(), "EntityManager must not be null!");
 
         validate(daoInterface, customDaoImplementation);
-
+        addDaoProxyPostProcessor(txPostProcessor);
     }
 
 
@@ -173,38 +167,13 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      * org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org
      * .springframework.beans.factory.BeanFactory)
      */
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(BeanFactory beanFactory) {
 
-        this.petInterceptor = new PersistenceExceptionTranslationInterceptor();
-        this.petInterceptor.setBeanFactory(beanFactory);
-        this.petInterceptor.afterPropertiesSet();
+        Assert.isInstanceOf(ListableBeanFactory.class, beanFactory);
 
-        this.transactionInterceptor =
-                new TransactionInterceptor(null,
-                        new AnnotationTransactionAttributeSource());
-        this.transactionInterceptor
-                .setTransactionManagerBeanName(transactionManagerName);
-        this.transactionInterceptor.setBeanFactory(beanFactory);
-        this.transactionInterceptor.afterPropertiesSet();
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.synyx.hades.dao.orm.GenericDaoFactory#prepare(org.springframework
-     * .aop.framework.ProxyFactory)
-     */
-    @Override
-    protected void prepare(ProxyFactory factory) {
-
-        if (petInterceptor != null) {
-            factory.addAdvice(petInterceptor);
-        }
-
-        if (transactionInterceptor != null) {
-            factory.addAdvice(transactionInterceptor);
-        }
+        this.txPostProcessor =
+                new TransactionalDaoProxyPostProcessor(
+                        (ListableBeanFactory) beanFactory,
+                        transactionManagerName);
     }
 }
