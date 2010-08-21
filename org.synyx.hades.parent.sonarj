@@ -83,14 +83,14 @@
             </element>
         </architecture>
         <workspace>
-            <element name="src/main/java" type="JavaRootDirectory">
-                <reference name="Project|hades::BuildUnit|2.x"/>
+            <element name="hades/src/main/java" type="JavaRootDirectory">
+                <reference name="Project|hades::BuildUnit|org.synyx.hades:org.synyx.hades"/>
             </element>
-            <element name="target/classes" type="JavaRootDirectory">
-                <reference name="Project|hades::BuildUnit|2.x"/>
+            <element name="hades/src/main/resources" type="JavaRootDirectory">
+                <reference name="Project|hades::BuildUnit|org.synyx.hades:org.synyx.hades"/>
             </element>
-            <element name="src/main/resources" type="JavaRootDirectory">
-                <reference name="Project|hades::BuildUnit|2.x"/>
+            <element name="hades/target/classes" type="JavaRootDirectory">
+                <reference name="Project|hades::BuildUnit|org.synyx.hades:org.synyx.hades"/>
             </element>
         </workspace>
         <itemDefinition>
@@ -105,7 +105,7 @@
             </item>
         </itemDefinition>
         <physical>
-            <element name="2.x" type="BuildUnit">
+            <element name="org.synyx.hades:org.synyx.hades" type="BuildUnit">
                 <stereotype name="Unrestricted"/>
             </element>
         </physical>

@@ -1,4 +1,8 @@
-#Thu Feb 19 12:31:53 CET 2009
+#
+#Sat Aug 21 08:56:03 CEST 2010
+sonar.inactive.directories=hades/src/test/java|hades/src/test/resources|hades/target/test-classes
+sonar.buildunit.name=org.synyx.hades\:org.synyx.hades
+sonar.active.directories=hades/src/main/java|hades/src/main/resources|hades/target/classes
 sonar.project.name=hades
-sonar.context.file=Hades.sonarj
+sonar.context.file=../org.synyx.hades.parent.sonarj
 sonar.violation.marker=Warning
