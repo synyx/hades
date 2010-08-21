@@ -18,7 +18,6 @@ package org.synyx.hades.domain.auditing.support;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -62,7 +61,7 @@ public class AuditingBeanFactoryPostProcessor implements
      * )
      */
     public void postProcessBeanFactory(
-            ConfigurableListableBeanFactory beanFactory) throws BeansException {
+            ConfigurableListableBeanFactory beanFactory) {
 
         if (!isSpringConfigured(beanFactory)) {
             return;

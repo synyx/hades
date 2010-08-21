@@ -34,7 +34,7 @@ import org.synyx.hades.domain.Sort;
  * 
  * @author Oliver Gierke
  */
-class Parameter {
+final class Parameter {
 
     @SuppressWarnings("unchecked")
     static final List<Class<?>> TYPES = Arrays.asList(Pageable.class,
