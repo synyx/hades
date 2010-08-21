@@ -44,7 +44,8 @@ import org.synyx.hades.util.ClassUtils;
 public class GenericDaoPropertyEditorRegistrar implements
         PropertyEditorRegistrar, ApplicationContextAware {
 
-    private Map<Class<?>, GenericDao<?, Serializable>> daoMap;
+    private final Map<Class<?>, GenericDao<?, Serializable>> daoMap =
+            new HashMap<Class<?>, GenericDao<?, Serializable>>();
 
 
     /*
@@ -82,11 +83,7 @@ public class GenericDaoPropertyEditorRegistrar implements
                 BeanFactoryUtils.beansOfTypeIncludingAncestors(context,
                         GenericDao.class).values();
 
-        this.daoMap =
-                new HashMap<Class<?>, GenericDao<?, Serializable>>(daos.size());
-
         for (GenericDao<?, ?> dao : daos) {
-
             this.daoMap.put(getDomainClass(dao),
                     (GenericDao<?, Serializable>) dao);
         }

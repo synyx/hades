@@ -135,4 +135,41 @@ public class DomainClassPropertyEditor<T extends Serializable> extends
         return new SimpleTypeConverter()
                 .convertIfNecessary(idAsString, idClass);
     }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        DomainClassPropertyEditor<?> that = (DomainClassPropertyEditor<?>) obj;
+
+        return this.dao.equals(that.dao) && this.registry.equals(that.registry);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        int hashCode = 17;
+        hashCode += dao.hashCode() * 32;
+        hashCode += registry.hashCode() * 32;
+        return hashCode;
+    }
 }
