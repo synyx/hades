@@ -21,6 +21,8 @@ import static org.mockito.Mockito.*;
 
 import java.beans.PropertyEditor;
 
+import javax.persistence.Id;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.PropertyEditorRegistry;
@@ -33,7 +35,7 @@ import org.synyx.hades.domain.AbstractPersistable;
  * 
  * @author Oliver Gierke
  */
-public class EntityPropertyEditorUnitTest {
+public class DomainClassPropertyEditorUnitTest {
 
     private DomainClassPropertyEditor<Integer> editor;
     private PropertyEditorRegistry registry;
@@ -71,6 +73,22 @@ public class EntityPropertyEditorUnitTest {
 
 
     @Test
+    public void returnsIdForPlainEntity() throws Exception {
+
+        editor.setValue(new PlainEntity(1L));
+        assertThat(editor.getAsText(), is("1"));
+    }
+
+
+    @Test
+    public void returnsNullIdIfEntityHasNone() throws Exception {
+
+        editor.setValue(new PlainEntity(null));
+        assertThat(editor.getAsText(), is(nullValue()));
+    }
+
+
+    @Test
     public void usesCustomEditorIfConfigured() throws Exception {
 
         PropertyEditor customEditor = mock(PropertyEditor.class);
@@ -84,6 +102,39 @@ public class EntityPropertyEditorUnitTest {
         verify(customEditor, times(1)).setAsText("1");
     }
 
+
+    @Test
+    public void returnsNullIdIfNoEntitySet() throws Exception {
+
+        editor.setValue(null);
+        assertThat(editor.getAsText(), is(nullValue()));
+    }
+
+
+    @Test
+    public void resetsValueToNullAfterEmptyStringConversion() throws Exception {
+
+        assertValueResetToNullAfterConverting("");
+    }
+
+
+    @Test
+    public void resetsValueToNullAfterNullStringConversion() throws Exception {
+
+        assertValueResetToNullAfterConverting(null);
+    }
+
+
+    private void assertValueResetToNullAfterConverting(String source)
+            throws Exception {
+
+        convertsPlainIdTypeCorrectly();
+        assertThat(editor.getValue(), is(notNullValue()));
+
+        editor.setAsText(source);
+        assertThat(editor.getValue(), is(nullValue()));
+    }
+
     /**
      * Sample entity.
      * 
@@ -95,6 +146,18 @@ public class EntityPropertyEditorUnitTest {
         public User(Integer id) {
 
             setId(id);
+        }
+    }
+
+    private static class PlainEntity {
+
+        @Id
+        private final Long id;
+
+
+        public PlainEntity(Long id) {
+
+            this.id = id;
         }
     }
 
