@@ -26,7 +26,7 @@ import javax.persistence.criteria.Root;
  * 
  * @author Oliver Gierke
  */
-public final class Specifications<T> implements Specification<T> {
+public class Specifications<T> implements Specification<T> {
 
     private final Specification<T> spec;
 
