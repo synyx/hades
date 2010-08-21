@@ -44,9 +44,6 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
         GenericDaoFactory implements FactoryBean<T>, InitializingBean,
         BeanFactoryAware {
 
-    public static final String DEFAULT_TRANSACTION_MANAGER =
-            "transactionManager";
-
     private Class<? extends T> daoInterface;
     private Object customDaoImplementation;
 
@@ -54,6 +51,7 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
 
     private TransactionInterceptor transactionInterceptor;
     private PersistenceExceptionTranslationInterceptor petInterceptor;
+    private String transactionManagerName = TxUtils.DEFAULT_TRANSACTION_MANAGER;
 
 
     /**
@@ -101,7 +99,9 @@ public class GenericDaoFactoryBean<T extends GenericDao<?, ?>> extends
      */
     public void setTransactionManager(String transactionManager) {
 
-        this.transactionManagerName = transactionManager;
+        this.transactionManagerName =
+                transactionManager == null ? TxUtils.DEFAULT_TRANSACTION_MANAGER
+                        : transactionManager;
     }
 
 
