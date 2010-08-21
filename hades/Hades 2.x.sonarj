@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<context version="5.0.1.439">
+<context version="6.0.1.800">
     <scope name="hades" type="Project">
         <element name="Filter" type="TypeFilterReferenceOverridden">
             <element name="org.synyx.hades.**" type="IncludeTypePattern"/>
@@ -15,27 +15,6 @@
                 <element name="Assignment" type="TypeFilter">
                     <element name="org.synyx.hades.dao.orm.*" type="IncludeTypePattern"/>
                 </element>
-                <element name="Hibernate" type="Subsystem">
-                    <element name="Assignment" type="TypeFilter">
-                        <element name="**.*Hibernate*" type="IncludeTypePattern"/>
-                    </element>
-                    <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Implementation::Subsystem|JPA"/>
-                    <dependency type="AllowedDependency" toName="External|External::Layer|Persistence::Subsystem|Hibernate"/>
-                </element>
-                <element name="EclipseLink" type="Subsystem">
-                    <element name="Assignment" type="TypeFilter">
-                        <element name="**.*EclipseLink*" type="IncludeTypePattern"/>
-                    </element>
-                    <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Implementation::Subsystem|JPA"/>
-                    <dependency type="AllowedDependency" toName="External|External::Layer|Persistence::Subsystem|EclipseLink"/>
-                </element>
-                <element name="JPA" type="Subsystem">
-                    <element name="Assignment" type="TypeFilter">
-                        <element name="**.*Jpa*" type="IncludeTypePattern"/>
-                    </element>
-                    <dependency type="AllowedDependency" toName="External|External::Layer|Spring Framework"/>
-                    <dependency type="AllowedDependency" toName="External|External::Subsystem|JPA"/>
-                </element>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Interface"/>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Query"/>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain"/>
@@ -49,8 +28,7 @@
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Query"/>
                 <dependency type="AllowedDependency" toName="External|External::Layer|Spring Framework"/>
                 <dependency type="AllowedDependency" toName="Project|hades::Layer|Utility"/>
-                <dependency type="AllowedDependency" toName="External|External::Subsystem|Commons Logging"/>
-                <dependency type="AllowedDependency" toName="External|External::Subsystem|XML"/>
+                <dependency type="AllowedDependency" toName="External|External::Layer|Others::Subsystem|XML"/>
             </element>
             <element name="Domain" type="Layer">
                 <element name="Assignment" type="TypeFilter">
@@ -60,13 +38,27 @@
                     <element name="Assignment" type="TypeFilter">
                         <element name="**.auditing.*" type="IncludeTypePattern"/>
                     </element>
-                    <dependency type="AllowedDependency" toName="External|External::Subsystem|AspectJ"/>
-                    <dependency type="AllowedDependency" toName="External|External::Subsystem|Commons Logging"/>
-                    <dependency type="AllowedDependency" toName="External|External::Subsystem|JPA"/>
-                    <dependency type="AllowedDependency" toName="External|External::Subsystem|JodaTime"/>
+                    <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain::Subsystem|Core"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Others::Subsystem|JPA"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Others::Subsystem|JodaTime"/>
                 </element>
-                <dependency type="AllowedDependency" toName="External|External::Subsystem|JPA"/>
-                <dependency type="AllowedDependency" toName="External|External::Subsystem|JodaTime"/>
+                <element name="Core" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="**.domain.*" type="IncludeTypePattern"/>
+                    </element>
+                </element>
+                <element name="Auditing Support" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="**.auditing.support.*" type="IncludeTypePattern"/>
+                    </element>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Spring Framework"/>
+                    <dependency type="AllowedDependency" toName="Project|hades::Layer|Domain::Subsystem|Auditing"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Others::Subsystem|AspectJ"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Others::Subsystem|JPA"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Others::Subsystem|JodaTime"/>
+                    <dependency type="AllowedDependency" toName="External|External::Layer|Spring Framework::Subsystem|Aspects"/>
+                </element>
+                <dependency type="AllowedDependency" toName="External|External::Layer|Others::Subsystem|JPA"/>
             </element>
             <element name="DAO Query" type="Layer">
                 <element name="Assignment" type="TypeFilter">
@@ -80,12 +72,26 @@
                 <element name="Assignment" type="TypeFilter">
                     <element name="**.util.**" type="IncludeTypePattern"/>
                 </element>
+                <dependency type="AllowedDependency" toName="Project|hades::Layer|DAO Interface"/>
+            </element>
+            <element name="Auditing" type="VerticalSlice">
+                <element name="Assignment" type="TypeFilter"/>
+                <reference name="Project|hades::Layer|Domain::Subsystem|Auditing"/>
+                <reference name="Project|hades::Layer|Domain::Subsystem|Auditing Support"/>
+                <dependency type="AllowedDependency" toName="External|External"/>
+                <dependency type="AllowedDependency" toName="External|External::VerticalSlice|AOP/AspectJ"/>
             </element>
         </architecture>
         <workspace>
-            <element name="src/main/java" type="JavaRootDirectory"/>
-            <element name="src/main/resources" type="JavaRootDirectory"/>
-            <element name="target/classes" type="JavaRootDirectory"/>
+            <element name="src/main/java" type="JavaRootDirectory">
+                <reference name="Project|hades::BuildUnit|2.x"/>
+            </element>
+            <element name="target/classes" type="JavaRootDirectory">
+                <reference name="Project|hades::BuildUnit|2.x"/>
+            </element>
+            <element name="src/main/resources" type="JavaRootDirectory">
+                <reference name="Project|hades::BuildUnit|2.x"/>
+            </element>
         </workspace>
         <itemDefinition>
             <item type="MoveTypeItem">
@@ -98,15 +104,21 @@
                 <property name="Type" value="org.synyx.hades.domain.support.Order"/>
             </item>
         </itemDefinition>
+        <physical>
+            <element name="2.x" type="BuildUnit">
+                <stereotype name="Unrestricted"/>
+            </element>
+        </physical>
     </scope>
     <scope name="External" type="External">
         <element name="Filter" type="TypeFilter">
             <element name="**" type="IncludeTypePattern"/>
             <element name="java.*" type="ExcludeTypePattern"/>
             <element name="java.io.*" type="ExcludeTypePattern"/>
-            <element name="java.lang.*" type="ExcludeTypePattern"/>
-            <element name="java.util.*" type="ExcludeTypePattern"/>
             <element name="java.util.regex.*" type="ExcludeTypePattern"/>
+            <element name="java.util.**" type="ExcludeTypePattern"/>
+            <element name="java.lang.*" type="ExcludeTypePattern"/>
+            <element name="java.lang.annotation.*" type="ExcludeTypePattern"/>
         </element>
         <architecture>
             <element name="Persistence" type="Layer">
@@ -121,6 +133,11 @@
                         <element name="org.eclipse.persistence.**" type="IncludeTypePattern"/>
                     </element>
                 </element>
+                <element name="OpenJPA" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="org.apache.openjpa.**" type="IncludeTypePattern"/>
+                    </element>
+                </element>
             </element>
             <element name="Spring Framework" type="Layer">
                 <element name="Assignment" type="TypeFilter">
@@ -132,38 +149,44 @@
                         <element name="org.springframework.core.type.**" type="IncludeTypePattern"/>
                     </element>
                 </element>
-            </element>
-            <element name="JPA" type="Subsystem">
-                <element name="Assignment" type="TypeFilter">
-                    <element name="javax.persistence.*" type="IncludeTypePattern"/>
+                <element name="Aspects" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="**.aspectj.**" type="IncludeTypePattern"/>
+                    </element>
                 </element>
             </element>
-            <element name="Reflection" type="Subsystem">
-                <element name="Assignment" type="TypeFilter">
-                    <element name="java.lang.reflect.*" type="IncludeTypePattern"/>
-                </element>
+            <element name="AOP/AspectJ" type="VerticalSlice">
+                <element name="Assignment" type="TypeFilter"/>
+                <reference name="External|External::Layer|Spring Framework::Subsystem|Aspects"/>
+                <reference name="External|External::Layer|Others::Subsystem|AspectJ"/>
             </element>
-            <element name="Commons Logging" type="Subsystem">
-                <element name="Assignment" type="TypeFilter">
-                    <element name="org.apache.commons.logging.*" type="IncludeTypePattern"/>
+            <element name="Others" type="Layer">
+                <element name="Assignment" type="TypeFilter"/>
+                <element name="AspectJ" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="org.aspectj.**" type="IncludeTypePattern"/>
+                        <element name="org.aopalliance.**" type="IncludeTypePattern"/>
+                    </element>
                 </element>
-            </element>
-            <element name="AspectJ" type="Subsystem">
-                <element name="Assignment" type="TypeFilter">
-                    <element name="org.aspectj.lang.annotation.*" type="IncludeTypePattern"/>
-                    <element name="org.aopalliance.*" type="IncludeTypePattern"/>
-                    <element name="org.aopalliance.intercept.*" type="IncludeTypePattern"/>
-                    <element name="org.aopalliance.aop.*" type="IncludeTypePattern"/>
+                <element name="JPA" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="javax.persistence.**" type="IncludeTypePattern"/>
+                    </element>
                 </element>
-            </element>
-            <element name="XML" type="Subsystem">
-                <element name="Assignment" type="TypeFilter">
-                    <element name="org.w3c.dom.**" type="IncludeTypePattern"/>
+                <element name="JodaTime" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="org.joda.time.*" type="IncludeTypePattern"/>
+                    </element>
                 </element>
-            </element>
-            <element name="JodaTime" type="Subsystem">
-                <element name="Assignment" type="TypeFilter">
-                    <element name="org.joda.time.*" type="IncludeTypePattern"/>
+                <element name="Reflection" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="java.lang.reflect.*" type="IncludeTypePattern"/>
+                    </element>
+                </element>
+                <element name="XML" type="Subsystem">
+                    <element name="Assignment" type="TypeFilter">
+                        <element name="org.w3c.dom.**" type="IncludeTypePattern"/>
+                    </element>
                 </element>
             </element>
         </architecture>
