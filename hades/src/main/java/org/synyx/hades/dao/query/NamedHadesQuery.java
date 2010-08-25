@@ -46,7 +46,13 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
         this.queryName = method.getNamedQueryName();
         this.extractor = method.getQueryExtractor();
-        em.createNamedQuery(queryName);
+        Query query = em.createNamedQuery(queryName);
+
+        // Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=322579
+        // until it gets fixed
+        if (null != query) {
+            query.getHints();
+        }
     }
 
 
