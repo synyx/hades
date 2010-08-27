@@ -37,6 +37,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     private static final Log LOG = LogFactory.getLog(SimpleHadesQuery.class);
 
     private final String queryString;
+    private final String countQuery;
     private final String alias;
     private final List<QueryHint> hints;
 
@@ -51,6 +52,10 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
         this.queryString = queryString;
         this.alias = QueryUtils.detectAlias(queryString);
         this.hints = method.getHints();
+        this.countQuery =
+                method.getCountQuery() == null ? QueryUtils
+                        .createCountQueryFor(queryString) : method
+                        .getCountQuery();
     }
 
 
@@ -87,14 +92,13 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     /*
      * (non-Javadoc)
      * 
-     * @seeorg.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
-     * persistence.EntityManager, org.synyx.hades.dao.query.ParameterBinder)
+     * @see org.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
+     * persistence.EntityManager)
      */
     @Override
-    protected Query createCountQuery(EntityManager em, ParameterBinder binder) {
+    protected Query createCountQuery(EntityManager em) {
 
-        String query = QueryUtils.createCountQueryFor(queryString);
-        return applyHints(em.createQuery(query));
+        return applyHints(em.createQuery(countQuery));
     }
 
 
@@ -131,11 +135,10 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
                     finderMethod.getName()));
         }
 
-        org.synyx.hades.dao.Query annotation =
-                finderMethod.getQueryAnnotation();
+        String query = finderMethod.getAnnotatedQuery();
 
-        return null == annotation ? null : new SimpleHadesQuery(finderMethod,
-                em, annotation.value());
+        return query == null ? null : new SimpleHadesQuery(finderMethod, em,
+                query);
     }
 
 

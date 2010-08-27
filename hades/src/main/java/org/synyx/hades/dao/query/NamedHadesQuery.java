@@ -121,13 +121,13 @@ final class NamedHadesQuery extends AbstractHadesQuery {
     /*
      * (non-Javadoc)
      * 
-     * @seeorg.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
-     * persistence.EntityManager, org.synyx.hades.dao.query.ParameterBinder)
+     * @see org.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
+     * persistence.EntityManager)
      */
     @Override
-    protected Query createCountQuery(EntityManager em, ParameterBinder binder) {
+    protected Query createCountQuery(EntityManager em) {
 
-        Query query = createQuery(em, binder);
+        Query query = createQuery(em, null);
         String queryString = extractor.extractQueryString(query);
 
         return em.createQuery(QueryUtils.createCountQueryFor(queryString));

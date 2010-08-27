@@ -65,9 +65,9 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * @param binder
      * @return
      */
-    public Query createCountQuery(ParameterBinder binder) {
+    public Query createCountQuery() {
 
-        return createCountQuery(em, binder);
+        return createCountQuery(em);
     }
 
 
@@ -117,9 +117,7 @@ abstract class AbstractHadesQuery implements HadesQuery {
      * return a fresh instance on each call.
      * 
      * @param em
-     * @param binder
      * @return
      */
-    protected abstract Query createCountQuery(EntityManager em,
-            ParameterBinder binder);
+    protected abstract Query createCountQuery(EntityManager em);
 }

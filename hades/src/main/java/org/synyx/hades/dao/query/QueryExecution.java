@@ -57,7 +57,7 @@ enum QueryExecution {
                 ParameterBinder binder) {
 
             // Execute query to compute total
-            Query projection = binder.bind(query.createCountQuery(binder));
+            Query projection = binder.bind(query.createCountQuery());
             Long total = (Long) projection.getSingleResult();
 
             Query jpaQuery =
