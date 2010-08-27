@@ -144,19 +144,19 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void returnsQueryAnnotationIfAvailable() throws SecurityException,
+    public void returnsQueryIfAvailable() throws SecurityException,
             NoSuchMethodException {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
-        assertNull(method.getQueryAnnotation());
+        assertNull(method.getAnnotatedQuery());
 
         Method daoMethod =
                 UserDao.class.getMethod("findByHadesQuery", String.class);
 
         assertNotNull(new QueryMethod(daoMethod, DOMAIN_CLASS, extractor)
-                .getQueryAnnotation());
+                .getAnnotatedQuery());
     }
 
 

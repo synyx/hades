@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.Modifying;
+import org.synyx.hades.dao.Query;
 import org.synyx.hades.dao.QueryHints;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
@@ -164,9 +165,39 @@ public class QueryMethod {
      * 
      * @return
      */
-    org.synyx.hades.dao.Query getQueryAnnotation() {
+    private Query getQueryAnnotation() {
 
         return method.getAnnotation(org.synyx.hades.dao.Query.class);
+    }
+
+
+    /**
+     * Returns the query string declared in a {@link Query} annotation or
+     * {@literal null} if neither the annotation found nor the attribute was
+     * specified.
+     * 
+     * @return
+     */
+    String getAnnotatedQuery() {
+
+        String query = (String) AnnotationUtils.getValue(getQueryAnnotation());
+        return StringUtils.hasText(query) ? query : null;
+    }
+
+
+    /**
+     * Returns the countQuery string declared in a {@link Query} annotation or
+     * {@literal null} if neither the annotation found nor the attribute was
+     * specified.
+     * 
+     * @return
+     */
+    String getCountQuery() {
+
+        String countQuery =
+                (String) AnnotationUtils.getValue(getQueryAnnotation(),
+                        "countQuery");
+        return StringUtils.hasText(countQuery) ? countQuery : null;
     }
 
 

@@ -15,6 +15,8 @@
  */
 package org.synyx.hades.dao.query;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -42,7 +44,6 @@ import org.synyx.hades.domain.User;
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleHadesQueryUnitTest {
 
-    @Mock
     private QueryMethod method;
 
     @Mock
@@ -73,5 +74,19 @@ public class SimpleHadesQueryUnitTest {
                 "gierke"));
 
         verify(query).setHint("foo", "bar");
+    }
+
+
+    @Test
+    public void prefersDeclaredCountQueryOverCreatingOne() throws Exception {
+
+        method = mock(QueryMethod.class);
+        when(method.getCountQuery()).thenReturn("foo");
+        when(em.createQuery("foo")).thenReturn(query);
+
+        SimpleHadesQuery hadesQuery =
+                new SimpleHadesQuery(method, em, "select u from User u");
+
+        assertThat(hadesQuery.createCountQuery(em), is(query));
     }
 }

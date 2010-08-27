@@ -38,6 +38,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
             .getLogger(SimpleHadesQuery.class);
 
     private final String queryString;
+    private final String countQuery;
     private final String alias;
     private final List<QueryHint> hints;
 
@@ -52,6 +53,10 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
         this.queryString = queryString;
         this.alias = QueryUtils.detectAlias(queryString);
         this.hints = method.getHints();
+        this.countQuery =
+                method.getCountQuery() == null ? QueryUtils
+                        .createCountQueryFor(queryString) : method
+                        .getCountQuery();
     }
 
 
@@ -88,14 +93,13 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     /*
      * (non-Javadoc)
      * 
-     * @seeorg.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
-     * persistence.EntityManager, org.synyx.hades.dao.query.ParameterBinder)
+     * @see org.synyx.hades.dao.query.AbstractHadesQuery#createCountQuery(javax.
+     * persistence.EntityManager)
      */
     @Override
-    protected Query createCountQuery(EntityManager em, ParameterBinder binder) {
+    protected Query createCountQuery(EntityManager em) {
 
-        String query = QueryUtils.createCountQueryFor(queryString);
-        return applyHints(em.createQuery(query));
+        return applyHints(em.createQuery(countQuery));
     }
 
 
@@ -119,22 +123,20 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
      * Creates a {@link HadesQuery} from the given {@link QueryMethod} that is
      * potentially annotated with {@link org.synyx.hades.dao.Query}.
      * 
-     * @param finderMethod
+     * @param queryMethod
      * @param em
      * @return the {@link HadesQuery} derived from the annotation or
      *         {@code null} if no annotation found.
      */
-    public static HadesQuery fromHadesAnnotation(QueryMethod finderMethod,
+    public static HadesQuery fromHadesAnnotation(QueryMethod queryMethod,
             EntityManager em) {
 
-        LOG.debug("Looking up Hades query for method %s",
-                finderMethod.getName());
+        LOG.debug("Looking up Hades query for method %s", queryMethod.getName());
 
-        org.synyx.hades.dao.Query annotation =
-                finderMethod.getQueryAnnotation();
+        String query = queryMethod.getAnnotatedQuery();
 
-        return null == annotation ? null : new SimpleHadesQuery(finderMethod,
-                em, annotation.value());
+        return query == null ? null : new SimpleHadesQuery(queryMethod, em,
+                query);
     }
 
 
