@@ -21,6 +21,7 @@ import java.io.Serializable;
 
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.beans.SimpleTypeConverter;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.orm.GenericDaoSupport.IdAware;
@@ -51,6 +52,9 @@ public class DomainClassPropertyEditor<T extends Serializable> extends
      */
     public DomainClassPropertyEditor(GenericDao<?, T> dao,
             PropertyEditorRegistry registry) {
+
+        Assert.notNull(dao);
+        Assert.notNull(registry);
 
         this.dao = dao;
         this.registry = registry;
