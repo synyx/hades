@@ -48,6 +48,7 @@ public class ParameterBinderUnitTest {
     @Mock
     private Query query;
     private Method useIndexedParameters;
+    private Method indexedParametersWithSort;
 
 
     @Before
@@ -57,6 +58,9 @@ public class ParameterBinderUnitTest {
 
         useIndexedParameters =
                 SampleDao.class.getMethod("useIndexedParameters", String.class);
+        indexedParametersWithSort =
+                SampleDao.class.getMethod("indexedParameterWithSort",
+                        String.class, Sort.class);
     }
 
 
@@ -158,5 +162,16 @@ public class ParameterBinderUnitTest {
         new ParameterBinder(parameters, embeddable).bind(query);
 
         verify(query).setParameter(1, embeddable);
+    }
+
+
+    @Test
+    public void bindsSortForIndexedParameters() throws Exception {
+
+        Sort sort = new Sort("name");
+        ParameterBinder binder =
+                new ParameterBinder(new Parameters(indexedParametersWithSort),
+                        "name", sort);
+        assertThat(binder.getSort(), is(sort));
     }
 }

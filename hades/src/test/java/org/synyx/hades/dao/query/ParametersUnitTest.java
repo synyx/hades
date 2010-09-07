@@ -162,6 +162,9 @@ public class ParametersUnitTest {
         User useIndexedParameters(String lastname);
 
 
+        User indexedParameterWithSort(String lastname, Sort sort);
+
+
         User valid(@Param("username") String username);
 
 
@@ -191,6 +194,5 @@ public class ParametersUnitTest {
 
 
         User emptyParameters();
-
     }
 }
