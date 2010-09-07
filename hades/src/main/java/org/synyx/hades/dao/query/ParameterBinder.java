@@ -80,7 +80,7 @@ class ParameterBinder {
     public Sort getSort() {
 
         if (parameters.hasSortParameter()) {
-            return (Sort) values[parameters.getPageableIndex()];
+            return (Sort) values[parameters.getSortIndex()];
         }
 
         if (parameters.hasPageableParameter() && getPageable() != null) {

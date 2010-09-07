@@ -135,6 +135,19 @@ final class Parameters implements Iterable<Parameter> {
 
 
     /**
+     * Returns the index of the {@link Sort} {@link Method} parameter if
+     * available. Will return {@literal -1} if there is no {@link Sort} argument
+     * in the {@link Method}'s parameter list.
+     * 
+     * @return
+     */
+    public int getSortIndex() {
+
+        return sortIndex;
+    }
+
+
+    /**
      * Returns whether the method the {@link Parameters} was created for
      * contains a {@link Sort} argument. This does not include a check if an
      * actual parameter was provided, so {@link #getSort()} might return
