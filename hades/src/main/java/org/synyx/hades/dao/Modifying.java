@@ -17,4 +17,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Modifying {
 
+    /**
+     * Defines whether we should clear the underlying persistence context after
+     * excuting the modifying query.
+     * 
+     * @return
+     */
+    boolean clearAutomatically() default true;
 }

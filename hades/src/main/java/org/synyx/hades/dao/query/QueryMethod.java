@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.QueryHint;
 
 import org.springframework.core.annotation.AnnotationUtils;
@@ -31,6 +32,10 @@ import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.Modifying;
 import org.synyx.hades.dao.Query;
 import org.synyx.hades.dao.QueryHints;
+import org.synyx.hades.dao.query.QueryExecution.CollectionExecution;
+import org.synyx.hades.dao.query.QueryExecution.ModifyingExecution;
+import org.synyx.hades.dao.query.QueryExecution.PagedExecution;
+import org.synyx.hades.dao.query.QueryExecution.SingleEntityExecution;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
@@ -201,13 +206,44 @@ public class QueryMethod {
     }
 
 
+    QueryExecution getExecution(EntityManager em) {
+
+        if (isCollectionQuery()) {
+            return new CollectionExecution();
+        }
+
+        if (isPageQuery()) {
+            return new PagedExecution();
+        }
+
+        if (isModifyingQuery()) {
+            return getClearAutomatically() ? new ModifyingExecution(em)
+                    : new ModifyingExecution(null);
+        }
+
+        return new SingleEntityExecution();
+    }
+
+
+    /**
+     * Returns whether we should clear automatically for modifying queries.
+     * 
+     * @return
+     */
+    private boolean getClearAutomatically() {
+
+        return (Boolean) AnnotationUtils.getValue(
+                method.getAnnotation(Modifying.class), "clearAutomatically");
+    }
+
+
     /**
      * Returns whether the finder will actually return a collection of entities
      * or a single one.
      * 
      * @return
      */
-    boolean isCollectionQuery() {
+    private boolean isCollectionQuery() {
 
         Class<?> returnType = method.getReturnType();
         return org.springframework.util.ClassUtils.isAssignable(List.class,
@@ -220,7 +256,7 @@ public class QueryMethod {
      * 
      * @return
      */
-    boolean isPageQuery() {
+    private boolean isPageQuery() {
 
         Class<?> returnType = method.getReturnType();
         return org.springframework.util.ClassUtils.isAssignable(Page.class,

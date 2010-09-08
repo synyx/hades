@@ -32,6 +32,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.synyx.hades.dao.GenericDao;
 import org.synyx.hades.dao.Modifying;
 import org.synyx.hades.dao.UserDao;
+import org.synyx.hades.dao.query.QueryExecution.CollectionExecution;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
@@ -88,13 +89,13 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void testname() throws Exception {
+    public void testname() {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
         assertEquals("User.findByLastname", method.getNamedQueryName());
-        assertTrue(method.isCollectionQuery());
+        assertThat(method.getExecution(null), is(CollectionExecution.class));
         assertEquals("select x from User x where x.lastname = ?1",
                 new QueryCreator(method).constructQuery());
     }
