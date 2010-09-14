@@ -236,24 +236,11 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<sourceDirectory>
-						${basedir}/src/doc
-					</sourceDirectory>
-					<targetDirectory>
-						${basedir}/target/doc
-					</targetDirectory>
-
-					<foCustomization>
-						${basedir}/src/doc/layout/pdf/fo-pdf.xsl
-					</foCustomization>
-					
-					<htmlCustomization>
-						${basedir}/src/doc/layout/html/fo-html.xsl
-					</htmlCustomization>
-					
-					<imgSrcPath>
-						${basedir}/target/doc/
-					</imgSrcPath>
+					<sourceDirectory>${basedir}/src/doc</sourceDirectory>
+					<targetDirectory>${basedir}/target/doc</targetDirectory>
+					<foCustomization>${basedir}/src/doc/layout/pdf/fo-pdf.xsl</foCustomization>
+					<htmlCustomization>${basedir}/src/doc/layout/html/fo-html.xsl</htmlCustomization>
+					<imgSrcPath>${basedir}/target/doc/</imgSrcPath>
                     
                     <!-- 
 					<chunkedOutput>true</chunkedOutput>
@@ -264,45 +251,29 @@
 							<name>StellaLining</name>
 							<style>normal</style>
 							<weight>normal</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiR__.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiR__.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiR__.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiR__.xml</metricsFile>
 						</font>
 						<font>
 							<name>StellaLining</name>
 							<style>italic</style>
 							<weight>normal</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiI__.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiI__.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiI__.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiI__.xml</metricsFile>
 						</font>
 						<font>
 							<name>StellaLining</name>
 							<style>normal</style>
 							<weight>bold</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiB__.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiB__.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiB__.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiB__.xml</metricsFile>
 						</font>
 						<font>
 							<name>StellaLining</name>
 							<style>italic</style>
 							<weight>bold</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.xml</metricsFile>
 						</font>
 					</fonts>
 
