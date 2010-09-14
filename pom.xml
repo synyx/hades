@@ -139,6 +139,19 @@
                     </descriptors>
                 </configuration>
             </plugin>
+            
+            <!--
+            	Significantly speeds up the 'Dependencies' report during site creation see
+            	http://old.nabble.com/Skipping-dependency-report-during-Maven2-site-generation-td20116761.html
+			-->
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+            </plugin>
 
         </plugins>
     </build>

@@ -236,16 +236,13 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<includes>index.xml</includes>
 					<sourceDirectory>${basedir}/src/doc</sourceDirectory>
 					<targetDirectory>${basedir}/target/doc</targetDirectory>
 					<foCustomization>${basedir}/src/doc/layout/pdf/fo-pdf.xsl</foCustomization>
 					<htmlCustomization>${basedir}/src/doc/layout/html/fo-html.xsl</htmlCustomization>
 					<imgSrcPath>${basedir}/target/doc/</imgSrcPath>
-                    
-                    <!-- 
 					<chunkedOutput>true</chunkedOutput>
-                    -->
-
 					<fonts>
 						<font>
 							<name>StellaLining</name>
@@ -290,6 +287,18 @@
 						</copy>
 					</preProcess>
 
+					<postProcess>
+						<copy todir="${project.basedir}/target/site/reference">
+							<fileset dir="${project.basedir}/target/doc">
+								<include name="**/*.html" />
+								<include name="**/*.pdf" />
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
+							</fileset>
+						</copy>
+					</postProcess>
 				</configuration>
 			</plugin>
 
