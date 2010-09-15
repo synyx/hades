@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-	"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-	-->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <book>
   <bookinfo>
     <title>Hades</title>
@@ -25,9 +23,9 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>2.0 RC3</releaseinfo>
+    <releaseinfo>&version;</releaseinfo>
 
-    <pubdate>31.07.2010</pubdate>
+    <pubdate>&date;</pubdate>
 
     <copyright>
       <year>2008-2010</year>

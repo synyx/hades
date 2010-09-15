@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.synyx.hades</artifactId>
@@ -9,37 +10,37 @@
 		<groupId>org.synyx.hades</groupId>
 		<artifactId>org.synyx.hades.parent</artifactId>
 		<version>2.0.0.BUILD-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
-    
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-        
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.aspects</artifactId>
-            <version>${spring.version}</version>
-            <optional>true</optional>
-        </dependency>
 
-        <!-- Logging (SLF4J + JCL bridge) -->        
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.aspects</artifactId>
+			<version>${spring.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Logging (SLF4J + JCL bridge) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
@@ -47,13 +48,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-        <!-- This one's here's just needed because of a Maven 2 bug
-        and we cant get Hudson to build with Maven 3 currently -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
-        </dependency>
+		<!-- This one's here's just needed because of a Maven 2 bug and we cant 
+			get Hudson to build with Maven 3 currently -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
@@ -67,12 +68,12 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>com.springsource.javax.persistence</artifactId>
-            <version>${jpa.version}</version>
-        </dependency>
-        
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>com.springsource.javax.persistence</artifactId>
+			<version>${jpa.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>com.springsource.org.hsqldb</artifactId>
@@ -85,105 +86,105 @@
 			<version>1.2.15</version>
 			<scope>test</scope>
 		</dependency>
-        
-        <!--  Persistence providers -->
+
+		<!-- Persistence providers -->
 		<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-            <optional>true</optional>
-        </dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>com.springsource.org.eclipse.persistence.jpa</artifactId>
 			<version>2.0.0</version>
 			<optional>true</optional>
 		</dependency>
-        <dependency> 
-            <groupId>org.apache.openjpa</groupId>
-            <artifactId>openjpa-persistence-jdbc</artifactId>
-            <version>${openjpa.version}</version>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-		
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa-persistence-jdbc</artifactId>
+			<version>${openjpa.version}</version>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
-        
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.1</version>
-            <scope>test</scope>
-        </dependency>
-        
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-        
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-		
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
-        
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.3</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjtools</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <verbose>true</verbose>
-                    <aspectLibraries>
-                        <aspectLibrary>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>org.springframework.aspects</artifactId>
-                        </aspectLibrary>
-                    </aspectLibraries>
-                    <includes>
-                        <include>**/domain/**/*.java</include>
-                    </includes>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-					
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.3</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjrt</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<verbose>true</verbose>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>org.springframework</groupId>
+							<artifactId>org.springframework.aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+					<includes>
+						<include>**/domain/**/*.java</include>
+					</includes>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -191,38 +192,60 @@
 				<configuration>
 					<argLine>-javaagent:${settings.localRepository}/org/springframework/org.springframework.instrument/${spring.version}/org.springframework.instrument-${spring.version}.jar</argLine>
 				</configuration>
-				
+
 				<dependencies>
 					<dependency>
-		     			<groupId>org.springframework</groupId>
-		     			<artifactId>org.springframework.instrument</artifactId>
-					    <version>${spring.version}</version>
-					    <scope>runtime</scope>
+						<groupId>org.springframework</groupId>
+						<artifactId>org.springframework.instrument</artifactId>
+						<version>${spring.version}</version>
+						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
-						
+
+			</plugin>
+			
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<locale>en</locale>
+					<format>{0,date}</format>
+					<items>
+						<item>timestamp</item>
+					</items>
+				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
-				<version>2.0.8</version>
+				<version>2.0.11</version>
 				<dependencies>
-					
+
 					<dependency>
 						<groupId>offo.hyphenation</groupId>
 						<artifactId>fop-hyph</artifactId>
 						<version>0.1</version>
 						<scope>runtime</scope>
 					</dependency>
-					
+
 					<dependency>
 						<groupId>org.docbook</groupId>
 						<artifactId>docbook-xml</artifactId>
 						<version>4.4</version>
 						<scope>runtime</scope>
 					</dependency>
-				
+
 					<!-- Patch overflow bug -->
 					<dependency>
 						<groupId>org.apache.xmlgraphics</groupId>
@@ -242,7 +265,16 @@
 					<foCustomization>${basedir}/src/doc/layout/pdf/fo-pdf.xsl</foCustomization>
 					<htmlCustomization>${basedir}/src/doc/layout/html/fo-html.xsl</htmlCustomization>
 					<imgSrcPath>${basedir}/target/doc/</imgSrcPath>
-					<chunkedOutput>true</chunkedOutput>
+					<entities>
+						<entity>
+							<name>version</name>
+							<value>${project.version}</value>
+						</entity>
+						<entity>
+							<name>date</name>
+							<value>${buildNumber}</value>
+						</entity>
+					</entities>
 					<fonts>
 						<font>
 							<name>StellaLining</name>
@@ -286,52 +318,99 @@
 							<fileset dir="${basedir}/src/doc/layout/html/resources" />
 						</copy>
 					</preProcess>
-
-					<postProcess>
-						<copy todir="${project.basedir}/target/site/reference">
-							<fileset dir="${project.basedir}/target/doc">
-								<include name="**/*.html" />
-								<include name="**/*.pdf" />
-								<include name="**/*.css" />
-								<include name="**/*.png" />
-								<include name="**/*.gif" />
-								<include name="**/*.jpg" />
-							</fileset>
-						</copy>
-					</postProcess>
 				</configuration>
+				<executions>
+					<execution>
+						<id>html-single-page</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<postProcess>
+								<copy todir="${project.basedir}/target/site/reference/htmlsingle">
+									<fileset dir="${project.basedir}/target/doc">
+										<include name="**/*.html" />
+										<include name="**/*.css" />
+										<include name="**/*.png" />
+										<include name="**/*.gif" />
+										<include name="**/*.jpg" />
+									</fileset>
+								</copy>
+								<delete file="target/doc/index.html" />
+							</postProcess>
+						</configuration>
+					</execution>
+					<execution>
+						<id>html-chunked</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<chunkedOutput>true</chunkedOutput>
+							<postProcess>
+								<copy todir="${project.basedir}/target/site/reference/html">
+									<fileset dir="${project.basedir}/target/doc">
+										<include name="**/*.html" />
+										<include name="**/*.css" />
+										<include name="**/*.png" />
+										<include name="**/*.gif" />
+										<include name="**/*.jpg" />
+									</fileset>
+								</copy>
+							</postProcess>
+						</configuration>
+					</execution>
+					<execution>
+						<id>pdf</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>generate-pdf</goal>
+						</goals>
+						<configuration>
+							<postProcess>
+								<copy todir="${project.basedir}/target/site/reference/pdf">
+									<fileset dir="${project.basedir}/target/doc">
+										<include name="**/*.pdf" />
+									</fileset>
+								</copy>
+								<move file="target/site/reference/pdf/index.pdf" tofile="target/site" failonerror="false" />
+							</postProcess>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 
 	<reporting>
 		<plugins>
 			<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jxr-maven-plugin</artifactId>
-                <version>2.0-beta-1</version>
-            </plugin>
-            
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+				<version>2.0-beta-1</version>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.5</version>
 			</plugin>
-			
+
 			<!-- Metrics plugins -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
 				<version>2.0-beta-2</version>
 			</plugin>
-			
+
 			<plugin>
-		    	<groupId>org.codehaus.mojo</groupId>
-			    <artifactId>javancss-maven-plugin</artifactId>
-			    <version>2.0</version>
-		    </plugin>
-			
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javancss-maven-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
+
 			<!-- Code checks -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -341,23 +420,23 @@
 					<targetJdk>1.5</targetJdk>
 				</configuration>
 			</plugin>
-		
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-                <version>2.2</version>
-            </plugin>
-		     
-		    <plugin>
-		        <groupId>org.codehaus.mojo</groupId>
-		        <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.3</version>
-		      </plugin>
-		    <plugin>
-		    	<groupId>org.codehaus.mojo</groupId>
-		    	<artifactId>findbugs-maven-plugin</artifactId>
-		    	<version>1.2</version>
-		    </plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>1.2</version>
+			</plugin>
 		</plugins>
 	</reporting>
 
