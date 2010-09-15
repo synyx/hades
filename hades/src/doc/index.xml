@@ -25,9 +25,9 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>1.6.0</releaseinfo>
+    <releaseinfo>&amp;version;</releaseinfo>
 
-    <pubdate>31.07.2010</pubdate>
+    <pubdate>&amp;build;</pubdate>
 
     <copyright>
       <year>2008-2010</year>
