@@ -375,7 +375,7 @@
 										<include name="**/*.pdf" />
 									</fileset>
 								</copy>
-								<move file="target/site/reference/pdf/index.pdf" tofile="target/site" failonerror="false" />
+								<move file="target/site/reference/pdf/index.pdf" tofile="target/site/reference/pdf/hades-reference.pdf" failonerror="false" />
 							</postProcess>
 						</configuration>
 					</execution>
