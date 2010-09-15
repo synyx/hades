@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.synyx.hades</artifactId>
@@ -12,39 +13,39 @@
 	</parent>
 
 	<dependencies>
-	
-	      	<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>${spring.artifactPrefix}context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-	
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>${spring.artifactPrefix}orm</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-	
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>${spring.artifactPrefix}aop</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-            
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.aspects</artifactId>
-                <version>${spring.version}</version>
-                <optional>true</optional>
-            </dependency>
-		
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>${spring.artifactPrefix}context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>${spring.artifactPrefix}orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>${spring.artifactPrefix}aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.aspects</artifactId>
+			<version>${spring.version}</version>
+			<optional>true</optional>
+		</dependency>
+
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>1.5.2</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -98,38 +99,38 @@
 			<version>1.0.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.8.2</version>
 			<scope>test</scope>
 		</dependency>
-        
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.1</version>
-            <scope>test</scope>
-        </dependency>
-        
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency> 
+		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa-persistence</artifactId>
 			<version>1.2.1</version>
-            <scope>provided</scope>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-					
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -139,56 +140,56 @@
 				</configuration>
 				<dependencies>
 					<dependency>
-		     			<groupId>org.springframework</groupId>
-		     			<artifactId>${spring.agent.name}</artifactId>
-					    <version>${spring.version}</version>
+						<groupId>org.springframework</groupId>
+						<artifactId>${spring.agent.name}</artifactId>
+						<version>${spring.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjtools</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <verbose>true</verbose>
-                    <aspectLibraries>
-                        <aspectLibrary>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>org.springframework.aspects</artifactId>
-                        </aspectLibrary>
-                    </aspectLibraries>
-                    <includes>
-                        <include>**/domain/**/*.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/domain/auditing/AuditingAdvice.java</exclude>
-                    </excludes>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            
-            <plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjrt</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<verbose>true</verbose>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>org.springframework</groupId>
+							<artifactId>org.springframework.aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+					<includes>
+						<include>**/domain/**/*.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/domain/auditing/AuditingAdvice.java</exclude>
+					</excludes>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 				<version>1.0-beta-4</version>
@@ -214,21 +215,21 @@
 				<artifactId>docbkx-maven-plugin</artifactId>
 				<version>2.0.10</version>
 				<dependencies>
-					
+
 					<dependency>
 						<groupId>offo.hyphenation</groupId>
 						<artifactId>fop-hyph</artifactId>
 						<version>0.1</version>
 						<scope>runtime</scope>
 					</dependency>
-					
+
 					<dependency>
 						<groupId>org.docbook</groupId>
 						<artifactId>docbook-xml</artifactId>
 						<version>4.4</version>
 						<scope>runtime</scope>
 					</dependency>
-				
+
 					<!-- Patch overflow bug -->
 					<dependency>
 						<groupId>org.apache.xmlgraphics</groupId>
@@ -243,25 +244,11 @@
 				</dependencies>
 				<configuration>
 					<includes>index.xml</includes>
-					<sourceDirectory>
-						${basedir}/src/doc
-					</sourceDirectory>
-					<targetDirectory>
-						${basedir}/target/doc
-					</targetDirectory>
-
-					<foCustomization>
-						${basedir}/src/doc/layout/pdf/fo-pdf.xsl
-					</foCustomization>
-					
-					<htmlCustomization>
-						${basedir}/src/doc/layout/html/fo-html.xsl
-					</htmlCustomization>
-					
-					<imgSrcPath>
-						${basedir}/target/doc/
-					</imgSrcPath>
-
+					<sourceDirectory>${basedir}/src/doc</sourceDirectory>
+					<targetDirectory>${basedir}/target/doc</targetDirectory>
+					<foCustomization>${basedir}/src/doc/layout/pdf/fo-pdf.xsl</foCustomization>
+					<htmlCustomization>${basedir}/src/doc/layout/html/fo-html.xsl</htmlCustomization>
+					<imgSrcPath>${basedir}/target/doc/</imgSrcPath>
 					<entities>
 						<entity>
 							<name>version</name>
@@ -278,45 +265,29 @@
 							<name>StellaLining</name>
 							<style>normal</style>
 							<weight>normal</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiR__.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiR__.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiR__.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiR__.xml</metricsFile>
 						</font>
 						<font>
 							<name>StellaLining</name>
 							<style>italic</style>
 							<weight>normal</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiI__.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiI__.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiI__.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiI__.xml</metricsFile>
 						</font>
 						<font>
 							<name>StellaLining</name>
 							<style>normal</style>
 							<weight>bold</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiB__.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiB__.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiB__.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiB__.xml</metricsFile>
 						</font>
 						<font>
 							<name>StellaLining</name>
 							<style>italic</style>
 							<weight>bold</weight>
-							<embedFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.ttf
-							</embedFile>
-							<metricsFile>
-								${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.xml
-							</metricsFile>
+							<embedFile>${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.ttf</embedFile>
+							<metricsFile>${basedir}/src/doc/layout/pdf/fonts/SteLiBI_.xml</metricsFile>
 						</font>
 					</fonts>
 
@@ -403,30 +374,30 @@
 	<reporting>
 		<plugins>
 			<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jxr-maven-plugin</artifactId>
-                <version>2.0-beta-1</version>
-            </plugin>
-            
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+				<version>2.0-beta-1</version>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.5</version>
 			</plugin>
-			
+
 			<!-- Metrics plugins -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jdepend-maven-plugin</artifactId>
 				<version>2.0-beta-2</version>
 			</plugin>
-			
+
 			<plugin>
-		    	<groupId>org.codehaus.mojo</groupId>
-			    <artifactId>javancss-maven-plugin</artifactId>
-			    <version>2.0</version>
-		    </plugin>
-			
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javancss-maven-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
+
 			<!-- Code checks -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -436,23 +407,23 @@
 					<targetJdk>1.5</targetJdk>
 				</configuration>
 			</plugin>
-		
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-                <version>2.2</version>
-            </plugin>
-		     
-		    <plugin>
-		        <groupId>org.codehaus.mojo</groupId>
-		        <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.3</version>
-		      </plugin>
-		    <plugin>
-		    	<groupId>org.codehaus.mojo</groupId>
-		    	<artifactId>findbugs-maven-plugin</artifactId>
-		    	<version>1.2</version>
-		    </plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>1.2</version>
+			</plugin>
 		</plugins>
 	</reporting>
 
