@@ -187,11 +187,32 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
+            
+            <plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<locale>en</locale>
+					<format>{0,date}</format>
+					<items>
+						<item>timestamp</item>
+					</items>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
-				<version>2.0.8</version>
+				<version>2.0.10</version>
 				<dependencies>
 					
 					<dependency>
@@ -221,6 +242,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<includes>index.xml</includes>
 					<sourceDirectory>
 						${basedir}/src/doc
 					</sourceDirectory>
@@ -239,10 +261,17 @@
 					<imgSrcPath>
 						${basedir}/target/doc/
 					</imgSrcPath>
-                    
-                    <!-- 
-					<chunkedOutput>true</chunkedOutput>
-                    -->
+
+					<entities>
+						<entity>
+							<name>version</name>
+							<value>${project.version}</value>
+						</entity>
+						<entity>
+							<name>date</name>
+							<value>${buildNumber}</value>
+						</entity>
+					</entities>
 
 					<fonts>
 						<font>
@@ -305,6 +334,67 @@
 					</preProcess>
 
 				</configuration>
+				<executions>
+					<execution>
+						<id>html-single-page</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<postProcess>
+								<copy todir="${project.basedir}/target/site/reference/htmlsingle">
+									<fileset dir="${project.basedir}/target/doc">
+										<include name="**/*.html" />
+										<include name="**/*.css" />
+										<include name="**/*.png" />
+										<include name="**/*.gif" />
+										<include name="**/*.jpg" />
+									</fileset>
+								</copy>
+								<delete file="target/doc/index.html" />
+							</postProcess>
+						</configuration>
+					</execution>
+					<execution>
+						<id>html-chunked</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<chunkedOutput>true</chunkedOutput>
+							<postProcess>
+								<copy todir="${project.basedir}/target/site/reference/html">
+									<fileset dir="${project.basedir}/target/doc">
+										<include name="**/*.html" />
+										<include name="**/*.css" />
+										<include name="**/*.png" />
+										<include name="**/*.gif" />
+										<include name="**/*.jpg" />
+									</fileset>
+								</copy>
+							</postProcess>
+						</configuration>
+					</execution>
+					<execution>
+						<id>pdf</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>generate-pdf</goal>
+						</goals>
+						<configuration>
+							<postProcess>
+								<copy todir="${project.basedir}/target/site/reference/pdf">
+									<fileset dir="${project.basedir}/target/doc">
+										<include name="**/*.pdf" />
+									</fileset>
+								</copy>
+								<move file="target/site/reference/pdf/index.pdf" tofile="target/site" failonerror="false" />
+							</postProcess>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>
