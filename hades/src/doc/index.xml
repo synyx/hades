@@ -821,7 +821,7 @@
         <example>
           <title>Hibernate dependency</title>
 
-          <programlisting>&lt;dependency&gt;
+          <programlisting language="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
   &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
   &lt;version&gt;3.3.2-GA&lt;/version&gt;
@@ -1254,7 +1254,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
         </simplesect>
 
         <simplesect>
-          <title>CREATE_IF_NOT_FOUND</title>
+          <title>CREATE_IF_NOT_FOUND (default)</title>
 
           <para>This strategy is actually a combination of the both mentioned
           above. It will try to lookup a declared query first but create a
@@ -1281,7 +1281,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
   findByEmailAddressAndLastname(String emailAddress, String lastname);
 }</programlisting>This method will result in the following query:</para>
 
-            <programlisting>from User u where u.emailAddress = ? and u.lastname = ?</programlisting>
+            <programlisting>from User u where u.emailAddress = ?1 and u.lastname = ?2</programlisting>
 
             <para>Hades will check the query against the domain class to
             validate the properties exist. So you either have a property of
@@ -1381,7 +1381,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByFirstnameLike</code></entry>
 
-                  <entry><code>… where x.firstname like ?</code></entry>
+                  <entry><code>… where x.firstname like ?1</code></entry>
                 </row>
 
                 <row>
@@ -1389,7 +1389,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
 
                   <entry><code>findByFirstnameNotLike</code></entry>
 
-                  <entry><code>… where x.firstname not like ?</code></entry>
+                  <entry><code>… where x.firstname not like ?1</code></entry>
                 </row>
 
                 <row>
@@ -1490,7 +1490,7 @@ public class User {
           <para>Declaring this method <classname>GenericJpaDao</classname>
           will try to resolve a call to this method to a named query starting
           with the simple name of the configured domain class followed by the
-          method name separated by a dot. Note, that Hadesdistinguishes
+          method name separated by a dot. Note, that Hades distinguishes
           between query methods for a single object or lists of object. It
           will try to retrieve a single result if you provide a return value
           assignable from the configured domain class. Otherwise i will try to
@@ -1508,7 +1508,8 @@ public class User {
         actually can bind them to the query executing methods using Hades
         <code>@Query</code> annotation rather than annotating them to the
         domain class. This will free the domain class from persistence
-        specific information and colocate it to the DAO interface.</para>
+        specific information and colocate the query to the DAO
+        interface.</para>
 
         <para>Querys annotated to the query method will trump queries defined
         using <code>@NamedQuery</code> or named queries declared in in
@@ -1530,7 +1531,7 @@ public class User {
 
         <para>By default Hades will use position based parameter binding as
         described in all the samples above. This makes query methods a little
-        error prone to refactorngs regarding the parameter position. To solve
+        error prone to refactorings regarding the parameter position. To solve
         this issue you can use <code>@Param</code> annotation to give a method
         parameter a cncrete name and bind the name in the query:</para>
 
@@ -2439,7 +2440,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
           <question>
             <para>I want to use Hades auditing capabilities but have my
             database already set up to set modification and creation date on
-            entities. How to preven Hades to set the date
+            entities. How to prevent Hades to set the date
             programmatically.</para>
           </question>
 
