@@ -10,7 +10,7 @@
 	<parent>
 		<artifactId>org.synyx.hades.parent</artifactId>
 		<groupId>org.synyx.hades</groupId>
-		<version>1.7.0.BUILD-SNAPSHOT</version>
+		<version>1.6.2.RELEASE</version>
 	</parent>
 
 	<dependencies>
