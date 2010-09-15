@@ -1563,13 +1563,20 @@ public class User {
 
           <para><programlisting>Page&lt;User&gt; findByLastname(String lastname, Pageable pageable);
 
-List&lt;User&gt; findByLastname(String lastname, Sort sort);</programlisting>The
+List&lt;User&gt; findByLastname(String lastname, Sort sort);
+
+List&lt;User&gt; findByLastname(String lastname, Pageable pageable);</programlisting>The
           first method allows you to pass a <code>Pageable</code> instance to
           the query method to dynamically add paging to your statically
           defined query. <code>Sorting</code> options are handed via the
           <interfacename>Pageable</interfacename> instance, too. If you only
           need sorting, simply add a <code>Sort</code> parameter to your
-          method.</para>
+          method. As you also can see, simply returning a
+          <interfacename>List</interfacename> is possible, too. Hades will
+          then not retrieve the additional metadata required to build the
+          actual <interfacename>Page</interfacename> instance but rather
+          simply restrict the query to lookup only the given rante of
+          entities.</para>
         </example>
       </section>
 
