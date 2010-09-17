@@ -293,7 +293,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
         // Autodetect implementation
         if (context.autodetectCustomImplementation()) {
 
-            BeanDefinition beanDefinition = detectCustomImplementation(context);
+            BeanDefinition beanDefinition =
+                    detectCustomImplementation(context, parserContext);
 
             if (null == beanDefinition) {
                 return null;
@@ -323,10 +324,12 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * scanning.
      * 
      * @param context
+     * @param parser
      * @return the {@code BeanDefinition} of the custom implementation or null
      *         if none found
      */
-    private BeanDefinition detectCustomImplementation(final DaoContext context) {
+    private BeanDefinition detectCustomImplementation(final DaoContext context,
+            final ParserContext parser) {
 
         // Build pattern to lookup implementation class
         Pattern pattern =
@@ -335,6 +338,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
         // Build classpath scanner and lookup bean definition
         ClassPathScanningCandidateComponentProvider provider =
                 new ClassPathScanningCandidateComponentProvider(false);
+        provider.setResourceLoader(parser.getReaderContext()
+                .getResourceLoader());
         provider.addIncludeFilter(new RegexPatternTypeFilter(pattern));
         Set<BeanDefinition> definitions =
                 provider.findCandidateComponents(context
