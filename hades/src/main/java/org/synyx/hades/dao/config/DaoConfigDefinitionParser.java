@@ -217,8 +217,12 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 context.getTransactionManagerRef());
 
         String customImplementationBeanName =
-                registerCustomImplementation(context, parserContext,
-                        beanDefinitionBuilder);
+                registerCustomImplementation(context, parserContext, beanSource);
+
+        if (customImplementationBeanName != null) {
+            beanDefinitionBuilder.addPropertyReference(
+                    "customDaoImplementation", customImplementationBeanName);
+        }
 
         AbstractBeanDefinition beanDefinition =
                 beanDefinitionBuilder.getBeanDefinition();
@@ -271,29 +275,24 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * 
      * @param context
      * @param parserContext
-     * @param beanDefinitionBuilder
+     * @param source
      * @return the bean name of the custom implementation or {@code null} if
      *         none available
      */
     private String registerCustomImplementation(final DaoContext context,
-            final ParserContext parserContext,
-            final BeanDefinitionBuilder beanDefinitionBuilder) {
+            final ParserContext parserContext, final Object source) {
 
         String beanName = context.getImplementationBeanName();
 
         // Already a bean configured?
         if (parserContext.getRegistry().containsBeanDefinition(beanName)) {
-
-            beanDefinitionBuilder.addPropertyReference(
-                    "customDaoImplementation", beanName);
-
             return beanName;
         }
 
         // Autodetect implementation
         if (context.autodetectCustomImplementation()) {
 
-            BeanDefinition beanDefinition =
+            AbstractBeanDefinition beanDefinition =
                     detectCustomImplementation(context, parserContext);
 
             if (null == beanDefinition) {
@@ -304,6 +303,7 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                     context.getImplementationBeanName(),
                     beanDefinition.getBeanClassName());
 
+            beanDefinition.setSource(source);
             parserContext.registerBeanComponent(new BeanComponentDefinition(
                     beanDefinition, beanName));
 
@@ -311,9 +311,6 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
 
             beanName = context.getCustomImplementationRef();
         }
-
-        beanDefinitionBuilder.addPropertyReference("customDaoImplementation",
-                beanName);
 
         return beanName;
     }
@@ -328,8 +325,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
      * @return the {@code BeanDefinition} of the custom implementation or null
      *         if none found
      */
-    private BeanDefinition detectCustomImplementation(final DaoContext context,
-            final ParserContext parser) {
+    private AbstractBeanDefinition detectCustomImplementation(
+            final DaoContext context, final ParserContext parser) {
 
         // Build pattern to lookup implementation class
         Pattern pattern =
@@ -345,7 +342,8 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 provider.findCandidateComponents(context
                         .getDaoBasePackageName());
 
-        return 0 == definitions.size() ? null : definitions.iterator().next();
+        return (0 == definitions.size() ? null
+                : (AbstractBeanDefinition) definitions.iterator().next());
     }
 
 
