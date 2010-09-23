@@ -24,6 +24,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 
@@ -54,8 +55,13 @@ public class AuditingBeanDefinitionParser implements BeanDefinitionParser {
 
         BeanDefinitionBuilder builder =
                 rootBeanDefinition(AUDITING_ENTITY_LISTENER_CLASS_NAME);
-        builder.addPropertyReference("auditorAware",
-                element.getAttribute("auditor-aware-ref"));
+
+        String auditorAwareRef = element.getAttribute("auditor-aware-ref");
+
+        if (StringUtils.hasText(auditorAwareRef)) {
+            builder.addPropertyReference("auditorAware", auditorAwareRef);
+        }
+
         registerInfrastructureBeanWithId(builder.getRawBeanDefinition(),
                 AUDITING_ENTITY_LISTENER_CLASS_NAME, parserContext, element);
 
