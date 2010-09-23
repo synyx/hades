@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.synyx.hades.dao.GenericDao;
@@ -34,9 +33,21 @@ import org.synyx.hades.util.ClassUtils;
 
 /**
  * Simple helper class to use Hades DAOs to provide {@link PropertyEditor}s for
- * domain classes. Use a {@link CustomEditorConfigurer} and provide a reference
- * to an instance of this class for automatic registration of a
- * {@link PropertyEditor} for each {@link GenericDao}.
+ * domain classes. To get this working configure a
+ * {@link org.springframework.web.bind.support.ConfigurableWebBindingInitializer}
+ * for your
+ * {@link org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter}
+ * and register the {@link GenericDaoPropertyEditorRegistrar} there: <code>
+ * &lt;bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"&gt;
+ *   &lt;property name="webBindingInitializer"&gt;
+ *     &lt;bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer"&gt;
+ *       &lt;property name="propertyEditorRegistrars"&gt;
+ *         &lt;bean class="org.synyx.hades.extensions.beans.GenericDaoPropertyEditorRegistrar" /&gt;
+ *       &lt;/property&gt;
+ *     &lt;/bean&gt;
+ *   &lt;/property&gt;
+ * &lt;/bean&gt;
+ * </code>
  * 
  * @author Oliver Gierke
  */
