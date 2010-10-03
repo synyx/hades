@@ -74,7 +74,8 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      */
     public void delete(final T entity) {
 
-        getEntityManager().remove(entity);
+        EntityManager em = getEntityManager();
+        em.remove(em.contains(entity) ? entity : em.merge(entity));
     }
 
 

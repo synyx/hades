@@ -531,4 +531,17 @@ public class UserDaoIntegrationTest {
         assertEquals(new PageImpl<User>(userDao.readAll()),
                 userDao.readAll((Pageable) null));
     }
+
+
+    @Test
+    public void removeDetachedObject() throws Exception {
+
+        flushTestUsers();
+
+        em.detach(firstUser);
+        userDao.delete(firstUser);
+
+        assertThat(userDao.count(), is(1L));
+    }
+
 }
