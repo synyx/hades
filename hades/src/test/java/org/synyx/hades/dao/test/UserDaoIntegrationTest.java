@@ -538,7 +538,10 @@ public class UserDaoIntegrationTest {
 
         flushTestUsers();
 
-        em.detach(firstUser);
+        User firstUserDetached =
+                new User(firstUser.getFirstname(), firstUser.getLastname(),
+                        firstUser.getEmailAddress());
+        firstUserDetached.setId(firstUser.getId());
         userDao.delete(firstUser);
 
         assertThat(userDao.count(), is(1L));
