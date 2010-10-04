@@ -311,6 +311,19 @@
 
         <revremark>Added documentation of Specifications feature</revremark>
       </revision>
+
+      <revision>
+        <date>02.10.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Updated VCs information, added documentation of automatic
+        clearing in @Modifying</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -1552,7 +1565,18 @@ Long setFixedFirstnameFor(String firstname, String lastname);</programlisting>
         </example>
 
         <para>This will trigger the query annotated to the method as updating
-        query instead of a selecting one.</para>
+        query instead of a selecting one. As the
+        <interfacename>EntityManager</interfacename> might contain outdated
+        entities after the execution of the modifying query, we automatically
+        clear it (see JavaDoc of
+        <interfacename>EntityManager</interfacename>.<methodname>clear()</methodname>
+        for details). This will effectively drop all non-flushed changes still
+        pending in the <interfacename>EntityManager</interfacename>. If you
+        don't wish the <interfacename>EntityManager</interfacename> to be
+        cleared automatically you can set
+        <interfacename>@Modifying</interfacename> annotation's
+        <code>clearAutomatically</code> attribute to
+        <literal>false</literal>;</para>
       </section>
     </section>
 
