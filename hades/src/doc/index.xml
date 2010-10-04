@@ -367,7 +367,7 @@
       <itemizedlist spacing="compact">
         <listitem>
           <para>Version control - <ulink
-          url="http://svn.synyx.org/synyx/opensource/hades">http://svn.synyx.org/synyx/opensource/hades</ulink></para>
+          url="http://git.synyx.org/hades.git">http://git.synyx.org/hades.git</ulink></para>
         </listitem>
 
         <listitem>
