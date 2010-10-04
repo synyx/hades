@@ -561,7 +561,7 @@
     </section>
 
     <section>
-      <title>Auditablity</title>
+      <title>Auditability</title>
 
       <note>
         <para>As of version 1.6 auditing through the usage of
@@ -618,7 +618,7 @@
       </note>
 
       <simplesect>
-        <title><code>General auditing configuration</code></title>
+        <title>General auditing configuration</title>
 
         <para>Hades ships with an entity listener that can be used to trigger
         capturing auditing information. So first you have to register the
