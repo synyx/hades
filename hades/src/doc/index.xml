@@ -524,7 +524,7 @@
     </section>
 
     <section>
-      <title>Auditablity</title>
+      <title>Auditability</title>
 
       <para>Most applications will require some auditability for entities
       allowing to track creation date and user and modification date and user.
@@ -570,7 +570,7 @@
       </note>
 
       <simplesect>
-        <title><code>General auditing configuration</code></title>
+        <title>General auditing configuration</title>
 
         <para>Hades ships with an entity listener that can be used to trigger
         capturing auditing information. So first you have to register the
