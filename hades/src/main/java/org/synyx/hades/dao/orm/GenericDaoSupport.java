@@ -129,7 +129,13 @@ public abstract class GenericDaoSupport<T> {
      */
     protected String getCountQueryString() {
 
-        return getQueryString(COUNT_QUERY_STRING, getDomainClass());
+        PersistenceProvider provider =
+                PersistenceProvider.fromEntityManager(getEntityManager());
+        String countQuery =
+                String.format(COUNT_QUERY_STRING,
+                        provider.getCountQueryPlaceholder(), "%s");
+
+        return getQueryString(countQuery, getDomainClass());
     }
 
 
