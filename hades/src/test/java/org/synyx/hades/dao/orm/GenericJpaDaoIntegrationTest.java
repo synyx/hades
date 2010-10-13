@@ -40,7 +40,7 @@ import org.synyx.hades.domain.SampleEntityPK;
  * @author Oliver Gierke
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({ "classpath:infrastructure.xml" })
+@ContextConfiguration(locations = { "classpath:infrastructure.xml" })
 @Transactional
 public class GenericJpaDaoIntegrationTest {
 

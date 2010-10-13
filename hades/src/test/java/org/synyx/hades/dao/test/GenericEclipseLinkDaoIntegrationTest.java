@@ -21,8 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 /**
  * Integration test for EclipseLink implementation of {@code ExtendedGenericDao}
- * . Not implemented to be run yet, due to configuration problems. I don't want
- * to break the test suite right now.
+ * .
  * 
  * @author Oliver Gierke
  */

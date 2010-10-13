@@ -37,21 +37,22 @@ public class IsNewStrategiesUnitTest {
     @Test(expected = IllegalArgumentException.class)
     public void rejectsNullAsDomainClass() throws Exception {
 
-        new ReflectiveEntityInformation(null);
+        new GenericDaoSupport.ReflectiveIsNewStrategy(null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectsNonEntityClasses() throws Exception {
 
-        new ReflectiveEntityInformation(NotAnnotatedEntity.class);
+        new GenericDaoSupport.ReflectiveIsNewStrategy(NotAnnotatedEntity.class);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectsEntityWithMissingIdAnnotation() throws Exception {
 
-        new ReflectiveEntityInformation(EntityWithOutIdAnnotation.class);
+        new GenericDaoSupport.ReflectiveIsNewStrategy(
+                EntityWithOutIdAnnotation.class);
     }
 
 
