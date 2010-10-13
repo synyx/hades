@@ -43,6 +43,20 @@ enum PersistenceProvider implements QueryExtractor {
             return ((HibernateQuery) query).getHibernateQuery()
                     .getQueryString();
         }
+
+
+        /**
+         * Return custom placeholder ({@code *}) as Hibernate does create
+         * invalid queries for count queries for objects with compound keys.
+         * 
+         * @see HHH-4044
+         * @see HHH-3096
+         */
+        @Override
+        protected String getCountQueryPlaceholder() {
+
+            return "*";
+        }
     },
 
     /**
@@ -55,6 +69,7 @@ enum PersistenceProvider implements QueryExtractor {
 
             return ((JpaQuery) query).getDatabaseQuery().getJPQLString();
         }
+
     },
 
     /**
@@ -150,5 +165,17 @@ enum PersistenceProvider implements QueryExtractor {
     public boolean canExtractQuery() {
 
         return true;
+    }
+
+
+    /**
+     * Returns the placeholder to be used for simple count queries. Default
+     * implementation returns {@code *}.
+     * 
+     * @return
+     */
+    protected String getCountQueryPlaceholder() {
+
+        return "x";
     }
 }
