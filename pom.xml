@@ -40,7 +40,7 @@
         <mockito.version>1.8.4</mockito.version>
         <slf4j.version>1.6.1</slf4j.version>
         <jpa.version>2.0.0</jpa.version>
-	<maven.build.timestamp.format>MMM dd, yyyy HH:mm</maven.build.timestamp.format>
+		<maven.build.timestamp.format>MMM dd, yyyy HH:mm</maven.build.timestamp.format>
     </properties>
     
     <developers>
