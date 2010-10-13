@@ -273,17 +273,16 @@
         <url>http://ci.synyx.org</url>
 	</ciManagement>
 
-<<<<<<< HEAD
 	<issueManagement>
 		<system>Redmine</system>
 		<url>http://hades.synyx.org/</url>
 	</issueManagement>
 	
 	<scm>
-		<url>http://svn.synyx.org/synyx/opensource/hades/branches/org.synyx.hades-1.x</url>
-		<connection>scm:svn:http://svn.synyx.org/synyx/opensource/hades/branches/org.synyx.hades-1.x</connection>
-		<developerConnection>scm:svn:svn+ssh://synyxsvn/var/svn/synyx/opensource/hades/branches/org.synyx.hades-1.x</developerConnection>
-	</scm>
+        <url>http://svn.synyx.org/synyx/opensource/hades</url>
+        <connection>scm:git:ssh://git@git.synyx.org/hades.git</connection>
+        <developerConnection>scm:git:ssh://git@git.synyx.org/hades.git</developerConnection>
+    </scm>
 	
 	<distributionManagement>
 		<site>
@@ -291,20 +290,6 @@
 			<url>scp://static.synyx.org/home/public/public_html/hades/1.x/site</url>
 		</site>
 		<repository>
-=======
-    <scm>
-        <url>http://svn.synyx.org/synyx/opensource/hades</url>
-        <connection>scm:git:ssh://git@git.synyx.org/hades.git</connection>
-        <developerConnection>scm:git:ssh://git@git.synyx.org/hades.git</developerConnection>
-    </scm>
-
-    <distributionManagement>
-        <site>
-            <id>static.synyx.org</id>
-            <url>scp://static.synyx.org/home/public/public_html/hades/2.x/site</url>
-        </site>
-        <repository>
->>>>>>> 1ff0df0... #380 - Changed SCM information to Git repository.
 			<id>sonatype</id>
 			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
