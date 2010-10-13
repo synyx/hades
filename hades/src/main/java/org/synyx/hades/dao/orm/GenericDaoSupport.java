@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
@@ -283,9 +284,15 @@ public abstract class GenericDaoSupport<T> {
          * given class for a {@link Field} or {@link Method} for and {@link Id}
          * annotation.
          * 
-         * @param domainClass
+         * @param domainClass not {@literal null}, must be annotated with
+         *            {@link Entity} and carry an anootation defining the id
+         *            property.
          */
         public ReflectiveEntityInformation(Class<?> domainClass) {
+
+            Assert.notNull(domainClass);
+            Assert.isTrue(domainClass.isAnnotationPresent(Entity.class),
+                    "Given domain class was not annotated with @Entity!");
 
             ReflectionUtils.doWithFields(domainClass, new FieldCallback() {
 
@@ -318,6 +325,9 @@ public abstract class GenericDaoSupport<T> {
                     }
                 }
             });
+
+            Assert.isTrue(this.field != null || this.method != null,
+                    "No id method or field found!");
         }
 
 

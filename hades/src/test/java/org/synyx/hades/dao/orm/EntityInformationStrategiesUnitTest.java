@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.junit.Test;
@@ -35,6 +36,27 @@ import org.synyx.hades.domain.AbstractPersistable;
  * @author Oliver Gierke
  */
 public class EntityInformationStrategiesUnitTest {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsNullAsDomainClass() throws Exception {
+
+        new ReflectiveEntityInformation(null);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsNonEntityClasses() throws Exception {
+
+        new ReflectiveEntityInformation(NotAnnotatedEntity.class);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsEntityWithMissingIdAnnotation() throws Exception {
+
+        new ReflectiveEntityInformation(EntityWithOutIdAnnotation.class);
+    }
+
 
     @Test
     public void detectsPersistableCorrectly() throws Exception {
@@ -125,6 +147,7 @@ public class EntityInformationStrategiesUnitTest {
         }
     }
 
+    @Entity
     static class FieldAnnotatedEntity {
 
         @Id
@@ -137,6 +160,7 @@ public class EntityInformationStrategiesUnitTest {
         }
     }
 
+    @Entity
     static class EmbeddedIdFieldAnnotatedEntity {
 
         @EmbeddedId
@@ -149,6 +173,7 @@ public class EntityInformationStrategiesUnitTest {
         }
     }
 
+    @Entity
     static class MethodAnnotatedEntity {
 
         private Long id;
@@ -161,6 +186,7 @@ public class EntityInformationStrategiesUnitTest {
         }
     }
 
+    @Entity
     static class EmbeddedIdMethodAnnotatedEntity {
 
         private Long id;
@@ -171,5 +197,16 @@ public class EntityInformationStrategiesUnitTest {
 
             return id;
         }
+    }
+
+    static class NotAnnotatedEntity {
+
+        @Id
+        public Long id;
+    }
+
+    @Entity
+    static class EntityWithOutIdAnnotation {
+
     }
 }
