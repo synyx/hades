@@ -15,7 +15,6 @@
  */
 package org.synyx.hades.extensions.web;
 
-import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -284,10 +283,10 @@ public class PageableArgumentResolver implements WebArgumentResolver {
     }
 
     /**
-     * {@link PropertyEditor} to create {@link Sort} instances from textual
-     * representations. The implementation interprets the string as a comma
-     * separated list where the first entry is the sort direction ({@code asc},
-     * {@code desc}) followed by the properties to sort by.
+     * {@link java.beans.PropertyEditor} to create {@link Sort} instances from
+     * textual representations. The implementation interprets the string as a
+     * comma separated list where the first entry is the sort direction (
+     * {@code asc}, {@code desc}) followed by the properties to sort by.
      * 
      * @author Oliver Gierke - gierke@synyx.de
      */

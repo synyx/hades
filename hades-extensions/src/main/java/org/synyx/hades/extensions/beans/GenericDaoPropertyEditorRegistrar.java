@@ -15,7 +15,6 @@
  */
 package org.synyx.hades.extensions.beans;
 
-import java.beans.PropertyEditor;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,8 +31,9 @@ import org.synyx.hades.util.ClassUtils;
 
 
 /**
- * Simple helper class to use Hades DAOs to provide {@link PropertyEditor}s for
- * domain classes. To get this working configure a
+ * Simple helper class to use Hades DAOs to provide
+ * {@link java.beans.PropertyEditor}s for domain classes. To get this working
+ * configure a
  * {@link org.springframework.web.bind.support.ConfigurableWebBindingInitializer}
  * for your
  * {@link org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter}

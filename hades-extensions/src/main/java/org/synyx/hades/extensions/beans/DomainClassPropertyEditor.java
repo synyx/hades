@@ -24,7 +24,6 @@ import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.dao.GenericDao;
-import org.synyx.hades.dao.orm.GenericDaoSupport.IdAware;
 import org.synyx.hades.dao.orm.GenericDaoSupport.PersistableEntityInformation;
 import org.synyx.hades.dao.orm.GenericDaoSupport.ReflectiveEntityInformation;
 import org.synyx.hades.domain.Persistable;
@@ -98,8 +97,9 @@ public class DomainClassPropertyEditor<T extends Serializable> extends
 
 
     /**
-     * Looks up the id of the given entity using one of the {@link IdAware}
-     * implementations of Hades.
+     * Looks up the id of the given entity using one of the
+     * {@link org.synyx.hades.dao.orm.GenericDaoSupport.IdAware} implementations
+     * of Hades.
      * 
      * @param entity
      * @return
