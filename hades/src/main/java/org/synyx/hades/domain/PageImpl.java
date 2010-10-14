@@ -16,6 +16,7 @@
 
 package org.synyx.hades.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class PageImpl<T> implements Page<T> {
 
-    private List<T> content;
+    private List<T> content = new ArrayList<T>();
     private Pageable pageable;
     private long total;
 
@@ -48,7 +49,7 @@ public class PageImpl<T> implements Page<T> {
             throw new IllegalArgumentException("Content must not be null!");
         }
 
-        this.content = content;
+        this.content.addAll(content);
         this.total = total;
 
         this.pageable =

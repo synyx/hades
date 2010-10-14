@@ -22,6 +22,9 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 
@@ -35,10 +38,13 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQuery(name = "User.findByEmailAddress", query = "SELECT u FROM User u WHERE u.emailAddress = ?1")
-public class User extends AbstractPersistable<Integer> {
+public class User {
 
     private static final long serialVersionUID = 8653688953355455933L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
     private String firstname;
     private String lastname;
 
@@ -77,6 +83,24 @@ public class User extends AbstractPersistable<Integer> {
         this.firstname = firstname;
         this.lastname = lastname;
         this.emailAddress = emailAddress;
+    }
+
+
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+
+        return id;
+    }
+
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Integer id) {
+
+        this.id = id;
     }
 
 

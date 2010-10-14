@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 	<persistence-unit name="hades">
+		<class>org.synyx.hades.domain.AbstractPersistable</class>
 		<class>org.synyx.hades.domain.User</class>
 		<class>org.synyx.hades.domain.Role</class>
+		<class>org.synyx.hades.domain.Account</class>
+		<class>org.synyx.hades.domain.auditing.AbstractAuditable</class>
 		<class>org.synyx.hades.domain.auditing.AuditableUser</class>
         <class>org.synyx.hades.domain.auditing.AuditableRole</class>
-		<class>org.synyx.hades.domain.Account</class>
 		<class>org.synyx.hades.domain.SampleEntity</class>
+		<class>org.synyx.hades.domain.SampleEntityPK</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 	</persistence-unit>
 </persistence>

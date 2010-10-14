@@ -29,12 +29,12 @@ public class SampleEntityPK implements Serializable {
     private static final long serialVersionUID = 231060947L;
 
     @Column(nullable = false)
-    private final String first;
+    private String first;
     @Column(nullable = false)
-    private final String second;
+    private String second;
 
 
-    protected SampleEntityPK() {
+    public SampleEntityPK() {
 
         this.first = null;
         this.second = null;

@@ -560,7 +560,7 @@ public class UserDaoIntegrationTest {
     public void returnsSameListIfNoSpecGiven() throws Exception {
 
         flushTestUsers();
-        assertEquals(userDao.readAll(),
+        assertSameElements(userDao.readAll(),
                 userDao.readAll((Specification<User>) null));
     }
 
@@ -569,7 +569,7 @@ public class UserDaoIntegrationTest {
     public void returnsSameListIfNoSortIsGiven() throws Exception {
 
         flushTestUsers();
-        assertEquals(userDao.readAll(), userDao.readAll((Sort) null));
+        assertSameElements(userDao.readAll((Sort) null), userDao.readAll());
     }
 
 
@@ -589,6 +589,19 @@ public class UserDaoIntegrationTest {
         flushTestUsers();
         assertEquals(new PageImpl<User>(userDao.readAll()),
                 userDao.readAll((Pageable) null));
+    }
+
+
+    private static <T> void assertSameElements(Collection<T> first,
+            Collection<T> second) {
+
+        for (T element : first) {
+            assertThat(element, isIn(second));
+        }
+
+        for (T element : second) {
+            assertThat(element, isIn(first));
+        }
     }
 
 
