@@ -336,6 +336,18 @@
 
         <revremark>Added documentation for Hades extensions</revremark>
       </revision>
+
+      <revision>
+        <date>14.10.2010</date>
+
+        <author>
+          <firstname>Oliver</firstname>
+
+          <surname>Gierke</surname>
+        </author>
+
+        <revremark>Added What's new in 2.0 section</revremark>
+      </revision>
     </revhistory>
   </bookinfo>
 
@@ -383,6 +395,93 @@
         access area. It's main benefit regarding JPA is the ease and power of
         configuration along with proper exception translation into Spring's
         <classname>DataAccessException</classname> hierarchy.</para>
+      </simplesect>
+    </section>
+
+    <section>
+      <title>What's new in 2.0</title>
+
+      <simplesect>
+        <title>Entirely built on JPA 2.0</title>
+
+        <para>Hades 2.0 is built on top of JPA 2.0. It's been refactored to
+        internally use improved APIs and offers a Specification API leveraging
+        the JPA 2.0 criteria API to dynamically extend repositories (see <xref
+        linkend="whats-new-specifications" /> for details).</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Transactional repositories</title>
+
+        <para>As of Hades 2.0 all operations on
+        <interfacename>GenericDao</interfacename> are transactional by default
+        while preserving you the freedom of choosing your transactional
+        programming model of choice (XML VS. annotations). Read-only
+        operations will be executed as read-only transactions. Repository
+        interfaces can be marked as
+        <interfacename>@Transactional</interfacename> as well. It's possible
+        to redefine transactional behvaiour of
+        <interfacename>GenericDao</interfacename> methods by redeclaring them
+        in the repository interface and applying custom transaction
+        configuration there. Read more about transacions with Hades in <xref
+        linkend="transactions" />.</para>
+      </simplesect>
+
+      <simplesect id="whats-new-specifications">
+        <title>Specification API</title>
+
+        <para>The <interfacename>GenericDao</interfacename> interface has been
+        extended to allow to trigger queries based on so called
+        <interfacename>Specification</interfacename>s that are pretty much
+        predicates over entities defined using the JPA criteria API. This
+        allows you to define atomic, combineable constraint snippets to easily
+        span up a huge set of queries. For an in depth discussion of that
+        topic check out <xref linkend="specifications" />.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Revised auditing</title>
+
+        <para>We introduce a new auditing subsystem based on JPA
+        <interfacename>EntityListener</interfacename>s that superseeds the
+        legacy one and thus frees it from ugly constraints you faced so far.
+        The new implementation will not require you to trigger
+        <methodname>GenericDao.save(…)</methodname> explicitly and will be
+        considered for nested entities as well, not just auditing the top one.
+        See <xref linkend="auditing" /> for details.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Extensions module</title>
+
+        <para>Hades 2.0 ships with a new module containing some extensions
+        that will make it even easier to integrate Hades into your Spring
+        based application. We provide Spring extensions to easily allow
+        converting entity ids to an entity (esp. handy in Spring MVC request
+        parameter binding). Beyond that there's a dedicated Spring MVC
+        extension to dynamically create
+        <interfacename>Pageable</interfacename> instances from request
+        parameters to ease using pagination in web applications. Read more
+        about those in <xref linkend="extensions" />.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Swith to SLF4J as logging library</title>
+
+        <para>We moved to SLF4J as logging library as it's got quite a nicer
+        API than commons-logging plus doesn't suffer classpath issues
+        resulting from the dynamic logger detection behaviour of
+        commons-logging. </para>
+      </simplesect>
+
+      <simplesect>
+        <title>Pruning</title>
+
+        <para>We removed the <interfacename>ExtendedGenericDao</interfacename>
+        infrastructure as we recommend to use custom repository methods using
+        the JPA 2.0 criteria over the find-by-example approach. We removed the
+        deprecations regarding sorting in the domain package. Furthermore we
+        removed the legacy auditing model in favour of the new one. </para>
       </simplesect>
     </section>
 
@@ -548,8 +647,8 @@
       linkend="sample-app.configuration" />.</para>
     </section>
 
-    <section>
-      <title>Auditability</title>
+    <section id="auditing">
+      <title>Auditing</title>
 
       <para>Most applications will require some auditability for entities
       allowing to track creation date and user and modification date and user.
@@ -1592,7 +1691,7 @@ Long setFixedFirstnameFor(String firstname, String lastname);</programlisting>
       </section>
     </section>
 
-    <section>
+    <section id="specifications">
       <title>Specifications</title>
 
       <para>JPA 2 introduces a criteria API that can be used to build queries
@@ -1692,7 +1791,7 @@ List&lt;Customer&gt; customers = customerDao.readAll(
       </example>
     </section>
 
-    <section>
+    <section id="transactions">
       <title>Transactionality</title>
 
       <para>As of version 2.0 Hades CRUD methods on DAO instances are
@@ -2322,7 +2421,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
     </section>
   </chapter>
 
-  <chapter>
+  <chapter id="extensions">
     <title>Extensions</title>
 
     <para>This chapter documents a set of Hades extensions that enable Hades
@@ -2365,7 +2464,7 @@ public class UserController {
       as it's always a <methodname>readByPrimaryKey(…)</methodname> call.
       Fortunately Spring provides means to register custom converting
       components that allow conversion between a String value to an arbitrary
-      type. </para>
+      type.</para>
 
       <simplesect>
         <title>PropertyEditors</title>
@@ -2492,7 +2591,7 @@ public class UserController {
       <para>The <classname>PageableArgumentResolver</classname> will
       automatically resolve request parameters to build a
       <classname>PageRequest</classname> instance. By default it will expect
-      the following structure for the request parameters: </para>
+      the following structure for the request parameters:</para>
 
       <table>
         <title>Request parameters evaluated by
