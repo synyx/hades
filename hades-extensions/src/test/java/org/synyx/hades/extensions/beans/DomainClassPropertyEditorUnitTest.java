@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 
 import java.beans.PropertyEditor;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.junit.Before;
@@ -149,9 +150,11 @@ public class DomainClassPropertyEditorUnitTest {
         }
     }
 
+    @Entity
     private static class PlainEntity {
 
         @Id
+        @SuppressWarnings("unused")
         private final Long id;
 
 
