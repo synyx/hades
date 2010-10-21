@@ -32,7 +32,7 @@
 
     <properties>
         <junit.version>4.7</junit.version>
-        <spring.version>3.0.4.RELEASE</spring.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
         <hibernate.version>3.5.6-Final</hibernate.version>
         <openjpa.version>2.0.1</openjpa.version>
         <aspectj.version>1.6.8</aspectj.version>
