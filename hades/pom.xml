@@ -71,6 +71,7 @@
 			<groupId>javax.persistence</groupId>
 			<artifactId>com.springsource.javax.persistence</artifactId>
 			<version>${jpa.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>

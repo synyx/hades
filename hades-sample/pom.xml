@@ -21,6 +21,12 @@
 			<artifactId>org.synyx.hades</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>com.springsource.javax.persistence</artifactId>
+			<version>${jpa.version}</version>
+		</dependency>
         
         <dependency>
             <groupId>org.springframework</groupId>
