@@ -1672,7 +1672,7 @@ List&lt;User&gt; findByLastname(String lastname, Pageable pageable);</programlis
 
           <programlisting language="java">@Modifying
 @Query("update User u set u.firstname = ?1 where u.lastname = ?2")
-Long setFixedFirstnameFor(String firstname, String lastname);</programlisting>
+int setFixedFirstnameFor(String firstname, String lastname);</programlisting>
         </example>
 
         <para>This will trigger the query annotated to the method as updating

@@ -15,6 +15,8 @@
  */
 package org.synyx.hades.dao.query;
 
+import java.lang.reflect.Method;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -130,7 +132,16 @@ abstract class QueryExecution {
          * 
          * @param em
          */
-        public ModifyingExecution(EntityManager em) {
+        public ModifyingExecution(Method method, EntityManager em) {
+
+            Class<?> type = method.getReturnType();
+
+            boolean isVoid = void.class.equals(type) || Void.class.equals(type);
+            boolean isInt =
+                    int.class.equals(type) || Integer.class.equals(type);
+
+            Assert.isTrue(isInt || isVoid,
+                    "Modifying queries can only use void or int/Integer as return type!");
 
             this.em = em;
         }

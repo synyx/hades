@@ -18,9 +18,12 @@ package org.synyx.hades.dao.query;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Method;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -45,6 +48,15 @@ public class QueryExecutionUnitTest {
     @Mock
     Query query;
 
+    Method method;
+
+
+    @Before
+    public void setUp() throws Exception {
+
+        method = Dummy.class.getMethod("voidMethod");
+    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void rejectsNullQuery() throws Exception {
@@ -67,11 +79,27 @@ public class QueryExecutionUnitTest {
         when(binder.bind(param)).thenReturn(query);
         when(query.executeUpdate()).thenReturn(0);
 
-        ModifyingExecution execution =
-                new QueryExecution.ModifyingExecution(em);
+        ModifyingExecution execution = new ModifyingExecution(method, em);
         execution.execute(hadesQuery, binder);
 
         verify(em, times(1)).clear();
+    }
+
+
+    @Test
+    public void allowsMethodReturnTypesForModifyingQuery() throws Exception {
+
+        new ModifyingExecution(Dummy.class.getMethod("voidMethod"), em);
+        new ModifyingExecution(Dummy.class.getMethod("intMethod"), em);
+        new ModifyingExecution(Dummy.class.getMethod("integerMethod"), em);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void modifyingExecutionRejectsNonIntegerOrVoidReturnType()
+            throws Exception {
+
+        new ModifyingExecution(Dummy.class.getMethod("longMethod"), em);
     }
 
     static class StubQueryExecution extends QueryExecution {
@@ -82,5 +110,19 @@ public class QueryExecutionUnitTest {
 
             return null;
         }
+    }
+
+    private static interface Dummy {
+
+        void voidMethod();
+
+
+        int intMethod();
+
+
+        Integer integerMethod();
+
+
+        Long longMethod();
     }
 }

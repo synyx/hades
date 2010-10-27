@@ -217,8 +217,8 @@ public class QueryMethod {
         }
 
         if (isModifyingQuery()) {
-            return getClearAutomatically() ? new ModifyingExecution(em)
-                    : new ModifyingExecution(null);
+            return getClearAutomatically() ? new ModifyingExecution(method, em)
+                    : new ModifyingExecution(method, null);
         }
 
         return new SingleEntityExecution();
