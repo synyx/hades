@@ -166,7 +166,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
     @Transactional(readOnly = true)
     public List<T> readAll(Specification<T> spec) {
 
-        return createQueryFrom(spec).getResultList();
+        return getQuery(spec).getResultList();
     }
 
 
@@ -184,10 +184,10 @@ public class GenericJpaDao<T, PK extends Serializable> extends
             return readAll(pageable);
         }
 
-        TypedQuery<T> query = createQueryFrom(spec);
+        TypedQuery<T> query = getQuery(spec);
 
         return pageable == null ? new PageImpl<T>(query.getResultList())
-                : readPage(query, pageable);
+                : readPage(query, pageable, spec);
     }
 
 
@@ -238,6 +238,12 @@ public class GenericJpaDao<T, PK extends Serializable> extends
         return getEntityManager()
                 .createQuery(getCountQueryString(), Long.class)
                 .getSingleResult();
+    }
+
+
+    private Long count(Specification<T> spec) {
+
+        return getCountQuery(spec).getSingleResult();
     }
 
 
@@ -318,46 +324,87 @@ public class GenericJpaDao<T, PK extends Serializable> extends
         TypedQuery<T> jpaQuery =
                 getEntityManager().createQuery(queryString, getDomainClass());
 
-        return readPage(jpaQuery, pageable);
+        return readPage(jpaQuery, pageable, null);
     }
 
 
     /**
      * @param query
+     * @param spec
      * @param pageable
      * @return
      */
-    private Page<T> readPage(final TypedQuery<T> query, final Pageable pageable) {
+    private Page<T> readPage(final TypedQuery<T> query,
+            final Pageable pageable, final Specification<T> spec) {
 
         query.setFirstResult(pageable.getFirstItem());
         query.setMaxResults(pageable.getPageSize());
 
-        return new PageImpl<T>(query.getResultList(), pageable, count());
+        return new PageImpl<T>(query.getResultList(), pageable, count(spec));
     }
 
 
     /**
-     * Creates a {@link TypedQuery} from the given {@link Specification}.
+     * Creates a new {@link TypedQuery} from the given {@link Specification}.
      * 
-     * @param spec
+     * @param spec can be {@literal null}
      * @return
      */
-    private TypedQuery<T> createQueryFrom(Specification<T> spec) {
-
-        if (spec == null) {
-            return getReadAllQuery();
-        }
+    private TypedQuery<T> getQuery(Specification<T> spec) {
 
         CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(getDomainClass());
+
+        Root<T> root = applySpecificationToCriteria(spec, query);
+        query.select(root);
+
+        return getEntityManager().createQuery(query);
+    }
+
+
+    /**
+     * Creates a new count query for the given {@link Specification}.
+     * 
+     * @param spec can be {@literal null}.
+     * @return
+     */
+    private TypedQuery<Long> getCountQuery(Specification<T> spec) {
+
+        CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+
+        Root<T> root = applySpecificationToCriteria(spec, query);
+        query.select(builder.count(root)).distinct(true);
+
+        return getEntityManager().createQuery(query);
+    }
+
+
+    /**
+     * Applies the given {@link Specification} to the given
+     * {@link CriteriaQuery}.
+     * 
+     * @param spec can be {@literal null}
+     * @param query
+     * @return
+     */
+    private <S> Root<T> applySpecificationToCriteria(Specification<T> spec,
+            CriteriaQuery<S> query) {
+
+        Assert.notNull(query);
         Root<T> root = query.from(getDomainClass());
 
+        if (spec == null) {
+            return root;
+        }
+
+        CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
         Predicate predicate = spec.toPredicate(root, query, builder);
 
         if (predicate != null) {
             query.where(predicate);
         }
 
-        return getEntityManager().createQuery(query);
+        return root;
     }
 }

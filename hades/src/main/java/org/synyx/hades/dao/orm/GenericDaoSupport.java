@@ -127,6 +127,7 @@ public abstract class GenericDaoSupport<T> {
      * 
      * @return string to count entities
      */
+    @Deprecated
     protected String getCountQueryString() {
 
         PersistenceProvider provider =

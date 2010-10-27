@@ -67,7 +67,7 @@ public class Specifications<T> implements Specification<T> {
 
         return new Specification<T>() {
 
-            public Predicate toPredicate(Root<T> root, CriteriaQuery<T> query,
+            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
                 return builder.and(spec.toPredicate(root, query, builder),
@@ -87,7 +87,7 @@ public class Specifications<T> implements Specification<T> {
 
         return new Specification<T>() {
 
-            public Predicate toPredicate(Root<T> root, CriteriaQuery<T> query,
+            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
                 return builder.or(spec.toPredicate(root, query, builder),
@@ -109,7 +109,7 @@ public class Specifications<T> implements Specification<T> {
         return new Specifications<T>(spec) {
 
             @Override
-            public Predicate toPredicate(Root<T> root, CriteriaQuery<T> query,
+            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
                 return builder.not(spec.toPredicate(root, query, builder));
@@ -126,7 +126,7 @@ public class Specifications<T> implements Specification<T> {
      * .Root, javax.persistence.criteria.CriteriaQuery,
      * javax.persistence.criteria.CriteriaBuilder)
      */
-    public Predicate toPredicate(Root<T> root, CriteriaQuery<T> query,
+    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
             CriteriaBuilder builder) {
 
         return spec.toPredicate(root, query, builder);

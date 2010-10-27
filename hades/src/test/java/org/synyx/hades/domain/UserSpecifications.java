@@ -57,7 +57,7 @@ public class UserSpecifications {
 
         return new Specification<T>() {
 
-            public Predicate toPredicate(Root<T> root, CriteriaQuery<T> query,
+            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
                 return builder.equal(root.get(property), value);

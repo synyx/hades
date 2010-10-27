@@ -36,6 +36,6 @@ public interface Specification<T> {
      * @param query
      * @return a {@link Predicate}, must not be {@literal null}.
      */
-    Predicate toPredicate(Root<T> root, CriteriaQuery<T> query,
+    Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
             CriteriaBuilder builder);
 }
