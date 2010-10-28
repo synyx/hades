@@ -23,9 +23,9 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>&version;</releaseinfo>
+    <releaseinfo>version;</releaseinfo>
 
-    <pubdate>&date;</pubdate>
+    <pubdate>date;</pubdate>
 
     <copyright>
       <year>2008-2010</year>
@@ -351,10 +351,10 @@
     </revhistory>
   </bookinfo>
 
-  <preface>
+  <preface id="preface">
     <title>Preface</title>
 
-    <section>
+    <section id="assumptions">
       <title>Assumptions</title>
 
       <para>As Hades makes heavy use of Spring and JPA we assume you have
@@ -365,7 +365,7 @@
       things more deeply.</para>
     </section>
 
-    <section>
+    <section id="technologies">
       <title>Technologies</title>
 
       <simplesect>
@@ -398,7 +398,7 @@
       </simplesect>
     </section>
 
-    <section>
+    <section id="whats-new-in-20">
       <title>What's new in 2.0</title>
 
       <simplesect>
@@ -485,7 +485,7 @@
       </simplesect>
     </section>
 
-    <section>
+    <section id="project">
       <title>Project metadata</title>
 
       <itemizedlist spacing="compact">
@@ -512,10 +512,10 @@
     </section>
   </preface>
 
-  <chapter>
+  <chapter id="core-concepts">
     <title>Core concepts</title>
 
-    <section>
+    <section id="introduction">
       <title>Introduction</title>
 
       <para>Implementing a data access layer of an application has been
@@ -542,7 +542,7 @@
       will introduce certain restrictions. So it's up to you to choose.</para>
     </section>
 
-    <section>
+    <section id="entities-and-daos">
       <title>Entities and DAOs</title>
 
       <para>The central interface in Hades is
@@ -745,10 +745,10 @@
     </section>
   </chapter>
 
-  <chapter>
+  <chapter id="sample-app">
     <title>Sample application</title>
 
-    <section>
+    <section id="sample-app-intro">
       <title>Introduction</title>
 
       <para>In order to introduce you to working with Hades we will develop a
@@ -760,7 +760,7 @@
       <para>We will start by assuming that only want to have basic Hades
       support stepping forward using more sophisticated features of it.</para>
 
-      <section>
+      <section id="configuration">
         <title>Configuration</title>
 
         <para>To get started with Hades you need to setup your application in
@@ -949,7 +949,7 @@
       </simplesect>
     </section>
 
-    <section>
+    <section id="basic-entities-and-daos">
       <title>Basic entities and DAOs</title>
 
       <para>Now we are going to create the entities and DAOs needed to manage
@@ -960,7 +960,7 @@
       linkend="sample-app.base-classes" /> and <xref
       linkend="sample-app.namespace" />.</para>
 
-      <section>
+      <section id="users-and-roles">
         <title>Users and roles</title>
 
         <para>As we want to create a small user management application, the
@@ -1034,7 +1034,7 @@ public class Role {
         problem at all.</para>
       </section>
 
-      <section>
+      <section id="repositories">
         <title>DAOs</title>
 
         <para>As we have modeled the entities we need to add an interface for
@@ -1113,7 +1113,7 @@ public class Role {
         verbosity.</para>
       </section>
 
-      <section>
+      <section id="client-code">
         <title>Client code</title>
 
         <para>The previously declared <interfacename>UserDao</interfacename>
@@ -1254,7 +1254,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           </note></para>
       </section>
 
-      <section>
+      <section id="filters">
         <title>Using filters</title>
 
         <para>By default Hades will pick up every interface extending
@@ -1288,7 +1288,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
       </section>
     </section>
 
-    <section id="finder-methods">
+    <section id="query-methods">
       <title>Query methods</title>
 
       <para>Next to standard CRUD functionality
@@ -1315,7 +1315,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           special JPA QL is required. <code>CREATE</code> strategy ties your
           mehod names to the query, what might be unwanted. Read more about
           query construction in <xref
-          linkend="finder-methods.query-creation" />.</para>
+          linkend="query-methods.query-creation" />.</para>
         </simplesect>
 
         <simplesect>
@@ -1324,8 +1324,8 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           <para>This strategy tries to find a declared query that can either
           be defined using JPA <code>@NamedQuery</code> means or Hades
           <code>@Query</code> annotation (see <xref
-          linkend="finder-methods.named-queries" /> and <xref
-          linkend="finder-methods.at-query" /> for details). If no declared
+          linkend="query-methods.named-queries" /> and <xref
+          linkend="query-methods.at-query" /> for details). If no declared
           query is found execution of the query will fail.</para>
         </simplesect>
 
@@ -1342,7 +1342,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
         </simplesect>
       </section>
 
-      <section id="finder-methods.query-creation">
+      <section id="query-methods.query-creation">
         <title>Query creation</title>
 
         <para>The hades query builder mechanism is useful to build basic
@@ -1489,7 +1489,7 @@ User user = userDao.readByPrimaryKey(1L);</programlisting>
           </table></para>
       </section>
 
-      <section id="finder-methods.named-queries">
+      <section id="query-methods.named-queries">
         <title>Using JPA NamedQueries</title>
 
         <note>
@@ -1575,7 +1575,7 @@ public class User {
         </simplesect>
       </section>
 
-      <section id="finder-methods.at-query">
+      <section id="query-methods.at-query">
         <title>Using @Query</title>
 
         <para>Using named queries to declare queries for entities is a valid
@@ -1602,7 +1602,7 @@ public class User {
         </example>
       </section>
 
-      <section>
+      <section id="named-parameters">
         <title>Using named parameters</title>
 
         <para>By default Hades will use position based parameter binding as
@@ -1626,7 +1626,7 @@ public class User {
         </example>
       </section>
 
-      <section>
+      <section id="special-parameters">
         <title>Special parameter handling</title>
 
         <para>To hand parameters to your query you simply define method
@@ -1656,7 +1656,7 @@ List&lt;User&gt; findByLastname(String lastname, Pageable pageable);</programlis
         </example>
       </section>
 
-      <section>
+      <section id="modifying-queries">
         <title>Modifying queries</title>
 
         <para>All the sections before described how to declare queries to
@@ -1864,7 +1864,7 @@ class UserManagementImpl implements UserManagement {
         assumes you're using component scanning.</para>
       </example>
 
-      <section>
+      <section id="transactional-query-methods">
         <title>Transactional query methods</title>
 
         <para>To let your query methods be transactional simply use
@@ -1911,7 +1911,7 @@ public interface UserDao extends GenericDao&lt;User, Long&gt; {
       </section>
     </section>
 
-    <section>
+    <section id="auditable-entities">
       <title>Auditable entities</title>
 
       <para>Suppose you want to keep track of who created user entities and
@@ -2036,7 +2036,7 @@ public class AuditionAdviceTest extends AbstractJpaTests {
       </example>
     </section>
 
-    <section id="sample-app.base-classes">
+    <section id="base-classes">
       <title>Using abstract base classes</title>
 
       <para>Using Hades you can implement data acces for plain JPA entities as
@@ -2096,124 +2096,6 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
     </section>
 
     <section id="custom-implementations">
-      <title>Custom implementations</title>
-
-      <para>Often it is necessary to provide a custom implementation for a few
-      DAO methods. Hades eases custom DAO functionality development a lot and
-      allows easy integration with hades generic DAO and query method
-      functionality. To enrich a generic DAO with custom functionality you
-      have to define an interface and an implementation for that functionality
-      first and let the DAO interface you provide by now extend that custom
-      interface.</para>
-
-      <example>
-        <title>Interface for custom DAO functionality</title>
-
-        <programlisting language="java">public interface UserDaoCustom {
-
-  public void someCustomMethod(User user);
-}</programlisting>
-      </example>
-
-      <example>
-        <title>Implementation of custom DAO functionality</title>
-
-        <para><programlisting language="java">public class UserDaoImpl implements UserDaoCustom {
-
-  public void someCustomMethod(User user) {
-    // Your custom implementation
-  }
-}</programlisting>Note that the implementation itself does not depend on Hades
-        and can be a regular Spring bean. So you can either use standard
-        dependency injection behaviour to inject references to other beans,
-        take part in aspects and so on.</para>
-      </example>
-
-      <example>
-        <title>Changes to the standard DAO interface</title>
-
-        <para><programlisting language="java">public interface UserDao extends GenericDao&lt;User, Long&gt;, UserDaoCustom {
-
-  // Declare query methods here
-}</programlisting>Let your standard DAO interface extend the custom one. This
-        makes generic DAO and custom functionality available to
-        clients.</para>
-      </example>
-
-      <simplesect>
-        <title>Configuration</title>
-
-        <para>If you use namespace configuration Hades tries to autodetect
-        custom implementations by looking up classes in the configured dao
-        package using the naming conventions for the DAO interface but
-        appending the property <code>dao-impl-postfix</code> to the classname.
-        This prefix defaults to <code>DaoImpl</code>.</para>
-
-        <example>
-          <title>Configuration example</title>
-
-          <para><programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
-  &lt;dao id="userDao" /&gt;
-&lt;/dao-config&gt;
-
-&lt;dao-config base-package="foo.bar.dao" dao-impl-postfix="FooBar"&gt;
-  &lt;dao id="userDao" /&gt;
-&lt;/dao-config&gt;</programlisting></para>
-        </example>
-
-        <para>The first configuration example will try to lookup a class
-        <classname>foo.bar.dao.UserDaoImpl</classname> to act as custom DAO
-        implementation, where the second example will try to lookup
-        <classname>foo.bar.dao.UserDaoFooBar</classname>.</para>
-      </simplesect>
-
-      <simplesect>
-        <title>Manual wiring</title>
-
-        <para>The approach above works perfectly well if your custom
-        implementation uses annotation based configuration and autowring
-        entirely as will be trated as any other Spring bean. If your customly
-        implemented bean needs some special wiring you simply declare the bean
-        and name it after the conventions just descibed. Hades will the pick
-        up the custom bean by name rather than creating an own
-        instance.</para>
-
-        <example>
-          <title>Manual wiring of custom implementations (I)</title>
-
-          <programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
-  &lt;dao id="userDao" /&gt;
-&lt;/dao-config&gt;
-
-&lt;bean id="userDaoImpl" class="..."&gt;
-  &lt;!-- further configuration --&gt;
-&lt;/bean&gt;</programlisting>
-
-          <para>This also works if you use automatic DAO lookup without
-          defining single <code>&lt;dao /&gt;</code> elements.</para>
-        </example>
-
-        <para>In case you are not in control of the implementation bean name
-        (e.g. if you wrap a generic dao facade around an existing DAO
-        implementation) you can explicitly tell the <code>&lt;dao /&gt;</code>
-        element which bean to use as custom implementation by using the
-        dao-impl-ref attribute.</para>
-
-        <example>
-          <title>Manual wiring of custom implementations (II)</title>
-
-          <para><programlisting language="xml">&lt;dao-config base-package="foo.bar.dao"&gt;
-  &lt;dao id="userDao" dao-impl-ref="customDaoImplementation" /&gt;
-&lt;/dao-config&gt;
-
-&lt;bean id="customDaoImplementation" class="..."&gt;
-  &lt;!-- further configuration --&gt;
-&lt;/bean&gt;</programlisting></para>
-        </example>
-      </simplesect>
-    </section>
-
-    <section>
       <title>Custom implementations</title>
 
       <section id="single-dao-behaviour">
@@ -2334,7 +2216,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
         </simplesect>
       </section>
 
-      <section>
+      <section id="custom-behaviour-for-all-repositories">
         <title>Adding custom behaviour to all DAOs</title>
 
         <para>In other cases you might want to add a single method to all of
@@ -2428,7 +2310,7 @@ public class AuditableUser extends AbstractAuditable&lt;User, Long&gt; {
     usage in a variety of contexts. Currently most of the integration is
     targeted towards Spring MVC.</para>
 
-    <section>
+    <section id="web-domain-class-binding">
       <title>Domain class web binding for Spring MVC</title>
 
       <para>Given you are developing a Spring MVC web applications you
@@ -2535,7 +2417,7 @@ public class UserController {
       </simplesect>
     </section>
 
-    <section>
+    <section id="web-pagination">
       <title>Web pagination</title>
 
       <para></para>
@@ -2666,7 +2548,7 @@ public class UserController {
     </section>
   </chapter>
 
-  <chapter>
+  <chapter id="eclipse-plugin">
     <title>Eclipse plugin</title>
 
     <abstract>
@@ -2676,7 +2558,7 @@ public class UserController {
       the plugin and what features you can expect by it.</para>
     </abstract>
 
-    <section>
+    <section id="eclipse-plugin-installation">
       <title>Installation</title>
 
       <para>You can install the plugin by simply pointing your Eclipse update
@@ -2685,7 +2567,7 @@ public class UserController {
       and choosing the Hades Namespace Integration.</para>
     </section>
 
-    <section>
+    <section id="eclipse-plugin-features">
       <title>Features</title>
 
       <simplesect>
@@ -2734,10 +2616,10 @@ public class UserController {
     </section>
   </chapter>
 
-  <appendix>
+  <appendix id="namespace-reference">
     <title>Namespace reference</title>
 
-    <section>
+    <section id="namespace-dao-config">
       <title>The <code>&lt;dao-config /&gt;</code> element</title>
 
       <para>The <code>&lt;dao-config /&gt;</code> element acts as container
@@ -2807,7 +2689,7 @@ public class UserController {
       </table>
     </section>
 
-    <section>
+    <section id="namespace-dao">
       <title>The <code>&lt;dao /&gt;</code> element</title>
 
       <para>The <code>&lt;dao /&gt;</code> element can contain all attributes
@@ -2844,7 +2726,7 @@ public class UserController {
     </section>
   </appendix>
 
-  <appendix>
+  <appendix id="faq">
     <title>Frequently asked questions</title>
 
     <qandaset>
@@ -2936,7 +2818,7 @@ public class UserController {
     </qandaset>
   </appendix>
 
-  <glossary>
+  <glossary id="glossary">
     <glossdiv>
       <title>A</title>
 

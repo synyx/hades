@@ -19,6 +19,7 @@
     <xsl:param name="callout.extensions">1</xsl:param>
     <xsl:param name="graphicsize.extension">0</xsl:param>
     <xsl:param name="highlight.source" select="1" />
+    <xsl:param name="use.id.as.filename" select="1" />
 
     <!--###################################################
                      Table Of Contents

@@ -248,7 +248,6 @@
 					<targetDirectory>${basedir}/target/doc</targetDirectory>
 					<foCustomization>${basedir}/src/doc/layout/pdf/fo-pdf.xsl</foCustomization>
 					<htmlCustomization>${basedir}/src/doc/layout/html/fo-html.xsl</htmlCustomization>
-					<imgSrcPath>${basedir}/target/doc/</imgSrcPath>
 					<entities>
 						<entity>
 							<name>version</name>
@@ -352,6 +351,7 @@
 							<goal>generate-pdf</goal>
 						</goals>
 						<configuration>
+							<imgSrcPath>${basedir}/target/doc/</imgSrcPath>
 							<postProcess>
 								<copy todir="${project.basedir}/target/site/reference/pdf">
 									<fileset dir="${project.basedir}/target/doc">
