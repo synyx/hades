@@ -63,10 +63,11 @@ public class Specifications<T> implements Specification<T> {
      * @param other
      * @return
      */
-    public Specification<T> and(final Specification<T> other) {
+    public Specifications<T> and(final Specification<T> other) {
 
-        return new Specification<T>() {
+        return new Specifications<T>(spec) {
 
+            @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
@@ -83,10 +84,11 @@ public class Specifications<T> implements Specification<T> {
      * @param other
      * @return
      */
-    public Specification<T> or(final Specification<T> other) {
+    public Specifications<T> or(final Specification<T> other) {
 
-        return new Specification<T>() {
+        return new Specifications<T>(spec) {
 
+            @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
