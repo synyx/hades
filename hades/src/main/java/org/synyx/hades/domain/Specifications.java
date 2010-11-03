@@ -65,16 +65,15 @@ public class Specifications<T> implements Specification<T> {
      */
     public Specifications<T> and(final Specification<T> other) {
 
-        return new Specifications<T>(spec) {
+        return new Specifications<T>(new Specification<T>() {
 
-            @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
                 return builder.and(spec.toPredicate(root, query, builder),
                         other.toPredicate(root, query, builder));
             }
-        };
+        });
     }
 
 
@@ -86,16 +85,15 @@ public class Specifications<T> implements Specification<T> {
      */
     public Specifications<T> or(final Specification<T> other) {
 
-        return new Specifications<T>(spec) {
+        return new Specifications<T>(new Specification<T>() {
 
-            @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
                     CriteriaBuilder builder) {
 
                 return builder.or(spec.toPredicate(root, query, builder),
                         other.toPredicate(root, query, builder));
             }
-        };
+        });
     }
 
 
