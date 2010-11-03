@@ -25,6 +25,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -37,6 +39,7 @@ import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.PageImpl;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
+import org.synyx.hades.domain.Sort.Property;
 import org.synyx.hades.domain.Specification;
 
 
@@ -166,7 +169,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
     @Transactional(readOnly = true)
     public List<T> readAll(Specification<T> spec) {
 
-        return getQuery(spec).getResultList();
+        return getQuery(spec, null).getResultList();
     }
 
 
@@ -184,7 +187,7 @@ public class GenericJpaDao<T, PK extends Serializable> extends
             return readAll(pageable);
         }
 
-        TypedQuery<T> query = getQuery(spec);
+        TypedQuery<T> query = getQuery(spec, pageable);
 
         return pageable == null ? new PageImpl<T>(query.getResultList())
                 : readPage(query, pageable, spec);
@@ -348,15 +351,20 @@ public class GenericJpaDao<T, PK extends Serializable> extends
      * Creates a new {@link TypedQuery} from the given {@link Specification}.
      * 
      * @param spec can be {@literal null}
+     * @param pageable can be {@literal null}
      * @return
      */
-    private TypedQuery<T> getQuery(Specification<T> spec) {
+    private TypedQuery<T> getQuery(Specification<T> spec, Pageable pageable) {
 
         CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(getDomainClass());
 
         Root<T> root = applySpecificationToCriteria(spec, query);
         query.select(root);
+
+        if (pageable != null) {
+            query.orderBy(toOrders(pageable.getSort(), root, builder));
+        }
 
         return getEntityManager().createQuery(query);
     }
@@ -406,5 +414,24 @@ public class GenericJpaDao<T, PK extends Serializable> extends
         }
 
         return root;
+    }
+
+
+    private List<Order> toOrders(Sort sort, Root<T> root, CriteriaBuilder cb) {
+
+        List<Order> orders = new ArrayList<Order>();
+
+        if (sort == null) {
+            return orders;
+        }
+
+        for (Property property : sort) {
+            Expression<?> expression = root.get(property.getName());
+            orders.add(property.isAscending() ? cb.asc(expression) : cb
+                    .desc(expression));
+
+        }
+
+        return orders;
     }
 }

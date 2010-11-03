@@ -31,7 +31,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,6 +76,7 @@ public class UserDaoIntegrationTest {
     // Test fixture
     private User firstUser;
     private User secondUser;
+    private User thirdUser;
     private Integer id;
 
 
@@ -85,6 +85,7 @@ public class UserDaoIntegrationTest {
 
         firstUser = new User("Oliver", "Gierke", "gierke@synyx.de");
         secondUser = new User("Joachim", "Arrasz", "arrasz@synyx.de");
+        thirdUser = new User("Dave", "Matthews", "no@email.com");
     }
 
 
@@ -99,7 +100,7 @@ public class UserDaoIntegrationTest {
 
         flushTestUsers();
 
-        assertEquals(before + 2, countQuery.getSingleResult());
+        assertEquals(before + 3, countQuery.getSingleResult());
     }
 
 
@@ -134,10 +135,11 @@ public class UserDaoIntegrationTest {
     @Test
     public void savesCollectionCorrectly() throws Exception {
 
-        List<User> result = userDao.save(Arrays.asList(firstUser, secondUser));
+        List<User> result =
+                userDao.save(Arrays.asList(firstUser, secondUser, thirdUser));
         assertNotNull(result);
-        assertThat(result.size(), is(2));
-        assertThat(result, hasItems(firstUser, secondUser));
+        assertThat(result.size(), is(3));
+        assertThat(result, hasItems(firstUser, secondUser, thirdUser));
     }
 
 
@@ -204,9 +206,10 @@ public class UserDaoIntegrationTest {
         List<User> result =
                 userDao.readAll(new Sort(Order.ASCENDING, "lastname"));
         assertNotNull(result);
-        assertThat(result.size(), is(2));
+        assertThat(result.size(), is(3));
         assertThat(result.get(0), is(secondUser));
         assertThat(result.get(1), is(firstUser));
+        assertThat(result.get(2), is(thirdUser));
     }
 
 
@@ -486,16 +489,19 @@ public class UserDaoIntegrationTest {
 
         firstUser = userDao.save(firstUser);
         secondUser = userDao.save(secondUser);
+        thirdUser = userDao.save(thirdUser);
 
         userDao.flush();
 
         id = firstUser.getId();
 
-        Assert.assertNotNull(id);
-        Assert.assertNotNull(secondUser.getId());
+        assertThat(id, is(notNullValue()));
+        assertThat(secondUser.getId(), is(notNullValue()));
+        assertThat(thirdUser.getId(), is(notNullValue()));
 
-        Assert.assertTrue(userDao.exists(id));
-        Assert.assertTrue(userDao.exists(secondUser.getId()));
+        assertThat(userDao.exists(id), is(true));
+        assertThat(userDao.exists(secondUser.getId()), is(true));
+        assertThat(userDao.exists(thirdUser.getId()), is(true));
     }
 
 
@@ -540,8 +546,8 @@ public class UserDaoIntegrationTest {
         flushTestUsers();
 
         List<User> result = userDao.findByLastnameNotLike("%er%");
-        assertThat(result.size(), is(1));
-        assertEquals(secondUser, result.get(0));
+        assertThat(result.size(), is(2));
+        assertThat(result, hasItems(secondUser, thirdUser));
     }
 
 
@@ -551,8 +557,8 @@ public class UserDaoIntegrationTest {
         flushTestUsers();
 
         List<User> result = userDao.findByLastnameNot("Gierke");
-        assertThat(result.size(), is(1));
-        assertEquals(secondUser, result.get(0));
+        assertThat(result.size(), is(2));
+        assertThat(result, hasItems(secondUser, thirdUser));
     }
 
 
@@ -613,7 +619,54 @@ public class UserDaoIntegrationTest {
         em.detach(firstUser);
         userDao.delete(firstUser);
 
-        assertThat(userDao.count(), is(1L));
+        assertThat(userDao.count(), is(2L));
     }
 
+
+    @Test
+    public void executesPagedSpecificationsCorrectly() throws Exception {
+
+        Page<User> result = executeSpecWithSort(null);
+        assertThat(result.asList(),
+                anyOf(hasItem(firstUser), hasItem(thirdUser)));
+        assertThat(result.asList(), not(hasItem(secondUser)));
+    }
+
+
+    @Test
+    public void executesPagedSpecificationsWithSortCorrectly() throws Exception {
+
+        Page<User> result =
+                executeSpecWithSort(new Sort(Order.ASCENDING, "lastname"));
+
+        assertThat(result.asList(), hasItem(firstUser));
+        assertThat(result.asList(), not(hasItem(secondUser)));
+        assertThat(result.asList(), not(hasItem(thirdUser)));
+    }
+
+
+    @Test
+    public void executesPagedSpecificationWithSortCorrectly2() throws Exception {
+
+        Page<User> result =
+                executeSpecWithSort(new Sort(Order.DESCENDING, "lastname"));
+
+        assertThat(result.asList(), hasItem(thirdUser));
+        assertThat(result.asList(), not(hasItem(secondUser)));
+        assertThat(result.asList(), not(hasItem(firstUser)));
+    }
+
+
+    private Page<User> executeSpecWithSort(Sort sort) {
+
+        flushTestUsers();
+
+        Specification<User> spec =
+                where(userHasFirstname("Oliver")).or(
+                        userHasLastname("Matthews"));
+
+        Page<User> result = userDao.readAll(spec, new PageRequest(0, 1, sort));
+        assertThat(result.getTotalElements(), is(2L));
+        return result;
+    }
 }
