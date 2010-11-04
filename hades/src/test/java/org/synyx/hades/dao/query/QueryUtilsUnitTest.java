@@ -31,6 +31,8 @@ import org.junit.Test;
 public class QueryUtilsUnitTest {
 
     private static final String QUERY = "select u from User u";
+    private static final String FQ_QUERY =
+            "select u from org.synyx.hades.domain.User$Foo_Bar u";
     private static final String SIMPLE_QUERY = "from User u";
     private static final String COUNT_QUERY = "select count(u) from User u";
 
@@ -137,6 +139,18 @@ public class QueryUtilsUnitTest {
         assertThat(detectAlias("SELECT FROM USER U"), is("U"));
         assertThat(detectAlias("select u from  User u"), IS_U);
         assertThat(detectAlias("select u from  com.acme.User u"), IS_U);
+    }
+
+
+    /**
+     * @see #400
+     */
+    @Test
+    public void allowsFullyQualifiedEntityNamesInQuery() {
+
+        assertThat(detectAlias(FQ_QUERY), IS_U);
+        assertCountQuery(FQ_QUERY,
+                "select count(u) from org.synyx.hades.domain.User$Foo_Bar u");
     }
 
 

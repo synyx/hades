@@ -44,25 +44,35 @@ public abstract class QueryUtils {
     public static final String DELETE_ALL_QUERY_STRING = "delete from %s x";
     public static final String READ_ALL_QUERY = "select x from %s x";
     private static final String DEFAULT_ALIAS = "x";
-
-    private static final Pattern COUNT_MATCH =
-            compile("(select\\s+((distinct )?.+?)\\s+)?(from\\s+\\w+(?:\\s+as)?\\s+)(\\w+)(.*)",
-                    CASE_INSENSITIVE);
     private static final String COUNT_REPLACEMENT = "select count($3$5) $4$5$6";
 
     private static final Pattern ALIAS_MATCH;
+    private static final Pattern COUNT_MATCH;
+
+    private static final String IDENTIFIER = "[\\p{L}._$]+";
+    private static final String IDENTIFIER_GROUP = String.format("(%s)",
+            IDENTIFIER);
 
     static {
 
         StringBuilder builder = new StringBuilder();
         builder.append("(?<=from)"); // from as starting delimiter
         builder.append("(?: )+"); // at least one space separating
-        builder.append("([\\w.]*)"); // Entity name, can be qualified
+        builder.append(IDENTIFIER_GROUP); // Entity name, can be qualified (any
         builder.append("(?: as)*"); // exclude possible "as" keyword
         builder.append("(?: )+"); // at least one space separating
         builder.append("(\\w*)"); // the actual alias
 
         ALIAS_MATCH = compile(builder.toString(), CASE_INSENSITIVE);
+
+        builder = new StringBuilder();
+        builder.append("(select\\s+((distinct )?.+?)\\s+)?(from\\s+");
+        builder.append(IDENTIFIER);
+        builder.append("(?:\\s+as)?\\s+)");
+        builder.append(IDENTIFIER_GROUP);
+        builder.append("(.*)");
+
+        COUNT_MATCH = compile(builder.toString(), CASE_INSENSITIVE);
     }
 
 
