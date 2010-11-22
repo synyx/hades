@@ -38,6 +38,8 @@ public class QueryUtilsUnitTest {
 
     private static final String QUERY_WITH_AS =
             "select u from User as u where u.username = ?";
+    private static final String QUERY_WITH_TABS =
+            "from \t User as u WHERE \t u.bar = ?1";
 
     private static final Matcher<String> IS_U = is("u");
 
@@ -151,6 +153,16 @@ public class QueryUtilsUnitTest {
         assertThat(detectAlias(FQ_QUERY), IS_U);
         assertCountQuery(FQ_QUERY,
                 "select count(u) from org.synyx.hades.domain.User$Foo_Bar u");
+    }
+
+
+    /**
+     * @see #402
+     */
+    @Test
+    public void canHandleTabsInQueriesForAliasDetection() throws Exception {
+
+        assertThat(detectAlias(QUERY_WITH_TABS), IS_U);
     }
 
 

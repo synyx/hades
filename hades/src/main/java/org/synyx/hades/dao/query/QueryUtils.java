@@ -57,10 +57,10 @@ public abstract class QueryUtils {
 
         StringBuilder builder = new StringBuilder();
         builder.append("(?<=from)"); // from as starting delimiter
-        builder.append("(?: )+"); // at least one space separating
+        builder.append("(?:\\s)+"); // at least one space separating
         builder.append(IDENTIFIER_GROUP); // Entity name, can be qualified (any
-        builder.append("(?: as)*"); // exclude possible "as" keyword
-        builder.append("(?: )+"); // at least one space separating
+        builder.append("(?:\\sas)*"); // exclude possible "as" keyword
+        builder.append("(?:\\s)+"); // at least one space separating
         builder.append("(\\w*)"); // the actual alias
 
         ALIAS_MATCH = compile(builder.toString(), CASE_INSENSITIVE);
