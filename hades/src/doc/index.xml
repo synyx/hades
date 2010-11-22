@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <book>
   <bookinfo>
     <title>Hades</title>
@@ -23,9 +23,9 @@
       </author>
     </authorgroup>
 
-    <releaseinfo>version;</releaseinfo>
+    <releaseinfo>&version;</releaseinfo>
 
-    <pubdate>date;</pubdate>
+    <pubdate>&date;</pubdate>
 
     <copyright>
       <year>2008-2010</year>
@@ -471,7 +471,7 @@
         <para>We moved to SLF4J as logging library as it's got quite a nicer
         API than commons-logging plus doesn't suffer classpath issues
         resulting from the dynamic logger detection behaviour of
-        commons-logging. </para>
+        commons-logging.</para>
       </simplesect>
 
       <simplesect>
@@ -481,7 +481,7 @@
         infrastructure as we recommend to use custom repository methods using
         the JPA 2.0 criteria over the find-by-example approach. We removed the
         deprecations regarding sorting in the domain package. Furthermore we
-        removed the legacy auditing model in favour of the new one. </para>
+        removed the legacy auditing model in favour of the new one.</para>
       </simplesect>
     </section>
 
@@ -1654,6 +1654,16 @@ List&lt;User&gt; findByLastname(String lastname, Pageable pageable);</programlis
           simply restrict the query to lookup only the given rante of
           entities.</para>
         </example>
+
+        <note>
+          <para>To find out how many pages you get for a query entirely we
+          have to trigger an additional count query. This will be derived from
+          the query you actually trigger by default. If you need detailed
+          control over the count query to be used, just use the
+          <interfacename>@Query</interfacename> annotation and its
+          <code>countQuery</code> attribute to explicitly define a query that
+          should be used for counting.</para>
+        </note>
       </section>
 
       <section id="modifying-queries">

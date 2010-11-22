@@ -32,8 +32,19 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Query {
 
+    /**
+     * The actual JPA query to be triggered.
+     * 
+     * @return
+     */
     String value() default "";
 
 
+    /**
+     * The count query to be used. If nothing provided here we will try to
+     * lookup the count query from the query defined in {@link #value()}.
+     * 
+     * @return
+     */
     String countQuery() default "";
 }
