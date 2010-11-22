@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.synyx.hades</groupId>
 	<artifactId>org.synyx.hades.parent</artifactId>
-	<version>1.7.0.BUILD-SNAPSHOT</version>
+	<version>1.6.3.RELEASE</version>
 	<packaging>pom</packaging>
 
 	<name>Hades</name>
