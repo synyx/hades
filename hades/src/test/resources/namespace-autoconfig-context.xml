@@ -7,6 +7,6 @@
 
 	<import resource="infrastructure.xml" />
 
-	<hades:dao-config base-package="org.synyx.**.dao" />
+	<hades:dao-config base-package="org.synyx.**.dao" transaction-manager-ref="transactionManager-2" />
 
 </beans>
