@@ -131,7 +131,7 @@ final class SimpleHadesQuery extends AbstractHadesQuery {
     public static HadesQuery fromHadesAnnotation(QueryMethod queryMethod,
             EntityManager em) {
 
-        LOG.debug("Looking up Hades query for method %s", queryMethod.getName());
+        LOG.debug("Looking up Hades query for method {}", queryMethod.getName());
 
         String query = queryMethod.getAnnotatedQuery();
 

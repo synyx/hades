@@ -230,7 +230,7 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
         beanDefinition.setSource(beanSource);
 
         LOG.debug(
-                "Registering Hades DAO: %s - DAO interface: %s - Factory: %s, - Custom implementation: %s",
+                "Registering Hades DAO: {} - DAO interface: {} - Factory: {} - Custom implementation: {}",
                 new Object[] { context.getBeanName(),
                         context.getInterfaceName(),
                         context.getDaoFactoryClassName(),
@@ -300,7 +300,7 @@ class DaoConfigDefinitionParser implements BeanDefinitionParser {
                 return null;
             }
 
-            LOG.debug("Registering custom DAO implementation: %s %s",
+            LOG.debug("Registering custom DAO implementation: {} {}",
                     context.getImplementationBeanName(),
                     beanDefinition.getBeanClassName());
 

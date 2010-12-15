@@ -132,7 +132,7 @@ class QueryCreator {
 
         String query = queryBuilder.toString();
 
-        LOG.debug("Created query '%s' from method %s", query, method.getName());
+        LOG.debug("Created query '{}' from method {}", query, method.getName());
 
         return query;
     }

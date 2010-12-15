@@ -66,7 +66,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
         final String queryName = method.getNamedQueryName();
 
-        LOG.debug("Looking up named query %s", queryName);
+        LOG.debug("Looking up named query {}", queryName);
 
         try {
 
@@ -95,7 +95,7 @@ final class NamedHadesQuery extends AbstractHadesQuery {
 
             if (parameters.hasPageableParameter()) {
                 LOG.info(String
-                        .format("Finder method %s is backed by a NamedQuery"
+                        .format("Finder method {} is backed by a NamedQuery"
                                 + " but contains a Pageble parameter! Sorting deliviered "
                                 + "via this Pageable will not be applied!",
                                 method));
