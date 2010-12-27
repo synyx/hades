@@ -234,7 +234,14 @@ public class GenericJpaDao<T, PK extends Serializable> extends
     }
 
 
-    private Long count(Specification<T> spec) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.synyx.hades.dao.GenericDao#count(org.synyx.hades.domain.Specification
+     * )
+     */
+    public Long count(Specification<T> spec) {
 
         return getCountQuery(spec).getSingleResult();
     }

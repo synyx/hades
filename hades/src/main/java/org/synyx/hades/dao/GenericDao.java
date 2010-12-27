@@ -142,6 +142,16 @@ public interface GenericDao<T, PK extends Serializable> {
 
 
     /**
+     * Returns the number of instances that the given {@link Specification} will
+     * return.
+     * 
+     * @param spec the {@link Specification} to count instances for
+     * @return the number of instances
+     */
+    Long count(final Specification<T> spec);
+
+
+    /**
      * Deletes a given entity.
      * 
      * @param entity
