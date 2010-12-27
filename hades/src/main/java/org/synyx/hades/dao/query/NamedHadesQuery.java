@@ -94,12 +94,11 @@ final class NamedHadesQuery extends AbstractHadesQuery {
             }
 
             if (parameters.hasPageableParameter()) {
-                LOG.info(String
-                        .format("Finder method {} is backed by a NamedQuery"
+                LOG.info(
+                        "Finder method {} is backed by a NamedQuery"
                                 + " but contains a Pageble parameter! Sorting deliviered "
                                 + "via this Pageable will not be applied!",
-                                method));
-
+                        method);
             }
 
             return query;
