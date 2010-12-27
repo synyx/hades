@@ -289,7 +289,7 @@ public abstract class ClassUtils {
     public static Method getBaseClassMethodFor(Method method,
             Class<?> baseClass, Class<?> daoInterface) {
 
-        for (Method daoClassMethod : baseClass.getDeclaredMethods()) {
+        for (Method daoClassMethod : baseClass.getMethods()) {
 
             // Wrong name
             if (!method.getName().equals(daoClassMethod.getName())) {

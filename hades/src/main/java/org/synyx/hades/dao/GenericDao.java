@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
@@ -32,6 +33,7 @@ import org.synyx.hades.domain.Specification;
  * @author Eberhard Wolff
  * @author Oliver Gierke
  */
+@Transactional(readOnly = true)
 public interface GenericDao<T, PK extends Serializable> {
 
     /**
@@ -41,6 +43,7 @@ public interface GenericDao<T, PK extends Serializable> {
      * @param entity
      * @return the saved entity
      */
+    @Transactional
     T save(final T entity);
 
 
@@ -48,6 +51,7 @@ public interface GenericDao<T, PK extends Serializable> {
      * @param entities
      * @return
      */
+    @Transactional
     List<T> save(final Collection<? extends T> entities);
 
 
@@ -57,6 +61,7 @@ public interface GenericDao<T, PK extends Serializable> {
      * @param entity
      * @return the saved entity
      */
+    @Transactional
     T saveAndFlush(final T entity);
 
 
@@ -141,6 +146,7 @@ public interface GenericDao<T, PK extends Serializable> {
      * 
      * @param entity
      */
+    @Transactional
     void delete(final T entity);
 
 
@@ -149,17 +155,20 @@ public interface GenericDao<T, PK extends Serializable> {
      * 
      * @param entities
      */
+    @Transactional
     void delete(final Collection<? extends T> entities);
 
 
     /**
      * Deletes all entities managed by the DAO.
      */
+    @Transactional
     void deleteAll();
 
 
     /**
      * Flushes all pending changes to the database.
      */
+    @Transactional
     void flush();
 }

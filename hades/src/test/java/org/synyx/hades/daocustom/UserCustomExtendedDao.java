@@ -16,6 +16,9 @@
 
 package org.synyx.hades.daocustom;
 
+import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
 import org.synyx.hades.domain.User;
 
 
@@ -27,4 +30,16 @@ import org.synyx.hades.domain.User;
  */
 public interface UserCustomExtendedDao extends CustomGenericDao<User, Integer> {
 
+    /**
+     * Sample method to test reconfiguring transactions on CRUD methods in
+     * combination with custom factory.
+     * 
+     * @see #421
+     */
+    @Transactional(readOnly = false, timeout = 10)
+    List<User> readAll();
+
+
+    @Transactional(readOnly = false, timeout = 10)
+    User readByPrimaryKey(Integer primaryKey);
 }

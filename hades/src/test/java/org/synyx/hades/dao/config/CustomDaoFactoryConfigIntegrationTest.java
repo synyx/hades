@@ -15,12 +15,17 @@
  */
 package org.synyx.hades.dao.config;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
+import org.synyx.hades.dao.orm.TransactionalDaoIntegrationTest.DelegatingTransactionManager;
 import org.synyx.hades.daocustom.UserCustomExtendedDao;
 
 
@@ -35,6 +40,7 @@ import org.synyx.hades.daocustom.UserCustomExtendedDao;
  * to create a Spring bean for the intermediate interface.
  * 
  * @author Oliver Gierke
+ * @author Stevo Slavic
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:namespace-customfactory-context.xml")
@@ -43,11 +49,41 @@ public class CustomDaoFactoryConfigIntegrationTest {
     @Autowired
     private UserCustomExtendedDao userDao;
 
+    @Autowired
+    private DelegatingTransactionManager transactionManager;
+
+
+    @Before
+    public void setUp() {
+
+        transactionManager.resetCount();
+    }
+
 
     @Test(expected = UnsupportedOperationException.class)
     public void testCustomFactoryUsed() {
 
         Assert.notNull(userDao);
         userDao.customMethod(1);
+    }
+
+
+    @Test
+    public void reconfiguresTransactionalMethodWithoutGenericParameter() {
+
+        userDao.readAll();
+
+        assertFalse(transactionManager.getDefinition().isReadOnly());
+        assertThat(transactionManager.getDefinition().getTimeout(), is(10));
+    }
+
+
+    @Test
+    public void reconfiguresTransactionalMethodWithGenericParameter() {
+
+        userDao.readByPrimaryKey(1);
+
+        assertFalse(transactionManager.getDefinition().isReadOnly());
+        assertThat(transactionManager.getDefinition().getTimeout(), is(10));
     }
 }
