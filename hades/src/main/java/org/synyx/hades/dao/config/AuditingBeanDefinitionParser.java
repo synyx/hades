@@ -55,6 +55,7 @@ public class AuditingBeanDefinitionParser implements BeanDefinitionParser {
 
         BeanDefinitionBuilder builder =
                 rootBeanDefinition(AUDITING_ENTITY_LISTENER_CLASS_NAME);
+        builder.setScope("prototype");
 
         String auditorAwareRef = element.getAttribute("auditor-aware-ref");
 
