@@ -10,7 +10,10 @@
     <import resource="infrastructure.xml" />
 
     <hades:auditing auditor-aware-ref="auditorAware" />
-    <bean id="auditorAware" class="org.synyx.hades.domain.auditing.AuditorAwareStub" />
+    
+    <bean id="auditorAware" class="org.synyx.hades.domain.auditing.AuditorAwareStub">
+		<constructor-arg ref="auditableUserDao" />
+    </bean>
     
     <hades:dao-config base-package="org.synyx.hades.dao">
         <hades:dao id="auditableUserDao" />

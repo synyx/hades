@@ -15,7 +15,8 @@
  */
 package org.synyx.hades.domain.auditing;
 
-import org.synyx.hades.domain.User;
+import org.springframework.util.Assert;
+import org.synyx.hades.dao.AuditableUserDao;
 
 
 /**
@@ -24,16 +25,35 @@ import org.synyx.hades.domain.User;
  * 
  * @author Oliver Gierke
  */
-public class AuditorAwareStub implements AuditorAware<User> {
+public class AuditorAwareStub implements AuditorAware<AuditableUser> {
+
+    private final AuditableUserDao userDao;
+    private AuditableUser user;
+
+
+    public AuditorAwareStub(AuditableUserDao userDao) {
+
+        Assert.notNull(userDao);
+        this.userDao = userDao;
+    }
+
+
+    /**
+     * @param user the user to set
+     */
+    public void setUser(AuditableUser user) {
+
+        this.user = user;
+    }
+
 
     /*
      * (non-Javadoc)
      * 
      * @see org.synyx.hades.domain.auditing.AuditorAware#getCurrentAuditor()
      */
-    public User getCurrentAuditor() {
+    public AuditableUser getCurrentAuditor() {
 
-        return null;
+        return user;
     }
-
 }

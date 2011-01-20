@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 import org.synyx.hades.domain.auditing.Auditable;
 import org.synyx.hades.domain.auditing.AuditorAware;
 
@@ -70,6 +71,7 @@ public class AuditingEntityListener<T> implements InitializingBean {
      */
     public void setAuditorAware(final AuditorAware<T> auditorAware) {
 
+        Assert.notNull(auditorAware);
         this.auditorAware = auditorAware;
     }
 

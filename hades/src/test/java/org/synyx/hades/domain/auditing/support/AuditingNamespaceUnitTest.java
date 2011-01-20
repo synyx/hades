@@ -15,11 +15,12 @@
  */
 package org.synyx.hades.domain.auditing.support;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
 
 
 /**
@@ -50,8 +51,9 @@ public class AuditingNamespaceUnitTest extends
         BeanDefinition definition =
                 beanFactory.getBeanDefinition(AuditingEntityListener.class
                         .getName());
-        assertEquals(
-                definition.getPropertyValues().getPropertyValue("auditorAware")
-                        .getValue(), new RuntimeBeanReference("auditorAware"));
+        assertThat(definition, is(notNullValue()));
+        PropertyValue propertyValue =
+                definition.getPropertyValues().getPropertyValue("auditorAware");
+        assertThat(propertyValue, is(notNullValue()));
     }
 }
