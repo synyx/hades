@@ -36,4 +36,29 @@ public class OrderBySourceUnitTest {
                 new QueryCreator.OrderBySource("UsernameDesc");
         assertThat(orderBySource.getClause(), is("order by x.username desc"));
     }
+
+
+    @Test
+    public void handlesCamelCasePropertyCorrecty() throws Exception {
+
+        assertThat(new OrderBySource("LastnameUsernameDesc").getClause(),
+                is("order by x.lastnameUsername desc"));
+    }
+
+
+    @Test
+    public void handlesMultipleDirectionsCorrectly() throws Exception {
+
+        OrderBySource orderBySource =
+                new OrderBySource("LastnameAscUsernameDesc");
+        assertThat(orderBySource.getClause(),
+                is("order by x.lastname asc, x.username desc"));
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsMissingProperty() throws Exception {
+
+        new OrderBySource("Desc");
+    }
 }

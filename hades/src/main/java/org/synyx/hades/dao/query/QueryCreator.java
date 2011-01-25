@@ -20,6 +20,7 @@ import static org.synyx.hades.dao.query.QueryUtils.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.synyx.hades.domain.Order;
+import org.synyx.hades.domain.Sort.Property;
 
 
 /**
@@ -516,22 +518,31 @@ class QueryCreator {
      */
     static class OrderBySource {
 
-        private final Order order;
-        private final List<String> parts;
+        private final String BLOCK_SPLIT = "(?<=Asc|Desc)(?=[A-Z])";
+        private final Pattern DIRECTION_SPLIT = Pattern
+                .compile("(.+)(Asc|Desc)$");
+
+        private final List<Property> orders;
 
 
         public OrderBySource(String clause) {
 
-            String[] partsArray = clause.split("(?<=[a-z])(?=[A-Z])");
+            this.orders = new ArrayList<Property>();
 
-            this.order = Order.fromJpaValue(partsArray[partsArray.length - 1]);
-            this.parts = new ArrayList<String>();
+            for (String part : clause.split(BLOCK_SPLIT)) {
 
-            for (String part : partsArray) {
-                this.parts.add(StringUtils.uncapitalize(part));
+                Matcher matcher = DIRECTION_SPLIT.matcher(part);
+
+                if (!matcher.find()) {
+                    throw new IllegalArgumentException(String.format(
+                            "Invalid order syntax for part %s!", part));
+                }
+
+                Order direction = Order.fromJpaValue(matcher.group(2));
+                String property = StringUtils.uncapitalize(matcher.group(1));
+
+                this.orders.add(new Property(direction, property));
             }
-
-            this.parts.remove(this.parts.size() - 1);
         }
 
 
@@ -543,13 +554,15 @@ class QueryCreator {
         public String getClause() {
 
             StringBuilder builder = new StringBuilder("order by ");
-            builder.append(StringUtils.collectionToDelimitedString(parts, ",",
-                    "x.", ""));
 
-            if (order != null) {
-                builder.append(" ").append(order.getJpaValue());
+            for (Property property : this.orders) {
+
+                builder.append("x.").append(property.getName());
+                builder.append(" ").append(property.getOrder().getJpaValue());
+                builder.append(", ");
             }
 
+            builder.delete(builder.length() - 2, builder.length());
             return builder.toString();
         }
     }
