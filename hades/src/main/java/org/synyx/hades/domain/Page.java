@@ -30,7 +30,7 @@ import java.util.List;
 public interface Page<T> extends Iterable<T> {
 
     /**
-     * Returns the number of the current page. Is always positive and less that
+     * Returns the number of the current page. Is zero based and less that
      * {@code Page#getTotalPages()}.
      * 
      * @return the number of the current page
