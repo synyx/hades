@@ -154,13 +154,13 @@ public class QueryMethod {
 
 
     /**
-     * Returns the name of the domain class the finder belongs to.
+     * Returns the name of the domain class the query returns.
      * 
      * @return
      */
-    String getDomainClassName() {
+    Class<?> getDomainClass() {
 
-        return ClassUtils.getReturnedDomainClass(method).getSimpleName();
+        return ClassUtils.getReturnedDomainClass(method);
     }
 
 

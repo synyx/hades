@@ -36,7 +36,7 @@ public final class QueryCreationException extends RuntimeException {
             String propertyName) {
 
         return new QueryCreationException(String.format(MESSAGE_TEMPLATE,
-                method, propertyName, method.getDomainClassName()));
+                method, propertyName, method.getDomainClass().getSimpleName()));
     }
 
 

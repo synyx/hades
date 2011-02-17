@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,21 @@ public class QueryCreatorUnitTest {
         method =
                 QueryCreatorUnitTest.class.getMethod(
                         "findByFirstnameAndMethod", String.class);
+    }
+
+
+    @Test
+    public void usesEntityName() throws Exception {
+
+        method =
+                getClass()
+                        .getMethod("findByEmbeddable", SampleEmbeddable.class);
+        QueryMethod queryMethod =
+                new QueryMethod(method, method.getReturnType(), extractor);
+        String result = new QueryCreator(queryMethod).constructQuery();
+
+        assertThat(result, startsWith("select x from FooEntity x"));
+
     }
 
 
@@ -305,6 +321,7 @@ public class QueryCreatorUnitTest {
      * @author Oliver Gierke
      */
     @SuppressWarnings("unused")
+    @Entity(name = "FooEntity")
     static class SampleEntity {
 
         private String organization;

@@ -16,6 +16,7 @@
 package org.synyx.hades.dao.query;
 
 import static org.synyx.hades.dao.query.QueryUtils.*;
+import static org.synyx.hades.util.ClassUtils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +77,7 @@ class QueryCreator {
 
         StringBuilder queryBuilder =
                 new StringBuilder(getQueryString(READ_ALL_QUERY,
-                        method.getDomainClassName()));
+                        getEntityName(method.getDomainClass())));
         queryBuilder.append(" where ");
 
         PartSource source = new PartSource(method.getName());

@@ -162,12 +162,12 @@ public class QueryMethodUnitTest {
 
 
     @Test
-    public void returnsCorrectDomainClassName() {
+    public void returnsCorrectDomainClass() {
 
         QueryMethod method =
                 new QueryMethod(daoMethod, DOMAIN_CLASS, extractor);
 
-        assertEquals(DOMAIN_CLASS.getSimpleName(), method.getDomainClassName());
+        assertEquals(DOMAIN_CLASS, method.getDomainClass());
     }
 
 
