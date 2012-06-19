@@ -1,0 +1,52 @@
+h1. Hades
+
+This Project is superseded by "Spring Data JPA":https://github.com/SpringSource/spring-data-jpa
+
+h2. Overview
+
+Hades is a utility library to work with Data Access Objects implemented with Spring and JPA. The main goal is to ease the development and operation of a data access layer in applications.
+
+To get a first impression of what the library can do for you, you should read the Quickstart or the Rationale. A good next step might be reading through the "reference documentation":http://hades.synyx.org/static/2.x/site/org.synyx.hades/reference/html/index.html.
+
+h2. Features
+
+* Implementation of CRUD methods for JPA Entities
+* Transparent triggering of JPA queries by finder methods
+* Dynamic query generation from finder method names
+* Implementation domain base classes providing basic properties
+* Support for transparent auditing (created, last changed)
+* Possibility to integrate custom DAO code
+* Easy Spring integration with custom namespace
+* Extensions library to integrate with Spring PropertyEditors and ConversionService (2.x)
+* Eclipse plugin to integrate with Spring IDE
+* OSGi ready bundles and sample application
+
+h2. Maven integration
+
+After that integrating Hades is just a matter of declaring the dependency:
+<pre><code class="xml">
+<dependency>
+	<groupId>org.synyx.hades</groupId>
+	<artifactId>org.synyx.hades</artifactId>
+	<version>2.0.3.RELEASE</version>
+</dependency>
+</code>
+</pre>
+
+Make sure you add the persistence provider of your choice, too.
+
+Whereas the release versions of Hades are available via Maven central, you might want to add our snapshot repository in case you want to try out new features.
+
+<pre><code class="xml">
+<repository>
+	<id>sonatype-snapshots</id>
+	<name>Sonatype snapshot repository</name>
+	<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+</repository>
+</code>
+</pre>
+
+h2. Documentation
+
+"Wiki":https://github.com/synyx/hades/wiki
+
